@@ -15,6 +15,10 @@ class RoleBusiness
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if (auth()->user()->role !== 'business') {
+            return redirect()->route('home');
+        }
+
         return $next($request);
     }
 }
