@@ -30,7 +30,7 @@
           </div>
      </div>
 
-     @include('pages.components.tab-random')
+     {{-- @include('pages.components.tab-random') --}}
 </div>
 
 
