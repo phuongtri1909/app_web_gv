@@ -49,6 +49,10 @@ use App\Http\Controllers\ParentsChildController;
 
 Route::middleware(['language'])->group(function () {
 
+    // Route::get('/client/form-business', [BusinessController::class, 'create'])->name('business.create');
+    Route::post('/client/form-business', [BusinessController::class, 'store'])->name('business.store');
+    Route::get('/client/form-business', [BusinessController::class, 'index'])->name('business.index');
+
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::get('/admission/{slug}', [AdmissionController::class, 'tabAdmission'])->name('tab.admission');
@@ -334,6 +338,6 @@ Route::middleware(['language'])->group(function () {
 });
 
 
-Route::get('/client/form-business', [BusinessController::class, 'create'])->name('business.create');
+// Route::get('/client/form-business', [BusinessController::class, 'create'])->name('business.create');
 Route::post('/client/form-business', [BusinessController::class, 'store'])->name('business.store');
 Route::get('/client/form-business', [BusinessController::class, 'index'])->name('business.index');
