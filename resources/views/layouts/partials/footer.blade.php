@@ -81,20 +81,17 @@
                             </ul>
                         </div> --}}
                     </div>
-                    <div class="col-lg-6">
+                    {{-- <div class="col-lg-6">
                         <div class="footer_box">
                             <h3 class=" hl_info_footer_title">{{ __('location') }}</h3>
                             <div class="map-i">
                                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.8955010331642!2d106.71087257480434!3d10.74253668940419!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f82e6b90d43%3A0x4f30e03d092d2ee!2zMTIwIMSQxrDhu51uZyBz4buRIDQ1LCBUw6JuIFF1eSwgUXXhuq1uIDcsIEjhu5MgQ2jDrSBNaW5oLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1723328941016!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="col-lg-12">
                         <div class="footer-bottom">
-                            <p class="mb-2">© 2024 Copyright. {{ __('about Brighton Brighton service') }}</p>
-                            {{-- <p>IEduworld với mã số doanh nghiệp xxxxxxxxx, được thành lập từ 01/2018, hoàn toàn tách biệt và hoàn toàn khác với các tên tương tự dễ bị nhầm lẫn như EDU & EDU Group, EDU Group (hai chữ “I”), IMGroup (một chữ “M”), IMMICA, InterIMM, Newoceanimmi, EuIMMI, US Direct IMM, World-IMM, Pro-IMM.</p>
-                            <p>Quý nhà đầu tư cần cảnh giác và nên yêu cầu chứng minh tư cách pháp lý trước khi ký kết hợp đồng dịch vụ.</p>
-                            <p>Thông tin trên web chỉ mang tính tham khảo. Các nội dung trên web chúng tôi có thể chưa cập nhật kịp thời các thông tin mới nhất về các yêu cầu của chương trình, sản phẩm và các quy định liên quan. Để biết rõ thông tin chính xác tại thời điểm hiện tại, quý khách cần liên hệ chuyên viên tư vấn để được cập nhật mới nhất về các sản phẩm và thông tin liên quan.</p> --}}
+                            <p class="mb-2">© 2024 Copyright TECHSERV</p>
                         </div>
                     </div>
                 </div>
