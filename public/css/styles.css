@@ -169,7 +169,7 @@ li{
     margin: 0 auto;
     text-align: left;
 }
-#about-us .primary-btn,#slider .primary-btn,#study-program .primary-btn,#parent-concern  .primary-btn {
+#about-us .primary-btn,#slider .primary-btn,#study-program .primary-btn {
     display: block;
     color: #2b2b2b;
     font-size: 18px;
@@ -182,17 +182,17 @@ li{
     transition: .3s;
     box-shadow: 0 0 0 0 rgba(0, 0, 0, .5);
 }
-#about-us .primary-btn.bg-white:hover,#slider .primary-btn.bg-white:hover,#study-program .primary-btn.bg-white:hover,#parent-concern .primary-btn.bg-white:hover {
+#about-us .primary-btn.bg-white:hover,#slider .primary-btn.bg-white:hover,#study-program .primary-btn.bg-white:hover {
     background: #b70f1b !important;
 }
 
-#about-us .primary-btn:hover,#slider .primary-btn:hover,#study-program .primary-btn:hover,#parent-concern .primary-btn:hover{
+#about-us .primary-btn:hover,#slider .primary-btn:hover,#study-program .primary-btn:hover {
     background: rgba(250, 61, 4, 0.975);
     border: 1px solid #ed4f59e2;
     color: #fff;
     box-shadow: 0 25px 20px -12px rgba(0, 0, 0, .7);
 }
-#about-us .primary-btn span i.arrow,#slider .primary-btn span i.arrow,#study-program .primary-btn span i.arrow , #parent-concern .primary-btn span i.arrow{
+#about-us .primary-btn span i.arrow,#slider .primary-btn span i.arrow,#study-program .primary-btn span i.arrow   {
     position: absolute;
     content: "";
     right: 10px;
@@ -207,17 +207,17 @@ li{
 #about-us .about-us-bottom{
     padding: 0 0 100px;
 }
-#about-us .kids-content,#study-program .kids-content,#kids-experience .kids-content,#parent-concern .kids-content{
+#about-us .kids-content,#study-program .kids-content,#kids-experience .kids-content{
     position: relative;
 }
-#about-us .kids-row,#study-program .kids-row , #kids-experience .kids-row,#parent-concern .kids-row{
+#about-us .kids-row,#study-program .kids-row , #kids-experience .kids-row{
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
 }
-#about-us .kids-row .kids-col ,#study-program .kids-row .kids-col ,#kids-experience .kids-row .kids-col,#parent-concern .kids-row .kids-col{
+#about-us .kids-row .kids-col ,#study-program .kids-row .kids-col ,#kids-experience .kids-row .kids-col{
     -webkit-box-flex: 0;
     -ms-flex: 0 0 50%;
     flex: 0 0 50%;
@@ -280,7 +280,7 @@ li{
     background-color: #b70f1b;
 }
 
-#about-us .kids-border,#study-program .kids-border,#kids-experience .kids-border,#parent-concern .kids-border{
+#about-us .kids-border,#study-program .kids-border,#kids-experience .kids-border{
     border: 1px solid #8a8a8a;
     box-shadow: 0 80px 70px -10px rgba(0, 0, 0, .2);
     transition: box-shadow .3s ease;
@@ -289,11 +289,11 @@ li{
     overflow: hidden;
     position: relative;
 }
-#about-us .kids-img,#study-program .kids-img,#parent-concern .kids-img{
+#about-us .kids-img,#study-program .kids-img{
     height: 100%;
     overflow: hidden;
 }
-#about-us .kids-img img,#study-program  .kids-img img,#kids-experience .kids-img img ,#parent-concern .kids-img img {
+#about-us .kids-img img,#study-program  .kids-img img,#kids-experience .kids-img img  {
     width: 100%;
     height: 100%;
     min-height: 482px;
@@ -416,9 +416,6 @@ li{
 }
 #group-activity .dev-mini-detail .card-img-top{
     width: 100%;
-    height: 100%;
-    max-height: 265px;
-    object-fit: cover;
 }
 #group-activity .card-over-play p{
     color: #000;
@@ -1434,9 +1431,8 @@ li{
 /* component random */
 
 #random img {
-    height: 250px !important;
+    height: 150px !important;
     width: 100% !important;
-    object-fit: cover;
 }
 
 #random div [class^="col-"] {
