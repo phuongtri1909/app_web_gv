@@ -321,13 +321,13 @@ Route::middleware(['language'])->group(function () {
         Route::middleware(['business'])->group(function () {
             
         });
+    });
 
-        Route::middleware(['guest'])->group(function () {
-            Route::get('/login', function () {
-                return view('admin.pages.auth.login');
-            })->name('admin.login');
+    Route::middleware(['guest'])->group(function () {
+        Route::get('/login', function () {
+            return view('admin.pages.auth.login');
+        })->name('admin.login');
 
-            Route::post('/login', [AuthController::class, 'login'])->name('admin.login');
-        });
+        Route::post('/login', [AuthController::class, 'login'])->name('admin.login');
     });
 });
