@@ -102,7 +102,7 @@ Route::middleware(['language'])->group(function () {
 
     Route::middleware(['auth'])->group(function () {
 
-        Route::middleware(['admin'])->group(function(){
+        Route::middleware(['role.admin'])->group(function(){
             Route::prefix('admin')->group(function () {
                 Route::get('/', function () {
                     return view('admin.pages.dashboard');
@@ -323,7 +323,7 @@ Route::middleware(['language'])->group(function () {
             });
         });
 
-        Route::middleware(['business'])->group(function () {
+        Route::middleware(['role.business'])->group(function () {
 
         });
     });
