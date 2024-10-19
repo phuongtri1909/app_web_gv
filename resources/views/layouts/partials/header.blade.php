@@ -5,25 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>@yield('title', 'BRIGHTON ACADEMY')</title>
-    <meta name="description" content="@yield('decription','Brighton Dịch vụ Brighton')">
-    <meta name="keywords" content="@yield('keyword','brightonsingapore,brighton,academy,Về Brighton Dịch vụ Brighton')">
+    <title>@yield('title', 'HHDNQ GÒ VẤP')</title>
+    <meta name="description" content="@yield('decription','Hiệp hội doanh nghiệp quận GÒ VẤP')">
+    <meta name="keywords" content="@yield('keyword','Về hiep hoi doanh nghiep, govap hiep hội')">
     <meta name="robots" content="index, follow">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="@yield('title','BRIGHTON ACADEMY')">
+    <meta property="og:title" content="@yield('title','HHDNQ GÒ VẤP')">
     <meta property="og:description" content="@yield('decription','')">
     <meta property="og:url" content="{{url()->full()}}">
-    <meta property="og:site_name" content="BRIGHTON ACADEMY">
-    <meta property="og:image" content="{{ asset('images/logo-brighton-academy.png') }}">
-    <meta property="og:image:secure_url" content="{{ asset('images/logo-brighton-academy.png') }}">
+    <meta property="og:site_name" content="HHDNQ GÒ VẤP">
+    <meta property="og:image" content="{{ asset('images/logo-hoi-doanh-nghiep.png') }}">
+    <meta property="og:image:secure_url" content="{{ asset('images/logo-hoi-doanh-nghiep.png') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="@yield('title','BRIGHTON ACADEMY')">
+    <meta property="og:image:alt" content="@yield('title','HHDNQ GÒ VẤP')">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@yield('title','BRIGHTON ACADEMY')">
+    <meta name="twitter:title" content="@yield('title','HHDNQ GÒ VẤP')">
     <meta name="twitter:description" content="@yield('decription','brightonsingapore')">
-    <meta name="twitter:image" content="{{ asset('images/logo-brighton-academy.png') }}">
-    <meta name="twitter:image:alt" content="@yield('title','BRIGHTON ACADEMY')">
+    <meta name="twitter:image" content="{{ asset('images/logo-hoi-doanh-nghiep.png') }}">
+    <meta name="twitter:image:alt" content="@yield('title','HHDNQ GÒ VẤP')">
     <link rel="icon" href="{{asset('images/favicon.ico')}}" type="image/png/x-icon">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -49,8 +49,8 @@
                 <div class="container d-flex justify-content-between align-items-center w-100">
                     <div class="d-flex align-items-center">
                         <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
-                            <img src="{{ asset('images/logo-brighton-academy.png') }}" alt="Flowbite Logo"
-                                style="width: 230px; height: 90px;" />
+                            <img src="{{ asset('images/logo-hoi-doanh-nghiep.png') }}" alt="Flowbite Logo"
+                                style="width: 100px; height: 100px;" />
                         </a>
                     </div>
 
