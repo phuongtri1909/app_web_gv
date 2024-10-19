@@ -132,11 +132,14 @@
             color: red;
             margin-top: 10px;
         }
+        .form-business {
+            margin-top: 8rem;
+        }
     </style>
 @endpush
 
 @section('content')
-    <section id="form-business">
+    <section id="form-business" class="form-business">
         <div class="container">
             <div class="row">
                 @if (session('success'))
