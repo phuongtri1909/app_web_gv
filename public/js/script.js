@@ -1,15 +1,15 @@
 
-$(document).ready(function () {
-    var header = $('.main-header .header');
+// $(document).ready(function () {
+//     var header = $('.main-header .header');
 
-    $(window).on('scroll', function () {
-        if ($(this).scrollTop() > 50) {
-            header.addClass('header-sticky');
-        } else {
-            header.removeClass('header-sticky');
-        }
-    });
-});
+//     $(window).on('scroll', function () {
+//         if ($(this).scrollTop() > 50) {
+//             header.addClass('header-sticky');
+//         } else {
+//             header.removeClass('header-sticky');
+//         }
+//     });
+// });
 
 /* Back to top button */
 let backToTopButton = document.getElementById('back-to-top');
