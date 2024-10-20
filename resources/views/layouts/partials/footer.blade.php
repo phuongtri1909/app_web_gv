@@ -99,6 +99,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" ></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" ></script>
     <script src="https://cdn.jsdelivr.net/npm/bxslider@4.2.17/dist/jquery.bxslider.min.js" ></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
     <script src="{{ asset('js/script.js') }}" ></script>
     <script src="{{ asset('js/animation.js') }}" ></script>
 

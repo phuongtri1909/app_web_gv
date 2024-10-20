@@ -14,4 +14,9 @@ class CategoryProductBusiness extends Model
         'slug'   
     ];
 
+    public function product_businesses()
+    {
+        return $this->hasMany(ProductBusiness::class);
+    }
+
 }
