@@ -67,6 +67,46 @@
             height: auto;
 
         }
+        .contact-form .btn,
+        .info-form .btn-info {
+            padding: 10px 2rem;
+            width: 100%;
+        }
+
+        .info-form {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+    @media screen and (max-width: 480px) {
+        .contact-form .btn,
+        .info-form .btn-info {
+            padding: 10px 1.5rem !important;
+        }
+    }
+    .contact-form .btn{
+        padding: 10px 4rem;
+        background: #0056b3;
+        margin-bottom: 10px;
+        color: #fff;
+    }
+    .btn:hover {
+        background-color: #4584e8;
+        opacity: 0.8;
+        box-shadow: 0px 4px 15px rgba(69, 132, 232, 0.4);
+    }
+    .info-form .btn-info{
+        padding: 10px 4rem;
+        background: #ec1e28;
+        margin-bottom: 10px;
+        color: #fff;
+        border-radius: 5px;
+        text-align: center;
+    }
+    .info-form{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
     }
     </style>
 @endpush
@@ -142,6 +182,20 @@
                             <div class="icon-text">Vay vốn</div>
                         </a>
                     </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="contact-form">
+                        <a href="" role="button" class="btn">Liên hệ</a>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="info-form">
+                        <a href="" role="button" class="btn-info">Thông tin chi tiết chi nhánh </a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
