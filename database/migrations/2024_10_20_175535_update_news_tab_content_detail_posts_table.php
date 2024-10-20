@@ -12,7 +12,7 @@ class UpdateNewsTabContentDetailPostsTable extends Migration
     public function up(): void
     {
         Schema::table('news_tab_content_detail_posts', function (Blueprint $table) {
-            if (Schema::hasColumn('news_tab_content_detail_posts', 'news_id')) {
+            if (Schema::hasColumn('news_tab_content_detail_posts_news_id_foreign', 'news_id')) {
                 $table->dropForeign(['news_id']);
                 $table->dropColumn('news_id');
             }
