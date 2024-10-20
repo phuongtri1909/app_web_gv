@@ -1,7 +1,10 @@
 <?php
+
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
-use App\Models\FinancialSupport;
 use Illuminate\Support\Str;
+use App\Models\FinancialSupport;
 
 class FinancialSupportSeeder extends Seeder
 {
