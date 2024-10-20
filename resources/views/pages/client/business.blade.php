@@ -74,7 +74,6 @@
     <section id="business" class="business mt-5rem mb-5">
         <div class="container">
             @include('admin.pages.notification.success-error')
-            <h2 class="fw-bold">{{ $businesses->count() }} Doanh nghiệp</h2>
             <div class="category mt-3">
                 <a href="{{ route('business', ['category' => '']) }}"
                     class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('category') == 'tat-ca' ? 'active' : '' }}">Tất cả</a>
