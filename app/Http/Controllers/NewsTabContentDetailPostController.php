@@ -12,10 +12,21 @@ class NewsTabContentDetailPostController extends Controller
 {
     public function index()
     {
-        $newsTabContentDetails = NewsTabContentDetailPost::with('financialSupport', 'tab')->get();
+        $newsTabContentDetails = NewsTabContentDetailPost::with(['financialSupport', 'tab'])->get();
+
+        if ($newsTabContentDetails->isEmpty()) {
+            return redirect()->back()->with('error', 'Không tìm thấy');
+        }
+
+        foreach ($newsTabContentDetails as $detail) {
+            if (!$detail->financialSupport || !$detail->tab) {
+                return redirect()->back()->with('error', 'Một số chi tiết nội dung bị thiếu các mối quan hệ bắt buộc');
+            }
+        }
 
         return view('admin.pages.blogs.tabs_content_detail_post.index', compact('newsTabContentDetails'));
     }
+
 
     public function create()
     {
@@ -67,7 +78,7 @@ class NewsTabContentDetailPostController extends Controller
         if (!$newsContent) {
             return back()->with('error', __('no_find_data'));
         }
-        $news = News::all();
+        $news = FinancialSupport::all();
         $tabs = TabDetailPost::all();
         $languages = Language::all();
 
@@ -107,7 +118,7 @@ class NewsTabContentDetailPostController extends Controller
         $newsContent->setTranslations('content', $translatedContent);
 
 
-        $newsContent->news_id = $request->input('news_id');
+        $newsContent->financial_support_id = $request->input('financial_support_id');
         $newsContent->tab_id = $request->input('tab_id');
 
 

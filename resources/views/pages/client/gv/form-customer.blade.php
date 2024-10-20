@@ -92,6 +92,12 @@
             height: auto;
             object-fit: cover;
         }
+        @media (max-width: 768px) {
+        .banner {
+            height: auto;
+
+        }
+    }
     </style>
 @endpush
 

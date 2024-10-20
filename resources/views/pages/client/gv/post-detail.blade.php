@@ -1,7 +1,7 @@
 @extends('pages.layouts.page')
 {{-- @section('bg-page', asset('images/Vayvonkinhdoanh.jpg')) --}}
 
-@push('styles')
+@push('child-styles')
     <style>
     .tabs-container {
         max-width: 100%;
@@ -113,47 +113,55 @@
             height: auto;
             object-fit: cover;
         }
+        @media (max-width: 768px) {
+        .banner {
+            height: auto;
+
+        }
+    }
     </style>
 @endpush
 
-@section('content')
+@section('content-page')
     <section id="blog-detail">
         <div class="banner">
             <img src="{{asset('images/Vayvonkinhdoanh.jpg')}}" alt="Banner Image">
         </div>
-        <div class="container my-5">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="tabs-container">
-                        <div class="tabs">
-                            @foreach($blog->tabContentDetails as $key => $tabContent)
-                                <button class="tab-button {{ $key == 0 ? 'active' : '' }}" data-target="tab-{{ $key }}">
-                                    {{ $tabContent->tab->name }}
-                                </button>
-                            @endforeach
+        <div class="container my-4">
+            @if($blog->tabContentDetails->isNotEmpty())
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="tabs-container">
+                            <div class="tabs">
+                                @foreach($blog->tabContentDetails as $key => $tabContent)
+                                    <button class="tab-button {{ $key == 0 ? 'active' : '' }}" data-target="tab-{{ $key }}">
+                                        {{ $tabContent->tab->name }}
+                                    </button>
+                                @endforeach
+                            </div>
+                            <div class="tabs-content">
+                                @foreach($blog->tabContentDetails as $key => $tabContent)
+                                    <div class="tab-content {{ $key == 0 ? 'active' : '' }}" id="tab-{{ $key }}">
+                                        <p>{{ $tabContent->content }}</p>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
-                        <div class="tabs-content">
-                            @foreach($blog->tabContentDetails as $key => $tabContent)
-                                <div class="tab-content {{ $key == 0 ? 'active' : '' }}" id="tab-{{ $key }}">
-                                    <p>{{ $tabContent->content }}</p>
-                                </div>
-                            @endforeach
+                    </div>
+                    <div class="col-md-12">
+                        <div class="btn-regis text-center">
+                            <a href="{{route('show.form')}}" class="btn btn-success" role="button">
+                                <span>{{ __('Đăng ký ngay') }}</span>
+                            </a>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <div class="btn-regis text-center">
-                        <a href="{{route('show.form')}}" class="btn btn-success" role="button">
-                            <span>{{ __('Đăng ký ngay') }}</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            @endif
         </div>
     </section>
 @endsection
 
-@push('scripts')
+@push('child-scripts')
     <script>
        document.querySelectorAll('.tab-button').forEach(button => {
         button.addEventListener('click', () => {

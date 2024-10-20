@@ -1,5 +1,5 @@
 @extends('pages.layouts.page')
-@push('styles')
+@push('child-styles')
     <style>
         .icon-box {
             width: 100px;
@@ -62,17 +62,62 @@
             height: auto;
             object-fit: cover;
         }
+        @media (max-width: 768px) {
+        .banner {
+            height: auto;
 
+        }
+        .contact-form .btn,
+        .info-form .btn-info {
+            padding: 10px 2rem;
+            width: 100%;
+        }
+
+        .info-form {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+    @media screen and (max-width: 480px) {
+        .contact-form .btn,
+        .info-form .btn-info {
+            padding: 10px 1.5rem !important;
+        }
+    }
+    .contact-form .btn{
+        padding: 10px 4rem;
+        background: #0056b3;
+        margin-bottom: 10px;
+        color: #fff;
+    }
+    .btn:hover {
+        background-color: #4584e8;
+        opacity: 0.8;
+        box-shadow: 0px 4px 15px rgba(69, 132, 232, 0.4);
+    }
+    .info-form .btn-info{
+        padding: 10px 4rem;
+        background: #ec1e28;
+        margin-bottom: 10px;
+        color: #fff;
+        border-radius: 5px;
+        text-align: center;
+    }
+    .info-form{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
     </style>
 @endpush
-@push('scripts')
+@push('child-scripts')
 @endpush
-@section('content')
+@section('content-page')
     <section id="home-post">
         <div class="banner">
             <img src="{{asset('images/Vayvonkinhdoanh.jpg')}}" alt="Banner Image">
         </div>
-        <div class="container">
+        <div class="container my-4">
             <div class="row">
                 <div class="col-12">
                     <div class="section-title">Dành cho doanh nghiệp / Hộ kinh doanh</div>
@@ -91,6 +136,66 @@
                         </a>
                     </div>
                 @endforeach
+            </div>
+        </div>
+        <div class="container my-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">Dành cho chủ doanh nghiệp / Chủ cơ sở kinh doanh</div>
+                </div>
+            </div>
+
+            <div class="row text-center">
+                    <div class="col-md-3 col-6 title-f mb-3">
+                        <a href="#">
+                            <div class="icon-box">
+                                <img src="{{asset('images/mtk.png')}}" alt="Mở tài khoản"
+                                    class="img-fluids custom-img">
+                            </div>
+                            <div class="icon-text">Mở tài khoản</div>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-6 title-f mb-3">
+                        <a href="#">
+                            <div class="icon-box">
+                                <img src="{{asset('images/gtk.png')}}" alt="Gửi tiết kiệm"
+                                    class="img-fluids custom-img">
+                            </div>
+                            <div class="icon-text">Gửi tiết kiệm</div>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-6 title-f mb-3">
+                        <a href="#">
+                            <div class="icon-box">
+                                <img src="{{asset('images/ttd.png')}}" alt="Thẻ tín dụng"
+                                    class="img-fluids custom-img">
+                            </div>
+                            <div class="icon-text">Thẻ tín dụng</div>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-6 title-f mb-3">
+                        <a href="#">
+                            <div class="icon-box">
+                                <img src="{{asset('images/vv.png')}}" alt="Vay vốn"
+                                    class="img-fluids custom-img">
+                            </div>
+                            <div class="icon-text">Vay vốn</div>
+                        </a>
+                    </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="contact-form">
+                        <a href="" role="button" class="btn">Liên hệ</a>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="info-form">
+                        <a href="" role="button" class="btn-info">Thông tin chi tiết chi nhánh </a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

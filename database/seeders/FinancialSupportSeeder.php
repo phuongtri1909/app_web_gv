@@ -58,10 +58,14 @@ class FinancialSupportSeeder extends Seeder
 
         foreach ($financialSupports as $support) {
             $financialSupport = new FinancialSupport();
+
             $financialSupport->setTranslations('name', $support['name']);
+
             $financialSupport->slug = $support['slug'];
             $financialSupport->avt_financial_support = $support['avt_financial_support'];
+
             $financialSupport->save();
         }
     }
+
 }

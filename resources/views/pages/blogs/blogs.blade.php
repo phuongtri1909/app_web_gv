@@ -17,7 +17,7 @@
         }
 
         .posts {
-            display: flex;
+            /* display: flex; */
             flex-wrap: wrap;
         }
 
