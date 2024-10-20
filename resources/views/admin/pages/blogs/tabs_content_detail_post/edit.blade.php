@@ -29,16 +29,16 @@
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="news_id">{{ __('select_news') }}</label>
-                            <select name="news_id" id="news_id" class="form-control @error('news_id') is-invalid @enderror" required>
+                            <label for="financial_support_id">{{ __('select_news') }}</label>
+                            <select name="financial_support_id" id="financial_support_id" class="form-control @error('financial_support_id') is-invalid @enderror" required>
                                 <option value="">{{ __('select_news_placeholder') }}</option>
                                 @foreach ($news as $newsItem)
-                                    <option value="{{ $newsItem->id }}" {{ $newsContent->news_id == $newsItem->id ? 'selected' : '' }}>
-                                        {{ $newsItem->title }}
+                                    <option value="{{ $newsItem->id }}" {{ $newsContent->financial_support_id == $newsItem->id ? 'selected' : '' }}>
+                                        {{ $newsItem->name }}
                                     </option>
                                 @endforeach
                             </select>
-                            @error('news_id')
+                            @error('financial_support_id')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

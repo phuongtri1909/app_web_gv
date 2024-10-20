@@ -67,7 +67,7 @@ class NewsTabContentDetailPostController extends Controller
         if (!$newsContent) {
             return back()->with('error', __('no_find_data'));
         }
-        $news = News::all();
+        $news = FinancialSupport::all();
         $tabs = TabDetailPost::all();
         $languages = Language::all();
 
@@ -107,7 +107,7 @@ class NewsTabContentDetailPostController extends Controller
         $newsContent->setTranslations('content', $translatedContent);
 
 
-        $newsContent->news_id = $request->input('news_id');
+        $newsContent->financial_support_id = $request->input('financial_support_id');
         $newsContent->tab_id = $request->input('tab_id');
 
 
