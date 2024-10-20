@@ -118,4 +118,16 @@ class BusinessController extends Controller
 
         return redirect()->route('business.index')->with('success', 'Business deleted successfully.');
     }
+
+    public function business()
+    {
+        $businesses = Business::all();
+        return view('pages.client.business', compact('businesses'));
+    }
+
+    public function businessDetail($id)
+    {
+        
+        return view('pages.client.detail-business');
+    }
 }

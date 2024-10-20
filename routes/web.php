@@ -49,9 +49,13 @@ use App\Http\Controllers\ParentsChildController;
 
 Route::middleware(['language'])->group(function () {
 
-    // Route::get('/client/form-business', [BusinessController::class, 'create'])->name('business.create');
-    Route::post('/client/form-business', [BusinessController::class, 'store'])->name('business.store');
-    Route::get('/client/form-business', [BusinessController::class, 'index'])->name('business.index');
+    Route::group(['prefix' => 'client'], function(){
+        Route::get('business', [BusinessController::class,'business'])->name('business');
+        Route::get('business/{slug}', [BusinessController::class,'businessDetail'])->name('business.detail');
+        //Route::get('/form-business', [BusinessController::class, 'create'])->name('business.create');
+        Route::post('/form-business', [BusinessController::class, 'store'])->name('business.store');
+        Route::get('/form-business', [BusinessController::class, 'index'])->name('business.index');
+    });
 
     Route::get('/', [HomeController::class, 'index'])->name('home');
 

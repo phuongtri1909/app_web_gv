@@ -8,7 +8,7 @@
                 <div class="row ">
                     <div class="col-lg-3">
                         <div class="footer_box">
-                            <h3 class="hl_info_footer_title">{{ __('about Brighton') }}</h3>
+                            <h3 class="hl_info_footer_title">TIN TỨC</h3>
                             <ul class="footer_list_link ">
                                 <li>
                                     <a  href="{{ route('list-blogs',$tab_blogs->slug) }}">{{ $tab_blogs->title }}</a>
