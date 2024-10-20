@@ -149,7 +149,7 @@
                     <div class="col-md-3 col-6 title-f mb-3">
                         <a href="#">
                             <div class="icon-box">
-                                <img src="{{asset('images/mtk.png')}}" alt="Mở tài khoản"
+                                <img src="{{asset('images/Tài-khoản-eKYC-200x200.jpg')}}" alt="Mở tài khoản"
                                     class="img-fluids custom-img">
                             </div>
                             <div class="icon-text">Mở tài khoản</div>
@@ -158,7 +158,7 @@
                     <div class="col-md-3 col-6 title-f mb-3">
                         <a href="#">
                             <div class="icon-box">
-                                <img src="{{asset('images/gtk.png')}}" alt="Gửi tiết kiệm"
+                                <img src="{{asset('images/Tiết-kiệm--200x200.jpg')}}" alt="Gửi tiết kiệm"
                                     class="img-fluids custom-img">
                             </div>
                             <div class="icon-text">Gửi tiết kiệm</div>
@@ -167,7 +167,7 @@
                     <div class="col-md-3 col-6 title-f mb-3">
                         <a href="#">
                             <div class="icon-box">
-                                <img src="{{asset('images/ttd.png')}}" alt="Thẻ tín dụng"
+                                <img src="{{asset('images/Thẻ-tín-dụng-200x200.jpg')}}" alt="Thẻ tín dụng"
                                     class="img-fluids custom-img">
                             </div>
                             <div class="icon-text">Thẻ tín dụng</div>
@@ -176,7 +176,7 @@
                     <div class="col-md-3 col-6 title-f mb-3">
                         <a href="#">
                             <div class="icon-box">
-                                <img src="{{asset('images/vv.png')}}" alt="Vay vốn"
+                                <img src="{{asset('images/Vay-sua-nha-200x200.jpg')}}" alt="Vay vốn"
                                     class="img-fluids custom-img">
                             </div>
                             <div class="icon-text">Vay vốn</div>
