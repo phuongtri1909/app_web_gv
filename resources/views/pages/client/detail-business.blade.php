@@ -132,7 +132,7 @@
                             <h5 class="mb-0 fw-bold text-white">Sản phẩm</h5>
                         </div>
 
-                        <div class="row row-cols-2 row-cols-sm-3 g-3 px-1">
+                        <div class="row row-cols-2 row-cols-sm-3 g-3 px-1  mb-3">
                             @include('admin.pages.notification.success-error')
                             @foreach ($business->products as $product)
                                 <div class="col">
@@ -143,8 +143,8 @@
                                             <img src="{{ asset($product->product_avatar) }}"
                                                 class="card-img-top img-fluid p-1 logo-business" alt="...">
                                         </div>
-                                        <div class="card-body d-flex flex-column">
-                                            <span>{{ $business->business_name }}</span>
+                                        <div class="px-1 d-flex flex-column">
+                                            {{-- <span>{{ $business->business_name }}</span> --}}
                                             <p class="fw-semibold mb-0">{{ $product->name_product }}</p>
                                             <p class="mb-0">{{ number_format($product->price, 0, ',', '.') }} ₫</p>
                                         </div>
