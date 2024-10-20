@@ -191,9 +191,25 @@
                         <a href="" role="button" class="btn">Liên hệ</a>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <div class="info-form">
-                        <a href="" role="button" class="btn-info">Thông tin chi tiết chi nhánh </a>
+                <div class="col-12 col-md-6">
+                    <div class="border border-custom rounded mb-3">
+                        <div class="bg-business rounded-top py-2 px-3 mb-3">
+                            <h5 class="mb-0 fw-bold text-dark">NCB Cộng Hòa</h5>
+                        </div>
+                        <div class="px-3">
+                            <div class="d-flex">
+                                <p class="fw-semibold me-2 mb-0">Địa chỉ:</p>
+                                <p class="mb-0">18H Cộng Hòa, Phường 4, Quận Tân Bình, Thành phố Hồ Chí Minh</p>
+                            </div>
+                            <div class="d-flex">
+                                <p class="fw-semibold me-2 mb-0">Số điện thoại:</p>
+                                <p class="mb-0">(08)38125352</p>
+                            </div>
+                            <div class="d-flex">
+                                <p class="fw-semibold me-2 mb-0">Số Fax:</p>
+                                <p class="mb-0">(08)38125351</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
