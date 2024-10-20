@@ -249,18 +249,15 @@
 @endpush
 
 @section('content-page')
-    <section id="blogs">
+    <section id="blogs" class="mt-2">
         <div class="container">
             <div class="row">
-                <div class="title-news my-5">
-                    <h2>{{ __('news_brighton') }}</h2>
-                </div>
                 @if($categories->isNotEmpty())
                     <div class="category-new mb-5">
                         <div class="col-md-12">
                             <ul class="flex-news">
                                 <li>
-                                    <a href="{{ route('list-blogs', $tab->slug) }}">{{ __('all') }}</a>
+                                    <a class="{{ request('category') == '' ? 'active' : '' }}" href="{{ route('list-blogs', $tab->slug) }}">{{ __('all') }}</a>
                                 </li>
                                 @foreach ($categories as $item)
                                     <li>
@@ -305,7 +302,7 @@
             </div>
         </div>
     </section>
-    <div class="container mt-5">
+    {{-- <div class="container mt-5">
         <div class="row">
             @forEach($tabProject as $tabs)
                 <div class="col-lg-4 col-md-6 mb-4">
@@ -333,8 +330,8 @@
                 </div>
             @endforeach
         </div>
-    </div>
-    <div class="container-kids position-r mt-4">
+    </div> --}}
+    {{-- <div class="container-kids position-r mt-4">
         @if (
             $forumsCp3->isNotEmpty() &&
                 $forumsCp3->contains(function ($forum) {
@@ -367,7 +364,7 @@
                 <button onclick="nextImage()">&#10095;</button>
             </div>
         @endif
-    </div>
+    </div> --}}
 @endsection
 
 @push('child-scripts')
