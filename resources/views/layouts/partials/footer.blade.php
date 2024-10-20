@@ -1,18 +1,14 @@
     <section id="footer" class="main-footer">
-
-        <div class="overflow-hidden srial-lesson-waves">
-            <img class="max-w-none" src="{{asset('images/w7.svg')}}"  width="2500" height="150" alt="">
-        </div>
         <footer class="footer">
             <div class="container">
                 <div class="row ">
                     <div class="col-lg-3">
                         <div class="footer_box">
-                            <h3 class="hl_info_footer_title">{{ __('about Brighton') }}</h3>
+                            {{-- <h3 class="hl_info_footer_title">TIN TỨC</h3> --}}
                             <ul class="footer_list_link ">
-                                <li>
+                                {{-- <li>
                                     <a  href="{{ route('list-blogs',$tab_blogs->slug) }}">{{ $tab_blogs->title }}</a>
-                                </li>
+                                </li> --}}
                                 {{-- <li>
                                     <a  href="#">Tại sao chúng tôi kinh doanh lĩnh vực này?</a>
                                 </li>
@@ -91,7 +87,7 @@
                     </div> --}}
                     <div class="col-lg-12">
                         <div class="footer-bottom">
-                            <p class="mb-2">© 2024 Copyright TECHSERV</p>
+                            <p class="mb-2">© 2024 Copyright HỘI DOANH NGHIỆP QUẬN GÒ VẤP</p>
                         </div>
                     </div>
                 </div>
@@ -103,6 +99,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" ></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" ></script>
     <script src="https://cdn.jsdelivr.net/npm/bxslider@4.2.17/dist/jquery.bxslider.min.js" ></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
     <script src="{{ asset('js/script.js') }}" ></script>
     <script src="{{ asset('js/animation.js') }}" ></script>
 

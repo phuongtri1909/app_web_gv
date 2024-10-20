@@ -39,20 +39,19 @@
 
     <!-- JavaScript -->
     <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     @stack('styles')
 </head>
 
 <body>
     <section class="main-header" id="header">
-        <header class="header">
+        <header class="header d-flex justify-content-center d-md-block">
             <nav class="navbar navbar-expand-lg navbar-dark ">
-                <div class="container d-flex justify-content-between align-items-center w-100">
-                    <div class="d-flex align-items-center">
-                        <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
+                <div class="container">
+                        <a class="navbar-brand" href="{{ route('home') }}">
                             <img src="{{ asset('images/logo-hoi-doanh-nghiep.png') }}" alt="Flowbite Logo"
-                                style="width: 100px; height: 100px;" />
+                                style="width: 80px; height: 80px;" />
                         </a>
-                    </div>
 
                     {{-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarDropdown" aria-controls="navbarDropdown" aria-expanded="false"

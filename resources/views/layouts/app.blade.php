@@ -1,6 +1,18 @@
 @include('layouts.partials.header')
 
 <div class="main-panel">
+     <svg class="waves random-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+            <defs>
+                <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+            </defs>
+            <g class="parallax">
+                <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7)" />
+                <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)" />
+                <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)" />
+                <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
+            </g>
+        </svg>
      @yield('content')
      <button id="back-to-top" title="Top">
           <svg class="chevrons" xmlns="http://www.w3.org/2000/svg" viewBox="0 3 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -10,24 +22,10 @@
            </svg>
       </button>
 
-     <div id="action-button-language" class="floatingButtonWrap">
-          <div class="floatingButtonInner">
-               <a href="#" class="floatingButton">
-                    @php
-                         $flag = \App\Models\Language::where('locale', app()->getLocale())->first()->flag;
-                    @endphp
-                    <img src="{{ asset($flag) }}" alt="" width="20" height="16">
-               </a>
-               <ul class="floatingMenu">
-                    @foreach ($languages as $language)
-                         <li>
-                              <a href="{{ route('language.switch', $language->locale) }}" class="p-1 w-100 language-switch">
-                                   <img class="me-1" src="{{ asset($language->flag) }}" alt="" width="16" height="16">{{ $language->name }}
-                              </a>
-                         </li>
-                    @endforeach
-               </ul>
-          </div>
+     <div class="register-business" title="Đăng ký thông tin doanh nghiệp">
+          <a href="{{ route('business.index') }}">
+               <i class="fa-solid fa-file-pen fa-lg text-white"></i>
+          </a>
      </div>
 
      {{-- @include('pages.components.tab-random') --}}

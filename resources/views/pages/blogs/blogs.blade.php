@@ -1,7 +1,7 @@
 @extends('pages.layouts.page')
-@section('title', __('title_blogs'))
+@section('title', $category)
 @section('description', 'Page blogs')
-@section('keyword', 'Blogs, Blogs page, blogs brighton academy')
+@section('keyword', 'Blogs, Blogs page, blogs')
 @section('title-page', __('blogs'))
 
 @push('child-styles')
@@ -252,15 +252,12 @@
     <section id="blogs">
         <div class="container">
             <div class="row">
-                <div class="title-news my-5">
-                    <h2>{{ __('news_brighton') }}</h2>
-                </div>
-                @if($categories->isNotEmpty())
+                {{-- @if($categories->isNotEmpty())
                     <div class="category-new mb-5">
                         <div class="col-md-12">
                             <ul class="flex-news">
                                 <li>
-                                    <a href="{{ route('list-blogs', $tab->slug) }}">{{ __('all') }}</a>
+                                    <a class="{{ request('category') == '' ? 'active' : '' }}" href="{{ route('list-blogs', $tab->slug) }}">{{ __('all') }}</a>
                                 </li>
                                 @foreach ($categories as $item)
                                     <li>
@@ -271,7 +268,7 @@
                             </ul>
                         </div>
                     </div>
-                @endif
+                @endif --}}
                 @if ($noResults)
                     <div class="content-table-contact my-5 text-center">
                         <div class="alert alert-danger" role="alert">
@@ -305,7 +302,7 @@
             </div>
         </div>
     </section>
-    <div class="container mt-5">
+    {{-- <div class="container mt-5">
         <div class="row">
             @forEach($tabProject as $tabs)
                 <div class="col-lg-4 col-md-6 mb-4">
@@ -333,8 +330,8 @@
                 </div>
             @endforeach
         </div>
-    </div>
-    <div class="container-kids position-r mt-4">
+    </div> --}}
+    {{-- <div class="container-kids position-r mt-4">
         @if (
             $forumsCp3->isNotEmpty() &&
                 $forumsCp3->contains(function ($forum) {
@@ -367,7 +364,7 @@
                 <button onclick="nextImage()">&#10095;</button>
             </div>
         @endif
-    </div>
+    </div> --}}
 @endsection
 
 @push('child-scripts')

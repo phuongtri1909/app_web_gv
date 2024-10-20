@@ -27,7 +27,7 @@
                                     @enderror
                                 </div>
 
-                                <div class="form-group mb-3 col-md-6">
+                                <div class="form-group mb-3 col-12">
                                     <label for="content">{{ __('content') }}: {{ $language->name }}</label>
                                     <textarea name="content_{{ $language->locale }}" id="content_{{ $language->locale }}"
                                         class="form-control my-editor @error('content_{{ $language->locale }}') is-invalid @enderror" rows="3"
@@ -86,7 +86,7 @@
 @endsection
 
 @push('scripts-admin')
-    <script src="https://cdn.tiny.cloud/1/94rfxe6iw4a63rhexl9m1wnjy9xkor08bhxft539qnuxepbv/tinymce/5/tinymce.min.js"
+    <script src="https://cdn.tiny.cloud/1/zjp51ea7s0xnyrx2gv55bqdfz99zaqaugg0w5fbt5uxu5q2q/tinymce/5/tinymce.min.js"
         referrerpolicy="origin"></script>
     <script>
         @foreach ($languages as $language)

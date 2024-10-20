@@ -3,7 +3,7 @@
   <div class="sidenav-header">
     <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
     <a class="d-flex m-0 justify-content-center text-wrap" href="{{ route('admin.dashboard') }}">
-        <img class="" src="{{ asset('images/logo-hoi-doanh-nghiep.png') }}" alt="Flowbite Logo" style= "width: 100px; height: 100px;" />
+        <img class="" src="{{ asset('images/logo-hoi-doanh-nghiep.png') }}" alt="Flowbite Logo" style= "width: 80px; height: 80px;" />
     </a>
   </div>
   <hr class="horizontal dark mt-0">

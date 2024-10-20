@@ -16,8 +16,10 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
             'full_name' => 'admin',
-            'email' => 'admin@brighton.academy.com',
+            'username' => 'admin',
+            'email' => 'admin@gmail.com',
             'password' => Hash::make('11111111'),
+            'role' => 'admin',
             'created_at' => now(),
             'updated_at' => now()
         ]);
