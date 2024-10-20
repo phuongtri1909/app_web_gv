@@ -78,11 +78,21 @@ class CustomerInterestController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'phone_number' => 'required|digits:10',
-            'interest' => 'required|in:personal,business',
-            'bank_service' => 'required|in:openaccount,borrow,thrifty,credit,other',
+            'interest' => 'required',
+            'bank_service' => 'required',
             'financial_support_id' => 'required|exists:financial_support,id',
             'time' => 'required|string|max:255',
             'otherInput' => 'nullable|string|max:255',
+        ], [
+            'name.required' => 'Tên là bắt buộc.',
+            'phone_number.required' => 'Số điện thoại là bắt buộc.',
+            'phone_number.digits' => 'Số điện thoại phải có 10 chữ số.',
+            'interest.required' => 'Lĩnh vực quan tâm là bắt buộc.',
+            'bank_service.required' => 'Dịch vụ ngân hàng là bắt buộc.',
+            'financial_support_id.required' => 'Hỗ trợ tài chính là bắt buộc.',
+            'financial_support_id.exists' => 'Hỗ trợ tài chính không tồn tại.',
+            'time.required' => 'Thời gian là bắt buộc.',
+            'otherInput.max' => 'Giá trị không được vượt quá 255 ký tự.',
         ]);
 
 
@@ -102,9 +112,6 @@ class CustomerInterestController extends Controller
             }
             $bankServiceId = $validated['bank_service'];
         }
-        if ($request->input('honey_pot')) {
-            return redirect()->back()->withErrors(['message' => 'Yêu cầu không hợp lệ.']);
-        }
         CustomerInterest::create([
             'name' => $validated['name'],
             'phone_number' => $validated['phone_number'],
@@ -113,8 +120,6 @@ class CustomerInterestController extends Controller
             'financial_support_id' => $validated['financial_support_id'],
             'time' => $validated['time'],
         ]);
-
-
         return redirect()->back()->with('success', 'Gửi thành công!');
     }
 

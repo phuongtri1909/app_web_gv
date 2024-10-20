@@ -43,6 +43,7 @@
             border-radius: 4px;
             position: relative;
             cursor: pointer;
+            padding: 0;
         }
 
         input[type="radio"]:checked::after {
@@ -57,7 +58,13 @@
             transform: translate(-50%, -50%);
             border-radius: 5px;
         }
-
+        .form-control:focus {
+            color: #212529;
+            background-color: #fff;
+            border-color: #0eae40;
+            outline: 0;
+            box-shadow: unset;
+        }
         .optional-input {
             display: none;
             margin-top: 10px;
@@ -112,26 +119,40 @@
                     @include('pages.notification.success-error')
                     <form id="myForm" action="{{ route('store.form') }}" method="POST">
                         @csrf
-                        <input type="text" name="honey_pot" style="display:none;">
                         <input type="hidden" id="financial_support_id" name="financial_support_id" value="{{ $financialSupportId }}">
                         <div class="form-group">
                             <label for="name">Quý hội viên vui lòng điền thông tin "Họ và tên"</label>
-                            <input type="text" id="name" name="name" placeholder="VD: Nguyễn Văn A..." required>
+                            <input type="text" id="name" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="VD: Nguyễn Văn A..." required>
+                            @error('name')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                         </div>
 
                         <div class="form-group">
                             <label for="phone">Quý hội viên vui lòng điền thông tin "Số điện thoại"</label>
-                            <input type="tel" id="phone" name="phone_number" required pattern="[0-9]{10}" placeholder="VD: 097XXXXXXX">
+                            <input type="tel" id="phone" name="phone_number" class="form-control @error('phone_number') is-invalid @enderror" required pattern="[0-9]{10}" placeholder="VD: 097XXXXXXX">
+                            @error('phone_number')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
 
                         <div class="form-group">
                             <label>Quý hội viên quan tâm đến sản phẩm dành cho</label>
                             @foreach ($business_type as $type)
                                 <div class="d-flex mx-3">
-                                    <input type="radio" id="{{ $type->name }}" name="interest" value="{{ $type->id }}" required>
+                                    <input type="radio" id="{{ $type->name }}" class="form-control @error('interest') is-invalid @enderror" name="interest" value="{{ $type->id }}" required>
                                     <label for="{{ $type->name }}">{{ $type->name }}</label>
                                 </div>
                             @endforeach
+                            @error('interest')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
 
 
@@ -139,21 +160,31 @@
                             <label>Quý hội viên quan tâm đến sản phẩm dịch vụ nào của ngân hàng</label>
                             @foreach ($bank_services as $service)
                                 <div class="d-flex mx-3">
-                                    <input type="radio" id="{{ $service->name }}" name="bank_service" value="{{ $service->id }}" required onchange="toggleOtherInput()">
+                                    <input type="radio" id="{{ $service->name }}" class="form-control @error('bank_service') is-invalid @enderror" name="bank_service" value="{{ $service->id }}" required onchange="toggleOtherInput()">
                                     <label for="{{ $service->name }}">{{ $service->name }}</label>
                                 </div>
                             @endforeach
                             <div class="d-flex mx-3">
-                                <input type="radio" id="other" name="bank_service" value="other" required onchange="toggleOtherInput()">
+                                <input type="radio" id="other" name="bank_service" class="form-control @error('bank_service') is-invalid @enderror"  value="other" required onchange="toggleOtherInput()">
                                 <label for="other">Khác</label>
                             </div>
-                            <input type="text" id="otherInput" class="optional-input" name="otherInput" placeholder="Vui lòng nhập dịch vụ khác..." style="display:none;">
+                            <input type="text" id="otherInput" class="optional-input" class="form-control @error('otherInput') is-invalid @enderror"  name="otherInput" placeholder="Vui lòng nhập dịch vụ khác..." style="display:none;">
+                            @error('bank_service')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
 
 
                         <div class="form-group">
                             <label for="time">Quý hội viên mong muốn sẽ được liên hệ vào khung thời gian nào</label>
-                            <input type="text" id="time" name="time" placeholder="VD: Từ 7h đến 9h ngày 21/10/2024" required>
+                            <input type="text" id="time" name="time" class="form-control @error('time') is-invalid @enderror"  placeholder="VD: Từ 7h đến 9h ngày 21/10/2024" required>
+                            @error('time')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
 
                         <button type="submit" class="submit-btn">Gửi</button>
