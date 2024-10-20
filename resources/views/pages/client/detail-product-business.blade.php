@@ -201,6 +201,17 @@
                     </div>
                 </div>
 
+                @if($product->product_story)
+                    <div class="border border-custom rounded mb-3">
+                        <div class="bg-business rounded-top py-2 px-3 mb-3">
+                            <h5 class="mb-0 fw-bold text-dark">Câu chuyện sản phẩm</h5>
+                        </div>
+                        <div class="px-3">
+                            <p class="mb-0">{!! $product->product_story !!}</p>
+                        </div>
+                    </div>
+                @endif
+
             </div>
         </div>
     </section>
