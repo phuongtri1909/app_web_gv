@@ -27,7 +27,7 @@
                                     @enderror
                                 </div>
 
-                                <div class="form-group mb-3 col-md-6">
+                                <div class="form-group mb-3 col-12">
                                     <label for="content">{{ __('content') }}: {{ $language->name }}</label>
                                     <textarea name="content_{{ $language->locale }}" id="content_{{ $language->locale }}"
                                         class="form-control my-editor @error('content_{{ $language->locale }}') is-invalid @enderror" rows="3"
