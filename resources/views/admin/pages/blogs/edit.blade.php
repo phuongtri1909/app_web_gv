@@ -29,7 +29,7 @@
                                     @enderror
                                 </div>
 
-                                <div class="form-group mb-3 col-md-6">
+                                <div class="form-group mb-3 col-12">
                                     <label for="content">{{ __('content') }} {{ $language->name }}</label>
                                     <textarea name="content_{{ $language->locale }}" id="content_{{ $language->locale }}"
                                         class="form-control @error('content_' . $language->locale) is-invalid @enderror" rows="4" required>{{ old('content_' . $language->locale, $news->getTranslation('content', $language->locale)) }}</textarea>
