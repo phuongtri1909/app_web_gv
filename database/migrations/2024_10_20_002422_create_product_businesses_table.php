@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('category_product_id')->constrained('category_product_businesses')->cascadeOnDelete();
             $table->string('name_product');
             $table->text('description')->nullable();
-            $table->decimal('price', 15, 2);
+            $table->unsignedBigInteger('price');
             $table->text('product_story')->nullable();
             $table->string('slug')->unique();
             $table->string('product_avatar');
