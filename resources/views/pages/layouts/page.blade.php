@@ -56,14 +56,7 @@
 @endpush
 @section('content')
     <section id=layout-page>
-        <div class="title-page">
-            <div class="bg-page" style="background: url('@yield('bg-page', 'images/moitruonghoctap.jpg')')"></div>
-            <div class="text-title-page amination">
-                <div class="container">
-                    <h2 class="h2-main fw-bold">@yield('title-page', 'page')</h2>
-                </div>
-            </div>
-        </div>
+       
         <svg class="waves random-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
             viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
             <defs>
@@ -76,7 +69,7 @@
                 <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
             </g>
         </svg>
-        <div id="page">
+        <div id="page" class="mt-5rem">
             @yield('content-page')
         </div>
     </section>

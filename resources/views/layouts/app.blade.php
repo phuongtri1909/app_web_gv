@@ -10,25 +10,11 @@
            </svg>
       </button>
 
-     {{-- <div id="action-button-language" class="floatingButtonWrap">
-          <div class="floatingButtonInner">
-               <a href="#" class="floatingButton">
-                    @php
-                         $flag = \App\Models\Language::where('locale', app()->getLocale())->first()->flag;
-                    @endphp
-                    <img src="{{ asset($flag) }}" alt="" width="20" height="16">
-               </a>
-               <ul class="floatingMenu">
-                    @foreach ($languages as $language)
-                         <li>
-                              <a href="{{ route('language.switch', $language->locale) }}" class="p-1 w-100 language-switch">
-                                   <img class="me-1" src="{{ asset($language->flag) }}" alt="" width="16" height="16">{{ $language->name }}
-                              </a>
-                         </li>
-                    @endforeach
-               </ul>
-          </div>
-     </div> --}}
+     <div class="register-business" title="Đăng ký thông tin doanh nghiệp">
+          <a href="{{ route('business.index') }}">
+               <i class="fa-solid fa-file-pen fa-lg text-white"></i>
+          </a>
+     </div>
 
      {{-- @include('pages.components.tab-random') --}}
 </div>

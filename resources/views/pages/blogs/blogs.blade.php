@@ -1,7 +1,7 @@
 @extends('pages.layouts.page')
-@section('title', __('title_blogs'))
+@section('title', $category)
 @section('description', 'Page blogs')
-@section('keyword', 'Blogs, Blogs page, blogs brighton academy')
+@section('keyword', 'Blogs, Blogs page, blogs')
 @section('title-page', __('blogs'))
 
 @push('child-styles')
@@ -249,7 +249,7 @@
 @endpush
 
 @section('content-page')
-    <section id="blogs" class="mt-3">
+    <section id="blogs">
         <div class="container">
             <div class="row">
                 {{-- @if($categories->isNotEmpty())

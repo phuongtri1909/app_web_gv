@@ -277,6 +277,10 @@ class BlogsController extends Controller
                     $query->whereHas('categories', function ($q) use ($categoryId) {
                         $q->where('slug', $categoryId);
                     });
+
+                    $category = CategoryNews::where('slug', $categoryId)->first()->name;
+                }else{
+                    $category = 'Tất cả';
                 }
 
                 if ($request->has('tag')) {
@@ -308,7 +312,7 @@ class BlogsController extends Controller
                                             ->orderBy('date', 'desc')
                                             ->take(15)
                                             ->get();
-                return view('pages.blogs.blogs', compact('tab','blogs', 'categories', 'tags', 'recentPosts', 'noResults','forumsCp3','tabProject'));
+                return view('pages.blogs.blogs', compact('tab','blogs', 'categories', 'tags', 'recentPosts', 'noResults','forumsCp3','tabProject','category'));
                 break;
             default:
                 return abort(404);
