@@ -249,10 +249,10 @@
 @endpush
 
 @section('content-page')
-    <section id="blogs" class="mt-2">
+    <section id="blogs" class="mt-3">
         <div class="container">
             <div class="row">
-                @if($categories->isNotEmpty())
+                {{-- @if($categories->isNotEmpty())
                     <div class="category-new mb-5">
                         <div class="col-md-12">
                             <ul class="flex-news">
@@ -268,7 +268,7 @@
                             </ul>
                         </div>
                     </div>
-                @endif
+                @endif --}}
                 @if ($noResults)
                     <div class="content-table-contact my-5 text-center">
                         <div class="alert alert-danger" role="alert">
