@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Business;
 use App\Models\CategoryBusiness;
+use App\Models\CategoryProductBusiness;
+use App\Models\ProductBusiness;
 use App\Models\WardGovap;
 use Illuminate\Http\Request;
 
@@ -119,15 +121,44 @@ class BusinessController extends Controller
         return redirect()->route('business.index')->with('success', 'Business deleted successfully.');
     }
 
-    public function business()
+    public function business(Request $request)
     {
-        $businesses = Business::all();
-        return view('pages.client.business', compact('businesses'));
+        $category = $request->category ?? '';
+    
+
+    //deploy xong fix status
+        if ($category) {
+            $category_product_business = CategoryProductBusiness::where('slug', $category)->first();
+    
+            $businesses = Business::whereHas('products', function ($query) use ($category_product_business) {
+                $query->where('category_product_id', $category_product_business->id);
+            })->get();
+        } else {
+            $businesses = Business::get();
+        }
+        $category_product_business = CategoryProductBusiness::get();
+    
+        return view('pages.client.business', compact('businesses', 'category_product_business'));
     }
 
-    public function businessDetail($id)
+    public function businessDetail($business_code)
     {
-        
-        return view('pages.client.detail-business');
+        $business = Business::where('business_code', $business_code)->first();
+
+        if (!$business) {
+            return redirect()->route('business')->with('error', 'Không tìm thấy doanh nghiệp');
+        }
+
+        return view('pages.client.detail-business', compact('business'));
+    }
+
+    public function productDetail($slug)
+    {
+        $product = ProductBusiness::where('slug', $slug)->first();
+        if (!$product) {
+            return redirect()->route('business')->with('error', 'Không tìm thấy sản phẩm');
+        }
+
+        return view('pages.client.detail-product-business', compact('product'));
     }
 }

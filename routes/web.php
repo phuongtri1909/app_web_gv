@@ -51,7 +51,8 @@ Route::middleware(['language'])->group(function () {
 
     Route::group(['prefix' => 'client'], function(){
         Route::get('business', [BusinessController::class,'business'])->name('business');
-        Route::get('business/{slug}', [BusinessController::class,'businessDetail'])->name('business.detail');
+        Route::get('business/{business_code}', [BusinessController::class,'businessDetail'])->name('business.detail');
+        Route::get('product/{slug}', [BusinessController::class,'productDetail'])->name('product.detail');
         //Route::get('/form-business', [BusinessController::class, 'create'])->name('business.create');
         Route::post('/form-business', [BusinessController::class, 'store'])->name('business.store');
         Route::get('/form-business', [BusinessController::class, 'index'])->name('business.index');

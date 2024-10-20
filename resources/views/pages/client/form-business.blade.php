@@ -132,9 +132,6 @@
             color: red;
             margin-top: 10px;
         }
-        .form-business {
-            margin-top: 8rem;
-        }
     </style>
 @endpush
 

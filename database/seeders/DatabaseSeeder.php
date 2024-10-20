@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             WardGovapSeeder::class,
             BusinessTypeSeeder::class,
+            CategoryProductBusinessSeeder::class,
         ]);
     }
 }

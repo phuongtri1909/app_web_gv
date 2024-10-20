@@ -28,4 +28,9 @@ class ProductBusiness extends Model
     {
         return $this->belongsTo(CategoryProductBusiness::class, 'category_product_id');
     }
+
+    public function productImages()
+    {
+        return $this->hasMany(ProductImage::class, 'product_id');
+    }
 }

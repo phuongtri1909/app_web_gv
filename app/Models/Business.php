@@ -35,4 +35,14 @@ class Business extends Model
     {
         return $this->belongsTo(CategoryBusiness::class, 'category_business_id');
     }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'business_id');
+    }
+
+    public function products()
+    {
+        return $this->hasMany(ProductBusiness::class);
+    }
 }
