@@ -14,14 +14,27 @@ class NewsTabContentDetailPostController extends Controller
     {
         $newsTabContentDetails = NewsTabContentDetailPost::with(['financialSupport', 'tab'])->get();
 
-        if ($newsTabContentDetails->isEmpty()) {
-            return redirect()->back()->with('error', 'Không tìm thấy');
-        }
+        // if ($newsTabContentDetails->isEmpty()) {
+        //     return redirect()->back()->with('error', 'Không tìm thấy');
+        // }
 
         foreach ($newsTabContentDetails as $detail) {
             if (!$detail->financialSupport || !$detail->tab) {
-                return redirect()->back()->with('error', 'Một số chi tiết nội dung bị thiếu các mối quan hệ bắt buộc');
+                $missingRelations = [];
+
+                if (!$detail->financialSupport) {
+                    $missingRelations[] = 'Financial Support';
+                }
+
+                if (!$detail->tab) {
+                    $missingRelations[] = 'Tab';
+                }
+
+                $errorMessage = 'Một số chi tiết nội dung bị thiếu các mối quan hệ bắt buộc: ' . implode(', ', $missingRelations);
+
+                return redirect()->back()->with('error', $errorMessage);
             }
+
         }
 
         return view('admin.pages.blogs.tabs_content_detail_post.index', compact('newsTabContentDetails'));
@@ -32,44 +45,34 @@ class NewsTabContentDetailPostController extends Controller
     {
         $news = FinancialSupport::all();
         $tabs = TabDetailPost::all();
-        $languages = Language::all();
-        return view('admin.pages.blogs.tabs_content_detail_post.create', compact('news', 'tabs','languages'));
+        return view('admin.pages.blogs.tabs_content_detail_post.create', compact('news', 'tabs'));
     }
+
 
     public function store(Request $request)
     {
+        $rules = [
+            'content' => 'required|string', 
+            'financial_support_id' => 'required|exists:financial_support,id',
+            'tab_id' => 'required|exists:tabs_detail_posts,id',
+        ];
 
-        $locales = Language::pluck('locale')->toArray();
-
-
-        $rules = [];
-        $messages = [];
-
-
-        foreach ($locales as $locale) {
-            $rules["content_{$locale}"] = 'required|string';
-            $messages["content_{$locale}.required"] = __('content') . strtoupper($locale) . __(' is_required.');
-            $messages["content_{$locale}.string"] = __('content');
-        }
-        $rules['financial_support_id'] = 'required|exists:financial_support,id';
-        $rules['tab_id'] = 'required|exists:tabs_detail_posts,id';
+        $messages = [
+            'content.required' => __('content') . __(' is_required.'),
+            'content.string' => __('content_string'),
+        ];
 
         $validatedData = $request->validate($rules, $messages);
 
-
-        $translatedContent = [];
-        foreach ($locales as $locale) {
-            $translatedContent[$locale] = $request->input("content_{$locale}");
-        }
-
         $contentDetailPost = new NewsTabContentDetailPost();
-        $contentDetailPost->setTranslations('content', $translatedContent);
+        $contentDetailPost->content = $validatedData['content'];
         $contentDetailPost->financial_support_id = $validatedData['financial_support_id'];
         $contentDetailPost->tab_id = $validatedData['tab_id'];
         $contentDetailPost->save();
 
         return redirect()->route('news_contents.index')->with('success', __('create_success'));
     }
+
 
 
     public function edit($id)
@@ -80,53 +83,36 @@ class NewsTabContentDetailPostController extends Controller
         }
         $news = FinancialSupport::all();
         $tabs = TabDetailPost::all();
-        $languages = Language::all();
 
-        return view('admin.pages.blogs.tabs_content_detail_post.edit', compact('newsContent', 'news', 'tabs','languages'));
+        return view('admin.pages.blogs.tabs_content_detail_post.edit', compact('newsContent', 'news', 'tabs'));
     }
+
 
     public function update(Request $request, string $id)
     {
+        $rules = [
+            'content' => 'required|string|max:255',
+            'financial_support_id' => 'required|exists:financial_support,id',
+            'tab_id' => 'required|exists:tabs_detail_posts,id',
+        ];
 
-        $locales = Language::pluck('locale')->toArray();
-
-        $rules = [];
-        $messages = [];
-
-        foreach ($locales as $locale) {
-
-            $rules["content_{$locale}"] = 'required|string|max:255';
-
-            $messages["content_{$locale}.required"] = __('content') . strtoupper($locale) . __(' is_required.');
-            $messages["content_{$locale}.string"] = __('content_string');
-            $messages["content_{$locale}.max"] = __('content_max', ['max' => 255]);
-        }
-
+        $messages = [
+            'content.required' => __('content') . __(' is_required.'),
+            'content.string' => __('content_string'),
+            'content.max' => __('content_max', ['max' => 255]),
+        ];
 
         $validatedData = $request->validate($rules, $messages);
 
-
         $newsContent = NewsTabContentDetailPost::findOrFail($id);
-
-
-        $translatedContent = [];
-        foreach ($locales as $locale) {
-            $translatedContent[$locale] = $request->input("content_{$locale}");
-        }
-
-
-        $newsContent->setTranslations('content', $translatedContent);
-
-
-        $newsContent->financial_support_id = $request->input('financial_support_id');
-        $newsContent->tab_id = $request->input('tab_id');
-
-
+        $newsContent->content = $validatedData['content'];
+        $newsContent->financial_support_id = $validatedData['financial_support_id'];
+        $newsContent->tab_id = $validatedData['tab_id'];
         $newsContent->save();
-
 
         return redirect()->route('news_contents.index')->with('success', __('update_success'));
     }
+
 
 
     public function destroy($id)

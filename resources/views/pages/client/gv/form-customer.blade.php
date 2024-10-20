@@ -109,60 +109,52 @@
         <div class="container my-5">
             <div class="row">
                 <div class="form-container">
-                    <form id="myForm">
+                    @include('pages.notification.success-error')
+                    <form id="myForm" action="{{ route('store.form') }}" method="POST">
+                        @csrf
+                        <input type="text" name="honey_pot" style="display:none;">
+                        <input type="hidden" id="financial_support_id" name="financial_support_id" value="{{ $financialSupportId }}">
                         <div class="form-group">
                             <label for="name">Quý hội viên vui lòng điền thông tin "Họ và tên"</label>
-                            <input type="text" id="name" name="name" placeholder="VD:Nguyễn Văn A..." required>
+                            <input type="text" id="name" name="name" placeholder="VD: Nguyễn Văn A..." required>
                         </div>
 
                         <div class="form-group">
                             <label for="phone">Quý hội viên vui lòng điền thông tin "Số điện thoại"</label>
-                            <input type="tel" id="phone" name="phone" required pattern="[0-9]{10}"
-                                placeholder="VD: 097XXXXXXX">
+                            <input type="tel" id="phone" name="phone_number" required pattern="[0-9]{10}" placeholder="VD: 097XXXXXXX">
                         </div>
 
                         <div class="form-group">
                             <label>Quý hội viên quan tâm đến sản phẩm dành cho</label>
-                            <div class="d-flex mx-3">
-                                <input type="radio" id="personal" name="interest" value="personal" required>
-                                <label for="personal">Cá nhân / Hộ Kinh Doanh</label>
-                            </div>
-                            <div class="d-flex mx-3">
-                                <input type="radio" id="business" name="interest" value="business" required>
-                                <label for="business">Doanh nghiệp</label>
-                            </div>
+                            @foreach ($business_type as $type)
+                                <div class="d-flex mx-3">
+                                    <input type="radio" id="{{ $type->name }}" name="interest" value="{{ $type->id }}" required>
+                                    <label for="{{ $type->name }}">{{ $type->name }}</label>
+                                </div>
+                            @endforeach
                         </div>
+
+
                         <div class="form-group">
                             <label>Quý hội viên quan tâm đến sản phẩm dịch vụ nào của ngân hàng</label>
+                            @foreach ($bank_services as $service)
+                                <div class="d-flex mx-3">
+                                    <input type="radio" id="{{ $service->name }}" name="bank_service" value="{{ $service->id }}" required onchange="toggleOtherInput()">
+                                    <label for="{{ $service->name }}">{{ $service->name }}</label>
+                                </div>
+                            @endforeach
                             <div class="d-flex mx-3">
-                                <input type="radio" id="openaccount" name="interest" value="openaccount" required>
-                                <label for="openaccount">Mở tài khoản</label>
-                            </div>
-                            <div class="d-flex mx-3">
-                                <input type="radio" id="borrow" name="interest" value="borrow" required>
-                                <label for="borrow">Vay</label>
-                            </div>
-                            <div class="d-flex mx-3">
-                                <input type="radio" id="thrifty" name="interest" value="thrifty" required>
-                                <label for="thrifty">Tiết kiệm</label>
-                            </div>
-                            <div class="d-flex mx-3">
-                                <input type="radio" id="credit" name="interest" value="credit" required>
-                                <label for="credit">Thẻ tín dụng</label>
-                            </div>
-                            <div class="d-flex mx-3">
-                                <input type="radio" id="other" name="interest" value="other" required>
+                                <input type="radio" id="other" name="bank_service" value="other" required onchange="toggleOtherInput()">
                                 <label for="other">Khác</label>
                             </div>
-                            <input type="text" id="otherInput" class="optional-input" name="otherInput"
-                                placeholder="Vui lòng nhập dịch vụ khác...">
+                            <input type="text" id="otherInput" class="optional-input" name="otherInput" placeholder="Vui lòng nhập dịch vụ khác..." style="display:none;">
                         </div>
+
 
                         <div class="form-group">
                             <label for="time">Quý hội viên mong muốn sẽ được liên hệ vào khung thời gian nào</label>
                             <input type="text" id="time" name="time" placeholder="VD: Từ 7h đến 9h ngày 21/10/2024" required>
                         </div>
-
 
                         <button type="submit" class="submit-btn">Gửi</button>
                     </form>
@@ -172,20 +164,18 @@
     </section>
 @endsection
 @push('child-scripts')
-    <script>
-        document.getElementById('other').addEventListener('change', function() {
-            document.getElementById('otherInput').style.display = 'block';
-            document.getElementById('otherInput').setAttribute('required', true);
-        });
-
-        document.querySelectorAll('input[name="interest"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.value !== 'other') {
-                    document.getElementById('otherInput').style.display = 'none';
-                    document.getElementById('otherInput').removeAttribute('required');
-                    document.getElementById('otherInput').value = '';
-                }
-            });
-        });
-    </script>
+<script>
+    function toggleOtherInput() {
+        const otherInput = document.getElementById('otherInput');
+        const otherRadio = document.getElementById('other');
+        if (otherRadio.checked) {
+            otherInput.style.display = 'block';
+            otherInput.required = true;
+        } else {
+            otherInput.style.display = 'none';
+            otherInput.value = '';
+            otherInput.required = false;
+        }
+    }
+</script>
 @endpush

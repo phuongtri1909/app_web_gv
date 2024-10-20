@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BankServicesInterest;
+use App\Models\CustomerInterest;
+use App\Models\PersonalBusinessInterest;
 use Illuminate\Http\Request;
 // use App\Models\CustomerInterest; // Assuming there's a CustomerInterest model
 
@@ -63,9 +66,59 @@ class CustomerInterestController extends Controller
         return redirect()->route('customer_interests.index')->with('success', __('Customer interest deleted successfully!'));
     }
 
-    public function showForm(){
-
-        return view('pages.client.gv.form-customer');
+    public function showForm($financialSupportId)
+    {
+        $bank_services = BankServicesInterest::all();
+        $business_type = PersonalBusinessInterest::all();
+        return view('pages.client.gv.form-customer', compact('financialSupportId','bank_services','business_type'));
     }
+
+    public function storeForm(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone_number' => 'required|digits:10',
+            'interest' => 'required|in:personal,business',
+            'bank_service' => 'required|in:openaccount,borrow,thrifty,credit,other',
+            'financial_support_id' => 'required|exists:financial_support,id',
+            'time' => 'required|string|max:255',
+            'otherInput' => 'nullable|string|max:255',
+        ]);
+
+
+        $interestId = $validated['interest'];
+
+        $bankServiceId = null;
+
+        if ($validated['bank_service'] === 'other') {
+            if (empty($validated['otherInput'])) {
+                return redirect()->back()->withErrors(['otherInput' => 'Vui lòng nhập dịch vụ khác.'])->withInput();
+            }
+            $bankServiceId = BankServicesInterest::create(['name' => $validated['otherInput']])->id;
+        } else {
+            $bankService = BankServicesInterest::where('id', $validated['bank_service'])->first();
+            if (!$bankService) {
+                return redirect()->back()->withErrors(['bank_service' => 'Dịch vụ không hợp lệ.'])->withInput();
+            }
+            $bankServiceId = $validated['bank_service'];
+        }
+        if ($request->input('honey_pot')) {
+            return redirect()->back()->withErrors(['message' => 'Yêu cầu không hợp lệ.']);
+        }
+        CustomerInterest::create([
+            'name' => $validated['name'],
+            'phone_number' => $validated['phone_number'],
+            'interest_id' => $interestId,
+            'bank_services_id' => $bankServiceId,
+            'financial_support_id' => $validated['financial_support_id'],
+            'time' => $validated['time'],
+        ]);
+
+
+        return redirect()->back()->with('success', 'Gửi thành công!');
+    }
+
+
+
 }
 

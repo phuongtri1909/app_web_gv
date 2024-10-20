@@ -8,7 +8,7 @@ class CustomerInterest extends Model
 {
     protected $table = 'customer_interest';
 
-    protected $fillable = ['name', 'phone_number', 'interest_id', 'bank_services_id', 'financial_support_id'];
+    protected $fillable = ['name', 'phone_number', 'interest_id', 'bank_services_id', 'financial_support_id','time'];
 
     public function financialSupport()
     {
