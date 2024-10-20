@@ -28,6 +28,11 @@ class User extends Authenticatable
         'business_id',
     ];
 
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
