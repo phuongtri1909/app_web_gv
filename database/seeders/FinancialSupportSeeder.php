@@ -20,7 +20,7 @@ class FinancialSupportSeeder extends Seeder
                     'vi' => 'Tài trợ nhà sản xuất'
                 ]),
                 'slug' => Str::slug('Tài trợ nhà sản xuất'),
-                'avt_financial_support' => null,
+                'avt_financial_support' => '/images/Banner IZIBANKBIZ 200x200.jpg',
             ],
             [
                 'name' => json_encode([
@@ -28,7 +28,7 @@ class FinancialSupportSeeder extends Seeder
                     'vi' => 'Tài trợ vốn linh hoạt'
                 ]),
                 'slug' => Str::slug('Tài trợ vốn linh hoạt'),
-                'avt_financial_support' => null,
+                'avt_financial_support' => '/images/Vayvonkinhdoanh-200x200.jpg',
             ],
             [
                 'name' => json_encode([
@@ -36,7 +36,7 @@ class FinancialSupportSeeder extends Seeder
                     'vi' => 'Tài trợ nhà phân phối'
                 ]),
                 'slug' => Str::slug('Tài trợ nhà phân phối'),
-                'avt_financial_support' => null,
+                'avt_financial_support' => '/images/Banner NPP KHDN 200x200px.jpg',
             ],
             [
                 'name' => json_encode([
@@ -44,7 +44,7 @@ class FinancialSupportSeeder extends Seeder
                     'vi' => 'Dịch vụ ngân hàng điện tử'
                 ]),
                 'slug' => Str::slug('Dịch vụ ngân hàng điện tử'),
-                'avt_financial_support' => null,
+                'avt_financial_support' => '/images/Banner IZIBANKBIZ 200x200.jpg',
             ],
             [
                 'name' => json_encode([
@@ -52,7 +52,7 @@ class FinancialSupportSeeder extends Seeder
                     'vi' => 'Chuyển tiền quốc tế'
                 ]),
                 'slug' => Str::slug('Chuyển tiền quốc tế'),
-                'avt_financial_support' => null,
+                'avt_financial_support' => '/images/Chuyentienquocte-200x200-01.jpg',
             ],
         ];
 
