@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('category_business', function (Blueprint $table) {
+        Schema::create('customer_interest', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slug')->unique();
+            $table->string('phone_number');
+            $table->foreignId('interest_id')->constrained('personal_business_interest');
+            $table->foreignId('bank_services_id')->constrained('bank_services_interest')->nullable();
+            $table->foreignId('financial_support_id')->constrained('financial_support');
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('category_business');
+        Schema::dropIfExists('customer_interest');
     }
 };

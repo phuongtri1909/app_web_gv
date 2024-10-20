@@ -773,6 +773,23 @@
     "motacovan": "The Scientific Advisory Council provides professional guidance to ensure that research and innovation align with best practices in early childhood education.",
     "content_page": "Content page",
     "Our story" : "Our story",
-    "Vision, mission, core values" : "Vision, mission, core values"
+    "Vision, mission, core values" : "Vision, mission, core values",
+    "all_tabs_post":"List tabs post",
+    "tabs_post_add":"Add tab",
+    "name_tab": "Name tab",
+    "tabs_posts": "Tab posts",
+    "all_tabs_content_post": "Detailed list of articles tab",
+    "tabs_content_post_add": "Add article details",
+    "news_contents": "Posts tab",
+    "select_news_placeholder": "Select a news article",
+    "select_news": "Select news article",
+    "select_tab_placeholder": "Select a tab",
+    "select_tab": "Select tab"
+
+
+
+
+
+
 
 }

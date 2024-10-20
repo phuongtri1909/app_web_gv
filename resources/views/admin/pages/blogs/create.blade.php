@@ -92,7 +92,7 @@
         @foreach ($languages as $language)
             var editor_config = {
                 path_absolute: "/",
-                selector: '#content_{{ $language->locale }}',
+                selector: '#content_s{{ $language->locale }}',
                 relative_urls: false,
                 plugins: [
                     "advlist autolink lists link image charmap print preview hr anchor pagebreak",

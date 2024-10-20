@@ -8,6 +8,7 @@ use App\Models\CategoryProductBusiness;
 use App\Models\ProductBusiness;
 use App\Models\WardGovap;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BusinessController extends Controller
 {
@@ -63,26 +64,44 @@ class BusinessController extends Controller
             'avt_businesses.mimes' => 'Hình ảnh đại diện phải là file dạng: jpg, jpeg, png.',
             'avt_businesses.max' => 'Hình ảnh đại diện không được vượt quá 5MB.',
         ]);
+        try {
+            $data = $request->except(['business_license', 'avt_businesses']);
+            if ($request->hasFile('avt_businesses')) {
+                $image = $request->file('avt_businesses');
+                $folderName = date('Y/m');
+                $originalFileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                $extension = $image->getClientOriginalExtension();
+                $fileName = $originalFileName . '_' . time() . '.' . $extension;
+                $image->move(public_path('/uploads/images/business/' . $folderName), $fileName);
+                $data['avt_businesses'] = 'uploads/images/business/' . $folderName . '/' . $fileName;
+            }
+            if ($request->hasFile('business_license')) {
+                $file = $request->file('business_license');
+                $folderName = date('Y/m');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $extension = $file->getClientOriginalExtension();
+                $licenseName = $originalFileName . '_license_' . time() . '.' . $extension;
+                $file->move(public_path('/uploads/images/business/' . $folderName), $licenseName);
+                $data['business_license'] = 'uploads/images/business/' . $folderName . '/' . $licenseName;
+            }
+            Business::create($data);
 
-        $data = $request->all();
+            DB::commit();
 
-        if ($request->hasFile('avt_businesses')) {
-            $file = $request->file('avt_businesses');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads'), $filename);
-            $data['avt_businesses'] = $filename;
+            return redirect()->route('business.index')->with('success', 'Gửi thành công!!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            if (isset($filename) && file_exists(public_path('uploads/' . $filename))) {
+                unlink(public_path('uploads/' . $filename));
+            }
+
+            if (isset($licenseName) && file_exists(public_path('uploads/' . $licenseName))) {
+                unlink(public_path('uploads/' . $licenseName));
+            }
+
+            return redirect()->back()->with('error', 'Gửi thất bại: ' . $e->getMessage());
         }
-
-        if ($request->hasFile('business_license')) {
-            $file = $request->file('business_license');
-            $licenseName = time() . '_license.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads'), $licenseName);
-            $data['business_license'] = $licenseName;
-        }
-        // dd($data);
-        Business::create($data);
-
-        return redirect()->route('business.index')->with('success', 'Gửi thành công!!');
     }
 
 
