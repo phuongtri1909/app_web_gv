@@ -1,6 +1,5 @@
 @extends('pages.layouts.page')
-@section('bg-page', asset('images/Vayvonkinhdoanh.jpg'))
-@section('title-page', __(''))
+{{-- @section('bg-page', asset('images/Vayvonkinhdoanh.jpg')) --}}
 
 @push('child-styles')
     <style>
@@ -78,12 +77,30 @@
         .submit-btn:hover {
             background-color: #0056b3;
         }
+        .banner {
+        width: 100%;
+        height: 400px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f0f0;
+        }
+
+        .banner img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
     </style>
 @endpush
 
 @section('content-page')
     <section id="form-customer">
-        <div class="container">
+        <div class="banner">
+            <img src="{{asset('images/Vayvonkinhdoanh.jpg')}}" alt="Banner Image">
+        </div>
+        <div class="container my-5">
             <div class="row">
                 <div class="form-container">
                     <form id="myForm">

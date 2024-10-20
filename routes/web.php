@@ -60,6 +60,9 @@ Route::middleware(['language'])->group(function () {
         //Route::get('/form-business', [BusinessController::class, 'create'])->name('business.create');
         Route::post('/form-business', [BusinessController::class, 'store'])->name('business.store');
         Route::get('/form-business', [BusinessController::class, 'index'])->name('business.index');
+        Route::get('/form-customer', [CustomerInterestController::class, 'showForm'])->name('show.form');
+        Route::get('/home-business', [FinancialSupportController::class, 'showFinancial'])->name('show.financical');
+        Route::get('/post-detail/{slug}', [BlogsController::class, 'showPostIndex'])->name('post-detail');
     });
 
     Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -95,14 +98,13 @@ Route::middleware(['language'])->group(function () {
 
     Route::get('/b/{slug}', [BlogsController::class, 'blogIndex'])->name('list-blogs');
     Route::get('/detail-blog/{slug}', [BlogsController::class, 'showBlogIndex'])->name('detail-blog');
-    Route::get('/post-detail/{slug}', [BlogsController::class, 'showPostIndex'])->name('post-detail');
 
     Route::get('/detail-blog/mini/{slug}', [BlogsController::class, 'showBlogIndexMini'])->name('detail-blog-mini');
 
     Route::get('aboutUs/{slug}', [AboutUsController::class, 'pageAboutUsDetail'])->name('page.aboutUs.detail');
 
-    Route::get('/client/form-customer', [CustomerInterestController::class, 'showForm'])->name('show.form');
-    Route::get('/client/home-post', [FinancialSupportController::class, 'showFinancial'])->name('show.financical');
+
+
 
     Route::get('page-tab/{slug}', function ($slug) {
         return view('pages.tab-custom.index', compact('slug'));

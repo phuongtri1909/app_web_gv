@@ -1,14 +1,7 @@
 @extends('pages.layouts.page')
-@section('title', $blog->name)
-{{-- @section('description', $blog->content) --}}
-{{-- @section('keyword', implode(', ', $blog->tags->pluck('name')->toArray())) --}}
-{{-- @section('bg-page', asset($blog->avt_financial_support)) --}}
-@section('bg-page', asset('images/Vayvonkinhdoanh.jpg'))
+{{-- @section('bg-page', asset('images/Vayvonkinhdoanh.jpg')) --}}
 
-@section('title-page', __(''))
-
-
-@push('child-styles')
+@push('styles')
     <style>
     .tabs-container {
         max-width: 100%;
@@ -105,12 +98,30 @@
         transform: scale(1.05);
         box-shadow: 0px 4px 15px rgba(69, 132, 232, 0.4);
     }
+    .banner {
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+
+        .banner img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
     </style>
 @endpush
 
-@section('content-page')
+@section('content')
     <section id="blog-detail">
-        <div class="container">
+        <div class="banner">
+            <img src="{{asset('images/Vayvonkinhdoanh.jpg')}}" alt="Banner Image">
+        </div>
+        <div class="container my-5">
             <div class="row">
                 <div class="col-md-12">
                     <div class="tabs-container">
@@ -142,7 +153,7 @@
     </section>
 @endsection
 
-@push('child-scripts')
+@push('scripts')
     <script>
        document.querySelectorAll('.tab-button').forEach(button => {
         button.addEventListener('click', () => {

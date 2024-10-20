@@ -1,11 +1,5 @@
 @extends('pages.layouts.page')
-@section('title', 'Doanh nghiệp')
-@section('description')
-    {{-- @section('keyword', implode(', ', $financialSupports->tags->pluck('name')->toArray())) --}}
-@section('bg-page', asset('images/Vayvonkinhdoanh.jpg'))
-@section('title-page', __(''))
-
-@push('child-styles')
+@push('styles')
     <style>
         .icon-box {
             width: 100px;
@@ -53,11 +47,32 @@
                 text-align: center;
             }
         }
+        .banner {
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+
+        .banner img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
     </style>
 @endpush
-@section('content-page')
+@push('scripts')
+@endpush
+@section('content')
     <section id="home-post">
-        <div class="container mt-5">
+        <div class="banner">
+            <img src="{{asset('images/Vayvonkinhdoanh.jpg')}}" alt="Banner Image">
+        </div>
+        <div class="container">
             <div class="row">
                 <div class="col-12">
                     <div class="section-title">Dành cho doanh nghiệp / Hộ kinh doanh</div>
@@ -80,5 +95,4 @@
         </div>
     </section>
 @endsection
-@push('child-scripts')
-@endpush
+
