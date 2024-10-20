@@ -10,7 +10,7 @@
            </svg>
       </button>
 
-     <div id="action-button-language" class="floatingButtonWrap">
+     {{-- <div id="action-button-language" class="floatingButtonWrap">
           <div class="floatingButtonInner">
                <a href="#" class="floatingButton">
                     @php
@@ -28,7 +28,7 @@
                     @endforeach
                </ul>
           </div>
-     </div>
+     </div> --}}
 
      {{-- @include('pages.components.tab-random') --}}
 </div>
