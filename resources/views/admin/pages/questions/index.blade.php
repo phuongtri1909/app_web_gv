@@ -229,7 +229,7 @@
 @endsection
 
 @push('scripts-admin')
-    <script src="https://cdn.tiny.cloud/1/94rfxe6iw4a63rhexl9m1wnjy9xkor08bhxft539qnuxepbv/tinymce/6/tinymce.min.js"
+    <script src="https://cdn.tiny.cloud/1/zjp51ea7s0xnyrx2gv55bqdfz99zaqaugg0w5fbt5uxu5q2q/tinymce/6/tinymce.min.js"
         referrerpolicy="origin"></script>
 
     <script>
