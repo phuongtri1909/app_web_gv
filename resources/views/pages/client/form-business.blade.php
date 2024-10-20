@@ -142,11 +142,7 @@
     <section id="form-business" class="form-business">
         <div class="container">
             <div class="row">
-                @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
+                @include('pages.notification.success-error')
                 <form action="{{ route('business.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="col-md-12 mb-5">

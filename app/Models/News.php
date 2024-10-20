@@ -33,9 +33,10 @@ class News extends Model
         return $this->belongsToMany(TagNews::class, 'news_tag', 'news_id', 'tag_id');
     }
 
+
     public function setTitleAttribute($value)
     {
         $this->attributes['title'] = $value;
-        $this->attributes['slug'] = Str::slug($value);  
+        $this->attributes['slug'] = Str::slug($value);
     }
 }

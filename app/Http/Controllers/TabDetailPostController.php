@@ -1,30 +1,23 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\CategoryNews;
 use App\Models\Language;
+use App\Models\TabDetailPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-class CategoryNewsController extends Controller
+
+class TabDetailPostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $categories = CategoryNews::all();
-        return view('admin.pages.category_blogs.index', compact('categories'));
-
+        $tabs = TabDetailPost::all();
+        return view('admin.pages.blogs.tabs_detail_post.index', compact('tabs'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $languages = Language::all();
-        return view('admin.pages.category_blogs.create', compact('languages'));
+        return view('admin.pages.blogs.tabs_detail_post.create', compact('languages'));
     }
 
     /**
@@ -51,33 +44,19 @@ class CategoryNewsController extends Controller
         foreach ($locales as $locale) {
             $translatedName[$locale] = $request->input("name_{$locale}");
 
-            $existingCategory = CategoryNews::whereJsonContains('name', [$locale => $translatedName[$locale]])->first();
+            $existingCategory = TabDetailPost::whereJsonContains('name', [$locale => $translatedName[$locale]])->first();
             if ($existingCategory) {
                 return back()->withInput()->withErrors([
                     "name_{$locale}" => __('name_category') . ' ' . $translatedName[$locale] . ' ' . __('already_exists')
                 ]);
             }
         }
-        $slug = Str::slug($translatedName[config('app.locale')]);
-        if (CategoryNews::where('slug', $slug)->exists()) {
-            return redirect()->back()->with('error', __('slug_exists'));
-        }
 
-        $category = new CategoryNews();
-        $category->slug = $slug;
+        $category = new TabDetailPost();
         $category->setTranslations('name', $translatedName);
         $category->save();
 
-        return redirect()->route('categories-news.index')->with('success', __('create_success'));
-    }
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+        return redirect()->route('tabs_posts.index')->with('success', __('create_success'));
     }
 
     /**
@@ -85,13 +64,13 @@ class CategoryNewsController extends Controller
      */
     public function edit($id)
     {
-        $category = CategoryNews::findOrFail($id);
+        $category = TabDetailPost::findOrFail($id);
 
         $languages = Language::all();
         if (!$category) {
             return back()->with('error', __('no_find_data'));
         }
-        return view('admin.pages.category_blogs.edit', compact('category', 'languages'));
+        return view('admin.pages.blogs.tabs_detail_post.edit', compact('category', 'languages'));
     }
 
 
@@ -115,13 +94,13 @@ class CategoryNewsController extends Controller
 
         $validatedData = $request->validate($rules, $messages);
 
-        $category = CategoryNews::findOrFail($id);
+        $category = TabDetailPost::findOrFail($id);
 
         $translatedName = [];
         foreach ($locales as $locale) {
             $translatedName[$locale] = $request->input("name_{$locale}");
 
-            $existingCategory = CategoryNews::where('id', '!=', $id)
+            $existingCategory = TabDetailPost::where('id', '!=', $id)
                 ->whereJsonContains('name', [$locale => $translatedName[$locale]])
                 ->first();
 
@@ -131,35 +110,28 @@ class CategoryNewsController extends Controller
                 ]);
             }
         }
-        $slug = Str::slug($translatedName[config('app.locale')]);
+        // $slug = Str::slug($translatedName[config('app.locale')]);
         // if (CategoryNews::where('slug', $slug)->exists()) {
         //     return redirect()->back()->with('error', __('slug_exists'));
         // }
 
-        $category->slug = $slug;
+        // $category->slug = $slug;
         $category->setTranslations('name', $translatedName);
         $category->save();
 
-        return redirect()->route('categories-news.index')->with('success', __('update_success'));
+        return redirect()->route('tabs_posts.index')->with('success', __('update_success'));
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
-        $category = CategoryNews::find($id);
+        $category = TabDetailPost::find($id);
 
         if (!$category) {
-            return redirect()->route('categories-news.index')->with('error', __('category_news_not_found'));
+            return redirect()->route('tabs_posts.index')->with('error', __('content_not_found'));
         }
 
-        // if ($news->published_at && $news->published_at <= now()) {
-        //     return redirect()->route('news.index')->with('error', __('You cannot delete a published post.'));
-        // }
 
         $category->delete();
 
-        return redirect()->route('categories-news.index')->with('success', __('category_news_deleted_successfully'));
+        return redirect()->route('tabs_posts.index')->with('success', __('delete_success'));
     }
 }

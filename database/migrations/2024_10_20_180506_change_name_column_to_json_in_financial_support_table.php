@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('category_business', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->timestamps();
+        Schema::table('financial_support', function (Blueprint $table) {
+            $table->json('name')->change();
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('category_business');
+        Schema::table('financial_support', function (Blueprint $table) {
+            $table->string('name')->change();
+        });
     }
 };

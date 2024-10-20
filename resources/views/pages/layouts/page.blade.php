@@ -13,9 +13,9 @@
         #layout-page .title-page .bg-page {
             height: 220px;
             opacity: 0.7;
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-size: cover;
+            background-repeat: no-repeat !important;
+            background-position: center center !important;
+            background-size: cover !important;
         }
 
         #layout-page .title-page .text-title-page {

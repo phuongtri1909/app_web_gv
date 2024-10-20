@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CategoryQuestionController;
+use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PaperController;
+use App\Http\Controllers\TabDetailPostController;
 use App\Models\Tab;
 use App\Models\SlideProgram;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +36,8 @@ use App\Http\Controllers\AdmissionProcessController;
 use App\Http\Controllers\AdmissionProcessDetailController;
 use App\Http\Controllers\BlogsController;
 use App\Http\Controllers\CategoryNewsController;
+use App\Http\Controllers\CustomerInterestController;
+use App\Http\Controllers\FinancialSupportController;
 use App\Http\Controllers\ParentsChildController;
 
 /*
@@ -86,10 +90,14 @@ Route::middleware(['language'])->group(function () {
 
     Route::get('/b/{slug}', [BlogsController::class, 'blogIndex'])->name('list-blogs');
     Route::get('/detail-blog/{slug}', [BlogsController::class, 'showBlogIndex'])->name('detail-blog');
+    Route::get('/post-detail/{slug}', [BlogsController::class, 'showPostIndex'])->name('post-detail');
 
     Route::get('/detail-blog/mini/{slug}', [BlogsController::class, 'showBlogIndexMini'])->name('detail-blog-mini');
 
     Route::get('aboutUs/{slug}', [AboutUsController::class, 'pageAboutUsDetail'])->name('page.aboutUs.detail');
+
+    Route::get('/client/form-customer', [CustomerInterestController::class, 'showForm'])->name('show.form');
+    Route::get('/client/home-post', [FinancialSupportController::class, 'showFinancial'])->name('show.financical');
 
     Route::get('page-tab/{slug}', function ($slug) {
         return view('pages.tab-custom.index', compact('slug'));
@@ -102,7 +110,7 @@ Route::middleware(['language'])->group(function () {
 
     Route::middleware(['auth'])->group(function () {
 
-        Route::middleware(['admin'])->group(function(){
+        Route::middleware(['role.admin'])->group(function(){
             Route::prefix('admin')->group(function () {
                 Route::get('/', function () {
                     return view('admin.pages.dashboard');
@@ -320,6 +328,9 @@ Route::middleware(['language'])->group(function () {
                 });
 
                 Route::resource('categories-questions', CategoryQuestionController::class);
+
+                Route::resource('tabs_posts', TabDetailPostController::class);
+                Route::resource('news_contents', NewsTabContentDetailPostController::class);
             });
         });
 
@@ -337,7 +348,3 @@ Route::middleware(['language'])->group(function () {
     });
 });
 
-
-// Route::get('/client/form-business', [BusinessController::class, 'create'])->name('business.create');
-Route::post('/client/form-business', [BusinessController::class, 'store'])->name('business.store');
-Route::get('/client/form-business', [BusinessController::class, 'index'])->name('business.index');

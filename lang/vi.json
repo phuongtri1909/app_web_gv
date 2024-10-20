@@ -773,6 +773,18 @@
     "motacovan": "Hội đồng Cố vấn Khoa học cung cấp hướng dẫn chuyên môn để đảm bảo nghiên cứu và đổi mới phù hợp với các phương pháp tốt nhất trong giáo dục mầm non.",
     "content_page": "Nội dung trang",
     "Our story" : "Câu chuyện chúng tôi",
-    "Vision, mission, core values" : "Tầm nhìn, sứ mệnh, giá trị cốt lõi"
+    "Vision, mission, core values" : "Tầm nhìn, sứ mệnh, giá trị cốt lõi",
+    "all_tabs_post":"Danh sách tabs bài viết",
+    "tabs_post_add":"Thêm tab",
+    "edit_tab_posts":"Edit tab",
+    "name_tab": "Tên tab",
+    "tabs_posts": "Tab bài viết",
+    "all_tabs_content_post": "Danh sách chi tiết bài viết theo tab",
+    "tabs_content_post_add": "Thêm chi tiết bài viết",
+    "news_contents": "Bài viết theo tab",
+    "select_news_placeholder": "Chọn bài viết",
+    "select_news": "Chọn bài viết",
+    "select_tab_placeholder": "Chọn tab",
+    "select_tab": "Chọn tab"
 
 }

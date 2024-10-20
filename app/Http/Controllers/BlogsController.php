@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CategoryNews;
+use App\Models\FinancialSupport;
 use App\Models\Forum;
 use App\Models\News;
 use Illuminate\Http\Request;
@@ -333,6 +334,18 @@ class BlogsController extends Controller
         return view('pages.blogs.blog-detail', compact('blog', 'relatedPosts'));
     }
 
+    public function showPostIndex($slug)
+    {
+
+        $blog = FinancialSupport::where('slug', $slug)
+                    ->with('tabContentDetails.tab')
+                    ->firstOrFail();
+
+
+        $blog->formatted_published_at = $this->formatDate($blog->published_at);
+        // dd($blog);
+        return view('pages.client.gv.post-detail', compact('blog'));
+    }
     public function showBlogIndexMini($slug)
     {
         $blog = TabProject::where('slug', $slug)->firstOrFail();
