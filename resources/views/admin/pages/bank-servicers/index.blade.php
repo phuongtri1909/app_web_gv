@@ -1,6 +1,13 @@
 @extends('admin.layouts.app')
 
-
+@push('styles-admin')
+    <style>
+        .img-square {
+            width: auto;
+            height: 100px;
+        }
+    </style>
+@endpush
 @section('content-auth')
 <div class="row">
     <div class="col-12">
@@ -28,6 +35,9 @@
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                     {{ __('Tên dịch vụ') }}
                                 </th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                    {{ __('Ảnh') }}
+                                </th>
                                 <th
                                     class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                     {{ __('action') }}
@@ -42,6 +52,16 @@
                                     </td>
                                     <td>
                                         <p class="text-xs font-weight-bold mb-0">{{ $post->name }}</p>
+                                    </td>
+                                    <td>
+                                        @if (!empty($post->avt_bank_services))
+                                            <div>
+                                                <img src="{{ asset($post->avt_bank_services) }}" class="img-fluid img-square"
+                                                    alt="Image">
+                                            </div>
+                                        @else
+                                            <p class="text-xs font-weight-bold mb-0">{{ __('no_image') }}</p>
+                                        @endif
                                     </td>
                                     <td class="text-center">
                                         <a href="{{ route('bank-servicers.edit', $post->id) }}" class="mx-3"

@@ -15,14 +15,24 @@
                             <div class="form-group mb-3 col-md-12">
                                 <label for="name">{{ __('Tên dịch vụ') }}</label>
                                 <input type="text" name="name" id="name"
-                                       class="form-control @error('name') is-invalid @enderror" required
-                                       value="{{ old('name') }}">
+                                    class="form-control @error('name') is-invalid @enderror" required
+                                    value="{{ old('name') }}">
                                 @error('name')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
                             </div>
+                        </div>
+                        <div class="form-group mb-3 col-md-12">
+                            <label for="avt_bank_services">{{ __('Ảnh dịch vụ') }}</label>
+                            <input type="file" name="avt_bank_services" id="avt_bank_services"
+                                class="form-control @error('avt_bank_services') is-invalid @enderror" accept="image/*">
+                            @error('avt_bank_services')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
 
                         <button type="submit" class="btn btn-primary">{{ __('create') }}</button>

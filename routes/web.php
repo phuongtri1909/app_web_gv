@@ -345,6 +345,9 @@ Route::middleware(['language'])->group(function () {
                 Route::resource('bank-servicers', BankServicerController::class);
 
                 Route::resource('personal-business-interests', PersonalBusinessInterestController::class);
+
+                Route::resource('financial-support', FinancialSupportController::class);
+
             });
         });
 

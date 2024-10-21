@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BankServicesInterest;
 use App\Models\CustomerInterest;
+use App\Models\FinancialSupport;
 use App\Models\PersonalBusinessInterest;
 use Illuminate\Http\Request;
 // use App\Models\CustomerInterest; // Assuming there's a CustomerInterest model
@@ -68,6 +69,12 @@ class CustomerInterestController extends Controller
 
     public function showForm($financialSupportId)
     {
+        $financialSupport = FinancialSupport::where('id', $financialSupportId)->first();
+
+        if (!$financialSupport) {
+            return redirect()->route('show.financical')
+                ->with('error', __('ID hỗ trợ tài chính không hợp lệ.'));
+        }
         $bank_services = BankServicesInterest::all();
         $business_type = PersonalBusinessInterest::all();
         return view('pages.client.gv.form-customer', compact('financialSupportId','bank_services','business_type'));

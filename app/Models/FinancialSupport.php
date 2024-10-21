@@ -17,7 +17,7 @@ class FinancialSupport extends Model
     protected $table = 'financial_support';
 
 
-    protected $fillable = ['name', 'slug','avt_financial_support'];
+    protected $fillable = ['name', 'slug','avt_financial_support','url_financial_support'];
 
 
     public function customerInterests()

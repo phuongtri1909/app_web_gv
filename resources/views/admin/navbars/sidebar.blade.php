@@ -196,6 +196,15 @@
         </a>
       </li>
 
+      <li>
+        <a class="nav-link {{ Route::currentRouteNamed('financial-support.*') ? 'active' : '' }}" href="{{ route('financial-support.index') }}">
+          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+          </div>
+          <span class="nav-link-text ms-1">{{ __('Tài trợ tài chính') }}</span>
+        </a>
+      </li>
+
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('news.*,categories-news.*,tags-news.*,news_contents.*,tabs_posts.*') ? 'active' : '' }}" href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse" data-bs-target="#news" aria-expanded="false">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">

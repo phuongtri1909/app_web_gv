@@ -125,17 +125,19 @@
             </div>
 
             <div class="row text-center">
-                @foreach ($financialSupports as $item)
-                    <div class="col-md-3 col-6 title-f mb-3">
-                        <a href="#">
-                            <div class="icon-box">
-                                <img src="{{ asset($item->avt_financial_support) }}" alt="Mở tài khoản"
-                                    class="img-fluids custom-img">
-                            </div>
-                            <div class="icon-text">{{ $item->name }}</div>
-                        </a>
-                    </div>
-                @endforeach
+                @if ($financialSupports->isNotEmpty())
+                    @foreach ($financialSupports as $item)
+                        <div class="col-md-3 col-6 title-f mb-3">
+                            <a href="{{$item->url_financial_support}}">
+                                <div class="icon-box">
+                                    <img src="{{ asset($item->avt_financial_support) }}" alt="{{ $item->name }}"
+                                        class="img-fluids custom-img">
+                                </div>
+                                <div class="icon-text">{{ $item->name }}</div>
+                            </a>
+                        </div>
+                    @endforeach
+                @endif
             </div>
         </div>
         <div class="container my-4">
@@ -146,42 +148,19 @@
             </div>
 
             <div class="row text-center">
-                    <div class="col-md-3 col-6 title-f mb-3">
-                        <a href="#">
-                            <div class="icon-box">
-                                <img src="{{asset('images/Tài-khoản-eKYC-200x200.jpg')}}" alt="Mở tài khoản"
-                                    class="img-fluids custom-img">
-                            </div>
-                            <div class="icon-text">Mở tài khoản</div>
-                        </a>
-                    </div>
-                    <div class="col-md-3 col-6 title-f mb-3">
-                        <a href="#">
-                            <div class="icon-box">
-                                <img src="{{asset('images/Tiết-kiệm--200x200.jpg')}}" alt="Gửi tiết kiệm"
-                                    class="img-fluids custom-img">
-                            </div>
-                            <div class="icon-text">Gửi tiết kiệm</div>
-                        </a>
-                    </div>
-                    <div class="col-md-3 col-6 title-f mb-3">
-                        <a href="#">
-                            <div class="icon-box">
-                                <img src="{{asset('images/Thẻ-tín-dụng-200x200.jpg')}}" alt="Thẻ tín dụng"
-                                    class="img-fluids custom-img">
-                            </div>
-                            <div class="icon-text">Thẻ tín dụng</div>
-                        </a>
-                    </div>
-                    <div class="col-md-3 col-6 title-f mb-3">
-                        <a href="#">
-                            <div class="icon-box">
-                                <img src="{{asset('images/Vay-sua-nha-200x200.jpg')}}" alt="Vay vốn"
-                                    class="img-fluids custom-img">
-                            </div>
-                            <div class="icon-text">Vay vốn</div>
-                        </a>
-                    </div>
+                @if ($bankServicers->isNotEmpty())
+                    @foreach ($bankServicers as $item)
+                        <div class="col-md-3 col-6 title-f mb-3">
+                            <a href="{{$item->url_financial_support}}">
+                                <div class="icon-box">
+                                    <img src="{{ asset($item->avt_bank_services) }}" alt="{{ $item->name }}"
+                                        class="img-fluids custom-img">
+                                </div>
+                                <div class="icon-text">{{ $item->name }}</div>
+                            </a>
+                        </div>
+                    @endforeach
+                @endif
             </div>
         </div>
         <div class="container">
