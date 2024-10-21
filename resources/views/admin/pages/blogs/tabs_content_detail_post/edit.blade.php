@@ -8,6 +8,7 @@
                     <h5 class="mb-0">{{ __('tabs_content_post_edit') }}</h5>
                 </div>
                 <div class="card-body">
+                    @include('admin.pages.notification.success-error')
                     <form action="{{ route('news_contents.update', $newsContent->id) }}" method="POST">
                         @csrf
                         @method('PUT')

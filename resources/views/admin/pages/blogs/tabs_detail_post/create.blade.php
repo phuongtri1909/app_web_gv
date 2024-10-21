@@ -8,6 +8,7 @@
                     <h5 class="mb-0">{{ __('tabs_post_add') }}</h5>
                 </div>
                 <div class="card-body">
+                    @include('admin.pages.notification.success-error')
                     <form action="{{ route('tabs_posts.store') }}" method="POST">
                         @csrf
                         <div class="row">

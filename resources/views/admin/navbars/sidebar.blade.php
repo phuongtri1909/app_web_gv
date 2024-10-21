@@ -178,6 +178,39 @@
           <span class="nav-link-text ms-1">{{ __('forum') }}</span>
         </a>
       </li>
+      <li>
+        <a class="nav-link {{ Route::currentRouteNamed('banks.*') ? 'active' : '' }}" href="{{ route('banks.index') }}">
+          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+          </div>
+          <span class="nav-link-text ms-1">{{ __('Ngân hàng') }}</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-link {{ Route::currentRouteNamed('bank-servicers.*') ? 'active' : '' }}" href="{{ route('bank-servicers.index') }}">
+          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+          </div>
+          <span class="nav-link-text ms-1">{{ __('Dịch vụ ngân hàng') }}</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-link {{ Route::currentRouteNamed('personal-business-interests.*') ? 'active' : '' }}" href="{{ route('personal-business-interests.index') }}">
+          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+          </div>
+          <span class="nav-link-text ms-1">{{ __('Mô hình kinh doanh') }}</span>
+        </a>
+      </li>
+
+      <li>
+        <a class="nav-link {{ Route::currentRouteNamed('financial-support.*') ? 'active' : '' }}" href="{{ route('financial-support.index') }}">
+          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+          </div>
+          <span class="nav-link-text ms-1">{{ __('Tài trợ tài chính') }}</span>
+        </a>
+      </li>
 
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('news.*,categories-news.*,tags-news.*,news_contents.*,tabs_posts.*') ? 'active' : '' }}" href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse" data-bs-target="#news" aria-expanded="false">

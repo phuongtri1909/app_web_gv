@@ -8,6 +8,7 @@
                     <h5 class="mb-0">{{ __('edit_tab_posts') }}</h5>
                 </div>
                 <div class="card-body">
+                    @include('admin.pages.notification.success-error')
                     <form action="{{ route('tabs_posts.update', $category->id) }}" method="POST">
                         @csrf
                         @method('PUT')
