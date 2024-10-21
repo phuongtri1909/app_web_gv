@@ -15,9 +15,9 @@
             <div class="card-header pb-0">
                 <div class="d-flex flex-row justify-content-between">
                     <div>
-                        <h5 class="mb-0">{{ __('Danh sách dịch vụ') }}</h5>
+                        <h5 class="mb-0">{{ __('Danh sách ngân hàng') }}</h5>
                     </div>
-                    <a href="{{ route('bank-servicers.create') }}" class="btn bg-gradient-primary btn-sm mb-0 px-2"
+                    <a href="{{ route('banks.create') }}" class="btn bg-gradient-primary btn-sm mb-0 px-2"
                         type="button"><i class="fa-solid fa-plus"></i> {{ __('Thêm mới') }}</a>
                 </div>
             </div>
@@ -33,13 +33,10 @@
                                     {{ __('stt') }}
                                 </th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                    {{ __('Tên dịch vụ') }}
+                                    {{ __('Tên ngân hàng') }}
                                 </th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                     {{ __('Ảnh') }}
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                    {{ __('Ngân hàng') }}
                                 </th>
                                 <th
                                     class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -48,7 +45,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($bankServicers as $key => $post)
+                            @foreach ($banks as $key => $post)
                                 <tr>
                                     <td class="ps-4">
                                         <p class="text-xs font-weight-bold mb-0">{{ $key + 1 }}</p>
@@ -57,26 +54,23 @@
                                         <p class="text-xs font-weight-bold mb-0">{{ $post->name }}</p>
                                     </td>
                                     <td>
-                                        @if (!empty($post->avt_bank_services))
+                                        @if (!empty($post->avt_bank))
                                             <div>
-                                                <img src="{{ asset($post->avt_bank_services) }}" class="img-fluid img-square"
+                                                <img src="{{ asset($post->avt_bank) }}" class="img-fluid img-square"
                                                     alt="Image">
                                             </div>
                                         @else
                                             <p class="text-xs font-weight-bold mb-0">{{ __('no_image') }}</p>
                                         @endif
                                     </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ optional($post->bank)->name ?? __('Không có ngân hàng') }}</p>
-                                    </td>
                                     <td class="text-center">
-                                        <a href="{{ route('bank-servicers.edit', $post->id) }}" class="mx-3"
+                                        <a href="{{ route('banks.edit', $post->id) }}" class="mx-3"
                                             title="{{ __('edit') }}">
                                             <i class="fa-solid fa-pencil"></i>
                                         </a>
                                         @include('admin.pages.components.delete-form', [
                                             'id' => $post->id,
-                                            'route' => route('bank-servicers.destroy', $post->id),
+                                            'route' => route('banks.destroy', $post->id),
                                             'message' => __('delete_message'),
                                         ])
                                     </td>

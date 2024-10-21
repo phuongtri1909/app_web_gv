@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bank;
 use App\Models\BankServicesInterest;
 use App\Models\FinancialSupport;
 use App\Models\Language;
@@ -21,8 +22,9 @@ class FinancialSupportController extends Controller
 
     public function create()
     {
+        $banks = Bank::all();
         $languages = Language::all();
-        return view('admin.pages.financial-support.create', compact('languages'));
+        return view('admin.pages.financial-support.create', compact('languages','banks'));
     }
 
     public function store(Request $request)
@@ -32,10 +34,13 @@ class FinancialSupportController extends Controller
 
         $rules = [
             'avt_financial_support' => 'nullable|image|mimes:jpg,jpeg,png,gif',
+            'bank_id' => 'required|exists:banks,id',
         ];
         $messages = [
             'avt_financial_support.image' => __('image_image'),
             'avt_financial_support.mimes' => __('image_mimes'),
+            'bank_id.required' => 'Bạn phải chọn một ngân hàng.',
+            'bank_id.exists' => 'Ngân hàng đã chọn không tồn tại.',
         ];
 
 
@@ -75,6 +80,7 @@ class FinancialSupportController extends Controller
             $financialSupport->slug = $slug;
             $financialSupport->url_financial_support = $url;
             $financialSupport->avt_financial_support = $image_path;
+            $financialSupport->bank_id = $request->bank_id;
             $financialSupport->save();
 
 
@@ -98,7 +104,8 @@ class FinancialSupportController extends Controller
     {
         $financialSupport = FinancialSupport::findOrFail($id);
         $languages = Language::all();
-        return view('admin.pages.financial-support.edit', compact('financialSupport', 'languages'));
+        $banks = Bank::all();
+        return view('admin.pages.financial-support.edit', compact('financialSupport', 'languages','banks'));
     }
 
     public function update(Request $request, $id)
@@ -108,12 +115,15 @@ class FinancialSupportController extends Controller
         $rules = [
             'avt_financial_support' => 'nullable|image|mimes:jpg,jpeg,png,gif',
             'url' => 'required|url',
+            'bank_id' => 'required|exists:banks,id',
         ];
         $messages = [
             'avt_financial_support.image' => __('image_image'),
             'avt_financial_support.mimes' => __('image_mimes'),
             'url.required' => __('URL is required'),
             'url.url' => __('URL is not valid'),
+            'bank_id.required' => 'Bạn phải chọn một ngân hàng.',
+            'bank_id.exists' => 'Ngân hàng đã chọn không tồn tại.',
         ];
 
         foreach ($locales as $locale) {
@@ -151,6 +161,7 @@ class FinancialSupportController extends Controller
             $financialSupport->slug = $slug;
             $financialSupport->avt_financial_support = $image_path;
             $financialSupport->url_financial_support = $request->input('url');
+            $financialSupport->bank_id = $request->input('bank_id');
             $financialSupport->save();
 
             return redirect()->route('financial-support.index')->with('success', __('Cập nhật thành công!!'));
@@ -170,9 +181,10 @@ class FinancialSupportController extends Controller
         return redirect()->route('financial-support.index')->with('success', 'Xóa thành công!!.');
     }
 
-    public function showFinancial(){
-        $financialSupports = FinancialSupport::all();
-        $bankServicers = BankServicesInterest::all();
-        return view('pages.client.gv.home-post', compact('financialSupports','bankServicers'));
+    public function showFinancial($slug){
+        $bank = Bank::where('slug', $slug)->firstOrFail();
+        $financialSupports = FinancialSupport::where('bank_id', $bank->id)->with('bank')->get();
+        $bankServicers = BankServicesInterest::where('bank_id', $bank->id)->with('bank')->get();
+        return view('pages.client.gv.home-post', compact('financialSupports','bankServicers','bank'));
     }
 }

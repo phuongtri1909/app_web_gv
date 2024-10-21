@@ -9,7 +9,7 @@
                 </div>
                 <div class="card-body">
                     @include('admin.pages.notification.success-error')
-                    <form action="{{ route('bank-servicers.store') }}" method="POST">
+                    <form action="{{ route('bank-servicers.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="form-group mb-3 col-md-12">
@@ -34,7 +34,20 @@
                                 </span>
                             @enderror
                         </div>
-
+                        <div class="form-group mb-3 col-md-12">
+                            <label for="bank_id">{{ __('Chọn ngân hàng') }}</label>
+                            <select name="bank_id" id="bank_id" class="form-control @error('bank_id') is-invalid @enderror" required>
+                                <option value="">{{ __('Chọn ngân hàng') }}</option>
+                                @foreach ($banks as $bank)
+                                    <option value="{{ $bank->id }}">{{ $bank->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('bank_id')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
                         <button type="submit" class="btn btn-primary">{{ __('create') }}</button>
                         <a href="{{ route('bank-servicers.index') }}" class="btn btn-secondary">{{ __('cancel') }}</a>
                     </form>

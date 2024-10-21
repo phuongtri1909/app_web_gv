@@ -61,7 +61,22 @@
                                      style="display: none; max-width: 200px; max-height: 200px; margin-top: 10px;">
                             @endif
                         </div>
-
+                        <div class="form-group mb-3 col-md-12">
+                            <label for="bank_id">{{ __('Chọn ngân hàng') }}</label>
+                            <select name="bank_id" id="bank_id" class="form-control @error('bank_id') is-invalid @enderror" required>
+                                <option value="">{{ __('Chọn ngân hàng') }}</option>
+                                @foreach ($banks as $bank)
+                                    <option value="{{ $bank->id }}" {{ $financialSupport->bank_id == $bank->id ? 'selected' : '' }}>
+                                        {{ $bank->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('bank_id')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
                         <div class="text-center">
                             <button type="submit" class="btn bg-gradient-primary">{{ __('Cập nhật') }}</button>
                             <a href="{{ route('financial-support.index') }}" class="btn btn-secondary">{{ __('Hủy') }}</a>

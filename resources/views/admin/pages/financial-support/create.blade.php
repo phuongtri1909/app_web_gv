@@ -55,7 +55,20 @@
                                 </div>
                             </div>
                         </div>
-
+                        <div class="form-group mb-3 col-md-12">
+                            <label for="bank_id">{{ __('Chọn ngân hàng') }}</label>
+                            <select name="bank_id" id="bank_id" class="form-control @error('bank_id') is-invalid @enderror" required>
+                                <option value="">{{ __('Chọn ngân hàng') }}</option>
+                                @foreach ($banks as $bank)
+                                    <option value="{{ $bank->id }}">{{ $bank->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('bank_id')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
                         <div class="text-center">
                             <button type="submit" class="btn bg-gradient-primary">{{ __('create') }}</button>
                             <a href="{{ route('financial-support.index') }}"

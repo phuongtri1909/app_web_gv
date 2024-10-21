@@ -17,7 +17,7 @@ class FinancialSupport extends Model
     protected $table = 'financial_support';
 
 
-    protected $fillable = ['name', 'slug','avt_financial_support','url_financial_support'];
+    protected $fillable = ['name', 'slug','avt_financial_support','url_financial_support','bank_id'];
 
 
     public function customerInterests()
@@ -27,6 +27,10 @@ class FinancialSupport extends Model
     public function tabContentDetails()
     {
         return $this->hasMany(NewsTabContentDetailPost::class, 'financial_support_id');
+    }
+    public function bank()
+    {
+        return $this->belongsTo(Bank::class);
     }
     public function setTitleAttribute($value)
     {

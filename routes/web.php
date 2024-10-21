@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BanksController;
 use App\Http\Controllers\BankServicerController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CategoryQuestionController;
@@ -64,7 +65,8 @@ Route::middleware(['language'])->group(function () {
         Route::get('/form-business', [BusinessController::class, 'index'])->name('business.index');
         Route::get('/form-customer/{financialSupportId}', [CustomerInterestController::class, 'showForm'])->name('show.form');
         Route::post('/form-customer', [CustomerInterestController::class, 'storeForm'])->name('store.form');
-        Route::get('/home-business', [FinancialSupportController::class, 'showFinancial'])->name('show.financical');
+        Route::get('/home-bank/{slug}', [FinancialSupportController::class, 'showFinancial'])->name('show.financical');
+        Route::get('/home-bank', [BanksController::class, 'showHomeBank'])->name('show.home.bank');
         Route::get('/post-detail/{slug}', [BlogsController::class, 'showPostIndex'])->name('post-detail');
     });
 
@@ -347,6 +349,9 @@ Route::middleware(['language'])->group(function () {
                 Route::resource('personal-business-interests', PersonalBusinessInterestController::class);
 
                 Route::resource('financial-support', FinancialSupportController::class);
+
+                Route::resource('banks', BanksController::class);
+
 
             });
         });

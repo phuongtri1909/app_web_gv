@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Bank;
 use App\Models\BankServicesInterest;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -18,7 +19,8 @@ class BankServicerController extends Controller
 
     public function create()
     {
-        return view('admin.pages.bank-servicers.create');
+        $banks = Bank::all();
+        return view('admin.pages.bank-servicers.create', compact('banks'));
     }
 
     public function store(Request $request)
@@ -26,6 +28,7 @@ class BankServicerController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:bank_services_interest,name',
             'avt_bank_services' => 'nullable|image|mimes:jpg,jpeg,png,gif',
+            'bank_id' => 'required|exists:banks,id',
         ], [
             'name.required' => 'Trường họ và tên là bắt buộc.',
             'name.string' => 'Tên phải là một chuỗi ký tự.',
@@ -33,6 +36,8 @@ class BankServicerController extends Controller
             'name.unique' => 'Tên này đã tồn tại trong hệ thống. Vui lòng chọn tên khác.',
             'avt_bank_services.image' => __('image_image'),
             'avt_bank_services.mimes' => __('image_mimes'),
+            'bank_id.required' => 'Bạn phải chọn một ngân hàng.',
+            'bank_id.exists' => 'Ngân hàng đã chọn không tồn tại.',
         ]);
         if ($request->hasFile('avt_bank_services')) {
             $image = $request->file('avt_bank_services');
@@ -51,6 +56,7 @@ class BankServicerController extends Controller
             'name' => $request->input('name'),
             'avt_bank_services' => $image_path,
             'slug' => $slug,
+            'bank_id' => $request->input('bank_id'),
         ]);
 
         return redirect()->route('bank-servicers.index')->with('success', __('Tạo thành công!!.'));
@@ -60,7 +66,8 @@ class BankServicerController extends Controller
     {
         try {
             $bankServicer = BankServicesInterest::findOrFail($id);
-            return view('admin.pages.bank-servicers.edit', compact('bankServicer'));
+            $banks = Bank::all();
+            return view('admin.pages.bank-servicers.edit', compact('bankServicer','banks'));
         } catch (Exception $e) {
             return redirect()->route('bank-servicers.index')->with('error', __('Dịch vụ ngân hàng không tồn tại.'));
         }
@@ -72,6 +79,7 @@ class BankServicerController extends Controller
             $request->validate([
                 'name' => 'required|string|max:255|unique:bank_services_interest,name,' . $bankServicer->id,
                 'avt_bank_services' => 'nullable|image|mimes:jpg,jpeg,png,gif',
+                'bank_id' => 'required|exists:banks,id',
             ], [
                 'name.required' => 'Trường họ và tên là bắt buộc.',
                 'name.string' => 'Tên phải là một chuỗi ký tự.',
@@ -79,6 +87,8 @@ class BankServicerController extends Controller
                 'name.unique' => 'Tên này đã tồn tại trong hệ thống. Vui lòng chọn tên khác.',
                 'avt_bank_services.image' => __('image_image'),
                 'avt_bank_services.mimes' => __('image_mimes'),
+                'bank_id.required' => 'Bạn phải chọn một ngân hàng.',
+                'bank_id.exists' => 'Ngân hàng đã chọn không tồn tại.',
             ]);
 
 
@@ -103,6 +113,7 @@ class BankServicerController extends Controller
                 'name' => $request->input('name'),
                 'avt_bank_services' => $image_path,
                 'slug' => $slug,
+                'bank_id' => $request->input('bank_id'),
             ]);
 
             return redirect()->route('bank-servicers.index')->with('success', __('Cập nhật thành công!!'));

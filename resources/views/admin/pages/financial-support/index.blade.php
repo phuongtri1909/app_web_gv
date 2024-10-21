@@ -34,6 +34,7 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ __('stt') }}</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('name') }}</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ __('banner') }}</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Ngân hàng') }}</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ __('action') }}</th>
                                 </tr>
                             </thead>
@@ -49,6 +50,10 @@
                                     <td class="text-center">
                                         <img src="{{ asset($financialSupport->avt_financial_support) }}" class="img-fluid img-square">
                                     </td>
+                                    <td>
+                                        <p class="text-xs font-weight-bold mb-0">{{ optional($financialSupport->bank)->name ?? __('Không có ngân hàng') }}</p>
+                                    </td>
+
                                     <td class="text-center">
                                         <a href="{{ route('financial-support.edit', $financialSupport->id) }}" class="mx-3" title="{{ __('Edit') }}">
                                             <i class="fa-solid fa-pencil"></i>
