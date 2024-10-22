@@ -1,4 +1,5 @@
 @extends('pages.layouts.page')
+@section('title', 'Kết nối ngân hàng')
 @push('child-styles')
     <style>
         .icon-box {
@@ -122,6 +123,7 @@
 @push('child-scripts')
 @endpush
 @section('content-page')
+    @include('pages.components.button-register', ['buttonTitle' => 'KN Ngân hàng', 'buttonLink' => route('business.index')])
     <section id="home-post">
         <div class="banner">
             <img src="{{ asset('images/Vayvonkinhdoanh.jpg') }}" alt="Banner Image">

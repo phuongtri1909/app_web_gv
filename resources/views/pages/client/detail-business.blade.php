@@ -1,4 +1,7 @@
 @extends('pages.layouts.page')
+@section('title', 'Chi tiết doanh nghiệp')
+@section('description', 'Chi tiết doanh nghiệp')
+@section('keyword', 'Chi tiết doanh nghiệp')
 @push('styles')
     <style>
         .bg-business {
@@ -44,6 +47,7 @@
 @endpush
 
 @section('content')
+    @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký DN', 'buttonLink' => route('business.index')])
     <section id="business" class="business mt-5rem mb-5">
         <div class="bg-business ">
             <div class="container py-4 d-md-flex text-center">

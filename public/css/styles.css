@@ -1820,14 +1820,14 @@ table.form-table td {
     transition: all 0.3s ease-in-out 0s;
     cursor: pointer;
     outline: none;
-    padding: 5px 20px;
+    padding: 5px 3px;
 }
 
 .button-register::before {
     content: '';
     border-radius: 1000px;
-    min-width: calc(50px + 12px);
-    min-height: calc(20px + 12px);
+    min-width: calc(100% + 12px);
+    min-height: calc(100% + 12px);
     border: 3px solid #00FFCB;
     box-shadow: 0 0 60px rgba(0, 255, 203, .64);
     position: absolute;
@@ -1840,7 +1840,7 @@ table.form-table td {
 
 .button-register:hover,
 .button-register:focus {
-    color: #313133;
+    color: #fff;
     transform: translateY(-6px);
 }
 

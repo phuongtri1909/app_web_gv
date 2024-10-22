@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('pages.layouts.page')
 @section('title', 'Chi tiết sản phẩm')
 @push('styles')
     <style>
@@ -106,6 +106,7 @@
 @endpush
 
 @section('content')
+    @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký SP', 'buttonLink' => route('connect.supply.demand')])
     <section id="detail-product-business" class="detail-product-business mt-5rem">
         <div class="container">
             <div>
