@@ -143,12 +143,12 @@ class BusinessController extends Controller
     public function business(Request $request)
     {
         $category = $request->category ?? '';
-    
+
 
     //deploy xong fix status
         if ($category) {
             $category_product_business = CategoryProductBusiness::where('slug', $category)->first();
-    
+
             $businesses = Business::whereHas('products', function ($query) use ($category_product_business) {
                 $query->where('category_product_id', $category_product_business->id);
             })->get();
@@ -156,7 +156,7 @@ class BusinessController extends Controller
             $businesses = Business::get();
         }
         $category_product_business = CategoryProductBusiness::get();
-    
+
         return view('pages.client.business', compact('businesses', 'category_product_business'));
     }
 
@@ -184,5 +184,16 @@ class BusinessController extends Controller
     public function connectSupplyDemand()
     {
         return view('pages.client.form-connect-supply-demand');
+    }
+
+    public function showFormStartPromotion(){
+        return view('pages.client.gv.start-promotion-investment');
+    }
+
+    public function showFormCapitalNeeds(){
+        return view('pages.client.gv.registering-capital-needs');
+    }
+    public function showFormPromotional(){
+        return view('pages.client.gv.form-promotional-introduction');
     }
 }

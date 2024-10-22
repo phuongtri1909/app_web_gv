@@ -64,6 +64,9 @@ Route::middleware(['language'])->group(function () {
         Route::get('product/{slug}', [BusinessController::class,'productDetail'])->name('product.detail');
 
         Route::get('/form-connect-supply-demand', [BusinessController::class, 'connectSupplyDemand'])->name('connect.supply.demand');
+        Route::get('/form-start-promotion', [BusinessController::class, 'showFormStartPromotion'])->name('show.form.start.promotion');
+        Route::get('/form-registering-capital-needs', [BusinessController::class, 'showFormCapitalNeeds'])->name('show.form.capital.need');
+        Route::get('/form-promotional-introduction', [BusinessController::class, 'showFormPromotional'])->name('show.form.promotional');
 
         //Route::get('/form-business', [BusinessController::class, 'create'])->name('business.create');
         Route::post('/form-business', [BusinessController::class, 'store'])->name('business.store');
