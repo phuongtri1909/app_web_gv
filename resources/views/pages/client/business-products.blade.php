@@ -89,7 +89,7 @@
             ])
             @include('admin.pages.notification.success-error')
             <div class="category mt-3">
-                <a href="{{ route('business.products', ['category' => '']) }}"
+                <a href="{{ route('business.products') }}"
                     class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('category') == '' ? 'active' : '' }}">Tất
                     cả</a>
                 @foreach ($category_product_business as $index => $category)
