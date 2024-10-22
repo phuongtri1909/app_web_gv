@@ -118,7 +118,7 @@
                     .replace(/\-\-+/g, '-')
                     .replace(/^-+|-+$/g, '');
 
-                urlField.value = 'http://app_web_gv.local/client/post-detail/' + slug ;
+                urlField.value = '{{ env('APP_URL') }}/client/post-detail/' + slug;
             } else {
                 urlField.value = '';
             }

@@ -71,7 +71,7 @@ class FinancialSupportController extends Controller
                 $image_path = 'uploads/images/financial_support/' . $folderName . '/' . $fileName;
             }
             $slug = Str::slug($translateName[config('app.locale')]);
-            $url = "http://app_web_gv.local/client/post-detail/{$slug}";
+            $url = env('APP_URL') . '/client/post-detail/' . $slug;
             if (FinancialSupport::where('slug', $slug)->exists()) {
                 return redirect()->back()->with('error', __('slug_exists'));
             }
