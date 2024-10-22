@@ -126,7 +126,7 @@
 
                     </div>
 
-                    <div class="border border-custom rounded mt-3">
+                    {{-- <div class="border border-custom rounded mt-3">
 
                         <div class="bg-business rounded-top py-2 px-3 mb-3">
                             <h5 class="mb-0 fw-bold text-white">Sản phẩm</h5>
@@ -143,16 +143,16 @@
                                             <img src="{{ asset($product->product_avatar) }}"
                                                 class="card-img-top img-fluid p-1 logo-business" alt="...">
                                         </div>
-                                        <div class="px-1 d-flex flex-column">
+                                        <div class="px-1 d-flex flex-column"> --}}
                                             {{-- <span>{{ $business->business_name }}</span> --}}
-                                            <p class="fw-semibold mb-0">{{ $product->name_product }}</p>
+                                            {{-- <p class="fw-semibold mb-0">{{ $product->name_product }}</p>
                                             <p class="mb-0">{{ number_format($product->price, 0, ',', '.') }} ₫</p>
                                         </div>
                                     </a>
                                 </div>
                             @endforeach
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

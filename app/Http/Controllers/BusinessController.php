@@ -180,4 +180,9 @@ class BusinessController extends Controller
 
         return view('pages.client.detail-product-business', compact('product'));
     }
+
+    public function connectSupplyDemand()
+    {
+        return view('pages.client.form-connect-supply-demand');
+    }
 }
