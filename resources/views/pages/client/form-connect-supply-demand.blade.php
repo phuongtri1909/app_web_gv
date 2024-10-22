@@ -1,6 +1,15 @@
 @extends('pages.layouts.page')
 @push('styles')
     <style>
+        .form-control:focus,
+        .form-control:hover,
+        .upload-label:focus,
+        .upload-label:hover {
+            border-color: #00d274;
+            box-shadow: 0 0 0 2px rgba(5, 255, 95, 0.1);
+            outline: 0;
+        }
+
         .error-message,
         .error-message1 {
             color: red;
@@ -21,7 +30,8 @@
                         <div class="col-md-4 mb-4">
                             <label for="owner_full_name" class="form-label">Họ tên chủ doanh nghiệp <span
                                     class="text-danger">*</span></label>
-                            <input type="text" class="form-control  @error('owner_full_name') is-invalid @enderror"
+                            <input type="text"
+                                class="form-control form-control-sm  @error('owner_full_name') is-invalid @enderror"
                                 id="owner_full_name" name="owner_full_name" placeholder="Nhập họ và tên"
                                 value="{{ old('owner_full_name') }}">
                             @error('owner_full_name')
@@ -35,7 +45,7 @@
                         <div class="col-6 col-md-4 mb-4">
                             <label for="birth_year" class="form-label @error('birth_year') is-invalid @enderror">Năm sinh
                                 <span class="text-danger">*</span></label>
-                            <select class="form-control" id="birth_year" name="birth_year">
+                            <select class="form-control form-control-sm" id="birth_year" name="birth_year">
                                 <option value="" disabled>Chọn năm sinh</option>
                                 @for ($year = $currentYear; $year >= $startYear; $year--)
                                     <option value="{{ $year }}" {{ old('birth_year') == $year ? 'selected' : '' }}>
@@ -72,21 +82,9 @@
                         </div>
 
                         <div class="col-md-4 mb-4">
-                            <label for="phone" class="form-label">Số điện thoại <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" class="form-control  @error('phone') is-invalid @enderror" id="phone"
-                                placeholder="Nhập số điện thoại" name="phone" value="{{ old('phone') }}">
-                            @error('phone')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-
-
-                        <div class="col-md-4 mb-4">
                             <label for="residential_address" class="form-label">Địa chỉ cư trú <span
                                     class="text-danger">*</span></label>
-                            <input type="address" class="form-control  @error('residential_address') is-invalid @enderror"
+                            <input type="address" class="form-control form-control-sm  @error('residential_address') is-invalid @enderror"
                                 id="residential_address" placeholder="Nhập địa chỉ" name="residential_address"
                                 value="{{ old('residential_address') }}">
                             @error('residential_address')
@@ -97,7 +95,7 @@
                         <div class="col-md-4 mb-4">
                             <label for="business_address" class="form-label">Địa chỉ kinh doanh <span
                                     class="text-danger">*</span></label>
-                            <input type="address" class="form-control  @error('business_address') is-invalid @enderror"
+                            <input type="address" class="form-control form-control-sm  @error('business_address') is-invalid @enderror"
                                 id="business_address" placeholder="Nhập địa chỉ" name="business_address"
                                 value="{{ old('business_address') }}">
                             @error('business_address')
@@ -105,10 +103,33 @@
                             @enderror
                         </div>
 
+
+                        <div class="col-6 col-md-4 mb-4">
+                            <label for="phone" class="form-label">Số điện thoại <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm  @error('phone') is-invalid @enderror" id="phone"
+                                placeholder="Nhập số điện thoại" name="phone" value="{{ old('phone') }}">
+                            @error('phone')
+                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+
+                        <div class="col-6 col-md-4 mb-4">
+                            <label for="business_code" class="form-label">Mã số thuế <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm @error('business_code') is-invalid @enderror"
+                                id="business_code" placeholder="Nhập mã số thuế" name="business_code"
+                                value="{{ old('business_code') }}">
+                            @error('business_code')
+                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <div class="col-md-4 mb-4">
                             <label for="business_name" class="form-label">Tên doanh nghiệp/hộ kinh doanh <span
                                     class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('business_name') is-invalid @enderror"
+                            <input type="text" class="form-control form-control-sm @error('business_name') is-invalid @enderror"
                                 id="business_name" placeholder="Nhập tên doanh nghiệp/hộ kinh doanh" name="business_name"
                                 value="{{ old('business_name') }}">
                             @error('business_name')
@@ -119,7 +140,7 @@
                         <div class="col-md-4 mb-4">
                             <label for="business_field" class="form-label">Ngành nghề kinh doanh <span
                                     class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('business_field') is-invalid @enderror"
+                            <input type="text" class="form-control form-control-sm @error('business_field') is-invalid @enderror"
                                 id="business_field" placeholder="Nhập ngành nghề kinh doanh" name="business_field"
                                 value="{{ old('business_field') }}">
                             @error('business_field')
@@ -128,19 +149,8 @@
                         </div>
 
                         <div class="col-md-4 mb-4">
-                            <label for="business_code" class="form-label">Mã số thuế <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('business_code') is-invalid @enderror"
-                                id="business_code" placeholder="Nhập mã số thuế" name="business_code"
-                                value="{{ old('business_code') }}">
-                            @error('business_code')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-4 mb-4">
                             <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control @error('email') is-invalid @enderror"
+                            <input type="email" class="form-control form-control-sm @error('email') is-invalid @enderror"
                                 id="email" placeholder="Nhập email" name="email" value="{{ old('email') }}">
                             @error('email')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
@@ -149,7 +159,7 @@
 
                         <div class="col-md-4 mb-4">
                             <label for="fanpage" class="form-label">Fanpage</label>
-                            <input type="url" class="form-control @error('fanpage') is-invalid @enderror"
+                            <input type="url" class="form-control form-control-sm @error('fanpage') is-invalid @enderror"
                                 id="fanpage" placeholder="Nhập URL fanpage" name="fanpage"
                                 value="{{ old('fanpage') }}">
                             @error('fanpage')
@@ -160,7 +170,7 @@
                         <div class="col-md-4 mb-4">
                             <label for="product_info" class="form-label">Thông tin về sản phẩm <span
                                     class="text-danger">*</span></label>
-                            <textarea class="form-control @error('product_info') is-invalid @enderror" id="product_info"
+                            <textarea class="form-control form-control-sm @error('product_info') is-invalid @enderror" id="product_info"
                                 placeholder="Nhập thông tin về sản phẩm" name="product_info">{{ old('product_info') }}</textarea>
                             @error('product_info')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
@@ -170,7 +180,7 @@
                         <div class="col-md-4 mb-4">
                             <label for="product_standard" class="form-label">Tiêu chuẩn, xuất xứ <span
                                     class="text-danger">*</span></label>
-                            <textarea class="form-control @error('product_standard') is-invalid @enderror" id="product_standard"
+                            <textarea class="form-control form-control-sm @error('product_standard') is-invalid @enderror" id="product_standard"
                                 placeholder="Nhập tiêu chuẩn, xuất xứ" name="product_standard">{{ old('product_standard') }}</textarea>
                             @error('product_standard')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
@@ -180,7 +190,7 @@
                         <div class="col-md-4 mb-4">
                             <label for="product_avatar" class="form-label">Hình ảnh sản phẩm <span
                                     class="text-danger">*</span></label>
-                            <input type="file" class="form-control @error('product_avatar') is-invalid @enderror"
+                            <input type="file" class="form-control form-control-sm @error('product_avatar') is-invalid @enderror"
                                 id="product_avatar" name="product_avatar" accept="image/*">
                             @error('product_avatar')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
@@ -191,7 +201,8 @@
 
                         <div class="col-md-4 mb-4">
                             <label for="product_images" class="form-label">Hình ảnh sản phẩm (nhiều ảnh)</label>
-                            <input type="file" class="form-control @error('product_images') is-invalid @enderror" id="product_images" name="product_images[]" multiple accept="image/*">
+                            <input type="file" class="form-control form-control-sm @error('product_images') is-invalid @enderror"
+                                id="product_images" name="product_images[]" multiple accept="image/*">
                             @error('product_images')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -201,7 +212,7 @@
                         <div class="col-md-4 mb-4">
                             <label for="product_price" class="form-label">Giá bán sản phẩm <span
                                     class="text-danger">*</span></label>
-                            <input type="number" class="form-control @error('product_price') is-invalid @enderror"
+                            <input type="number" class="form-control form-control-sm @error('product_price') is-invalid @enderror"
                                 id="product_price" placeholder="Nhập giá bán sản phẩm" name="product_price"
                                 value="{{ old('product_price') }}">
                             @error('product_price')
@@ -213,7 +224,7 @@
                             <label for="product_price_mini_app" class="form-label">Giá bán sản phẩm trên mini app (giảm
                                 trên 5%) <span class="text-danger">*</span></label>
                             <input type="number"
-                                class="form-control @error('product_price_mini_app') is-invalid @enderror"
+                                class="form-control form-control-sm @error('product_price_mini_app') is-invalid @enderror"
                                 id="product_price_mini_app" placeholder="Nhập giá bán sản phẩm trên mini app"
                                 name="product_price_mini_app" value="{{ old('product_price_mini_app') }}">
                             @error('product_price_mini_app')
@@ -225,7 +236,7 @@
                             <label for="product_price_member" class="form-label">Giá bán sản phẩm dành cho hội viên hội
                                 Doanh nghiệp quận <span class="text-danger">*</span></label>
                             <input type="number"
-                                class="form-control @error('product_price_member') is-invalid @enderror"
+                                class="form-control form-control-sm @error('product_price_member') is-invalid @enderror"
                                 id="product_price_member"
                                 placeholder="Nhập giá bán sản phẩm dành cho hội viên hội Doanh nghiệp quận"
                                 name="product_price_member" value="{{ old('product_price_member') }}">
@@ -238,10 +249,10 @@
                             <label for="price_apply_time" class="form-label">Thời gian áp dụng giá bán <span
                                     class="text-danger">*</span></label>
                             <div class="d-flex">
-                                <input type="text" class="form-control @error('start_date') is-invalid @enderror me-2"
+                                <input type="text" class="form-control form-control-sm @error('start_date') is-invalid @enderror me-2"
                                     id="start_date" placeholder="Từ ngày" name="start_date"
                                     value="{{ old('start_date') }}">
-                                <input type="text" class="form-control @error('end_date') is-invalid @enderror"
+                                <input type="text" class="form-control form-control-sm @error('end_date') is-invalid @enderror"
                                     id="end_date" placeholder="Đến ngày" name="end_date"
                                     value="{{ old('end_date') }}">
                             </div>
@@ -297,7 +308,8 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const imgDiv = document.createElement('div');
-                    imgDiv.classList.add('image-preview', 'position-relative', 'd-inline-block', 'me-2', 'mb-2');
+                    imgDiv.classList.add('image-preview', 'position-relative', 'd-inline-block', 'me-2',
+                        'mb-2');
 
                     const img = document.createElement('img');
                     img.src = e.target.result;
@@ -306,7 +318,8 @@
 
                     const removeBtn = document.createElement('button');
                     removeBtn.type = 'button';
-                    removeBtn.classList.add('btn', 'btn-danger', 'btn-sm', 'position-absolute', 'top-0', 'end-0', 'm-1');
+                    removeBtn.classList.add('btn', 'btn-danger', 'btn-sm', 'position-absolute', 'top-0',
+                        'end-0', 'm-1');
                     removeBtn.innerHTML = '&times;';
                     removeBtn.addEventListener('click', function() {
                         imgDiv.remove();
