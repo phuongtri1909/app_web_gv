@@ -22,11 +22,11 @@
            </svg>
       </button>
 
-     <div class="register-business" title="Đăng ký thông tin doanh nghiệp">
-          <a href="{{ route('business.index') }}">
-               <i class="fa-solid fa-file-pen fa-lg text-white"></i>
+      <div class="wrap-button" title="{{ $buttonTitle ?? 'Đăng ký ngay' }}">
+          <a href="{{ $buttonLink ?? '#' }}" title="{{ $buttonTitle ?? 'Đăng ký ngay' }}" class="button-register">
+              <i class="fa-regular fa-pen-to-square text-white"></i>
           </a>
-     </div>
+      </div>
 
      {{-- @include('pages.components.tab-random') --}}
 </div>
