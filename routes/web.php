@@ -4,6 +4,8 @@ use App\Http\Controllers\BanksController;
 use App\Http\Controllers\BankServicerController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CategoryQuestionController;
+use App\Http\Controllers\LawsController;
+use App\Http\Controllers\MemberBusinessController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PaperController;
 use App\Http\Controllers\PersonalBusinessInterestController;
@@ -63,11 +65,14 @@ Route::middleware(['language'])->group(function () {
         //Route::get('/form-business', [BusinessController::class, 'create'])->name('business.create');
         Route::post('/form-business', [BusinessController::class, 'store'])->name('business.store');
         Route::get('/form-business', [BusinessController::class, 'index'])->name('business.index');
-        Route::get('/form-customer/{financialSupportId}', [CustomerInterestController::class, 'showForm'])->name('show.form');
+        Route::get('/form-customer/{financialSupportId?}', [CustomerInterestController::class, 'showForm'])->name('show.form');
         Route::post('/form-customer', [CustomerInterestController::class, 'storeForm'])->name('store.form');
         Route::get('/home-bank/{slug}', [FinancialSupportController::class, 'showFinancial'])->name('show.financical');
         Route::get('/home-bank', [BanksController::class, 'showHomeBank'])->name('show.home.bank');
+        Route::get('/form-legal-advice', [LawsController::class, 'showFormLegal'])->name('show.form.legal');
         Route::get('/post-detail/{slug}', [BlogsController::class, 'showPostIndex'])->name('post-detail');
+        Route::get('/member-business', [MemberBusinessController::class, 'showFormMemberBusiness'])->name('show.form.member.business');
+
     });
 
     Route::get('/', [HomeController::class, 'index'])->name('home');
