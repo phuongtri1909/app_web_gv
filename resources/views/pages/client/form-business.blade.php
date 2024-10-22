@@ -330,6 +330,16 @@
                         </div>
                     </div>
                     <div class="row ">
+                        <div class="col-md-4 mb-4">
+                            <label for="business_field" class="form-label">Ngành nghề kinh doanh <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm @error('business_field') is-invalid @enderror"
+                                id="business_field" placeholder="Nhập ngành nghề kinh doanh" name="business_field"
+                                value="{{ old('business_field') }}">
+                            @error('business_field')
+                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
+                            @enderror
+                        </div>
                         {{-- <div class="col-md-4 mb-4">
                             <label for="fax" class="form-label">Số Fax</label>
                             <input type="text" class="form-control form-control-sm  @error('fax_number') is-invalid @enderror"
