@@ -22,11 +22,7 @@
            </svg>
       </button>
 
-      <div class="wrap-button" title="{{ $buttonTitle ?? 'Đăng ký ngay' }}">
-          <a href="{{ $buttonLink ?? '#' }}" title="{{ $buttonTitle ?? 'Đăng ký ngay' }}" class="button-register">
-              <i class="fa-regular fa-pen-to-square text-white"></i>
-          </a>
-      </div>
+      
 
      {{-- @include('pages.components.tab-random') --}}
 </div>

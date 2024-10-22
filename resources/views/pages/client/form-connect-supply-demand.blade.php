@@ -1,4 +1,5 @@
 @extends('pages.layouts.page')
+@section('title', 'Đăng ký kết nối cung cầu')
 @push('styles')
     <style>
         .form-control:focus,

@@ -61,7 +61,9 @@ Route::middleware(['language'])->group(function () {
     Route::group(['prefix' => 'client'], function(){
         Route::get('business', [BusinessController::class,'business'])->name('business');
         Route::get('business/{business_code}', [BusinessController::class,'businessDetail'])->name('business.detail');
+        Route::get('business-products', [BusinessController::class,'businessProducts'])->name('business.products');
         Route::get('product/{slug}', [BusinessController::class,'productDetail'])->name('product.detail');
+
 
         Route::get('/form-connect-supply-demand', [BusinessController::class, 'connectSupplyDemand'])->name('connect.supply.demand');
         

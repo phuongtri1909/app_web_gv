@@ -181,6 +181,21 @@ class BusinessController extends Controller
         return view('pages.client.detail-product-business', compact('product'));
     }
 
+    public function businessProducts(Request $request){
+        $category = $request->category ?? '';
+        if ($category) {
+            $category_product_business = CategoryProductBusiness::where('slug', $category)->first();
+
+            $products = ProductBusiness::where('category_product_id', $category_product_business->id)->get();
+        } else {
+            $products = ProductBusiness::get();
+        }
+
+        $category_product_business = CategoryProductBusiness::get();
+
+        return view('pages.client.business-products', compact('products', 'category_product_business'));
+    }
+
     public function connectSupplyDemand()
     {
         return view('pages.client.form-connect-supply-demand');

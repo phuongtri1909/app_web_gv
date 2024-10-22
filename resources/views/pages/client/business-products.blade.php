@@ -1,10 +1,15 @@
-@extends('pages.layouts.page')
-@section('title', 'Kết nối giao thương')
-@section('description', 'Kết nối giao thương')
-@section('keyword', 'Kết nối giao thương')
-@section('title-page', 'Kết nối giao thương')
+@extends('layouts.app')
+@section('title', 'Kết nối cung cầu')
+@section('description', 'Kết nối cung cầu')
+@section('keyword', 'Kết nối cung cầu')
 @push('styles')
     <style>
+        .fs-7 {
+            font-size: 0.7rem;
+        }
+
+        
+
         .logo-business {
             object-fit: contain;
             height: 200px;
@@ -36,6 +41,7 @@
         }
 
         @keyframes hoverAnimation {
+
             0%,
             100% {
                 transform: translateY(0);
@@ -77,13 +83,17 @@
 @section('content')
     <section id="business" class="business mt-5rem mb-5">
         <div class="container">
-            @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký DN', 'buttonLink' => route('business.index')])
+            @include('pages.components.button-register', [
+                'buttonTitle' => 'Đăng ký SP',
+                'buttonLink' => route('connect.supply.demand'),
+            ])
             @include('admin.pages.notification.success-error')
             <div class="category mt-3">
-                <a href="{{ route('business', ['category' => '']) }}"
-                    class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('category') == '' ? 'active' : '' }}">Tất cả</a>
+                <a href="{{ route('business.products', ['category' => '']) }}"
+                    class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('category') == '' ? 'active' : '' }}">Tất
+                    cả</a>
                 @foreach ($category_product_business as $index => $category)
-                    <a href="{{ route('business', ['category' => $category->slug]) }}"
+                    <a href="{{ route('business.products', ['category' => $category->slug]) }}"
                         class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('category') == $category->slug ? 'active' : '' }} {{ $index >= 8 && request('category') != $category->slug ? 'category-hidden' : '' }}">{{ $category->name }}</a>
                 @endforeach
                 @if ($category_product_business->count() > 8)
@@ -93,15 +103,26 @@
                 @endif
             </div>
 
-            <div class="list-business mt-5">
-                <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 g-2 g-md-3">
-                    @foreach ($businesses as $item)
+            <div class="mt-3">
+
+                <div class="bg-business rounded-top py-2 px-3 mb-3">
+                    <h5 class="mb-0 fw-bold text-white">Sản phẩm</h5>
+                </div>
+
+                <div class="row row-cols-2 row-cols-sm-3 g-3 px-1  mb-3">
+                    @include('admin.pages.notification.success-error')
+                    @foreach ($products as $product)
                         <div class="col">
-                            <a href="{{ route('business.detail', $item->business_code) }}" class="card h-100 border-custom">
-                                <img src="{{ asset($item->avt_businesses) }}"
-                                    class="card-img-top img-fluid p-1 logo-business" alt="...">
-                                <div class="card-body d-flex flex-column">
-                                    <h6 class="card-title text-uppercase text-dark">{{ $item->business_name }}</h6>
+                            <a href="{{ route('product.detail', $product->slug) }}"
+                                class="card h-100 border-custom text-dark">
+                                <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                                    <img src="{{ asset($product->product_avatar) }}"
+                                        class="card-img-top img-fluid p-1 logo-business" alt="...">
+                                </div>
+                                <div class="px-1 d-flex flex-column">
+                                    <span class="fs-7">{{ $product->business->business_name }}</span>
+                                    <p class="fw-semibold mb-0 fs-7 lh-1">{{ $product->name_product }}</p>
+                                    <p class="mb-0">{{ number_format($product->price, 0, ',', '.') }} ₫</p>
                                 </div>
                             </a>
                         </div>

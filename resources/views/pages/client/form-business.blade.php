@@ -1,4 +1,7 @@
 @extends('pages.layouts.page')
+@section('title', 'Đăng ký doanh nghiệp')
+@section('description', 'Đăng ký doanh nghiệp')
+@section('keyword', 'Đăng ký doanh nghiệp')
 @push('styles')
     <style>
         .upload-container {
@@ -159,7 +162,7 @@
     }
     #form-business {
             position: relative;
-            margin: 30px auto;
+            /* margin: 30px auto; */
             /* padding: 20px 0px 20px 0px; */
             /* max-width: 800px; */
             background-color: #f8f9fa;
@@ -182,7 +185,7 @@
 @endpush
 
 @section('content')
-    <section id="form-business" class="form-business">
+    <section id="form-business" class="form-business mt-5rem">
         <div class="container my-4">
             <div class="row">
                 @include('pages.notification.success-error')
