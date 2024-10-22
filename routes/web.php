@@ -64,7 +64,10 @@ Route::middleware(['language'])->group(function () {
         Route::get('product/{slug}', [BusinessController::class,'productDetail'])->name('product.detail');
 
         Route::get('/form-connect-supply-demand', [BusinessController::class, 'connectSupplyDemand'])->name('connect.supply.demand');
-
+        Route::get('/form-recruitment-registration',[BusinessController::class, 'recruitmentRegistration'])->name('recruitment.registration');
+        Route::get('/form-job-application', [BusinessController::class, 'jobApplication'])->name('job.application');
+        Route::get('/form-business-opinion', [BusinessController::class, 'businessOpinion'])->name('business.opinion');
+        
         //Route::get('/form-business', [BusinessController::class, 'create'])->name('business.create');
         Route::post('/form-business', [BusinessController::class, 'store'])->name('business.store');
         Route::get('/form-business', [BusinessController::class, 'index'])->name('business.index');

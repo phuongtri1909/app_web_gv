@@ -1799,21 +1799,91 @@ table.form-table td {
     margin-top: 5rem;
 }
 
-.register-business {
+.wrap-button {
     position: fixed;
-    bottom: 15px;
-    left: 15px;
-    background: -webkit-linear-gradient(45deg, #8769a9, #507cb3);
-    background: -o-linear-gradient(45deg, #8769a9, #507cb3);
-    background: linear-gradient(45deg, #8769a9, #507cb3);
-    border: 5px solid #b2bedc;
-    border-radius: 50%;
-    padding: 15px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    top: 40px;
+    right: 15px;
+    z-index: 100000000;
 }
 
- 
+.button-register {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #313133;
+    background: #4FD1C5;
+    background: linear-gradient(90deg, rgba(129, 230, 217, 1) 0%, rgba(79, 209, 197, 1) 100%);
+    border: none;
+    border-radius: 12px;
+    box-shadow: 12px 12px 24px rgba(79, 209, 197, .64);
+    transition: all 0.3s ease-in-out 0s;
+    cursor: pointer;
+    outline: none;
+    padding: 5px 20px;
+}
+
+.button-register::before {
+    content: '';
+    border-radius: 1000px;
+    min-width: calc(50px + 12px);
+    min-height: calc(20px + 12px);
+    border: 3px solid #00FFCB;
+    box-shadow: 0 0 60px rgba(0, 255, 203, .64);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: all .3s ease-in-out 0s;
+}
+
+.button-register:hover,
+.button-register:focus {
+    color: #313133;
+    transform: translateY(-6px);
+}
+
+.button-register:hover::before,
+.button-register:focus::before {
+    opacity: 1;
+}
+
+.button-register::after {
+    content: '';
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    border: 1px solid #00FFCB;
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: ring 1.5s infinite;
+}
+
+.button-register:hover::after,
+.button-register:focus::after {
+    animation: none;
+    display: none;
+}
+
+@keyframes ring {
+    0% {
+        width: 30px;
+        height: 30px;
+        opacity: 1;
+    }
+
+    100% {
+        width: 300px;
+        height: 300px;
+        opacity: 0;
+    }
+}
+
+
 .responsive-h2 {
     font-size: 2rem;
     line-height: 1.2;
