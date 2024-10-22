@@ -67,70 +67,75 @@ class CustomerInterestController extends Controller
         return redirect()->route('customer_interests.index')->with('success', __('Customer interest deleted successfully!'));
     }
 
-    public function showForm($financialSupportId)
+    public function showForm($financialSupportId = null)
     {
-        $financialSupport = FinancialSupport::where('id', $financialSupportId)->first();
 
-        if (!$financialSupport) {
-            return redirect()->route('show.financical')
-                ->with('error', __('ID hỗ trợ tài chính không hợp lệ.'));
+        if ($financialSupportId) {
+            $financialSupport = FinancialSupport::find($financialSupportId);
+
+            if (!$financialSupport) {
+                return redirect()->route('show.home.bank')
+                    ->with('error', __('ID hỗ trợ tài chính không hợp lệ.'));
+            }
+        } else {
+            $financialSupport = null;
         }
+
         $bank_services = BankServicesInterest::all();
         $business_type = PersonalBusinessInterest::all();
-        return view('pages.client.gv.form-customer', compact('financialSupportId','bank_services','business_type'));
+
+        return view('pages.client.gv.form-customer', compact('financialSupportId', 'bank_services', 'business_type', 'financialSupport'));
     }
 
-    public function storeForm(Request $request)
+
+    public function storeForm(Request $request, $financialSupportId = null)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'full_name' => 'required|string|max:255',
             'phone_number' => 'required|digits:10',
-            'interest' => 'required',
-            'bank_service' => 'required',
-            'financial_support_id' => 'required|exists:financial_support,id',
-            'time' => 'required|string|max:255',
-            'otherInput' => 'nullable|string|max:255',
+            'birth_year' => 'required|digits:4',
+            'gender' => 'required|string',
+            'residence_address' => 'required|string|max:255',
+            'business_address' => 'nullable|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'business_field' => 'nullable|string|max:255',
+            'tax_code' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'fanpage' => 'nullable|string|max:255',
+            'support_needs' => 'nullable|string|max:255',
+            'financial_support_id' => 'nullable|exists:financial_support,id',
         ], [
-            'name.required' => 'Tên là bắt buộc.',
+            'full_name.required' => 'Tên là bắt buộc.',
             'phone_number.required' => 'Số điện thoại là bắt buộc.',
             'phone_number.digits' => 'Số điện thoại phải có 10 chữ số.',
-            'interest.required' => 'Lĩnh vực quan tâm là bắt buộc.',
-            'bank_service.required' => 'Dịch vụ ngân hàng là bắt buộc.',
-            'financial_support_id.required' => 'Hỗ trợ tài chính là bắt buộc.',
+            'birth_year.required' => 'Năm sinh là bắt buộc.',
+            'birth_year.digits' => 'Năm sinh phải có 4 chữ số.',
+            'gender.required' => 'Giới tính là bắt buộc.',
+            'residence_address.required' => 'Địa chỉ cư trú là bắt buộc.',
             'financial_support_id.exists' => 'Hỗ trợ tài chính không tồn tại.',
-            'time.required' => 'Thời gian là bắt buộc.',
-            'otherInput.max' => 'Giá trị không được vượt quá 255 ký tự.',
         ]);
 
 
-        $interestId = $validated['interest'];
+        $financialSupportId = $financialSupportId ? $financialSupportId : null;
 
-        $bankServiceId = null;
-
-        if ($validated['bank_service'] === 'other') {
-            if (empty($validated['otherInput'])) {
-                return redirect()->back()->withErrors(['otherInput' => 'Vui lòng nhập dịch vụ khác.'])->withInput();
-            }
-            $bankServiceId = BankServicesInterest::create(['name' => $validated['otherInput']])->id;
-        } else {
-            $bankService = BankServicesInterest::where('id', $validated['bank_service'])->first();
-            if (!$bankService) {
-                return redirect()->back()->withErrors(['bank_service' => 'Dịch vụ không hợp lệ.'])->withInput();
-            }
-            $bankServiceId = $validated['bank_service'];
-        }
         CustomerInterest::create([
-            'name' => $validated['name'],
+            'name' => $validated['full_name'],
             'phone_number' => $validated['phone_number'],
-            'interest_id' => $interestId,
-            'bank_services_id' => $bankServiceId,
-            'financial_support_id' => $validated['financial_support_id'],
-            'time' => $validated['time'],
+            'financial_support_id' => $financialSupportId,
+            'birth_year' => $validated['birth_year'],
+            'gender' => $validated['gender'],
+            'residence_address' => $validated['residence_address'],
+            'business_address' => $validated['business_address'],
+            'company_name' => $validated['company_name'],
+            'business_field' => $validated['business_field'],
+            'tax_code' => $validated['tax_code'],
+            'email' => $validated['email'],
+            'fanpage' => $validated['fanpage'],
+            'support_needs' => $validated['support_needs'],
         ]);
+
         return redirect()->back()->with('success', 'Gửi thành công!');
     }
-
-
 
 }
 
