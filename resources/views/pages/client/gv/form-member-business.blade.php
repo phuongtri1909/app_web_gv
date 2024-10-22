@@ -122,15 +122,6 @@
 
         @media (max-width: 768px) {
 
-            input[type="text"],
-            input[type="tel"],
-            input[type="email"],
-            input[type="url"],
-            textarea,
-            select {
-                font-size: 14px;
-            }
-
             .btn-success {
                 padding: 8px;
                 font-size: 14px;
@@ -143,14 +134,6 @@
 
         @media (max-width: 480px) {
 
-            input[type="text"],
-            input[type="tel"],
-            input[type="email"],
-            input[type="url"],
-            textarea,
-            select {
-                font-size: 12px;
-            }
 
             .btn-success {
                 padding: 6px;

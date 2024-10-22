@@ -140,14 +140,6 @@
             background-color: #004494;
         }
         @media (max-width: 768px) {
-        input[type="text"],
-        input[type="tel"],
-        input[type="email"],
-        input[type="url"],
-        textarea,
-        select {
-            font-size: 14px;
-        }
 
         .btn-success {
             padding: 8px;
@@ -156,14 +148,6 @@
     }
         @media (max-width: 480px) {
 
-        input[type="text"],
-        input[type="tel"],
-        input[type="email"],
-        input[type="url"],
-        textarea,
-        select {
-            font-size: 12px;
-        }
 
         .btn-success {
             padding: 6px;
@@ -177,7 +161,7 @@
             position: relative;
             margin: 30px auto;
             /* padding: 20px 0px 20px 0px; */
-            max-width: 800px;
+            /* max-width: 800px; */
             background-color: #f8f9fa;
             border-radius: 8px;
             background: url('{{ asset('images/logo.png') }}') no-repeat;
@@ -224,12 +208,12 @@
                                 value="{{ old('avt_businesses') }}" style="display: none;" />
                         </div>
                     </div>
-                    <div class="row ">
+                    <div class="row">
                         <div class="col-md-4 mb-4">
-                            <label for="legalRep" class="form-label">Họ tên chủ doanh nghiệp <span
+                            <label for="representative_name" class="form-label">Họ tên chủ doanh nghiệp <span
                                     class="text-danger">*</span></label>
                             <input type="text" class="form-control form-control-sm @error('representative_name') is-invalid @enderror"
-                                id="legalRep" name="representative_name" placeholder="Nhập họ tên chủ doanh nghiệp"
+                                id="representative_name" name="representative_name" placeholder="Nhập họ tên chủ doanh nghiệp"
                                 value="{{ old('representative_name') }}">
                             @error('representative_name')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
