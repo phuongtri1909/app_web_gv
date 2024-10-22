@@ -150,7 +150,7 @@
                     </div>
                     <div class="col-md-12">
                         <div class="btn-regis text-center">
-                            <a href="{{route('show.form')}}" class="btn btn-success" role="button">
+                            <a href="{{route('show.form', ['financialSupportId' => $blog->id])}}" class="btn btn-success" role="button">
                                 <span>{{ __('Đăng ký ngay') }}</span>
                             </a>
                         </div>
