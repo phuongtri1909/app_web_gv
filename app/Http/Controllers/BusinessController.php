@@ -185,4 +185,20 @@ class BusinessController extends Controller
     {
         return view('pages.client.form-connect-supply-demand');
     }
+
+    public function recruitmentRegistration()
+    {
+        $category_business = CategoryBusiness::all();
+        return view('pages.client.form-recruitment-registration', compact('category_business'));
+    }
+
+    public function jobApplication()
+    {
+        return view('pages.client.form-job-application');
+    }
+
+    public function businessOpinion()
+    {
+        return view('pages.client.form-business-opinion');
+    }
 }
