@@ -1,53 +1,54 @@
 <?php
 
-use App\Http\Controllers\BanksController;
-use App\Http\Controllers\BankServicerController;
-use App\Http\Controllers\BusinessController;
-use App\Http\Controllers\BusinessRecruitmentController;
-use App\Http\Controllers\CategoryQuestionController;
-use App\Http\Controllers\JobApplicationController;
-use App\Http\Controllers\LawsController;
-use App\Http\Controllers\LegalAdviceController;
-use App\Http\Controllers\MemberBusinessController;
-use App\Http\Controllers\NewsTabContentDetailPostController;
-use App\Http\Controllers\PaperController;
-use App\Http\Controllers\PersonalBusinessInterestController;
-use App\Http\Controllers\TabDetailPostController;
 use App\Models\Tab;
 use App\Models\SlideProgram;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\AboutUsController;
-use App\Http\Controllers\TabsForParentsController;
-use App\Http\Controllers\ForumController;
-use App\Http\Controllers\StaffController;
-use App\Http\Controllers\AdminQuestionController;
-use App\Http\Controllers\QuestionController;
-use App\Http\Controllers\TagNewsController;
+use App\Http\Controllers\LawsController;
 use App\Http\Controllers\TabsController;
+use App\Http\Controllers\BanksController;
+use App\Http\Controllers\BlogsController;
+use App\Http\Controllers\ForumController;
+use App\Http\Controllers\PaperController;
+use App\Http\Controllers\StaffController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\SliderController;
+use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\BannersController;
+use App\Http\Controllers\TagNewsController;
 use App\Http\Controllers\TuitionController;
+use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\AdmissionController;
 use App\Http\Controllers\EvironmentController;
 use App\Http\Controllers\TabsCustomController;
+use App\Http\Controllers\LegalAdviceController;
+use App\Http\Controllers\BankServicerController;
+use App\Http\Controllers\CategoryNewsController;
+use App\Http\Controllers\ParentsChildController;
 use App\Http\Controllers\SlideProgramController;
 use App\Http\Controllers\TabAdmissionController;
 use App\Http\Controllers\TestimonialsController;
+use App\Http\Controllers\AdminQuestionController;
 use App\Http\Controllers\DetailContentController;
+use App\Http\Controllers\TabDetailPostController;
+use App\Http\Controllers\JobApplicationController;
+use App\Http\Controllers\MemberBusinessController;
+use App\Http\Controllers\TabsForParentsController;
 use App\Http\Controllers\ProgramOverviewController;
 use App\Http\Controllers\AdmissionProcessController;
-use App\Http\Controllers\AdmissionProcessDetailController;
-use App\Http\Controllers\BlogsController;
-use App\Http\Controllers\CategoryNewsController;
+use App\Http\Controllers\CategoryQuestionController;
 use App\Http\Controllers\CustomerInterestController;
 use App\Http\Controllers\FinancialSupportController;
-use App\Http\Controllers\ParentsChildController;
-use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\BusinessRecruitmentController;
+use App\Http\Controllers\ContactConsultationController;
+use App\Http\Controllers\AdmissionProcessDetailController;
+use App\Http\Controllers\NewsTabContentDetailPostController;
+use App\Http\Controllers\PersonalBusinessInterestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,10 +107,7 @@ Route::middleware(['language'])->group(function () {
             return view('pages.client.job-connector');
         })->name('job-connector');
 
-        //tạm gán tư vấn pháp lý
-        Route::get('/legal-advice', function(){
-            return view('pages.client.legal-advice');
-        })->name('legal-advice');
+        Route::get('/legal-advice', [ContactConsultationController::class,'legalAdvice'])->name('legal-advice');
         
         //tạm gán cho locations
         Route::get('/locations', function(){
