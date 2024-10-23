@@ -196,7 +196,7 @@
         <div class="container my-4">
             <div class="row">
                 @include('pages.notification.success-error')
-                <form action="{{ route('business.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('form.start.promotion.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="col-md-4 mb-4">
@@ -211,19 +211,38 @@
                             @enderror
                         </div>
                         <div class="col-md-4 mb-4">
-                            <label for="birth_year" class="form-label">Năm sinh:<span class="text-danger">*</span></label>
-                            <input type="text" id="birth_year" name="birth_year" class="form-control form-control-sm"
+                            <label for="birth_year" class="form-label ">Năm sinh:<span class="text-danger">*</span></label>
+                            <input type="text" id="birth_year" name="birth_year" class="form-control form-control-sm @error('birth_year') is-invalid @enderror"
                                 required placeholder="Nhập năm sinh">
+                            @error('birth_year')
+                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-md-4 mb-4">
-                            <label for="gender" class="form-label">Giới tính:<span class="text-danger">*</span></label>
-                            <select id="gender" name="gender" class="form-control form-slect-sm form-control-sm"
-                                required>
-                                <option value="" disabled selected>Chọn giới tính</option>
-                                <option value="male">Nam</option>
-                                <option value="female">Nữ</option>
-                                <option value="other">Khác</option>
-                            </select>
+                            <label class="form-label">Giới tính:<span class="text-danger">*</span></label>
+                            <div class="d-flex align-items-center">
+                                <div class="form-check me-3">
+                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderMale" value="male" {{ old('gender') == 'male' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="genderMale">
+                                        Nam
+                                    </label>
+                                </div>
+                                <div class="form-check me-3">
+                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderFemale" value="female" {{ old('gender') == 'female' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="genderFemale">
+                                        Nữ
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderOther" value="other" {{ old('gender') == 'other' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="genderOther">
+                                        Khác
+                                    </label>
+                                </div>
+                            </div>
+                            @error('gender')
+                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <div class="row">
@@ -231,10 +250,10 @@
                             <label for="phone" class="form-label">Số điện thoại <span
                                     class="text-danger">*</span></label>
                             <input type="text"
-                                class="form-control form-control-sm  @error('phone_number') is-invalid @enderror"
-                                id="phone" placeholder="Nhập số điện thoại" name="phone_number"
-                                value="{{ old('phone_number') }}">
-                            @error('phone_number')
+                                class="form-control form-control-sm  @error('phone') is-invalid @enderror"
+                                id="phone" placeholder="Nhập số điện thoại" name="phone"
+                                value="{{ old('phone') }}">
+                            @error('phone')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
@@ -252,7 +271,10 @@
                             <label for="business_address" class="form-label">Địa chỉ kinh doanh:<span
                                     class="text-danger">*</span></label>
                             <input type="text" id="business_address" name="business_address"
-                                class="form-control form-control-sm" placeholder="Nhập địa chỉ kinh doanh">
+                                class="form-control form-control-sm  @error('business_address') is-invalid @enderror" placeholder="Nhập địa chỉ kinh doanh">
+                             @error('business_address')
+                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <div class="row">
@@ -294,7 +316,7 @@
                             <label for="email" class="form-label">Email doanh nghiệp <span
                                     class="text-danger">*</span></label>
                             <input type="email"
-                                class="form-control form-control-sm  @error('fax_number') is-invalid @enderror"
+                                class="form-control form-control-sm  @error('email') is-invalid @enderror"
                                 id="email" placeholder="Nhập email" name="email" value="{{ old('email') }}">
                             @error('email')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
@@ -303,10 +325,10 @@
                         <div class="col-md-4 mb-4">
                             <label for="social" class="form-label">Fanpage</label>
                             <input type="url"
-                                class="form-control form-control-sm  @error('social_channel') is-invalid @enderror"
-                                id="social" placeholder="Nhập link fanpage" value="{{ old('social_channel') }}"
-                                name="social_channel">
-                            @error('social_channel')
+                                class="form-control form-control-sm  @error('fanpage') is-invalid @enderror"
+                                id="social" placeholder="Nhập link fanpage" value="{{ old('fanpage') }}"
+                                name="fanpage">
+                            @error('fanpage')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
@@ -324,66 +346,14 @@
                         <label>Nhu cầu hỗ trợ, kết nối:</label>
 
                         <div>
-                            <label>
-                                <input type="radio" name="support_need" value="nghe_nghiep">
-                                Nghề nghiệp
-                            </label>
-                        </div>
-
-                        <div>
-                            <label>
-                                <input type="radio" name="support_need" value="von_vay">
-                                Vốn vay
-                            </label>
-                        </div>
-
-                        <div>
-                            <label>
-                                <input type="radio" name="support_need" value="van_phong_lam_viec">
-                                Văn phòng làm việc
-                            </label>
-                        </div>
-
-                        <div>
-                            <label>
-                                <input type="radio" name="support_need" value="dia_diem_kinh_doanh">
-                                Địa điểm kinh doanh
-                            </label>
-                        </div>
-
-                        <div>
-                            <label>
-                                <input type="radio" name="support_need" value="thu_tuc_hanh_chinh">
-                                Thủ tục hành chính
-                            </label>
-                        </div>
-
-                        <div>
-                            <label>
-                                <input type="radio" name="support_need" value="tu_van_phap_luat">
-                                Tư vấn pháp luật
-                            </label>
-                        </div>
-
-                        <div>
-                            <label>
-                                <input type="radio" name="support_need" value="tu_van_kinh_nghiem">
-                                Tư vấn kinh nghiệm
-                            </label>
-                        </div>
-
-                        <div>
-                            <label>
-                                <input type="radio" name="support_need" value="hoi_cho_kich_cau">
-                                Tham gia hội chợ kích cầu, xúc tiến thương mại
-                            </label>
-                        </div>
-
-                        <div>
-                            <label>
-                                <input type="radio" name="support_need" value="tim_kiem_doi_tac">
-                                Tìm kiếm đối tác
-                            </label>
+                            @foreach ($business_support_needs as $support_need)
+                                <div>
+                                    <label>
+                                        <input type="radio" name="support_need" value="{{ $support_need->id }}">
+                                        {{ $support_need->name }}
+                                    </label>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                     <div class="text-end my-3">

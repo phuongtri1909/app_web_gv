@@ -343,7 +343,6 @@
                         <button type="submit" class="btn btn-success">Đăng ký</button>
                     </div>
                 </form>
-
             </div>
         </div>
     </section>

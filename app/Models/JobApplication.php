@@ -20,5 +20,6 @@ class JobApplication extends Model
         'introduction',
         'job_registration',
         'status',
+        'cv',
     ];
 }
