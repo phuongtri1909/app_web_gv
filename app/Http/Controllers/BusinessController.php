@@ -35,7 +35,7 @@ class BusinessController extends Controller
             'representative_name' => 'required|string|max:255',
             'birth_year' => 'required|digits:4',
             'gender' => 'required|string',
-            'phone_number' => 'required|string|max:15',
+            'phone_number' => 'required|string|max:10|regex:/^[0-9]+$/',
             'address' => 'required|string|max:255',
             'business_address' => 'required|string|max:255',
             'ward_id' => 'required|integer|exists:ward_govap,id',
