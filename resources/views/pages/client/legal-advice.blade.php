@@ -26,7 +26,7 @@
             <div class="row gx-3 text-center">
                 @foreach ($contactConsultation as $item)
                     <div class="col-md-3 col-6 title-f mb-4 ">
-                        <a href="{{ $item->link }}" class="border rounded p-1 h-100" style="display: block">
+                        <a target="_blank" href="{{ $item->link }}" class="border rounded p-1 h-100" style="display: block">
                             <div class="icon-box">
                                 <img src="{{ asset($item->image) }}" alt="{{ $item->name }}" class="img-fluids custom-img">
                             </div>
