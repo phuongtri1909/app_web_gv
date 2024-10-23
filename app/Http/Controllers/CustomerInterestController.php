@@ -93,7 +93,7 @@ class CustomerInterestController extends Controller
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'phone_number' => 'required|digits:10',
-            'birth_year' => 'required|digits:4',
+            'birth_year' => 'required|digits:4|min:1500|max:' . date('Y'),
             'gender' => 'required|string',
             'residence_address' => 'required|string|max:255',
             'business_address' => 'nullable|string|max:255',
@@ -113,6 +113,8 @@ class CustomerInterestController extends Controller
             'gender.required' => 'Giới tính là bắt buộc.',
             'residence_address.required' => 'Địa chỉ cư trú là bắt buộc.',
             'financial_support_id.exists' => 'Hỗ trợ tài chính không tồn tại.',
+            'birth_year.min' => 'Năm sinh phải lớn hơn hoặc bằng 1500.',
+            'birth_year.max' => 'Năm sinh không được lớn hơn năm hiện tại.',
         ]);
 
 
