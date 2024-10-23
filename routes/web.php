@@ -86,6 +86,20 @@ Route::middleware(['language'])->group(function () {
         Route::get('/post-detail/{slug}', [BlogsController::class, 'showPostIndex'])->name('post-detail');
         Route::get('/member-business', [MemberBusinessController::class, 'showFormMemberBusiness'])->name('show.form.member.business');
 
+        //tạm gán như này cho kết nối việc làm
+        Route::get('/job-connector', function(){
+            return view('pages.client.job-connector');
+        })->name('job-connector');
+
+        //tạm gán tư vấn pháp lý
+        Route::get('/legal-advice', function(){
+            return view('pages.client.legal-advice');
+        })->name('legal-advice');
+
+        //tạm gán cho locations 
+        Route::get('/locations', function(){
+            return view('pages.client.locations');
+        })->name('locations');
     });
 
     Route::get('/', [HomeController::class, 'index'])->name('home');

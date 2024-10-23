@@ -1,4 +1,5 @@
 @extends('pages.layouts.page')
+@section('title', 'Đăng ký gia nhập hội')
 
 @push('child-styles')
     <style>
@@ -152,7 +153,7 @@
         <div class="container my-4">
             <div class="row">
                 <form>
-                    <h3 class="text-center title-member-business">Đăng ký gia nhập hội doanh nghiệp quận gò vấp</h3>
+                    {{-- <h3 class="text-center title-member-business">Đăng ký gia nhập hội doanh nghiệp quận gò vấp</h3> --}}
                     <div class="mb-3">
                         <label for="tenDoanhNghiep" class="form-label">Tên doanh nghiệp:</label>
                         <input type="text" class="form-control  form-control-sm" id="tenDoanhNghiep"

@@ -229,4 +229,5 @@ class BusinessController extends Controller
         return view('pages.client.form-business-opinion');
 
     }
+
 }
