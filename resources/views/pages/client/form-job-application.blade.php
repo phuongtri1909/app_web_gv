@@ -15,6 +15,27 @@
             color: red;
             margin-top: 10px;
         }
+        #form-job-application{
+            position: relative;
+            margin: 30px auto;
+            /* padding: 20px 0px 20px 0px; */
+            max-width: 800px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            background: url('{{ asset('images/logo.png') }}') no-repeat;
+            background-size: 30%;
+            background-attachment: fixed;
+            background-position: center center;
+            z-index: 1;
+        }
+
+        form {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(255, 255, 255, 0.9);
+            /* padding: 20px; */
+            border-radius: 8px;
+        }
     </style>
 @endpush
 
@@ -23,7 +44,7 @@
         <div class="container">
             <div class="row">
                 @include('pages.notification.success-error')
-                <form action="#" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('job.application.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="col-md-12 mb-4">
@@ -103,16 +124,20 @@
                             @enderror
                         </div>
                     </div>
-
+                    <div class="d-flex justify-content-center">
+                        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+                    </div>
                     <div class="text-end my-3">
                         <button type="submit" class="btn btn-success">Lưu xác nhận</button>
                     </div>
                 </form>
+
             </div>
         </div>
     </section>
 @endsection
 
 @push('scripts')
-    
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 @endpush

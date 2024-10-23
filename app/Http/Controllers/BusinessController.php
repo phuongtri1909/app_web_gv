@@ -212,22 +212,10 @@ class BusinessController extends Controller
     public function showFormPromotional(){
         return view('pages.client.gv.form-promotional-introduction');
     }
-
-    public function recruitmentRegistration()
-    {
-        $category_business = CategoryBusiness::all();
-        return view('pages.client.form-recruitment-registration', compact('category_business'));
-    }
-
-    public function jobApplication()
-    {
-        return view('pages.client.form-job-application');
-    }
-
+    
     public function businessOpinion()
     {
         return view('pages.client.form-business-opinion');
-
     }
 
 }

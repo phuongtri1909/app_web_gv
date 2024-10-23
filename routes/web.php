@@ -3,7 +3,9 @@
 use App\Http\Controllers\BanksController;
 use App\Http\Controllers\BankServicerController;
 use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\BusinessRecruitmentController;
 use App\Http\Controllers\CategoryQuestionController;
+use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\LawsController;
 use App\Http\Controllers\MemberBusinessController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
@@ -75,13 +77,15 @@ Route::middleware(['language'])->group(function () {
 
 
         Route::get('/form-connect-supply-demand', [BusinessController::class, 'connectSupplyDemand'])->name('connect.supply.demand');
-        
+
         Route::get('/form-start-promotion', [BusinessController::class, 'showFormStartPromotion'])->name('show.form.start.promotion');
         Route::get('/form-registering-capital-needs', [BusinessController::class, 'showFormCapitalNeeds'])->name('show.form.capital.need');
         Route::get('/form-promotional-introduction', [BusinessController::class, 'showFormPromotional'])->name('show.form.promotional');
 
-        Route::get('/form-recruitment-registration',[BusinessController::class, 'recruitmentRegistration'])->name('recruitment.registration');
-        Route::get('/form-job-application', [BusinessController::class, 'jobApplication'])->name('job.application');
+        Route::get('/form-recruitment-registration',[BusinessRecruitmentController::class, 'recruitmentRegistration'])->name('recruitment.registration');
+        Route::post('/form-recruitment-registration',[BusinessRecruitmentController::class, 'storeForm'])->name('recruitment.registration.store');
+        Route::get('/form-job-application', [JobApplicationController::class, 'jobApplication'])->name('job.application');
+        Route::post('/form-job-application', [JobApplicationController::class, 'storeForm'])->name('job.application.store');
         Route::get('/form-business-opinion', [BusinessController::class, 'businessOpinion'])->name('business.opinion');
 
         //Route::get('/form-business', [BusinessController::class, 'create'])->name('business.create');
@@ -105,7 +109,7 @@ Route::middleware(['language'])->group(function () {
             return view('pages.client.legal-advice');
         })->name('legal-advice');
 
-        //tạm gán cho locations 
+        //tạm gán cho locations
         Route::get('/locations', function(){
             return view('pages.client.locations');
         })->name('locations');
