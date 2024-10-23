@@ -7,6 +7,7 @@ use App\Http\Controllers\BusinessRecruitmentController;
 use App\Http\Controllers\CategoryQuestionController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\LawsController;
+use App\Http\Controllers\LegalAdviceController;
 use App\Http\Controllers\MemberBusinessController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PaperController;
@@ -96,6 +97,7 @@ Route::middleware(['language'])->group(function () {
         Route::get('/home-bank/{slug}', [FinancialSupportController::class, 'showFinancial'])->name('show.financical');
         Route::get('/home-bank', [BanksController::class, 'showHomeBank'])->name('show.home.bank');
         Route::get('/form-legal-advice', [LawsController::class, 'showFormLegal'])->name('show.form.legal');
+        Route::post('/form-legal-advice', [LawsController::class, 'storeForm'])->name('legal.advice.store');
         Route::get('/post-detail/{slug}', [BlogsController::class, 'showPostIndex'])->name('post-detail');
         Route::get('/member-business', [MemberBusinessController::class, 'showFormMemberBusiness'])->name('show.form.member.business');
 
@@ -108,7 +110,7 @@ Route::middleware(['language'])->group(function () {
         Route::get('/legal-advice', function(){
             return view('pages.client.legal-advice');
         })->name('legal-advice');
-
+        
         //tạm gán cho locations
         Route::get('/locations', function(){
             return view('pages.client.locations');
