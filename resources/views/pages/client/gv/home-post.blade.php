@@ -132,7 +132,7 @@
                     @if ($financialSupports->isNotEmpty())
                         @foreach ($financialSupports as $item)
                             <div class="col-md-3 col-6 title-f mb-3">
-                                <a href="{{$item->url_financial_support}}">
+                                <a href="{{route('post-detail',$item->slug)}}">
                                     <div class="icon-box">
                                         <img src="{{ asset($item->avt_financial_support) }}" alt="{{ $item->name }}"
                                             class="img-fluids custom-img">
