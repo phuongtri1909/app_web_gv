@@ -44,7 +44,7 @@ class BusinessController extends Controller
             'business_code' => 'required|string|max:15',
             'email' => 'required|email|max:255',
             'social_channel' => 'nullable|url|max:255',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|max:1000',
         ], [
             'business_code.unique' => 'Mã doanh nghiệp này đã tồn tại.',
             'business_code.required' => 'Mã doanh nghiệp là bắt buộc.',
