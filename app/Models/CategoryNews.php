@@ -15,7 +15,7 @@ class CategoryNews extends Model
     ];
 
     protected $table = 'categories';
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'slug'];
 
     public function news()
     {

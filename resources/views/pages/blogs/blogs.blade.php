@@ -1,8 +1,7 @@
 @extends('pages.layouts.page')
-@section('title', $category)
-@section('description', 'Page blogs')
-@section('keyword', 'Blogs, Blogs page, blogs')
-@section('title-page', __('blogs'))
+@section('title', $category != null ? $category->name : "Tất cả")
+@section('description', $category != null ? $category->name : "Tất cả")
+@section('keyword', $category != null ? $category->name : "Tất cả")
 
 @push('child-styles')
     <style>
@@ -249,6 +248,24 @@
 @endpush
 
 @section('content-page')
+
+
+@switch($category != null ? $category->slug : "")
+    @case('hoat-dong-xuc-tien')
+        @include('pages.components.button-register', [
+            'buttonTitle' => 'ĐK hỗ trợ',
+            'buttonLink' => route('show.form.start.promotion')
+        ])
+        @break
+    @case('hoat-dong-hoi')
+        @include('pages.components.button-register', [
+            'buttonTitle' => 'ĐK thành viên hội DN',
+            'buttonLink' => route('show.form.member.business')
+        ])
+        @break
+    @default
+@endswitch
+   
     <section id="blogs">
         <div class="container">
             <div class="row">

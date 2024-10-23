@@ -45,7 +45,7 @@
 
 <body>
     <section class="main-header" id="header">
-        <header class="header d-flex justify-content-center d-md-block">
+        <header class="header d-flex justify-content-center">
             <nav class="navbar navbar-expand-lg navbar-dark ">
                 <div class="container">
                         <a class="navbar-brand" href="{{ route('home') }}">

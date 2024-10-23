@@ -279,9 +279,9 @@ class BlogsController extends Controller
                         $q->where('slug', $categoryId);
                     });
 
-                    $category = CategoryNews::where('slug', $categoryId)->first()->name;
+                    $category = CategoryNews::where('slug', $categoryId)->first();
                 }else{
-                    $category = 'Tất cả';
+                    $category = null;
                 }
 
                 if ($request->has('tag')) {
