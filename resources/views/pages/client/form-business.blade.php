@@ -352,6 +352,10 @@
                             <div class="invalid-feedback" role="alert">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div class="d-flex justify-content-center">
+                        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+                    </div>
+
                     <button type="submit" class="btn btn-primary">Lưu lại</button>
                 </form>
 
@@ -362,6 +366,8 @@
 
 
 @push('scripts')
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <script>
         document.getElementById('upload-button').addEventListener('click', function() {
             const fileInput = document.getElementById('file-uploads');

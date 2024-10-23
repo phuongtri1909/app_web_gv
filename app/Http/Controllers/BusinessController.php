@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Business;
+use App\Models\BusinessCapitalNeed;
 use App\Models\CategoryBusiness;
 use App\Models\CategoryProductBusiness;
 use App\Models\ProductBusiness;
@@ -220,7 +221,58 @@ class BusinessController extends Controller
     }
 
     public function showFormCapitalNeeds(){
-        return view('pages.client.gv.registering-capital-needs');
+
+        $category_business = CategoryBusiness::all();
+        return view('pages.client.gv.registering-capital-needs',compact('category_business'));
+    }
+    public function storeFormCapitalNeeds(Request $request)
+    {
+        $validatedData = $request->validate([
+            'business_name' => 'required|string|max:255',
+            'business_code' => 'required|string|max:255',
+            'category_business_id' => 'required|exists:category_business,id',
+            'address' => 'required|string|max:255',
+            'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
+            'fax' => 'nullable|string|max:20',
+            'email' => 'required|email|max:255',
+            'representative_name' => 'required|string|max:255',
+            'gender' => 'required|in:male,female,other',
+            'interest_rate' => 'required|numeric',
+            'finance' => 'required|numeric',
+            'mortgage_policy' => 'required|string|max:1000',
+            'unsecured_policy' => 'required|string|max:1000',
+            'purpose' => 'required|string|max:1000',
+            'bank_connection' => 'required|string',
+            'feedback' => 'nullable|string|max:1000',
+        ], [
+            'business_name.required' => 'Vui lòng nhập tên doanh nghiệp.',
+            'business_code.required' => 'Mã số doanh nghiệp là bắt buộc.',
+            'category_business_id.required' => 'Vui lòng chọn loại hình kinh doanh.',
+            'category_business_id.exists' => 'Loại hình kinh doanh không hợp lệ.',
+            'address.required' => 'Địa chỉ doanh nghiệp là bắt buộc.',
+            'phone.required' => 'Số điện thoại là bắt buộc.',
+            'phone.max' => 'Số điện thoại không được vượt quá 10 chữ số.',
+            'phone.regex' => 'Số điện thoại chỉ được phép chứa các ký tự số.',
+            'email.required' => 'Vui lòng nhập email hợp lệ.',
+            'email.email' => 'Định dạng email không đúng.',
+            'representative_name.required' => 'Vui lòng nhập tên người đại diện.',
+            'gender.required' => 'Vui lòng chọn giới tính.',
+            'gender.in' => 'Giới tính không hợp lệ.',
+            'interest_rate.numeric' => 'Lãi suất phải là một số hợp lệ.',
+            'finance.numeric' => 'Số tiền tài chính phải là một số hợp lệ.',
+            'feedback.max' => 'Phản hồi không được vượt quá 1000 ký tự.',
+            'purpose.required' => 'Vui lòng nhập mục đích của bạn.',
+            'bank_connection.required' => 'Vui lòng nhập thông tin kết nối ngân hàng.',
+            'mortgage_policy.required' => 'Vui lòng cung cấp chính sách thế chấp.',
+            'unsecured_policy.required' => 'Vui lòng cung cấp chính sách tín chấp.',
+            'unsecured_policy.max' => 'Tín chấp không được vượt quá 1000 ký tự.',
+            'mortgage_policy.max' => 'Thế chấp không được vượt quá 1000 ký tự.',
+            'purpose.max' => 'Mục đích không được vượt quá 1000 ký tự.',
+        ]);
+        BusinessCapitalNeed::create($validatedData);
+
+
+        return redirect()->back()->with('success', 'Đăng ký thành công!');
     }
     public function showFormPromotional(){
         return view('pages.client.gv.form-promotional-introduction');
