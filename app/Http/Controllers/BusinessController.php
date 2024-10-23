@@ -29,25 +29,29 @@ class BusinessController extends Controller
 
     public function store(Request $request)
     {
+
         $request->validate([
-           'business_code' => 'required|string|max:255|unique:businesses,business_code',
-           'business_name' => 'required|string|max:255',
-           'representative_name' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:10|regex:/^[0-9]+$/',
-            'fax_number' => 'nullable|string|max:15',
+            'avt_businesses' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'representative_name' => 'required|string|max:255',
+            'birth_year' => 'required|digits:4',
+            'gender' => 'required|string',
+            'phone_number' => 'required|string|max:15',
             'address' => 'required|string|max:255',
-            'ward_id' => 'required|integer',
-            'email' => 'required|email|max:255|unique:businesses,email',
-            'category_business_id' => 'required|integer',
-            'business_license' => 'nullable|file|mimes:pdf|max:2048',
+            'business_address' => 'required|string|max:255',
+            'ward_id' => 'required|integer|exists:ward_govap,id',
+            'business_name' => 'required|string|max:255',
+            'business_license' => 'nullable|mimes:pdf|max:3048',
+            'business_code' => 'required|string|max:15',
+            'email' => 'required|email|max:255',
             'social_channel' => 'nullable|url|max:255',
-            'description' => 'nullable|string|max:1000',
-            'avt_businesses' => 'nullable|file|mimes:jpg,jpeg,png|max:5048',
-        ],[
+            'description' => 'nullable|string',
+        ], [
             'business_code.unique' => 'Mã doanh nghiệp này đã tồn tại.',
             'business_code.required' => 'Mã doanh nghiệp là bắt buộc.',
             'business_name.required' => 'Tên doanh nghiệp là bắt buộc.',
             'representative_name.required' => 'Tên người đại diện pháp luật là bắt buộc.',
+            'birth_year.required' => 'Năm sinh là bắt buộc.',
+            'gender.required' => 'Giới tính là bắt buộc.',
             'phone_number.required' => 'Số điện thoại là bắt buộc.',
             'phone_number.regex' => 'Số điện thoại chỉ chứa số.',
             'phone_number.max' => 'Số điện thoại không được hơn 10 số.',
@@ -58,14 +62,19 @@ class BusinessController extends Controller
             'email.unique' => 'Email này đã được sử dụng.',
             'category_business_id.required' => 'Vui lòng chọn loại hình doanh nghiệp.',
             'business_license.mimes' => 'Giấy phép kinh doanh phải là file dạng: pdf',
-            'business_license.max' => 'Giấy phép kinh doanh không được vượt quá 2MB.',
+            'business_license.max' => 'Giấy phép kinh doanh không được vượt quá 3MB.',
             'social_channel.url' => 'Đường dẫn social không hợp lệ.',
             'description.max' => 'Mô tả không được vượt quá 1000 ký tự.',
             'avt_businesses.mimes' => 'Hình ảnh đại diện phải là file dạng: jpg, jpeg, png.',
             'avt_businesses.max' => 'Hình ảnh đại diện không được vượt quá 5MB.',
         ]);
+
+        DB::beginTransaction();
+
         try {
             $data = $request->except(['business_license', 'avt_businesses']);
+
+
             if ($request->hasFile('avt_businesses')) {
                 $image = $request->file('avt_businesses');
                 $folderName = date('Y/m');
@@ -75,6 +84,8 @@ class BusinessController extends Controller
                 $image->move(public_path('/uploads/images/business/' . $folderName), $fileName);
                 $data['avt_businesses'] = 'uploads/images/business/' . $folderName . '/' . $fileName;
             }
+
+
             if ($request->hasFile('business_license')) {
                 $file = $request->file('business_license');
                 $folderName = date('Y/m');
@@ -84,6 +95,7 @@ class BusinessController extends Controller
                 $file->move(public_path('/uploads/images/business/' . $folderName), $licenseName);
                 $data['business_license'] = 'uploads/images/business/' . $folderName . '/' . $licenseName;
             }
+
             Business::create($data);
 
             DB::commit();
@@ -103,6 +115,7 @@ class BusinessController extends Controller
             return redirect()->back()->with('error', 'Gửi thất bại: ' . $e->getMessage());
         }
     }
+
 
 
 
@@ -212,7 +225,7 @@ class BusinessController extends Controller
     public function showFormPromotional(){
         return view('pages.client.gv.form-promotional-introduction');
     }
-    
+
     public function businessOpinion()
     {
         return view('pages.client.form-business-opinion');
