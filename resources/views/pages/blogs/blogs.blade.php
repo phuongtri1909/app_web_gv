@@ -259,7 +259,7 @@
         @break
     @case('hoat-dong-hoi')
         @include('pages.components.button-register', [
-            'buttonTitle' => 'ĐK thành viên hội DN',
+            'buttonTitle' => 'ĐK Thành viên',
             'buttonLink' => route('show.form.member.business')
         ])
         @break
