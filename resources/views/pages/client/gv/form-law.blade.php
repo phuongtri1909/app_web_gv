@@ -1,5 +1,5 @@
 @extends('pages.layouts.page')
-
+@section('title', 'Đăng ký tư vấn pháp luật')
 @push('child-styles')
     <style>
         .legal-advice-form {
