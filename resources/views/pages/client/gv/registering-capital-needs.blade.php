@@ -165,7 +165,7 @@
             background-color: #004494;
         }
 
-        #form-business {
+        #registering-capital {
             position: relative;
             margin: 30px auto;
             /* padding: 20px 0px 20px 0px; */
@@ -191,11 +191,11 @@
 
 
 @section('content-page')
-    <section id="start-promotion">
+    <section id="registering-capital">
         <div class="container my-4">
             <div class="row">
                 @include('pages.notification.success-error')
-                <form action="{{ route('business.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('show.form.capital.need.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="col-md-4 mb-4">
@@ -223,13 +223,14 @@
                         </div>
 
                         <div class="col-md-4 mb-4">
-                            <label for="business_type" class="form-label">Loại hình doanh nghiệp <span
+                            <label for="category_business_id" class="form-label">Loại hình doanh nghiệp <span
                                     class="text-danger">*</span></label>
-                            <input type="text"
-                                class="form-control form-control-sm @error('business_type') is-invalid @enderror"
-                                id="business_type" name="business_type" placeholder="Nhập loại hình doanh nghiệp"
-                                value="{{ old('business_type') }}">
-                            @error('business_type')
+                            <select class="form-select form-control form-select-sm" id="category_business_id" name="category_business_id">
+                                @foreach ($category_business as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('category_business_id')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
@@ -288,13 +289,30 @@
                         </div>
 
                         <div class="col-md-4 mb-4">
-                            <label for="gender" class="form-label">Giới tính <span class="text-danger">*</span></label>
-                            <select id="gender" name="gender" class="form-control form-control-sm">
-                                <option value="" disabled selected>Chọn giới tính</option>
-                                <option value="male">Nam</option>
-                                <option value="female">Nữ</option>
-                                <option value="other">Khác</option>
-                            </select>
+                            <label class="form-label">Giới tính:<span class="text-danger">*</span></label>
+                            <div class="d-flex align-items-center">
+                                <div class="form-check me-3">
+                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderMale" value="male" {{ old('gender') == 'male' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="genderMale">
+                                        Nam
+                                    </label>
+                                </div>
+                                <div class="form-check me-3">
+                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderFemale" value="female" {{ old('gender') == 'female' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="genderFemale">
+                                        Nữ
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderOther" value="other" {{ old('gender') == 'other' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="genderOther">
+                                        Khác
+                                    </label>
+                                </div>
+                            </div>
+                            @error('gender')
+                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 
@@ -347,7 +365,6 @@
                         <button type="submit" class="btn btn-success">Đăng ký</button>
                     </div>
                 </form>
-
             </div>
         </div>
     </section>

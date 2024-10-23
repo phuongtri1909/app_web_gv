@@ -18,6 +18,9 @@ class CategoryBusiness  extends Model
     {
         return $this->hasMany(Business::class, 'category_business_id');
     }
-
+    public function businessCapitalNeeds()
+    {
+        return $this->hasMany(BusinessCapitalNeed::class, 'category_business_id');
+    }
 
 }

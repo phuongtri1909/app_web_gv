@@ -82,6 +82,7 @@ Route::middleware(['language'])->group(function () {
 
         Route::get('/form-start-promotion', [BusinessController::class, 'showFormStartPromotion'])->name('show.form.start.promotion');
         Route::get('/form-registering-capital-needs', [BusinessController::class, 'showFormCapitalNeeds'])->name('show.form.capital.need');
+        Route::post('/form-registering-capital-needs', [BusinessController::class, 'storeFormCapitalNeeds'])->name('show.form.capital.need.store');
         Route::get('/form-promotional-introduction', [BusinessController::class, 'showFormPromotional'])->name('show.form.promotional');
 
         Route::get('/form-recruitment-registration',[BusinessRecruitmentController::class, 'recruitmentRegistration'])->name('recruitment.registration');
@@ -108,7 +109,7 @@ Route::middleware(['language'])->group(function () {
         })->name('job-connector');
 
         Route::get('/legal-advice', [ContactConsultationController::class,'legalAdvice'])->name('legal-advice');
-        
+
         //tạm gán cho locations
         Route::get('/locations', function(){
             return view('pages.client.locations');
