@@ -12,7 +12,7 @@
 
 @section('content')
     @include('pages.components.button-register', [
-        'buttonTitle' => 'ĐkTV Pháp luật',
+        'buttonTitle' => 'ĐKTV Pháp luật',
         'buttonLink' => route('show.form.legal')
     ])
 @endsection
