@@ -11,5 +11,9 @@
 @endpush
 
 @section('content')
+    @include('pages.components.button-register', [
+        'buttonTitle' => 'ĐK Điểm đến',
+        'buttonLink' => route('show.form.promotional')
+    ])
     
 @endsection

@@ -1,5 +1,5 @@
 @extends('pages.layouts.page')
-@section('title', 'ĐK điểm đến')
+@section('title', 'Đăng ký điểm đến')
 
 @push('child-styles')
     <style>
