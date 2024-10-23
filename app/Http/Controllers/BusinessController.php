@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Business;
 use App\Models\BusinessCapitalNeed;
+use App\Models\BusinessFeedback;
+use App\Models\BusinessField;
+use App\Models\BusinessPromotionalIntroduction;
 use App\Models\BusinessStartPromotionInvestment;
 use App\Models\BusinessSupportNeed;
 use App\Models\CategoryBusiness;
@@ -36,7 +39,7 @@ class BusinessController extends Controller
         $request->validate([
             'avt_businesses' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'representative_name' => 'required|string|max:255',
-            'birth_year' => 'required|digits:4',
+            'birth_year' => 'required|digits:4|min:1500|max:' . date('Y'),
             'gender' => 'required|string',
             'phone_number' => 'required|string|max:10|regex:/^[0-9]+$/',
             'address' => 'required|string|max:255',
@@ -54,6 +57,9 @@ class BusinessController extends Controller
             'business_name.required' => 'Tên doanh nghiệp là bắt buộc.',
             'representative_name.required' => 'Tên người đại diện pháp luật là bắt buộc.',
             'birth_year.required' => 'Năm sinh là bắt buộc.',
+            'birth_year.min' => 'Năm sinh phải lớn hơn hoặc bằng 1500.',
+            'birth_year.max' => 'Năm sinh không được lớn hơn năm hiện tại.',
+            'birth_year.digits' => 'Năm sinh phải có 4 chữ số.',
             'gender.required' => 'Giới tính là bắt buộc.',
             'phone_number.required' => 'Số điện thoại là bắt buộc.',
             'phone_number.regex' => 'Số điện thoại chỉ chứa số.',
@@ -360,12 +366,219 @@ class BusinessController extends Controller
         return redirect()->back()->with('success', 'Đăng ký thành công!');
     }
     public function showFormPromotional(){
-        return view('pages.client.gv.form-promotional-introduction');
+        $business_fields = BusinessField::all();
+        return view('pages.client.gv.form-promotional-introduction',compact('business_fields'));
+    }
+    public function storeFormPromotional(Request $request)
+    {
+        DB::beginTransaction();
+        $data = [];
+
+        try {
+            $request->validate([
+                'representative_name' => 'required|string|max:255',
+                'birth_year' => 'required|digits:4|integer|min:1500|max:' . date('Y'),
+                'gender' => 'required|in:male,female,other',
+                'phone_number' => 'required|string|max:15',
+                'address' => 'required|string|max:255',
+                'business_address' => 'required|string|max:255',
+                'business_name' => 'required|string|max:255',
+                'license' => 'required|file|mimes:pdf|max:4048',
+                'business_code' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'social_channel' => 'nullable|url',
+                'logo' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
+                'product_image.*' => 'image|mimes:jpg,png,jpeg,gif|max:2048',
+                'product_video' => 'nullable|file|mimes:mp4,mov,avi|max:20480',
+                'business_field' => 'required|string',
+            ], [
+                'representative_name.required' => 'Vui lòng nhập họ tên chủ doanh nghiệp.',
+                'birth_year.required' => 'Năm sinh là bắt buộc.',
+                'birth_year.min' => 'Năm sinh phải lớn hơn hoặc bằng 1500.',
+                'birth_year.max' => 'Năm sinh không được lớn hơn năm hiện tại.',
+                'birth_year.digits' => 'Năm sinh phải có 4 chữ số.',
+                'gender.required' => 'Vui lòng chọn giới tính.',
+                'phone_number.required' => 'Vui lòng nhập số điện thoại.',
+                'address.required' => 'Vui lòng nhập địa chỉ cư trú.',
+                'business_address.required' => 'Vui lòng nhập địa chỉ kinh doanh.',
+                'business_name.required' => 'Vui lòng nhập tên doanh nghiệp/hộ kinh doanh.',
+                'business_code.required' => 'Vui lòng nhập mã số thuế.',
+                'email.required' => 'Vui lòng nhập email doanh nghiệp.',
+                'email.email' => 'Email không hợp lệ.',
+                'social_channel.url' => 'Đường dẫn fanpage không hợp lệ.',
+                'logo.image' => 'Logo phải là một hình ảnh.',
+                'logo.mimes' => 'Logo phải có định dạng jpg, png, jpeg, hoặc gif.',
+                'logo.max' => 'Logo không được vượt quá 2MB.',
+                'product_image.image' => 'Hình ảnh sản phẩm phải là một hình ảnh.',
+                'product_image.mimes' => 'Hình ảnh sản phẩm phải có định dạng jpg, png, jpeg, hoặc gif.',
+                'product_image.max' => 'Hình ảnh sản phẩm không được vượt quá 2MB.',
+                'product_video.file' => 'Video phải là một tệp.',
+                'product_video.mimes' => 'Video phải có định dạng mp4, mov, hoặc avi.',
+                'product_video.max' => 'Video không được vượt quá 20MB.',
+                'business_field.required' => 'Vui lòng chọn ngành nghề kinh doanh.',
+                'license.required' => 'Vui lòng tải lên giấy phép kinh doanh.',
+                'license.file' => 'Giấy phép kinh doanh phải là một tệp.',
+                'license.mimes' => 'Giấy phép kinh doanh phải có định dạng pdf.',
+                'license.max' => 'Giấy phép kinh doanh không được vượt quá 4MB.',
+            ]);
+
+            $business = new BusinessPromotionalIntroduction();
+            $business->fill($request->only([
+                'representative_name', 'birth_year', 'gender', 'phone_number',
+                'address', 'business_address', 'business_name',
+                'business_code', 'email', 'social_channel'
+            ]));
+            $this->handleFileUpload($request, 'logo', $data, '_logo_','business');
+            $this->handleFileUpload($request, 'product_image', $data, '_product_','business');
+            $this->handleFileUpload($request, 'product_video', $data, '_video_','business');
+            $this->handleFileUpload($request, 'license', $data, '_license_','business');
+
+            $business->logo = $data['logo'];
+            $business->product_image = $data['product_image'];
+            $business->product_video = $data['product_video'];
+            $business->license = $data['license'];
+            $business->save();
+
+            if ($request->business_field) {
+                $businessField = BusinessField::where('name', $request->business_field)->first();
+                if ($businessField) {
+                    $business->businessField()->attach($businessField->id);
+                }
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Đăng ký thành công!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            $this->cleanupUploadedFiles($data);
+
+            return redirect()->back()->with('error', 'Gửi thất bại: ' . $e->getMessage());
+        }
     }
 
     public function businessOpinion()
     {
         return view('pages.client.form-business-opinion');
+    }
+    public function storeBusinessOpinion(Request $request)
+    {
+        DB::beginTransaction();
+        $data = [];
+
+        try {
+            $request->validate([
+                'opinion' => 'required|string',
+                'attached_images.*' => 'required|image|mimes:jpg,png,jpeg,gif|max:9048',
+                'suggestions' => 'nullable|string',
+                'owner_full_name' => 'required|string|max:255',
+                'birth_year' => 'required|digits:4|integer|min:1500|max:' . date('Y'),
+                'gender' => 'required|in:male,female,other',
+                'phone' => 'required|string|max:15',
+                'residential_address' => 'required|string|max:255',
+                'business_name' => 'required|string|max:255',
+                'business_address' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'business_license' => 'required|file|mimes:pdf|max:4048',
+            ], [
+                'opinion.required' => 'Vui lòng nhập ý kiến.',
+                'attached_images.required' => 'Vui lòng tải lên ít nhất một hình ảnh.',
+                'attached_images.image' => 'Tệp phải là một hình ảnh.',
+                'attached_images.mimes' => 'Hình ảnh phải có định dạng jpg, png, jpeg, hoặc gif.',
+                'attached_images.max' => 'Hình ảnh không được vượt quá 9MB.',
+                'owner_full_name.required' => 'Vui lòng nhập họ tên chủ doanh nghiệp.',
+                'birth_year.required' => 'Năm sinh là bắt buộc.',
+                'birth_year.min' => 'Năm sinh phải lớn hơn hoặc bằng 1500.',
+                'birth_year.max' => 'Năm sinh không được lớn hơn năm hiện tại.',
+                'gender.required' => 'Vui lòng chọn giới tính.',
+                'phone.required' => 'Vui lòng nhập số điện thoại.',
+                'residential_address.required' => 'Vui lòng nhập địa chỉ cư trú.',
+                'business_name.required' => 'Vui lòng nhập tên doanh nghiệp/hộ kinh doanh.',
+                'business_address.required' => 'Vui lòng nhập địa chỉ kinh doanh.',
+                'email.required' => 'Vui lòng nhập email.',
+                'email.email' => 'Email không hợp lệ.',
+                'business_license.mimes' => 'Giấy phép kinh doanh phải là file dạng: pdf',
+                'business_license.max' => 'Giấy phép kinh doanh không được vượt quá 3MB.',
+            ]);
+            $businessOpinion = new BusinessFeedback();
+            $businessOpinion->fill($request->only([
+                'opinion', 'suggestions', 'owner_full_name', 'birth_year', 'gender', 'phone',
+                'residential_address', 'business_name', 'business_address', 'email'
+            ]));
+            $this->handleFileUpload($request, 'attached_images', $data, '_attached_images_', 'feedback');
+            $this->handleFileUpload($request, 'business_license', $data, '_business_license_', 'business');
+            $businessOpinion->attached_images = $data['attached_images'];
+            $businessOpinion->business_license = $data['business_license'];
+            $businessOpinion->save();
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Đăng ký thành công!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            $this->cleanupUploadedFiles($data);
+
+            return redirect()->back()->with('error', 'Gửi thất bại: ' . $e->getMessage());
+        }
+    }
+
+
+
+    private function handleFileUpload(Request $request, $inputName, &$data, $suffix = '', $folderType = 'business')
+    {
+        if ($request->hasFile($inputName)) {
+            $files = is_array($request->file($inputName)) ? $request->file($inputName) : [$request->file($inputName)];
+            $uploadedFiles = [];
+            $folderName = date('Y/m');
+
+            foreach ($files as $file) {
+                if ($file->isValid()) {
+                    $filePath = $this->moveFile($file, $folderName, $suffix, $folderType);
+                    $uploadedFiles[] = $filePath;
+                }
+            }
+            if (!empty($uploadedFiles)) {
+                $data[$inputName] = json_encode($uploadedFiles);
+            }
+        }
+    }
+
+    private function moveFile($file, $folderName, $suffix, $folderType)
+    {
+        $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $extension = $file->getClientOriginalExtension();
+        $fileName = $originalFileName . $suffix . time() . '.' . $extension;
+
+        $basePath = '';
+        switch ($folderType) {
+            case 'feedback':
+                $basePath = 'uploads/images/feedback/';
+                break;
+            case 'business':
+                $basePath = 'uploads/images/business/';
+                break;
+            case 'other':
+                $basePath = 'uploads/images/other/';
+                break;
+            default:
+                throw new \Exception('Thư mục không hợp lệ.');
+        }
+
+        $file->move(public_path($basePath . $folderName), $fileName);
+        return $basePath . $folderName . '/' . $fileName;
+    }
+
+
+
+    private function cleanupUploadedFiles(array $data)
+    {
+        foreach ($data as $filePath) {
+            if (file_exists(public_path($filePath))) {
+                unlink(public_path($filePath));
+            }
+        }
     }
 
 }

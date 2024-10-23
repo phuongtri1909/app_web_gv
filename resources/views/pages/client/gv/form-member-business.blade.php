@@ -7,7 +7,7 @@
             position: relative;
             margin: 30px auto;
             /* padding: 20px 0px 20px 0px; */
-            max-width: 800px;
+            /* max-width: 800px; */
             background-color: #f8f9fa;
             border-radius: 8px;
             background: url('{{ asset('images/logo.png') }}') no-repeat;
@@ -152,136 +152,216 @@
     <section id="form-member-business">
         <div class="container my-4">
             <div class="row">
-                <form>
+                @include('pages.notification.success-error')
+                <form action="{{ route('form.member.business.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
                     {{-- <h3 class="text-center title-member-business">Đăng ký gia nhập hội doanh nghiệp quận gò vấp</h3> --}}
                     <div class="mb-3">
                         <label for="tenDoanhNghiep" class="form-label">Tên doanh nghiệp:</label>
-                        <input type="text" class="form-control  form-control-sm" id="tenDoanhNghiep"
+                        <input type="text" class="form-control form-control-sm" id="tenDoanhNghiep" name="tenDoanhNghiep"
                             placeholder="Nhập tên doanh nghiệp">
+                            @error('tenDoanhNghiep')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                     </div>
 
                     <div class="mb-3">
                         <label for="giayDKKD" class="form-label">Giấy chứng nhận ĐKKD số:</label>
-                        <input type="text" class="form-control  form-control-sm" id="giayDKKD"
+                        <input type="text" class="form-control form-control-sm" id="giayDKKD" name="giayDKKD"
                             placeholder="Nhập số ĐKKD">
+                            @error('giayDKKD')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="ngayCap" class="form-label">Ngày cấp:</label>
-                            <input type="date" class="form-control  form-control-sm" id="ngayCap">
+                            <input type="date" class="form-control form-control-sm" id="ngayCap" name="ngayCap">
+                            @error('ngayCap')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="noiCap" class="form-label">Nơi cấp:</label>
-                            <input type="text" class="form-control  form-control-sm" id="noiCap"
+                            <input type="text" class="form-control form-control-sm" id="noiCap" name="noiCap"
                                 placeholder="Nhập nơi cấp">
+                                @error('noiCap')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="linhVucHoatDong" class="form-label">Lĩnh vực hoạt động:</label>
-                        <input type="text" class="form-control  form-control-sm" id="linhVucHoatDong"
+                        <input type="text" class="form-control form-control-sm" id="linhVucHoatDong" name="linhVucHoatDong"
                             placeholder="Ngành nghề đang kinh doanh">
+                            @error('linhVucHoatDong')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                     </div>
 
                     <div class="mb-3">
                         <label for="diaChiTruSo" class="form-label">Địa chỉ trụ sở chính:</label>
-                        <input type="text" class="form-control  form-control-sm" id="diaChiTruSo"
+                        <input type="text" class="form-control form-control-sm" id="diaChiTruSo" name="diaChiTruSo"
                             placeholder="Nhập địa chỉ trụ sở chính">
+                            @error('diaChiTruSo')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label for="dienThoai" class="form-label">Điện thoại:</label>
-                            <input type="text" class="form-control  form-control-sm" id="dienThoai"
+                            <input type="text" class="form-control form-control-sm" id="dienThoai" name="dienThoai"
                                 placeholder="Nhập số điện thoại">
+                                @error('dienThoai')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
                         </div>
                         <div class="col-md-4">
                             <label for="fax" class="form-label">Fax:</label>
-                            <input type="text" class="form-control  form-control-sm" id="fax"
+                            <input type="text" class="form-control form-control-sm" id="fax" name="fax"
                                 placeholder="Nhập số fax">
+                                @error('fax')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
                         </div>
                         <div class="col-md-4">
                             <label for="email" class="form-label">Email:</label>
-                            <input type="email" class="form-control  form-control-sm" id="email"
+                            <input type="email" class="form-control form-control-sm" id="email" name="email"
                                 placeholder="Nhập email">
+                                @error('email')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="diaChiChiNhanh" class="form-label">Địa chỉ chi nhánh (nếu có):</label>
-                        <input type="text" class="form-control  form-control-sm" id="diaChiChiNhanh"
+                        <input type="text" class="form-control form-control-sm" id="diaChiChiNhanh" name="diaChiChiNhanh"
                             placeholder="Nhập địa chỉ chi nhánh">
+                            @error('diaChiChiNhanh')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                     </div>
 
                     <div class="mb-3">
                         <label for="thamGiaToChuc" class="form-label">Đã tham gia tổ chức:</label>
-                        <input type="text" class="form-control  form-control-sm" id="thamGiaToChuc"
+                        <input type="text" class="form-control form-control-sm" id="thamGiaToChuc" name="thamGiaToChuc"
                             placeholder="Nhập thông tin tổ chức">
+                            @error('thamGiaToChuc')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                     </div>
 
                     <h5>(*)Người đại diện gia nhập Hội:</h5>
 
                     <div class="mb-3">
                         <label for="hoVaTen" class="form-label">Họ và tên:</label>
-                        <input type="text" class="form-control  form-control-sm" id="hoVaTen"
+                        <input type="text" class="form-control form-control-sm" id="hoVaTen" name="hoVaTen"
                             placeholder="Nhập họ và tên">
+                            @error('hoVaTen')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="chucVu" class="form-label">Chức vụ:</label>
-                            <input type="text" class="form-control  form-control-sm" id="chucVu"
+                            <input type="text" class="form-control form-control-sm" id="chucVu" name="chucVu"
                                 placeholder="Nhập chức vụ">
+                                @error('chucVu')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
                         </div>
-                        <div class="col-md-6">
-                            <label for="gioiTinh" class="form-label">Giới tính:</label>
-                            <select class="form-select form-select-sm" id="gioiTinh">
-                                <option value="Nam">Nam</option>
-                                <option value="Nữ">Nữ</option>
-                            </select>
+                        <div class="col-md-6 ">
+                            <label class="form-label">Giới tính:<span class="text-danger">*</span></label>
+                            <div class="d-flex align-items-center">
+                                <div class="form-check me-3">
+                                    <input class="form-check-input @error('gioiTinh') is-invalid @enderror" type="radio" name="gioiTinh" id="genderMale" value="male" {{ old('gender') == 'male' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="genderMale">
+                                        Nam
+                                    </label>
+                                </div>
+                                <div class="form-check me-3">
+                                    <input class="form-check-input @error('gioiTinh') is-invalid @enderror" type="radio" name="gioiTinh" id="genderFemale" value="female" {{ old('gender') == 'female' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="genderFemale">
+                                        Nữ
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input @error('gioiTinh') is-invalid @enderror" type="radio" name="gioiTinh" id="genderOther" value="other" {{ old('gender') == 'other' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="genderOther">
+                                        Khác
+                                    </label>
+                                </div>
+                            </div>
+                            @error('gioiTinh')
+                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="cmnd" class="form-label">CMND:</label>
-                            <input type="text" class="form-control  form-control-sm" id="cmnd"
+                            <label for="cmnd" class="form-label">CCCD:</label>
+                            <input type="text" class="form-control form-control-sm" id="cmnd" name="cmnd"
                                 placeholder="Nhập số CMND">
+                                @error('cmnd')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="ngayCapCmnd" class="form-label">Ngày cấp:</label>
-                            <input type="date" class="form-control  form-control-sm" id="ngayCapCmnd">
+                            <input type="date" class="form-control form-control-sm" id="ngayCapCmnd" name="ngayCapCmnd">
+                            @error('ngayCapCmnd')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="diaChiRieng" class="form-label">Địa chỉ nhà riêng:</label>
-                        <input type="text" class="form-control  form-control-sm" id="diaChiRieng"
+                        <input type="text" class="form-control form-control-sm" id="diaChiRieng" name="diaChiRieng"
                             placeholder="Nhập địa chỉ nhà riêng">
+                            @error('diaChiRieng')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                     </div>
 
                     <div class="mb-3">
                         <label for="dienThoaiLienHe" class="form-label">Điện thoại (di động – cơ quan – nhà
                             riêng):</label>
-                        <input type="text" class="form-control  form-control-sm" id="dienThoaiLienHe"
+                        <input type="text" class="form-control form-control-sm" id="dienThoaiLienHe" name="dienThoaiLienHe"
                             placeholder="Nhập số điện thoại liên hệ">
+                            @error('dienThoaiLienHe')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                     </div>
 
                     <div class="mb-3">
                         <label for="emailDaiDien" class="form-label">Email:</label>
-                        <input type="email" class="form-control  form-control-sm" id="emailDaiDien"
+                        <input type="email" class="form-control form-control-sm" id="emailDaiDien" name="emailDaiDien"
                             placeholder="Nhập email người đại diện">
+                            @error('emailDaiDien')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                     </div>
+
                     <div class="mb-3">
                         <label for="cndkkd">Giấy CNĐKKD :<span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="file" id="cndkkd" name="cndkkd" accept=".jpg,.jpeg,.png,.pdf"
+                            <input type="file" id="cndkkd" name="cndkkd" accept=".pdf"
                                 value="{{ old('cndkkd') }}" style="display: none;" />
-                            <button type="button" class="btn btn-success  @error('cndkkd') is-invalid @enderror"
+
+                            <button type="button" class="btn btn-success @error('cndkkd') is-invalid @enderror"
                                 id="cndkkd-button">
                                 <i class="bi bi-upload"></i> Upload tệp
                             </button>
+                            @error('cndkkd')
+                            <div class="invalid-feedback d-block text-center" role="alert">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div id="upload-list-cndkkd"></div>
                         <span id="error-message-cndkkd" class="text-danger"></span>
@@ -290,12 +370,15 @@
                     <div class="mb-3">
                         <label for="cccd1">CCCD:(mặt trước)<span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="file" id="cccd1" name="cccd1" accept=".jpg,.jpeg,.png,.pdf"
+                            <input type="file" id="cccd1" name="cccd1" accept="images/*"
                                 value="{{ old('cccd1') }}" style="display: none;" />
-                            <button type="button" class="btn btn-success  @error('cccd1') is-invalid @enderror"
+                            <button type="button" class="btn btn-success @error('cccd1') is-invalid @enderror"
                                 id="cccd1-button">
                                 <i class="bi bi-upload"></i> CCCD mặt trước
                             </button>
+                            @error('cccd1')
+                            <div class="invalid-feedback d-block text-center" role="alert">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div id="upload-list-cccd1"></div>
                         <span id="error-message-cccd1" class="text-danger"></span>
@@ -304,19 +387,19 @@
                     <div class="mb-3">
                         <label for="cccd2">CCCD:(mặt sau)<span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="file" id="cccd2" name="cccd2" accept=".jpg,.jpeg,.png,.pdf"
+                            <input type="file" id="cccd2" name="cccd2" accept="image/*"
                                 value="{{ old('cccd2') }}" style="display: none;" />
-                            <button type="button" class="btn btn-success  @error('cccd2') is-invalid @enderror"
+                            <button type="button" class="btn btn-success @error('cccd2') is-invalid @enderror"
                                 id="cccd2-button">
                                 <i class="bi bi-upload"></i> CCCD mặt sau
                             </button>
+                            @error('cccd2')
+                            <div class="invalid-feedback d-block text-center" role="alert">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div id="upload-list-cccd2"></div>
                         <span id="error-message-cccd2" class="text-danger"></span>
                     </div>
-
-
-
 
                     {{-- <div class="text-end">
                         <p>Gò Vấp, ngày ... tháng ... năm 20...</p>
@@ -335,6 +418,7 @@
                         <button type="submit" class="btn btn-success">Đăng ký</button>
                     </div>
                 </form>
+
             </div>
         </div>
     </section>

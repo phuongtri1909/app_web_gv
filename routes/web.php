@@ -85,12 +85,14 @@ Route::middleware(['language'])->group(function () {
         Route::get('/form-registering-capital-needs', [BusinessController::class, 'showFormCapitalNeeds'])->name('show.form.capital.need');
         Route::post('/form-registering-capital-needs', [BusinessController::class, 'storeFormCapitalNeeds'])->name('show.form.capital.need.store');
         Route::get('/form-promotional-introduction', [BusinessController::class, 'showFormPromotional'])->name('show.form.promotional');
+        Route::post('/form-promotional-introduction', [BusinessController::class, 'storeFormPromotional'])->name('form.promotional.store');
 
         Route::get('/form-recruitment-registration',[BusinessRecruitmentController::class, 'recruitmentRegistration'])->name('recruitment.registration');
         Route::post('/form-recruitment-registration',[BusinessRecruitmentController::class, 'storeForm'])->name('recruitment.registration.store');
         Route::get('/form-job-application', [JobApplicationController::class, 'jobApplication'])->name('job.application');
         Route::post('/form-job-application', [JobApplicationController::class, 'storeForm'])->name('job.application.store');
         Route::get('/form-business-opinion', [BusinessController::class, 'businessOpinion'])->name('business.opinion');
+        Route::post('/form-business-opinion', [BusinessController::class, 'storeBusinessOpinion'])->name('business.opinion.store');
 
         //Route::get('/form-business', [BusinessController::class, 'create'])->name('business.create');
         Route::post('/form-business', [BusinessController::class, 'store'])->name('business.store');
@@ -103,6 +105,7 @@ Route::middleware(['language'])->group(function () {
         Route::post('/form-legal-advice', [LawsController::class, 'storeForm'])->name('legal.advice.store');
         Route::get('/post-detail/{slug}', [BlogsController::class, 'showPostIndex'])->name('post-detail');
         Route::get('/member-business', [MemberBusinessController::class, 'showFormMemberBusiness'])->name('show.form.member.business');
+        Route::post('/member-business', [MemberBusinessController::class, 'storFormMemberBusiness'])->name('form.member.business.store');
 
         //tạm gán như này cho kết nối việc làm
         Route::get('/job-connector', function(){

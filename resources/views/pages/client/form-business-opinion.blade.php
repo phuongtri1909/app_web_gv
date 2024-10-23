@@ -26,7 +26,7 @@
         <div class="container">
             <div class="row">
                 @include('pages.notification.success-error')
-                <form action="#" method="POST" enctype="multipart/form-data">
+                <form action="{{route('business.opinion.store')}}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="col-md-12 mb-4">
@@ -47,7 +47,7 @@
                         </div>
 
                         <div class="col-md-12 mb-4">
-                            <label for="suggestions" class="form-label">Kiến nghị, đề xuất <span class="text-danger">*</span></label>
+                            <label for="suggestions" class="form-label">Kiến nghị, đề xuất(Không bắt buộc)</label>
                             <textarea class="form-control form-control-sm @error('suggestions') is-invalid @enderror" id="suggestions" name="suggestions" placeholder="Nhập kiến nghị, đề xuất">{{ old('suggestions') }}</textarea>
                             @error('suggestions')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
@@ -123,7 +123,7 @@
                             @enderror
                         </div>
 
-                        
+
 
                         <div class="col-md-12 mb-4">
                             <label for="email" class="form-label">Email</label>
