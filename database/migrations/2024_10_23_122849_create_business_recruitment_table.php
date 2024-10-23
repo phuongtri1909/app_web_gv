@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('business_name');
             $table->string('business_code');
-            $table->foreignId('category_business_id')->constrained('category_business');
+            $table->unsignedBigInteger('category_business_id');
             $table->string('head_office_address');
             $table->string('phone');
             $table->string('fax')->nullable();
