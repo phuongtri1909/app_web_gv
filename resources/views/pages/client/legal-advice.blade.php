@@ -11,5 +11,8 @@
 @endpush
 
 @section('content')
-    
+    @include('pages.components.button-register', [
+        'buttonTitle' => 'ĐKTV Pháp luật',
+        'buttonLink' => route('show.form.legal')
+    ])
 @endsection

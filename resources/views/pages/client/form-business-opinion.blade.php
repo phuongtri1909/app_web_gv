@@ -1,4 +1,6 @@
 @extends('pages.layouts.page')
+@section('title', 'Ý kiên doanh nghiệp')
+@section('description', 'Ý kiên doanh nghiệp')
 @push('styles')
     <style>
         .form-control:focus,

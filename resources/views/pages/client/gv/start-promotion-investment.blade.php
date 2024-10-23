@@ -1,4 +1,5 @@
 @extends('pages.layouts.page')
+@section('title', 'Đăng ký Khởi nghiệp, Xúc tiến thương mại – Kêu gọi đầu tư')
 
 @push('child-styles')
     <style>

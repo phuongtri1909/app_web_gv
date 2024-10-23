@@ -46,6 +46,7 @@ use App\Http\Controllers\CategoryNewsController;
 use App\Http\Controllers\CustomerInterestController;
 use App\Http\Controllers\FinancialSupportController;
 use App\Http\Controllers\ParentsChildController;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +60,14 @@ use App\Http\Controllers\ParentsChildController;
 */
 
 Route::middleware(['language'])->group(function () {
+
+    Route::get('/clear-cache', function() {
+        Artisan::call('cache:clear');
+        Artisan::call('config:clear');
+        Artisan::call('route:clear');
+        Artisan::call('view:clear');
+        return "Cache is cleared";
+    })->name('clear.cache');
 
     Route::group(['prefix' => 'client'], function(){
         Route::get('business', [BusinessController::class,'business'])->name('business');
