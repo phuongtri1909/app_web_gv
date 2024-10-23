@@ -12,7 +12,7 @@ class CustomerInterest extends Model
 
     public function financialSupport()
     {
-        return $this->belongsTo(FinancialSupport::class);
+        return $this->belongsTo(FinancialSupport::class,'financial_support_id');
     }
 
     // public function personalBusinessInterest()

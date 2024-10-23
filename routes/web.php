@@ -100,6 +100,12 @@ Route::middleware(['language'])->group(function () {
         Route::get('/locations', function(){
             return view('pages.client.locations');
         })->name('locations');
+
+
+        //tam gán trang intro HDN
+        Route::get('/intro-hdn', function(){
+            return view('pages.client.introduction-hdn');
+        })->name('introduction');
     });
 
     Route::get('/', [HomeController::class, 'index'])->name('home');

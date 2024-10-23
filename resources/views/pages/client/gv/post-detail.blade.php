@@ -1,5 +1,5 @@
 @extends('pages.layouts.page')
-{{-- @section('bg-page', asset('images/Vayvonkinhdoanh.jpg')) --}}
+@section('title', $blog->name)
 
 @push('child-styles')
     <style>
@@ -123,6 +123,8 @@
 @endpush
 
 @section('content-page')
+
+    @include('pages.components.button-register', ['buttonTitle' => 'KN Ngân hàng', 'buttonLink' => route('show.form',$blog->id)])
     <section id="blog-detail">
         <div class="banner">
             <img src="{{asset('images/Vayvonkinhdoanh.jpg')}}" alt="Banner Image">

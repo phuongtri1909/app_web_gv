@@ -123,7 +123,7 @@
 @push('child-scripts')
 @endpush
 @section('content-page')
-    @include('pages.components.button-register', ['buttonTitle' => 'KN Ngân hàng', 'buttonLink' => route('business.index')])
+    @include('pages.components.button-register', ['buttonTitle' => 'KN Ngân hàng', 'buttonLink' => route('show.form')])
     <section id="home-post">
         <div class="banner">
             <img src="{{ asset('images/Vayvonkinhdoanh.jpg') }}" alt="Banner Image">

@@ -347,7 +347,7 @@ class BlogsController extends Controller
 
 
         $blog->formatted_published_at = $this->formatDate($blog->published_at);
-        // dd($blog);
+       
         return view('pages.client.gv.post-detail', compact('blog'));
     }
     public function showBlogIndexMini($slug)

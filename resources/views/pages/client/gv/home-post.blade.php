@@ -1,5 +1,6 @@
 @if ($financialSupports->isNotEmpty() || $bankServicers->isNotEmpty())
     @extends('pages.layouts.page')
+    @section('title', 'Kết nối ngân hàng '  . $bank->name)
     @push('child-styles')
         <style>
             .icon-box {
@@ -115,6 +116,7 @@
     @push('child-scripts')
     @endpush
     @section('content-page')
+    @include('pages.components.button-register', ['buttonTitle' => 'KN Ngân hàng', 'buttonLink' => route('show.form')])
         <section id="home-post">
             <div class="banner">
                 <img src="{{asset('images/Vayvonkinhdoanh.jpg')}}" alt="Banner Image">
@@ -198,9 +200,4 @@
         </section>
     @endsection
 @endif
-@push('child-styles')
-<style>
-.main-header,.main-footer,.waves{display: none}
-</style>
-@endpush
 

@@ -1,5 +1,5 @@
 @extends('pages.layouts.page')
-{{-- @section('bg-page', asset('images/Vayvonkinhdoanh.jpg')) --}}
+@section('title', 'Đăng ký kết nối ngân hàng')
 
 @push('child-styles')
     <style>
