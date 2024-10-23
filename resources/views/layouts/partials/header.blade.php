@@ -48,7 +48,7 @@
         <header class="header d-flex justify-content-center">
             <nav class="navbar navbar-expand-lg navbar-dark ">
                 <div class="container">
-                        <a class="navbar-brand" href="{{ route('home') }}">
+                        <a class="navbar-brand me-0" href="{{ route('home') }}">
                             <img src="{{ asset('images/logo-hoi-doanh-nghiep.png') }}" alt="Flowbite Logo"
                                 style="width: 80px; height: 80px;" />
                         </a>
