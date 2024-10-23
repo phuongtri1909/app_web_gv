@@ -172,40 +172,61 @@
         </div> --}}
         <div class="container my-5">
             <div class="row">
-                <form action="" method="POST" class="legal-advice-form">
+                @include('pages.notification.success-error')
+                <form action="{{ route('legal.advice.store') }}" method="POST" class="legal-advice-form">
+                    @csrf
                     <h3>Tư Vấn Pháp Luật</h3>
+
                     <div class="form-group">
                         <label for="name">Họ và tên:</label>
-                        <input type="text" id="name" name="name" class="form-control form-control-sm" placeholder="Nhập họ tên"
-                            required>
+                        <input type="text" id="name" name="name" class="form-control form-control-sm @error('name') is-invalid @enderror" placeholder="Nhập họ tên" required>
+                        @error('name')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="form-group">
                         <label for="phone">Số Điện Thoại:</label>
-                        <input type="tel" id="phone" name="phone" class="form-control form-control-sm"
-                            placeholder="Nhập số điện thoại" required>
+                        <input type="tel" id="phone" name="phone" class="form-control form-control-sm @error('phone') is-invalid @enderror" placeholder="Nhập số điện thoại" required>
+                        @error('phone')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="form-group">
                         <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" class="form-control form-control-sm" placeholder="Nhập email"
-                            required>
+                        <input type="email" id="email" name="email" class="form-control form-control-sm @error('email') is-invalid @enderror" placeholder="Nhập email" required>
+                        @error('email')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
+
                     <div class="form-group">
                         <label for="address">Địa Chỉ:</label>
-                        <input type="text" id="address" name="address" class="form-control form-control-sm" placeholder="Nhập địa chỉ"
-                            required>
+                        <input type="text" id="address" name="address" class="form-control form-control-sm @error('address') is-invalid @enderror" placeholder="Nhập địa chỉ" required>
+                        @error('address')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
+
                     <div class="form-group">
                         <label for="company_name">Tên Công Ty/Đơn Vị:</label>
-                        <input type="text" id="company_name" name="company_name" class="form-control form-control-sm"
-                            placeholder="Nhập tên công ty hoặc đơn vị" required>
+                        <input type="text" id="company_name" name="company_name" class="form-control form-control-sm @error('company_name') is-invalid @enderror" placeholder="Nhập tên công ty hoặc đơn vị" required>
+                        @error('company_name')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="form-group">
                         <label for="advice_content">Nội Dung Cần Tư Vấn:</label>
-                        <textarea id="advice_content" name="advice_content" class="form-control form-control-sm" placeholder="Mô tả chi tiết vấn đề cần tư vấn"
-                            rows="5" required></textarea>
+                        <textarea id="advice_content" name="advice_content" class="form-control form-control-sm @error('advice_content') is-invalid @enderror" placeholder="Mô tả chi tiết vấn đề cần tư vấn" rows="5" required></textarea>
+                        @error('advice_content')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
                     </div>
 
                     <div class="text-end my-3">
@@ -213,10 +234,13 @@
                     </div>
                 </form>
 
+
             </div>
         </div>
     </section>
 @endsection
 
 @push('child-scripts')
+{{-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> --}}
+
 @endpush
