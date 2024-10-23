@@ -24,7 +24,10 @@ class Business extends Model
         'business_license',
         'social_channel',
         'description',
-        'avt_businesses'
+        'avt_businesses',
+        'birth_year',
+        'gender',
+        'business_address',
     ];
 
     public function ward()
