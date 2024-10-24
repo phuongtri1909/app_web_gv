@@ -145,8 +145,11 @@
                     </a>
                 </div>
                 @endforeach
-
             </div>
+
+           
+            <h6 class="fw-bolder">Hội Doanh Nghiệp Quận Gò Vấp sẽ liên tục cập nhật thông tin chính sách của các ngân hàng tới Quý Hội Viên</h6>
+            
         </div>
     </section>
 @endsection
