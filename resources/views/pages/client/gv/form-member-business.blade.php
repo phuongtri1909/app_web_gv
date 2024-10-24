@@ -7,7 +7,7 @@
             position: relative;
             margin: 30px auto;
             /* padding: 20px 0px 20px 0px; */
-            max-width: 800px;
+            /* max-width: 800px; */
             background-color: #f8f9fa;
             border-radius: 8px;
             background: url('{{ asset('images/logo.png') }}') no-repeat;
@@ -152,171 +152,230 @@
     <section id="form-member-business">
         <div class="container my-4">
             <div class="row">
-                <form>
+                @include('pages.notification.success-error')
+                <form action="{{ route('form.member.business.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
                     {{-- <h3 class="text-center title-member-business">Đăng ký gia nhập hội doanh nghiệp quận gò vấp</h3> --}}
                     <div class="mb-3">
-                        <label for="tenDoanhNghiep" class="form-label">Tên doanh nghiệp:</label>
-                        <input type="text" class="form-control  form-control-sm" id="tenDoanhNghiep"
-                            placeholder="Nhập tên doanh nghiệp">
+                        <label for="business_name" class="form-label">Tên doanh nghiệp:</label>
+                        <input type="text" class="form-control form-control-sm" id="business_name" name="business_name" value="{{ old('business_name') }}" placeholder="Nhập tên doanh nghiệp">
+                        @error('business_name')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="giayDKKD" class="form-label">Giấy chứng nhận ĐKKD số:</label>
-                        <input type="text" class="form-control  form-control-sm" id="giayDKKD"
-                            placeholder="Nhập số ĐKKD">
+                        <label for="business_license_number" class="form-label">Giấy chứng nhận ĐKKD số:</label>
+                        <input type="text" class="form-control form-control-sm" id="business_license_number" name="business_license_number" value="{{ old('business_license_number') }}" placeholder="Nhập số ĐKKD">
+                        @error('business_license_number')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="ngayCap" class="form-label">Ngày cấp:</label>
-                            <input type="date" class="form-control  form-control-sm" id="ngayCap">
+                            <label for="license_issue_date" class="form-label">Ngày cấp:</label>
+                            <input type="date" class="form-control form-control-sm" id="license_issue_date" name="license_issue_date" value="{{ old('license_issue_date') }}">
+                            @error('license_issue_date')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-md-6">
-                            <label for="noiCap" class="form-label">Nơi cấp:</label>
-                            <input type="text" class="form-control  form-control-sm" id="noiCap"
-                                placeholder="Nhập nơi cấp">
+                            <label for="license_issue_place" class="form-label">Nơi cấp:</label>
+                            <input type="text" class="form-control form-control-sm" id="license_issue_place" name="license_issue_place" value="{{ old('license_issue_place') }}" placeholder="Nhập nơi cấp">
+                            @error('license_issue_place')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="linhVucHoatDong" class="form-label">Lĩnh vực hoạt động:</label>
-                        <input type="text" class="form-control  form-control-sm" id="linhVucHoatDong"
-                            placeholder="Ngành nghề đang kinh doanh">
+                        <label for="business_field" class="form-label">Lĩnh vực hoạt động:</label>
+                        <input type="text" class="form-control form-control-sm" id="business_field" name="business_field" value="{{ old('business_field') }}" placeholder="Ngành nghề đang kinh doanh">
+                        @error('business_field')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="diaChiTruSo" class="form-label">Địa chỉ trụ sở chính:</label>
-                        <input type="text" class="form-control  form-control-sm" id="diaChiTruSo"
-                            placeholder="Nhập địa chỉ trụ sở chính">
+                        <label for="head_office_address" class="form-label">Địa chỉ trụ sở chính:</label>
+                        <input type="text" class="form-control form-control-sm" id="head_office_address" name="head_office_address" value="{{ old('head_office_address') }}" placeholder="Nhập địa chỉ trụ sở chính">
+                        @error('head_office_address')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-4">
-                            <label for="dienThoai" class="form-label">Điện thoại:</label>
-                            <input type="text" class="form-control  form-control-sm" id="dienThoai"
-                                placeholder="Nhập số điện thoại">
+                            <label for="phone" class="form-label">Điện thoại:</label>
+                            <input type="text" class="form-control form-control-sm" id="phone" name="phone" value="{{ old('phone') }}" placeholder="Nhập số điện thoại">
+                            @error('phone')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-md-4">
                             <label for="fax" class="form-label">Fax:</label>
-                            <input type="text" class="form-control  form-control-sm" id="fax"
-                                placeholder="Nhập số fax">
+                            <input type="text" class="form-control form-control-sm" id="fax" name="fax" value="{{ old('fax') }}" placeholder="Nhập số fax">
+                            @error('fax')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-md-4">
                             <label for="email" class="form-label">Email:</label>
-                            <input type="email" class="form-control  form-control-sm" id="email"
-                                placeholder="Nhập email">
+                            <input type="email" class="form-control form-control-sm" id="email" name="email" value="{{ old('email') }}" placeholder="Nhập email">
+                            @error('email')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="diaChiChiNhanh" class="form-label">Địa chỉ chi nhánh (nếu có):</label>
-                        <input type="text" class="form-control  form-control-sm" id="diaChiChiNhanh"
-                            placeholder="Nhập địa chỉ chi nhánh">
+                        <label for="branch_address" class="form-label">Địa chỉ chi nhánh (nếu có):</label>
+                        <input type="text" class="form-control form-control-sm" id="branch_address" name="branch_address" value="{{ old('branch_address') }}" placeholder="Nhập địa chỉ chi nhánh">
+                        @error('branch_address')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
-
+                
                     <div class="mb-3">
-                        <label for="thamGiaToChuc" class="form-label">Đã tham gia tổ chức:</label>
-                        <input type="text" class="form-control  form-control-sm" id="thamGiaToChuc"
-                            placeholder="Nhập thông tin tổ chức">
+                        <label for="organization_participation" class="form-label">Đã tham gia tổ chức:</label>
+                        <input type="text" class="form-control form-control-sm" id="organization_participation" name="organization_participation" value="{{ old('organization_participation') }}" placeholder="Nhập thông tin tổ chức">
+                        @error('organization_participation')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <h5>(*)Người đại diện gia nhập Hội:</h5>
 
                     <div class="mb-3">
-                        <label for="hoVaTen" class="form-label">Họ và tên:</label>
-                        <input type="text" class="form-control  form-control-sm" id="hoVaTen"
-                            placeholder="Nhập họ và tên">
+                        <label for="representative_full_name" class="form-label">Họ và tên:</label>
+                        <input type="text" class="form-control form-control-sm" id="representative_full_name" name="representative_full_name" value="{{ old('representative_full_name') }}" placeholder="Nhập họ và tên">
+                        @error('representative_full_name')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="representative_position" class="form-label">Chức vụ:</label>
+                            <input type="text" class="form-control form-control-sm" id="representative_position" name="representative_position" value="{{ old('representative_position') }}" placeholder="Nhập chức vụ">
+                            @error('representative_position')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Giới tính:<span class="text-danger">*</span></label>
+                            <div class="d-flex align-items-center">
+                                <div class="form-check me-3">
+                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderMale" value="male" {{ old('gender') == 'male' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="genderMale">Nam</label>
+                                </div>
+                                <div class="form-check me-3">
+                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderFemale" value="female" {{ old('gender') == 'female' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="genderFemale">Nữ</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderOther" value="other" {{ old('gender') == 'other' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="genderOther">Khác</label>
+                                </div>
+                            </div>
+                            @error('gender')
+                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="chucVu" class="form-label">Chức vụ:</label>
-                            <input type="text" class="form-control  form-control-sm" id="chucVu"
-                                placeholder="Nhập chức vụ">
+                            <label for="identity_card" class="form-label">CCCD:</label>
+                            <input type="text" class="form-control form-control-sm" id="identity_card" name="identity_card" value="{{ old('identity_card') }}" placeholder="Nhập số CCCD..">
+                            @error('identity_card')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-md-6">
-                            <label for="gioiTinh" class="form-label">Giới tính:</label>
-                            <select class="form-select form-select-sm" id="gioiTinh">
-                                <option value="Nam">Nam</option>
-                                <option value="Nữ">Nữ</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="cmnd" class="form-label">CMND:</label>
-                            <input type="text" class="form-control  form-control-sm" id="cmnd"
-                                placeholder="Nhập số CMND">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="ngayCapCmnd" class="form-label">Ngày cấp:</label>
-                            <input type="date" class="form-control  form-control-sm" id="ngayCapCmnd">
+                            <label for="identity_card_issue_date" class="form-label">Ngày cấp:</label>
+                            <input type="date" class="form-control form-control-sm" id="identity_card_issue_date" name="identity_card_issue_date" value="{{ old('identity_card_issue_date') }}">
+                            @error('identity_card_issue_date')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="diaChiRieng" class="form-label">Địa chỉ nhà riêng:</label>
-                        <input type="text" class="form-control  form-control-sm" id="diaChiRieng"
-                            placeholder="Nhập địa chỉ nhà riêng">
+                        <label for="home_address" class="form-label">Địa chỉ nhà riêng:</label>
+                        <input type="text" class="form-control form-control-sm" id="home_address" name="home_address"
+                            placeholder="Nhập địa chỉ nhà riêng" value="{{ old('home_address') }}">
+                            @error('home_address')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="dienThoaiLienHe" class="form-label">Điện thoại (di động – cơ quan – nhà
+                        <label for="contact_phone" class="form-label">Điện thoại (di động – cơ quan – nhà
                             riêng):</label>
-                        <input type="text" class="form-control  form-control-sm" id="dienThoaiLienHe"
-                            placeholder="Nhập số điện thoại liên hệ">
+                        <input type="text" class="form-control form-control-sm" id="contact_phone" name="contact_phone"
+                            placeholder="Nhập số điện thoại liên hệ"  value="{{ old('contact_phone') }}" >
+                            @error('contact_phone')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="emailDaiDien" class="form-label">Email:</label>
-                        <input type="email" class="form-control  form-control-sm" id="emailDaiDien"
-                            placeholder="Nhập email người đại diện">
+                        <label for="representative_email" class="form-label">Email:</label>
+                        <input type="email" class="form-control form-control-sm" id="representative_email" name="representative_email"
+                            placeholder="Nhập email người đại diện" value="{{ old('representative_email') }}">
+                            @error('representative_email')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                     </div>
+                    <p>(*) Đính kèm bản sao:</p>
                     <div class="mb-3">
-                        <label for="cndkkd">Giấy CNĐKKD :<span class="text-danger">*</span></label>
+                        <label for="business_license_file">Giấy CNĐKKD :<span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="file" id="cndkkd" name="cndkkd" accept=".jpg,.jpeg,.png,.pdf"
-                                value="{{ old('cndkkd') }}" style="display: none;" />
-                            <button type="button" class="btn btn-success  @error('cndkkd') is-invalid @enderror"
-                                id="cndkkd-button">
+                            <input type="file" id="business_license_file" name="business_license_file" accept=".jpg,.jpeg,.png,application/pdf,.doc,.docx"
+                                value="{{ old('business_license_file') }}" style="display: none;" />
+                            <button type="button" class="btn btn-success @error('business_license_file') is-invalid @enderror" id="business_license_file-button">
                                 <i class="bi bi-upload"></i> Upload tệp
                             </button>
+                            @error('business_license_file')
+                            <div class="invalid-feedback d-block" role="alert">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <div id="upload-list-cndkkd"></div>
-                        <span id="error-message-cndkkd" class="text-danger"></span>
+                        <div id="upload-list-business_license_file"></div>
+                        <span id="error-message-business_license_file" class="text-danger"></span>
                     </div>
-
+                    
                     <div class="mb-3">
-                        <label for="cccd1">CCCD:(mặt trước)<span class="text-danger">*</span></label>
+                        <label for="identity_card_front_file">CCCD:(mặt trước)<span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="file" id="cccd1" name="cccd1" accept=".jpg,.jpeg,.png,.pdf"
-                                value="{{ old('cccd1') }}" style="display: none;" />
-                            <button type="button" class="btn btn-success  @error('cccd1') is-invalid @enderror"
-                                id="cccd1-button">
+                            <input type="file" id="identity_card_front_file" name="identity_card_front_file" accept="image/*" value="{{ old('identity_card_front_file') }}" style="display: none;" />
+                            <button type="button" class="btn btn-success @error('identity_card_front_file') is-invalid @enderror" id="identity_card_front_file-button">
                                 <i class="bi bi-upload"></i> CCCD mặt trước
                             </button>
+                            @error('identity_card_front_file')
+                            <div class="invalid-feedback d-block" role="alert">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <div id="upload-list-cccd1"></div>
-                        <span id="error-message-cccd1" class="text-danger"></span>
+                        <div id="upload-list-identity_card_front_file"></div>
+                        <span id="error-message-identity_card_front_file" class="text-danger"></span>
                     </div>
-
+                    
                     <div class="mb-3">
-                        <label for="cccd2">CCCD:(mặt sau)<span class="text-danger">*</span></label>
+                        <label for="identity_card_back_file">CCCD:(mặt sau)<span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="file" id="cccd2" name="cccd2" accept=".jpg,.jpeg,.png,.pdf"
-                                value="{{ old('cccd2') }}" style="display: none;" />
-                            <button type="button" class="btn btn-success  @error('cccd2') is-invalid @enderror"
-                                id="cccd2-button">
+                            <input type="file" id="identity_card_back_file" name="identity_card_back_file" accept="image/*" value="{{ old('identity_card_back_file') }}" style="display: none;" />
+                            <button type="button" class="btn btn-success @error('identity_card_back_file') is-invalid @enderror" id="identity_card_back_file-button">
                                 <i class="bi bi-upload"></i> CCCD mặt sau
                             </button>
+                            @error('identity_card_back_file')
+                            <div class="invalid-feedback d-block" role="alert">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <div id="upload-list-cccd2"></div>
-                        <span id="error-message-cccd2" class="text-danger"></span>
+                        <div id="upload-list-identity_card_back_file"></div>
+                        <span id="error-message-identity_card_back_file" class="text-danger"></span>
                     </div>
-
-
-
+                    
 
                     {{-- <div class="text-end">
                         <p>Gò Vấp, ngày ... tháng ... năm 20...</p>
@@ -328,13 +387,14 @@
                         <p>(*) Đính kèm bản sao:</p>
                         <ul>
                             <li>Giấy CNĐKKD</li>
-                            <li>CMND người đại diện</li>
+                            <li>identity_card người đại diện</li>
                         </ul>
                     </div> --}}
                     <div class="text-end my-3">
                         <button type="submit" class="btn btn-success">Đăng ký</button>
                     </div>
                 </form>
+
             </div>
         </div>
     </section>
@@ -342,16 +402,16 @@
 
 @push('child-scripts')
     <script>
-        document.getElementById('cndkkd-button').addEventListener('click', function() {
-            handleFileUpload('cndkkd', 'upload-list-cndkkd', 'error-message-cndkkd');
+        document.getElementById('business_license_file-button').addEventListener('click', function() {
+            handleFileUpload('business_license_file', 'upload-list-business_license_file', 'error-message-business_license_file');
         });
 
-        document.getElementById('cccd1-button').addEventListener('click', function() {
-            handleFileUpload('cccd1', 'upload-list-cccd1', 'error-message-cccd1');
+        document.getElementById('identity_card_front_file-button').addEventListener('click', function() {
+            handleFileUpload('identity_card_front_file', 'upload-list-identity_card_front_file', 'error-message-identity_card_front_file');
         });
 
-        document.getElementById('cccd2-button').addEventListener('click', function() {
-            handleFileUpload('cccd2', 'upload-list-cccd2', 'error-message-cccd2');
+        document.getElementById('identity_card_back_file-button').addEventListener('click', function() {
+            handleFileUpload('identity_card_back_file', 'upload-list-identity_card_back_file', 'error-message-identity_card_back_file');
         });
 
         function handleFileUpload(fileInputId, uploadListId, errorMessageId) {
@@ -376,7 +436,7 @@
                         fileItem.classList.add('uploaded-file');
 
                         const removeIcon = document.createElement('i');
-                        removeIcon.classList.add('fas', 'fa-trash'); // Cập nhật class
+                        removeIcon.classList.add('fas', 'fa-trash');
                         removeIcon.style.cursor = 'pointer';
                         removeIcon.style.marginLeft = '10px';
 
@@ -393,33 +453,29 @@
                             }
                         });
 
-                        if (file.type === 'application/pdf') {
-                            const fileIcon = document.createElement('i');
-                            fileIcon.classList.add('bi', 'bi-file-earmark-pdf');
-                            const fileName = document.createElement('span');
-                            fileName.textContent = file.name;
-                            fileItem.appendChild(fileIcon);
-                            fileItem.appendChild(fileName);
-                            fileItem.appendChild(removeIcon);
-                            uploadList.appendChild(fileItem);
-                        } else if (file.type.startsWith('image/')) {
-                            const img = document.createElement('img');
-                            img.src = URL.createObjectURL(file);
-                            img.alt = file.name;
-                            img.style.maxWidth = '100px';
-                            img.style.marginRight = '10px';
-                            img.style.width = '75px';
-                            img.style.height = '65px';
-                            const fileIcon = document.createElement('span');
-                            fileIcon.textContent = file.name;
-                            fileItem.appendChild(img);
-                            fileItem.appendChild(fileIcon);
-                            fileItem.appendChild(removeIcon);
-                            uploadList.appendChild(fileItem);
-                        } else {
-                            errorMessage.textContent = file.name +
-                                ' không hợp lệ: Vui lòng chỉ tải lên tệp PDF hoặc hình ảnh.';
-                            uploadList.appendChild(fileItem);
+                        if (fileInputId === 'business_license_file') {
+                            const validDocumentTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+
+                            if (validDocumentTypes.includes(file.type)) {
+                                const fileIcon = document.createElement('i');
+                                fileIcon.classList.add('bi', 'bi-file-earmark-pdf');
+                                const fileName = document.createElement('span');
+                                fileName.textContent = file.name;
+                                fileItem.appendChild(fileIcon);
+                                fileItem.appendChild(fileName);
+                                fileItem.appendChild(removeIcon);
+                                uploadList.appendChild(fileItem);
+                            } else if (file.type.startsWith('image/')) {
+                                addImageToUploadList(file, fileItem, removeIcon, uploadList);
+                            } else {
+                                errorMessage.textContent = file.name + ' không hợp lệ: Vui lòng chỉ tải lên tệp PDF, Word, hoặc hình ảnh.';
+                            }
+                        } else if (fileInputId === 'identity_card_front_file' || fileInputId === 'identity_card_back_file') {
+                            if (file.type.startsWith('image/')) {
+                                addImageToUploadList(file, fileItem, removeIcon, uploadList);
+                            } else {
+                                errorMessage.textContent = 'Vui lòng chỉ tải lên hình ảnh cho CCCD.';
+                            }
                         }
                     }
                 } else {
@@ -427,5 +483,22 @@
                 }
             });
         }
+
+        function addImageToUploadList(file, fileItem, removeIcon, uploadList) {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.alt = file.name;
+            img.style.maxWidth = '100px';
+            img.style.marginRight = '10px';
+            img.style.width = '75px';
+            img.style.height = '65px';
+            const fileIcon = document.createElement('span');
+            fileIcon.textContent = file.name;
+            fileItem.appendChild(img);
+            fileItem.appendChild(fileIcon);
+            fileItem.appendChild(removeIcon);
+            uploadList.appendChild(fileItem);
+        }
+
     </script>
 @endpush
