@@ -7,6 +7,7 @@ use App\Models\Forum;
 use App\Models\News;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\BankServicesInterest;
 use App\Models\Language;
 use App\Models\Tab;
 use App\Models\TabProject;
@@ -342,12 +343,14 @@ class BlogsController extends Controller
     {
 
         $blog = FinancialSupport::where('slug', $slug)
-                    ->with('tabContentDetails.tab')
-                    ->firstOrFail();
+        ->with('tabContentDetails.tab')
+        ->first();
+        if (!$blog) {
+            $blog = BankServicesInterest::where('slug', $slug)
+                        ->with('tabContentDetails.tab')
+                        ->firstOrFail();
+        }
 
-
-        $blog->formatted_published_at = $this->formatDate($blog->published_at);
-       
         return view('pages.client.gv.post-detail', compact('blog'));
     }
     public function showBlogIndexMini($slug)

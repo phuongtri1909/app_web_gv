@@ -16,7 +16,7 @@ class NewsTabContentDetailPost extends Model
 
     protected $table = 'news_tab_content_detail_posts';
 
-    protected $fillable = ['content', 'financial_support_id', 'tab_id'];
+    protected $fillable = ['content', 'financial_support_id', 'tab_id','bank_service_id'];
 
 
     public function tab()
@@ -28,5 +28,10 @@ class NewsTabContentDetailPost extends Model
     public function financialSupport()
     {
         return $this->belongsTo(FinancialSupport::class, 'financial_support_id');
+    }
+
+    public function bankServices()
+    {
+        return $this->belongsTo(BankServicesInterest::class, 'bank_service_id');
     }
 }

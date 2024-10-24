@@ -25,4 +25,9 @@ class BankServicesInterest extends Model
         $this->attributes['slug'] = Str::slug($value);
     }
 
+    public function tabContentDetails()
+    {
+        return $this->hasMany(NewsTabContentDetailPost::class, 'bank_service_id');
+    }
+
 }
