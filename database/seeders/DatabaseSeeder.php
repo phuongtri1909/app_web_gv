@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             BusinessTypeSeeder::class,
             CategoryProductBusinessSeeder::class,
             BusinessSeeder::class,
+            ContactConsultationsSeeder::class,
+            BusinessSupportNeedsSeeder::class,
         ]);
     }
 }
