@@ -19,8 +19,8 @@
 
 @push('scripts')
     <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWvJ_CKUb9GhsXz08thQnuHQTo39G80dg&callback=initMap&libraries=places&v=weekly"
-        async
+    src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&callback=initMap&libraries=places&v=weekly"
+    async
     ></script>
     <script>
         let map;
