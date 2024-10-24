@@ -137,14 +137,14 @@
                             <div class="tabs">
                                 @foreach($blog->tabContentDetails as $key => $tabContent)
                                     <button class="tab-button {{ $key == 0 ? 'active' : '' }}" data-target="tab-{{ $key }}">
-                                        {!! nl2br(e($tabContent->tab->name)) !!}
+                                        {!! $tabContent->tab->name !!}
                                     </button>
                                 @endforeach
                             </div>
                             <div class="tabs-content">
                                 @foreach($blog->tabContentDetails as $key => $tabContent)
                                     <div class="tab-content {{ $key == 0 ? 'active' : '' }}" id="tab-{{ $key }}">
-                                        <p>{!! nl2br(e($tabContent->content)) !!}</p>
+                                        <p>{!! $tabContent->content !!}</p> 
                                     </div>
                                 @endforeach
                             </div>
