@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('news_tab_content_detail_posts', function (Blueprint $table) {
-            $table->foreignId('bank_service_id')->nullable()->after('id')->constrained('bank_services_interest')->onDelete('cascade');
+            $table->unsignedBigInteger('financial_support_id')->nullable()->change();
         });
     }
 
@@ -22,8 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('news_tab_content_detail_posts', function (Blueprint $table) {
-            $table->dropForeign(['bank_service_id']);
-            $table->dropColumn('bank_service_id');
+            $table->unsignedBigInteger('financial_support_id')->change();
         });
     }
 };

@@ -11,7 +11,6 @@ class NewsTabContentDetailPost extends Model
 
     public $translatable = [
         'content',
-
     ];
 
     protected $table = 'news_tab_content_detail_posts';

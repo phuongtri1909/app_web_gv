@@ -51,7 +51,7 @@
                                             <p class="text-xs font-weight-bold mb-0">{{ $key + 1 }}</p>
                                         </td>
                                         <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{ $detail->financialSupport->name }}</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $detail->financialSupport->name ?? $detail->bankServices->name }}</p>
                                         </td>
                                         <td class="text-center">
                                             <p class="text-xs font-weight-bold mb-0">{{ $detail->tab->name }}</p>
