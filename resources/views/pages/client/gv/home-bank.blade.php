@@ -123,6 +123,7 @@
 @push('child-scripts')
 @endpush
 @section('content-page')
+    @include('pages.notification.success-error')
     @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký nhu cầu', 'buttonLink' => route('show.form')])
     <section id="home-post">
         <div class="banner">

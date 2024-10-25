@@ -7,12 +7,7 @@ use Spatie\Translatable\HasTranslations;
 
 class TabDetailPost extends Model
 {
-    use HasFactory, HasTranslations;
-
-    public $translatable = [
-        'name',
-
-    ];
+    use HasFactory;
 
     protected $table = 'tabs_detail_posts';
 

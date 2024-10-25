@@ -97,7 +97,7 @@ Route::middleware(['language'])->group(function () {
         //Route::get('/form-business', [BusinessController::class, 'create'])->name('business.create');
         Route::post('/form-business', [BusinessController::class, 'store'])->name('business.store');
         Route::get('/form-business', [BusinessController::class, 'index'])->name('business.index');
-        Route::get('/form-customer/{financialSupportId?}', [CustomerInterestController::class, 'showForm'])->name('show.form');
+        Route::get('/form-customer/{slug?}', [CustomerInterestController::class, 'showForm'])->name('show.form');
         Route::post('/form-customer', [CustomerInterestController::class, 'storeForm'])->name('store.form');
         Route::get('/home-bank/{slug}', [FinancialSupportController::class, 'showFinancial'])->name('show.financical');
         Route::get('/home-bank', [BanksController::class, 'showHomeBank'])->name('show.home.bank');
