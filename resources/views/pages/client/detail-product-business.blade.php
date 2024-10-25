@@ -64,6 +64,10 @@
             font-size: 16px;
             z-index: 10;
         }
+
+        p {
+            margin-bottom: 0;
+        }
     </style>
 @endpush
 
@@ -143,21 +147,39 @@
                     </div>
                 </div>
 
-                <div class="border border-custom rounded mb-3">
+                <div class="border border-custom rounded mb-3 mt-3">
                     <div class="bg-business rounded-top py-2 px-3 mb-3">
-                        <h5 class="mb-0 fw-bold text-dark">Thông tin Người đại diện</h5>
+                        <h5 class="mb-0 fw-bold text-dark">Giới thiệu sản phẩm</h5>
                     </div>
-                    <div class="d-flex px-3">
-                        <p class="fw-semibold me-2">Họ và tên:</p>
-                        <p>{{ Str::title(Str::lower($product->business->representative_name)) }}</p>
+                    <div class="px-3">
+                        @if ($product->business->description)
+                            <p class="mb-0">{!! $product->business->description !!}</p>
+                        @else
+                            <p class="mb-0">Chưa có thông tin</p>
+                        @endif
                     </div>
                 </div>
 
-                <div class="border border-custom rounded mb-3">
+                @if($product->product_story)
+                    <div class="border border-custom rounded mb-3">
+                        <div class="bg-business rounded-top py-2 px-3 mb-3">
+                            <h5 class="mb-0 fw-bold text-dark">Câu chuyện sản phẩm</h5>
+                        </div>
+                        <div class="px-3">
+                            <p class="mb-0">{!! $product->product_story !!}</p>
+                        </div>
+                    </div>
+                @endif
+
+                <div class="border border-custom rounded mb-3  mt-3">
                     <div class="bg-business rounded-top py-2 px-3 mb-3">
                         <h5 class="mb-0 fw-bold text-dark">Thông tin doanh nghiệp</h5>
                     </div>
                     <div class="px-3">
+                        <div class="d-flex">
+                            <p class="fw-semibold me-2">Địa chỉ:</p>
+                            <p>{{ $product->business->business_address }}</p>
+                        </div>
                         <div class="d-flex">
                             <p class="fw-semibold me-2">Số điện thoại:</p>
                             <p>{{ $product->business->phone_number }}</p>
@@ -192,28 +214,47 @@
 
                 <div class="border border-custom rounded mb-3">
                     <div class="bg-business rounded-top py-2 px-3 mb-3">
-                        <h5 class="mb-0 fw-bold text-dark">Giới thiệu sản phẩm</h5>
+                        <h5 class="mb-0 fw-bold text-dark">Thông tin Người đại diện</h5>
                     </div>
+                  
                     <div class="px-3">
-                        @if ($product->business->description)
-                            <p class="mb-0">{!! $product->business->description !!}</p>
-                        @else
-                            <p class="mb-0">Chưa có thông tin</p>
-                        @endif
+                        <div class="d-flex">
+                            <p class="fw-semibold me-2">Họ và tên:</p>
+                            <p>{{ Str::title(Str::lower($product->business->representative_name)) }}</p>
+                        </div>
+
+                        <div class="d-flex">
+                            <p class="fw-semibold me-2">Năm sinh:</p>
+                            <p>{{ $product->business->birth_year }}</p>
+                        </div>
+
+                        <div class="d-flex">
+                            <p class="fw-semibold me-2">Giới tính:</p>
+                            <p>
+                                @switch($product->business->gender)
+                                    @case('male')
+                                        Nam
+                                    @break
+                                    @case('female')
+                                        Nữ
+                                    @break
+                                    @default
+                                        Khác
+                                @endswitch
+                            </p>
+                        </div>
+
+                        <div class="d-flex">
+                            <p class="fw-semibold me-2">Địa chỉ:</p>
+                            <p>
+                                {{ $product->business->address }}
+                            </p>
+                        </div>
+
                     </div>
                 </div>
 
-                @if($product->product_story)
-                    <div class="border border-custom rounded mb-3">
-                        <div class="bg-business rounded-top py-2 px-3 mb-3">
-                            <h5 class="mb-0 fw-bold text-dark">Câu chuyện sản phẩm</h5>
-                        </div>
-                        <div class="px-3">
-                            <p class="mb-0">{!! $product->product_story !!}</p>
-                        </div>
-                    </div>
-                @endif
-
+                
             </div>
         </div>
     </section>

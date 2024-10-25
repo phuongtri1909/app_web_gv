@@ -58,7 +58,7 @@
                     <h2 class="responsive-h2">{{ $business->business_name }}</h2>
                     <div class="d-flex align-items-baseline business-location">
                         <i class="fa-solid fa-location-dot"></i>
-                        <p class="ms-2">{{ $business->address }}</p>
+                        <p class="ms-2">{{ $business->business_address }}</p>
                     </div>
                 </div>
             </div>
@@ -108,9 +108,40 @@
                         <div class="bg-business rounded-top py-2 px-3 mb-3">
                             <h5 class="mb-0 fw-bold text-white">Thông tin Người đại diện</h5>
                         </div>
-                        <div class="d-flex px-3">
-                            <p class="fw-semibold me-2">Họ và tên:</p>
-                            <p>{{ Str::title(Str::lower($business->representative_name)) }}</p>
+                        <div class="px-3">
+                            <div class="d-flex">
+                                <p class="fw-semibold me-2">Họ và tên:</p>
+                                <p>{{ Str::title(Str::lower($business->representative_name)) }}</p>
+                            </div>
+    
+                            <div class="d-flex">
+                                <p class="fw-semibold me-2">Năm sinh:</p>
+                                <p>{{ $business->birth_year }}</p>
+                            </div>
+
+                            <div class="d-flex">
+                                <p class="fw-semibold me-2">Giới tính:</p>
+                                <p>
+                                    @switch($business->gender)
+                                        @case('male')
+                                            Nam
+                                        @break
+                                        @case('female')
+                                            Nữ
+                                        @break
+                                        @default
+                                            Khác
+                                    @endswitch
+                                </p>
+                            </div>
+
+                            <div class="d-flex">
+                                <p class="fw-semibold me-2">Địa chỉ:</p>
+                                <p>
+                                    {{ $business->address }}
+                                </p>
+                            </div>
+
                         </div>
                     </div>
                 </div>

@@ -110,7 +110,6 @@
                 </div>
 
                 <div class="row row-cols-2 row-cols-sm-3 g-3 px-1  mb-3">
-                    @include('admin.pages.notification.success-error')
                     @foreach ($products as $product)
                         <div class="col">
                             <a href="{{ route('product.detail', $product->slug) }}"
