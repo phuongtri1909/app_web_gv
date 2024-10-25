@@ -166,16 +166,15 @@ class BusinessController extends Controller
     {
         $category = $request->category ?? '';
 
-
-    //deploy xong fix status
         if ($category) {
             $category_product_business = CategoryProductBusiness::where('slug', $category)->first();
 
-            $businesses = Business::whereHas('products', function ($query) use ($category_product_business) {
-                $query->where('category_product_id', $category_product_business->id);
-            })->get();
+            $businesses = Business::where('status', 'approved')
+                ->whereHas('products', function ($query) use ($category_product_business) {
+                    $query->where('category_product_id', $category_product_business->id);
+                })->get();
         } else {
-            $businesses = Business::get();
+            $businesses = Business::where('status', 'approved')->get();
         }
         $category_product_business = CategoryProductBusiness::get();
 
@@ -195,22 +194,33 @@ class BusinessController extends Controller
 
     public function productDetail($slug)
     {
-        $product = ProductBusiness::where('slug', $slug)->first();
+        $product = ProductBusiness::where('slug', $slug)
+            ->whereHas('business', function ($query) {
+                $query->where('status', 'approved');
+            })->first();
+
         if (!$product) {
-            return redirect()->route('business')->with('error', 'Không tìm thấy sản phẩm');
+            return redirect()->route('business.products')->with('error', 'Không tìm thấy sản phẩm');
         }
 
         return view('pages.client.detail-product-business', compact('product'));
     }
 
-    public function businessProducts(Request $request){
+    public function businessProducts(Request $request)
+    {
         $category = $request->category ?? '';
+
         if ($category) {
             $category_product_business = CategoryProductBusiness::where('slug', $category)->first();
 
-            $products = ProductBusiness::where('category_product_id', $category_product_business->id)->get();
+            $products = ProductBusiness::where('category_product_id', $category_product_business->id)
+                ->whereHas('business', function ($query) {
+                    $query->where('status', 'approved');
+                })->get();
         } else {
-            $products = ProductBusiness::get();
+            $products = ProductBusiness::whereHas('business', function ($query) {
+                $query->where('status', 'approved');
+            })->get();
         }
 
         $category_product_business = CategoryProductBusiness::get();
