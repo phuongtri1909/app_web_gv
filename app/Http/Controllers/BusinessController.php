@@ -39,7 +39,7 @@ class BusinessController extends Controller
         $request->validate([
             'avt_businesses' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'representative_name' => 'required|string|max:255',
-            'birth_year' => 'required|digits:4|min:1500|max:' . date('Y'),
+            'birth_year' => 'required|digits:4|max:' . date('Y'),
             'gender' => 'required|string',
             'phone_number' => 'required|string|max:10|regex:/^[0-9]+$/',
             'address' => 'required|string|max:255',
@@ -47,7 +47,7 @@ class BusinessController extends Controller
             'ward_id' => 'required|integer|exists:ward_govap,id',
             'business_name' => 'required|string|max:255',
             'business_license' => 'nullable|mimes:pdf|max:3048',
-            'business_code' => 'required|string|max:15',
+            'business_code' => 'required|regex:/^\d{10,13}$/',
             'email' => 'required|email|max:255',
             'social_channel' => 'nullable|url|max:255',
             'description' => 'nullable|string|max:1000',
@@ -76,6 +76,10 @@ class BusinessController extends Controller
             'description.max' => 'Mô tả không được vượt quá 1000 ký tự.',
             'avt_businesses.mimes' => 'Hình ảnh đại diện phải là file dạng: jpg, jpeg, png.',
             'avt_businesses.max' => 'Hình ảnh đại diện không được vượt quá 5MB.',
+            'business_address.required' => 'Địa chỉ doanh nghiệp là bắt buộc.',
+            'business_address.max' => 'Địa chỉ doanh nghiệp không được vượt quá 255 ký tự.',
+            'business_code.regex' => 'Mã doanh nghiệp không được nhỏ hơn 10 hoặc vượt quá 13 số.',
+            'avt_businesses.required' => 'Ảnh đại diện doanh nghiệp là bắt buộc',
         ]);
 
         DB::beginTransaction();
@@ -104,7 +108,14 @@ class BusinessController extends Controller
                 $file->move(public_path('/uploads/images/business/' . $folderName), $licenseName);
                 $data['business_license'] = 'uploads/images/business/' . $folderName . '/' . $licenseName;
             }
-
+            $existingBusiness = Business::where('business_code', $request->business_code)->first();
+            if ($existingBusiness) {
+                return redirect()->back()->withInput()->withErrors(['business_code' => 'Mã số thuế đã đăng ký.']);
+            }
+            $existingEmail = Business::where('email', $request->email)->first();
+            if ($existingEmail) {
+                return redirect()->back()->withInput()->withErrors(['email' => 'Email đã được sử dụng.']);
+            }
             Business::create($data);
 
             DB::commit();
@@ -242,14 +253,14 @@ class BusinessController extends Controller
     {
         $validatedData = $request->validate([
             'representative_name' => 'required|string|max:255',
-            'birth_year' => 'required|digits:4|min:1500|max:' . date('Y'),
+            'birth_year' => 'required|digits:4|integer|min:1500|max:' . date('Y'),
             'gender' => 'required|in:male,female,other',
-            'phone' => 'required|string|max:15',
+            'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
             'address' => 'required|string|max:255',
             'business_address' => 'required|string|max:255',
             'business_name' => 'required|string|max:255',
             'business_field' => 'required|string|max:255',
-            'business_code' => 'required|string|max:255',
+            'business_code' => 'required|regex:/^\d{10,13}$/',
             'email' => 'required|email|max:255',
             'fanpage' => 'nullable|url|max:255',
             'support_need' => 'required|exists:business_support_needs,id',
@@ -269,6 +280,7 @@ class BusinessController extends Controller
             'phone.required' => 'Số điện thoại là bắt buộc.',
             'phone.string' => 'Số điện thoại phải là chuỗi ký tự.',
             'phone.max' => 'Số điện thoại không được vượt quá :max ký tự.',
+            'phone.regex' => 'Số điện thoại không hợp lệ',
 
             'address.required' => 'Địa chỉ cư trú là bắt buộc.',
             'address.string' => 'Địa chỉ cư trú phải là chuỗi ký tự.',
@@ -287,9 +299,7 @@ class BusinessController extends Controller
             'business_field.max' => 'Ngành nghề kinh doanh không được vượt quá :max ký tự.',
 
             'business_code.required' => 'Mã số thuế là bắt buộc.',
-            'business_code.string' => 'Mã số thuế phải là chuỗi ký tự.',
-            'business_code.max' => 'Mã số thuế không được vượt quá :max ký tự.',
-
+            'business_code.regex' => 'Mã số doanh nghiệp/Mã số thuế không được ít hơn 10 và nhiều hơn 13 số.',
             'email.required' => 'Email doanh nghiệp là bắt buộc.',
             'email.email' => 'Email không hợp lệ.',
             'email.max' => 'Email không được vượt quá :max ký tự.',
@@ -330,7 +340,7 @@ class BusinessController extends Controller
     {
         $validatedData = $request->validate([
             'business_name' => 'required|string|max:255',
-            'business_code' => 'required|string|max:255',
+            'business_code' => 'required|regex:/^\d{10,13}$/',
             'category_business_id' => 'required|exists:category_business,id',
             'address' => 'required|string|max:255',
             'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
@@ -348,6 +358,7 @@ class BusinessController extends Controller
         ], [
             'business_name.required' => 'Vui lòng nhập tên doanh nghiệp.',
             'business_code.required' => 'Mã số doanh nghiệp là bắt buộc.',
+            'business_code.regex' => 'Mã số doanh nghiệp không hợp lệ,ít nhất 10 hoặc không vượt quá 13 số',
             'category_business_id.required' => 'Vui lòng chọn loại hình kinh doanh.',
             'category_business_id.exists' => 'Loại hình kinh doanh không hợp lệ.',
             'address.required' => 'Địa chỉ doanh nghiệp là bắt buộc.',
@@ -360,7 +371,9 @@ class BusinessController extends Controller
             'gender.required' => 'Vui lòng chọn giới tính.',
             'gender.in' => 'Giới tính không hợp lệ.',
             'interest_rate.numeric' => 'Lãi suất phải là một số hợp lệ.',
+            'interest_rate.required' => 'Vui lòng nhập lãi suất.',
             'finance.numeric' => 'Số tiền tài chính phải là một số hợp lệ.',
+            'finance.required' => 'Vui lòng nhập số tiền tài chính.',
             'feedback.max' => 'Phản hồi không được vượt quá 1000 ký tự.',
             'purpose.required' => 'Vui lòng nhập mục đích của bạn.',
             'bank_connection.required' => 'Vui lòng nhập thông tin kết nối ngân hàng.',
@@ -389,18 +402,19 @@ class BusinessController extends Controller
                 'representative_name' => 'required|string|max:255',
                 'birth_year' => 'required|digits:4|integer|min:1500|max:' . date('Y'),
                 'gender' => 'required|in:male,female,other',
-                'phone_number' => 'required|string|max:15',
+                'phone_number' => 'required|string|max:10|regex:/^[0-9]+$/',
                 'address' => 'required|string|max:255',
                 'business_address' => 'required|string|max:255',
                 'business_name' => 'required|string|max:255',
                 'license' => 'required|file|mimes:pdf|max:4048',
-                'business_code' => 'required|string|max:255',
+                'business_code' => 'required|regex:/^\d{10,13}$/',
+                'business_field' => 'required|string',
                 'email' => 'required|email|max:255',
                 'social_channel' => 'nullable|url',
-                'logo' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
-                'product_image.*' => 'image|mimes:jpg,png,jpeg,gif|max:2048',
+                'logo' => 'required|image|max:2048',
+                'product_image.*' => 'image|max:2048',
+                'product_image' => 'array|max:5',
                 'product_video' => 'nullable|file|mimes:mp4,mov,avi|max:20480',
-                'business_field' => 'required|string',
             ], [
                 'representative_name.required' => 'Vui lòng nhập họ tên chủ doanh nghiệp.',
                 'birth_year.required' => 'Năm sinh là bắt buộc.',
@@ -409,13 +423,17 @@ class BusinessController extends Controller
                 'birth_year.digits' => 'Năm sinh phải có 4 chữ số.',
                 'gender.required' => 'Vui lòng chọn giới tính.',
                 'phone_number.required' => 'Vui lòng nhập số điện thoại.',
+                'phone_number.max' => 'Số điện thoại không được vượt quá 10 chữ số.',
+                'phone_number.regex' => 'Số điện thoại chỉ được phép chứa các ký tự số.',
                 'address.required' => 'Vui lòng nhập địa chỉ cư trú.',
                 'business_address.required' => 'Vui lòng nhập địa chỉ kinh doanh.',
                 'business_name.required' => 'Vui lòng nhập tên doanh nghiệp/hộ kinh doanh.',
                 'business_code.required' => 'Vui lòng nhập mã số thuế.',
+                'business_code.regex' => 'Mã số doanh nghiệp/Mã số thuế không được ít hơn 10 và nhiều hơn 13 số.',
                 'email.required' => 'Vui lòng nhập email doanh nghiệp.',
                 'email.email' => 'Email không hợp lệ.',
                 'social_channel.url' => 'Đường dẫn fanpage không hợp lệ.',
+                'logo.required' => 'Vui lòng tải logo doanh nghiệp.',
                 'logo.image' => 'Logo phải là một hình ảnh.',
                 'logo.mimes' => 'Logo phải có định dạng jpg, png, jpeg, hoặc gif.',
                 'logo.max' => 'Logo không được vượt quá 2MB.',
@@ -464,7 +482,7 @@ class BusinessController extends Controller
 
             $this->cleanupUploadedFiles($data);
 
-            return redirect()->back()->with('error', 'Gửi thất bại: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Gửi thất bại: ' . $e->getMessage());
         }
     }
 
@@ -479,13 +497,13 @@ class BusinessController extends Controller
 
         try {
             $request->validate([
-                'opinion' => 'required|string',
+                'opinion' => 'required|string|max:1000',
                 'attached_images.*' => 'required|image|mimes:jpg,png,jpeg,gif|max:9048',
                 'suggestions' => 'nullable|string',
                 'owner_full_name' => 'required|string|max:255',
                 'birth_year' => 'required|digits:4|integer|min:1500|max:' . date('Y'),
                 'gender' => 'required|in:male,female,other',
-                'phone' => 'required|string|max:15',
+                'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
                 'residential_address' => 'required|string|max:255',
                 'business_name' => 'required|string|max:255',
                 'business_address' => 'required|string|max:255',
@@ -493,6 +511,7 @@ class BusinessController extends Controller
                 'business_license' => 'required|file|mimes:pdf|max:4048',
             ], [
                 'opinion.required' => 'Vui lòng nhập ý kiến.',
+                'opinion.max' => 'Ý kiến không được vượt quá 1000 ký tự.',
                 'attached_images.required' => 'Vui lòng tải lên ít nhất một hình ảnh.',
                 'attached_images.image' => 'Tệp phải là một hình ảnh.',
                 'attached_images.mimes' => 'Hình ảnh phải có định dạng jpg, png, jpeg, hoặc gif.',
@@ -503,6 +522,8 @@ class BusinessController extends Controller
                 'birth_year.max' => 'Năm sinh không được lớn hơn năm hiện tại.',
                 'gender.required' => 'Vui lòng chọn giới tính.',
                 'phone.required' => 'Vui lòng nhập số điện thoại.',
+                'phone.regex' => 'Số điện thoại không hợp lệ,số điện thoại phải có 10 số',
+                'phone.max' => 'Số điện thoại không được vượt quá 10 ký tự.',
                 'residential_address.required' => 'Vui lòng nhập địa chỉ cư trú.',
                 'business_name.required' => 'Vui lòng nhập tên doanh nghiệp/hộ kinh doanh.',
                 'business_address.required' => 'Vui lòng nhập địa chỉ kinh doanh.',
@@ -530,7 +551,7 @@ class BusinessController extends Controller
 
             $this->cleanupUploadedFiles($data);
 
-            return redirect()->back()->with('error', 'Gửi thất bại: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Gửi thất bại: ' . $e->getMessage());
         }
     }
 

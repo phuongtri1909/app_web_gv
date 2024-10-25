@@ -336,6 +336,7 @@
                             @error('logo')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
+                            <div id="logo_preview_container" class="mt-3"></div>
                         </div>
                         <div class="col-md-4 mb-4">
                             <label for="product_image" class="form-label">Hình ảnh doanh nghiệp, sản phẩm:</label>
@@ -343,6 +344,7 @@
                             @error('logo')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
+                            <div id="product_image_preview_container" class="mt-3"></div>
                         </div>
                         <div class="col-md-4 mb-4">
                             <label for="product_image" class="form-label">Video doanh nghiệp, sản phẩm:</label>
@@ -350,6 +352,7 @@
                             @error('product_video')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
+                            <div id="product_video_preview_container" class="mt-3"></div>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Gửi thông tin</button>
@@ -361,4 +364,80 @@
 @endsection
 
 @push('child-scripts')
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        function previewFiles(input, previewContainerId, isVideo = false, maxFiles = 5) {
+            const previewContainer = document.getElementById(previewContainerId);
+            previewContainer.innerHTML = ''; 
+            let files = Array.from(input.files);
+            if (files.length > maxFiles) {
+                alert(`Chỉ được tối đa ${maxFiles} ảnh. Các ảnh thừa đã bị loại bỏ.`);
+                
+                const dataTransfer = new DataTransfer();
+                files.slice(0, maxFiles).forEach(file => dataTransfer.items.add(file));
+                input.files = dataTransfer.files;
+                files = Array.from(input.files); 
+            }
+    
+            files.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const mediaDiv = document.createElement('div');
+                    mediaDiv.classList.add('media-preview', 'position-relative', 'd-inline-block', 'me-2', 'mb-2');
+    
+                    if (isVideo) {
+                        const video = document.createElement('video');
+                        video.src = e.target.result;
+                        video.classList.add('img-fluid', 'rounded', 'border');
+                        video.style.maxHeight = '100px';
+                        video.controls = true;
+                        mediaDiv.appendChild(video);
+                    } else {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('img-fluid', 'rounded', 'border');
+                        img.style.maxHeight = '100px';
+                        mediaDiv.appendChild(img);
+                    }
+    
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.classList.add('btn', 'btn-danger', 'btn-sm', 'position-absolute', 'top-0', 'end-0', 'm-1');
+                    removeBtn.innerHTML = '&times;';
+                    removeBtn.addEventListener('click', function() {
+                        mediaDiv.remove();
+                        removeFileFromInput(input, index); 
+                        previewFiles(input, previewContainerId, isVideo, maxFiles); 
+                    });
+    
+                    mediaDiv.appendChild(removeBtn);
+                    previewContainer.appendChild(mediaDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    
+  
+        function removeFileFromInput(input, indexToRemove) {
+            const dataTransfer = new DataTransfer();
+            Array.from(input.files).forEach((file, index) => {
+                if (index !== indexToRemove) dataTransfer.items.add(file); 
+            });
+            input.files = dataTransfer.files; 
+        }
+
+        document.getElementById('logo').addEventListener('change', function() {
+            previewFiles(this, 'logo_preview_container');
+        });
+    
+        document.getElementById('product_image').addEventListener('change', function() {
+            previewFiles(this, 'product_image_preview_container', false, 5);
+        });
+    
+        document.getElementById('product_video').addEventListener('change', function() {
+            previewFiles(this, 'product_video_preview_container', true);
+        });
+    </script>
+    
+    
 @endpush

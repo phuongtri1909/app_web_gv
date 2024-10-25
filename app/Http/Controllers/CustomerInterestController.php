@@ -98,7 +98,7 @@ class CustomerInterestController extends Controller
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'phone_number' => 'required|digits:10',
-            'birth_year' => 'required|digits:4|max:' . date('Y'),
+            'birth_year' => 'required|integer|min:1500|max:' . date('Y'),
             'gender' => 'required|string',
             'residence_address' => 'required|string|max:255',
             'business_address' => 'nullable|string|max:255',
