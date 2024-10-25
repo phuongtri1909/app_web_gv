@@ -12,6 +12,7 @@ use App\Models\BusinessSupportNeed;
 use App\Models\CategoryBusiness;
 use App\Models\CategoryProductBusiness;
 use App\Models\ProductBusiness;
+use App\Models\SupplyDemandConnection;
 use App\Models\WardGovap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -243,7 +244,109 @@ class BusinessController extends Controller
     {
         return view('pages.client.form-connect-supply-demand');
     }
-
+    public function storeConnectSupplyDemand(Request $request)
+    {
+        DB::beginTransaction();
+        $data = [];
+    
+        try {
+            $request->validate([
+                'owner_full_name' => 'required|string|max:255',
+                'birth_year' => 'required|digits:4|integer|min:1500|max:' . date('Y'),
+                'gender' => 'required|in:male,female,other',
+                'residential_address' => 'required|string|max:255',
+                'business_address' => 'required|string|max:255',
+                'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
+                'business_code' => 'required|regex:/^\d{10,13}$/',
+                'business_name' => 'required|string|max:255',
+                'business_field' => 'required|string',
+                'email' => 'required|email|max:255',
+                'fanpage' => 'nullable|url',
+                'product_info' => 'required|string',
+                'product_standard' => 'required|string',
+                'product_avatar' => 'required|image|max:2048',
+                'product_images.*' => 'image|max:2048',
+                'product_images' => 'array|max:5',
+                'product_price' => 'required|numeric|min:0',
+                'product_price_mini_app' => 'required|numeric|min:0',
+                'product_price_member' => 'required|numeric|min:0',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after:start_date',
+            ], [
+                'owner_full_name.required' => 'Vui lòng nhập họ tên chủ doanh nghiệp.',
+                'owner_full_name.max' => 'Họ tên chủ doanh nghiệp không được vượt quá 255 ký tự.',
+                'birth_year.required' => 'Năm sinh là bắt buộc.',
+                'birth_year.min' => 'Năm sinh phải lớn hơn hoặc bằng 1500.',
+                'birth_year.max' => 'Năm sinh không được lớn hơn năm hiện tại.',
+                'birth_year.digits' => 'Năm sinh phải có 4 chữ số.',
+                'birth_year.integer' => 'Năm sinh phải là số nguyên.',
+                'gender.required' => 'Vui lòng chọn giới tính.',
+                'phone.required' => 'Vui lòng nhập số điện thoại.',
+                'phone.max' => 'Số điện thoại không được vượt quá 10 chữ số.',
+                'phone.regex' => 'Số điện thoại chỉ được phép chứa các ký tự số.',
+                'residential_address.required' => 'Vui lòng nhập địa chỉ cư trú.',
+                'residential_address.max' => 'Địa chỉ cư trú không được vượt quá 255 ký tự.',
+                'business_address.required' => 'Vui lòng nhập địa chỉ kinh doanh.',
+                'business_address.max' => 'Địa chỉ kinh doanh không được vượt quá 255 ký tự.',
+                'business_name.required' => 'Vui lòng nhập tên doanh nghiệp/hộ kinh doanh.',
+                'business_name.max' => 'Tên doanh nghiệp/hộ kinh doanh không được vượt quá 255 ký tự.',
+                'business_code.required' => 'Vui lòng nhập mã số thuế.',
+                'business_code.regex' => 'Mã số doanh nghiệp/Mã số thuế không được ít hơn 10 và nhiều hơn 13 số.',
+                'email.required' => 'Vui lòng nhập email.',
+                'email.email' => 'Email không hợp lệ.',
+                'fanpage.url' => 'Đường dẫn fanpage không hợp lệ.',
+                'product_info.required' => 'Vui lòng nhập thông tin sản phẩm.',
+                'product_standard.required' => 'Vui lòng nhập tiêu chuẩn sản phẩm.',
+                'product_avatar.required' => 'Vui lòng tải hình ảnh sản phẩm.',
+                'product_avatar.image' => 'File phải là hình ảnh.',
+                'product_avatar.max' => 'Hình ảnh không được vượt quá 2MB.',
+                'product_images.array' => 'Danh sách hình ảnh không hợp lệ.',
+                'product_images.max' => 'Số lượng hình ảnh không được vượt quá 5.',
+                'product_images.*.image' => 'File phải là hình ảnh.',
+                'product_images.*.max' => 'Hình ảnh không được vượt quá 2MB.',
+                'product_price.required' => 'Vui lòng nhập giá sản phẩm.',
+                'product_price.numeric' => 'Giá sản phẩm phải là số.',
+                'product_price.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
+                'product_price_mini_app.required' => 'Vui lòng nhập giá sản phẩm trên Mini App.',
+                'product_price_mini_app.numeric' => 'Giá sản phẩm trên Mini App phải là số.',
+                'product_price_mini_app.min' => 'Giá sản phẩm trên Mini App phải lớn hơn hoặc bằng 0.',
+                'product_price_member.required' => 'Vui lòng nhập giá sản phẩm trên Member.',
+                'product_price_member.numeric' => 'Giá sản phẩm trên Member phải là số.',
+                'product_price_member.min' => 'Giá sản phẩm trên Member phải lớn hơn hoặc bằng 0.',
+                'start_date.required' => 'Vui lòng nhập ngày bắt đầu.',
+                'start_date.date' => 'Ngày bắt đầu không hợp lệ.',
+                'end_date.required' => 'Vui lòng nhập ngày kết thúc.',
+                'end_date.date' => 'Ngày kết thúc không hợp lệ.',
+                'end_date.after' => 'Ngày kết thúc phải lớn hơn ngày bắt đầu.',
+            ]);
+    
+            $connection = new SupplyDemandConnection();
+            $connection->fill($request->only([
+                'owner_full_name', 'birth_year', 'gender', 'residential_address',
+                'business_address', 'phone', 'business_code', 'business_name',
+                'business_field', 'email', 'fanpage', 'product_info',
+                'product_standard', 'product_price', 'product_price_mini_app',
+                'product_price_member', 'start_date', 'end_date'
+            ]));
+    
+            $this->handleFileUpload($request, 'product_avatar', $data, '_avatar_', 'supplydemand');
+            $this->handleFileUpload($request, 'product_images', $data, '_images_', 'supplydemand');
+    
+            $connection->product_avatar = $data['product_avatar'];
+            $connection->product_images = $data['product_images'];
+            $connection->save();
+    
+            DB::commit();
+            return redirect()->back()->with('success', 'Đăng ký kết nối cung cầu thành công!');
+    
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->cleanupUploadedFiles($data);
+            return redirect()->back()->withInput()->with('error', 'Gửi thất bại: ' . $e->getMessage());
+        }
+    }
+    
+            
 
     public function showFormStartPromotion(){
         $business_support_needs = BusinessSupportNeed::all();
@@ -592,6 +695,9 @@ class BusinessController extends Controller
                 break;
             case 'other':
                 $basePath = 'uploads/images/other/';
+                break;
+            case 'supplydemand':
+                $basePath = 'uploads/images/supply_demand/';
                 break;
             default:
                 throw new \Exception('Thư mục không hợp lệ.');

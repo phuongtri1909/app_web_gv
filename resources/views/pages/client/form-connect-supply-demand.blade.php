@@ -25,7 +25,7 @@
         <div class="container">
             <div class="row">
                 @include('pages.notification.success-error')
-                <form action="#" method="POST" enctype="multipart/form-data">
+                <form action="{{route('connect.supply.demand.store')}}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row ">
                         <div class="col-md-4 mb-4">

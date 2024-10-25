@@ -79,6 +79,7 @@ Route::middleware(['language'])->group(function () {
 
 
         Route::get('/form-connect-supply-demand', [BusinessController::class, 'connectSupplyDemand'])->name('connect.supply.demand');
+        Route::post('/form-connect-supply-demand', [BusinessController::class, 'storeConnectSupplyDemand'])->name('connect.supply.demand.store');
 
         Route::get('/form-start-promotion', [BusinessController::class, 'showFormStartPromotion'])->name('show.form.start.promotion');
         Route::post('/form-start-promotion', [BusinessController::class, 'storeFormStartPromotion'])->name('form.start.promotion.store');
