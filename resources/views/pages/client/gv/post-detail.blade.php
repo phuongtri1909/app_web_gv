@@ -127,7 +127,7 @@
     @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký nhu cầu', 'buttonLink' => route('show.form',$blog->id)])
     <section id="blog-detail">
         <div class="banner">
-            <img src="{{asset('images/Vayvonkinhdoanh.jpg')}}" alt="Banner Image">
+            <img src="{{asset($blog && empty($blog) ? $blog->banner : 'images/Vayvonkinhdoanh.jpg' )}}" alt="Banner Image">
         </div>
         <div class="container my-4">
             @if($blog->tabContentDetails->isNotEmpty())
