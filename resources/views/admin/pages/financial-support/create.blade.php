@@ -17,22 +17,17 @@
                     <form action="{{ route('financial-support.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
-                            @foreach ($languages as $language)
-                                <div class="form-group mb-3 col-md-6">
-                                    <label for="{{ 'name_' . $language->locale }}">{{ __('name') }}:
-                                        {{ $language->name }}</label>
-                                    <input type="text" name="{{ 'name_' . $language->locale }}"
-                                        id="{{ 'name_' . $language->locale }}"
-                                        class="form-control @error('name_' . $language->locale) is-invalid @enderror"
-                                        value="{{ old('name_' . $language->locale) }}" required onkeyup="generateUrl()">
-                                    @error('name_' . $language->locale)
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            @endforeach
-
+                            <div class="form-group mb-3 col-md-6">
+                                <label for="name">{{ __('name') }}:</label>
+                                <input type="text" name="name" id="name"
+                                       class="form-control @error('name') is-invalid @enderror"
+                                       value="{{ old('name') }}" required onkeyup="generateUrl()">
+                                @error('name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="avt_financial_support" class="form-label">{{ __('Ảnh') }}</label>
@@ -103,7 +98,7 @@
         });
 
         function generateUrl() {
-            let nameField = document.querySelector('input[name="name_' + "{{ config('app.locale') }}" + '"]');
+            let nameField = document.querySelector('input[name="name"]');
             let urlField = document.getElementById('url');
             if (nameField.value) {
                 let nameValue = nameField.value.trim();
