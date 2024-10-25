@@ -15,21 +15,18 @@
                         @csrf
                         @method('PUT')
                         <div class="row">
-                            @foreach ($languages as $language)
-                                <div class="form-group mb-3 col-md-6">
-                                    <label for="{{ 'name_' . $language->locale }}">{{ __('name') }}: {{ $language->name }}</label>
-                                    <input type="text" name="{{ 'name_' . $language->locale }}" id="{{ 'name_' . $language->locale }}"
-                                           class="form-control @error('name_' . $language->locale) is-invalid @enderror"
-                                           value="{{ old('name_' . $language->locale, $financialSupport->getTranslation('name', $language->locale)) }}" onkeyup="generateUrl()" required>
-                                    @error('name_' . $language->locale)
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            @endforeach
+                            <div class="form-group mb-3 col-md-6">
+                                <label for="name">{{ __('name') }}:</label>
+                                <input type="text" name="name" id="name"
+                                       class="form-control @error('name') is-invalid @enderror"
+                                       value="{{ old('name', $financialSupport->name) }}" onkeyup="generateUrl()" required>
+                                @error('name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                         </div>
-
                         <div class="form-group mb-3 col-12 col-md-6">
                             <label for="url">{{ __('URL') }}</label>
                             <input type="url" name="url" id="url"
@@ -109,7 +106,7 @@
         });
 
         function generateUrl() {
-            let nameField = document.querySelector('input[name="name_' + "{{ config('app.locale') }}" + '"]');
+            let nameField = document.querySelector('input[name="name"]');
             let urlField = document.getElementById('url');
             if (nameField.value) {
                 let nameValue = nameField.value.trim();

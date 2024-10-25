@@ -23,44 +23,31 @@ class FinancialSupportController extends Controller
     public function create()
     {
         $banks = Bank::all();
-        $languages = Language::all();
-        return view('admin.pages.financial-support.create', compact('languages','banks'));
+        return view('admin.pages.financial-support.create', compact('banks'));
     }
 
     public function store(Request $request)
     {
-        $locales = Language::pluck('locale')->toArray();
-
-
         $rules = [
             'avt_financial_support' => 'nullable|image|mimes:jpg,jpeg,png,gif',
             'bank_id' => 'required|exists:banks,id',
+            'name' => 'required|string|max:255|unique:financial_support,name',
         ];
         $messages = [
             'avt_financial_support.image' => __('image_image'),
             'avt_financial_support.mimes' => __('image_mimes'),
             'bank_id.required' => 'Bạn phải chọn một ngân hàng.',
             'bank_id.exists' => 'Ngân hàng đã chọn không tồn tại.',
+            'name.required' => __('Tên là bắt buộc.'),
+            'name.string' => __('Tên không hợp lệ.'),
+            'name.max' => __('Tên không được vượt quá :max ký tự.', ['max' => 255]),
+            'name.unique' => __('Tên đã tồn tại !!'),
         ];
-
-
-        foreach ($locales as $locale) {
-            $rules["name_{$locale}"] = 'string|max:255';
-            $messages["name_{$locale}.string"] = __('name_string');
-            $messages["name_{$locale}.max"] = __('name_max', ['max' => 255]);
-        }
-
 
         $validatedData = $request->validate($rules, $messages);
 
         try {
-            $translateName = [];
             $image_path = null;
-            foreach ($locales as $locale) {
-                $translateName[$locale] = $request->get("name_{$locale}");
-            }
-
-
             if ($request->hasFile('avt_financial_support')) {
                 $image = $request->file('avt_financial_support');
                 $folderName = date('Y/m');
@@ -70,19 +57,19 @@ class FinancialSupportController extends Controller
                 $image->move(public_path('/uploads/images/financial_support/' . $folderName), $fileName);
                 $image_path = 'uploads/images/financial_support/' . $folderName . '/' . $fileName;
             }
-            $slug = Str::slug($translateName[config('app.locale')]);
-            $url = env('APP_URL') . '/client/post-detail/' . $slug;
-            if (FinancialSupport::where('slug', $slug)->exists()) {
+
+            $financialSupport = new FinancialSupport();
+            $financialSupport->name = $request->name;
+            $financialSupport->slug = Str::slug($request->name);
+            $financialSupport->url_financial_support = env('APP_URL') . '/client/post-detail/' . $financialSupport->slug;
+
+            if (FinancialSupport::where('slug', $financialSupport->slug)->exists()) {
                 return redirect()->back()->with('error', __('slug_exists'));
             }
-            $financialSupport = new FinancialSupport();
-            $financialSupport->setTranslations('name', $translateName);
-            $financialSupport->slug = $slug;
-            $financialSupport->url_financial_support = $url;
+
             $financialSupport->avt_financial_support = $image_path;
             $financialSupport->bank_id = $request->bank_id;
             $financialSupport->save();
-
 
             return redirect()->route('financial-support.index')->with('success', __('Tạo thành công!!'));
         } catch (\Exception $e) {
@@ -103,43 +90,35 @@ class FinancialSupportController extends Controller
     public function edit($id)
     {
         $financialSupport = FinancialSupport::findOrFail($id);
-        $languages = Language::all();
         $banks = Bank::all();
-        return view('admin.pages.financial-support.edit', compact('financialSupport', 'languages','banks'));
+        return view('admin.pages.financial-support.edit', compact('financialSupport', 'banks'));
     }
 
     public function update(Request $request, $id)
     {
-        $locales = Language::pluck('locale')->toArray();
-
         $rules = [
             'avt_financial_support' => 'nullable|image|mimes:jpg,jpeg,png,gif',
             'url' => 'required|url',
             'bank_id' => 'required|exists:banks,id',
+            'name' => 'required|string|max:255|unique:financial_supports,name,' . $id,
         ];
         $messages = [
             'avt_financial_support.image' => __('image_image'),
             'avt_financial_support.mimes' => __('image_mimes'),
-            'url.required' => __('URL is required'),
-            'url.url' => __('URL is not valid'),
+            'url.required' => __('URL là bắt buộc'),
+            'url.url' => __('URL không hợp lệ'),
             'bank_id.required' => 'Bạn phải chọn một ngân hàng.',
             'bank_id.exists' => 'Ngân hàng đã chọn không tồn tại.',
+            'name.required' => __('Tên là bắt buộc.'),
+            'name.string' => __('Tên không hợp lệ.'),
+            'name.max' => __('Tên không được vượt quá :max ký tự.', ['max' => 255]),
+            'name.unique' => __('Tên đã tồn tại !!'),
         ];
-
-        foreach ($locales as $locale) {
-            $rules["name_{$locale}"] = 'string|max:255';
-            $messages["name_{$locale}.string"] = __('name_string');
-            $messages["name_{$locale}.max"] = __('name_max', ['max' => 255]);
-        }
 
         $validatedData = $request->validate($rules, $messages);
 
         try {
             $financialSupport = FinancialSupport::findOrFail($id);
-            $translateName = [];
-            foreach ($locales as $locale) {
-                $translateName[$locale] = $request->get("name_{$locale}");
-            }
 
             $image_path = $financialSupport->avt_financial_support;
             if ($request->hasFile('avt_financial_support')) {
@@ -152,12 +131,12 @@ class FinancialSupportController extends Controller
                 $image_path = 'uploads/images/financial_support/' . $folderName . '/' . $fileName;
             }
 
-            $slug = Str::slug($translateName[config('app.locale')]);
+            $slug = Str::slug($request->name);
             if (FinancialSupport::where('slug', $slug)->where('id', '!=', $id)->exists()) {
                 return redirect()->back()->with('error', __('slug_exists'));
             }
 
-            $financialSupport->setTranslations('name', $translateName);
+            $financialSupport->name = $request->name;
             $financialSupport->slug = $slug;
             $financialSupport->avt_financial_support = $image_path;
             $financialSupport->url_financial_support = $request->input('url');

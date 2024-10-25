@@ -5,7 +5,7 @@
         <div class="col-12">
             <div class="card mb-4 mx-4">
                 <div class="card-header pb-0">
-                    <h5 class="mb-0">{{ __('tabs_content_post_add') }}</h5>
+                    <h5 class="mb-0">{{ __('Tạo bài viết') }}</h5>
                 </div>
                 <div class="card-body">
                     @include('admin.pages.notification.success-error')
@@ -25,14 +25,29 @@
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="financial_support_id">{{ __('select_news') }}</label>
-                            <select name="financial_support_id" id="financial_support_id" class="form-control @error('financial_support_id') is-invalid @enderror" required>
+                            <label for="financial_support_id">{{ __('Chọn dịch vụ') }}</label>
+                            <select name="financial_support_id" id="financial_support_id" class="form-control @error('financial_support_id') is-invalid @enderror" >
                                 <option value="">{{ __('select_news_placeholder') }}</option>
                                 @foreach ($news as $newsItem)
                                     <option value="{{ $newsItem->id }}">{{ $newsItem->name }}</option>
                                 @endforeach
                             </select>
                             @error('financial_support_id')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="bank_service_id">{{ __('Chọn dịch vụ ngân hàng') }}</label>
+                            <select name="bank_service_id" id="bank_service_id" class="form-control @error('bank_service_id') is-invalid @enderror" >
+                                <option value="">{{ __('select_news_placeholder') }}</option>
+                                @foreach ($bank_servicers as $newsItem)
+                                    <option value="{{ $newsItem->id }}">{{ $newsItem->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('bank_service_id')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

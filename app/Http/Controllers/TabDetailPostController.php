@@ -16,8 +16,7 @@ class TabDetailPostController extends Controller
 
     public function create()
     {
-        $languages = Language::all();
-        return view('admin.pages.blogs.tabs_detail_post.create', compact('languages'));
+        return view('admin.pages.blogs.tabs_detail_post.create');
     }
 
     /**
@@ -25,39 +24,32 @@ class TabDetailPostController extends Controller
      */
     public function store(Request $request)
     {
-        $locales = Language::pluck('locale')->toArray();
+        $rules = [
+            'name' => 'required|string|max:255|unique:tabs_detail_posts,name',
+        ];
 
-        $rules = [];
-        $messages = [];
-
-        foreach ($locales as $locale) {
-            $rules["name_{$locale}"] = 'required|string|max:255';
-
-            $messages["name_{$locale}.required"] = __('name_in') . strtoupper($locale) . __(' is_required.');
-            $messages["name_{$locale}.string"] = __('name_string');
-            $messages["name_{$locale}.max"] = __('name_max', ['max' => 255]);
-        }
-
+        $messages = [
+            'name.required' => __('name_is_required'),
+            'name.string' => __('name_string'),
+            'name.max' => __('name_max', ['max' => 255]),
+            'name.unique' => __('Tên đã tồn tại !!'),
+        ];
         $validatedData = $request->validate($rules, $messages);
-
-        $translatedName = [];
-        foreach ($locales as $locale) {
-            $translatedName[$locale] = $request->input("name_{$locale}");
-
-            $existingCategory = TabDetailPost::whereJsonContains('name', [$locale => $translatedName[$locale]])->first();
-            if ($existingCategory) {
-                return back()->withInput()->withErrors([
-                    "name_{$locale}" => __('name_category') . ' ' . $translatedName[$locale] . ' ' . __('already_exists')
-                ]);
-            }
+        $existingCategory = TabDetailPost::where('name', $validatedData['name'])->first();
+        dd($existingCategory);
+        if ($existingCategory) {
+            return back()->withInput()->withErrors([
+                'name' => __('Tên đã tồn tại !!')
+            ]);
         }
-
+        dd($validatedData);
         $category = new TabDetailPost();
-        $category->setTranslations('name', $translatedName);
+        $category->name = $validatedData['name'];
         $category->save();
 
         return redirect()->route('tabs_posts.index')->with('success', __('create_success'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -65,13 +57,13 @@ class TabDetailPostController extends Controller
     public function edit($id)
     {
         $category = TabDetailPost::findOrFail($id);
-
-        $languages = Language::all();
         if (!$category) {
             return back()->with('error', __('no_find_data'));
         }
-        return view('admin.pages.blogs.tabs_detail_post.edit', compact('category', 'languages'));
+
+        return view('admin.pages.blogs.tabs_detail_post.edit', compact('category'));
     }
+
 
 
     /**
@@ -79,48 +71,31 @@ class TabDetailPostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $locales = Language::pluck('locale')->toArray();
+        $rules = [
+            'name' => 'required|string|max:255',
+        ];
 
-        $rules = [];
-        $messages = [];
-
-        foreach ($locales as $locale) {
-            $rules["name_{$locale}"] = 'required|string|max:255';
-
-            $messages["name_{$locale}.required"] = __('name_in') . strtoupper($locale) . __(' is_required.');
-            $messages["name_{$locale}.string"] = __('name_string');
-            $messages["name_{$locale}.max"] = __('name_max', ['max' => 255]);
-        }
+        $messages = [
+            'name.required' => __('name_is_required'),
+            'name.string' => __('name_string'),
+            'name.max' => __('name_max', ['max' => 255]),
+        ];
 
         $validatedData = $request->validate($rules, $messages);
-
-        $category = TabDetailPost::findOrFail($id);
-
-        $translatedName = [];
-        foreach ($locales as $locale) {
-            $translatedName[$locale] = $request->input("name_{$locale}");
-
-            $existingCategory = TabDetailPost::where('id', '!=', $id)
-                ->whereJsonContains('name', [$locale => $translatedName[$locale]])
-                ->first();
-
-            if ($existingCategory) {
-                return back()->withInput()->withErrors([
-                    "name_{$locale}" => __('name_category') . ' ' . $translatedName[$locale] . ' ' . __('already_exists')
-                ]);
-            }
+        $detailPost = TabDetailPost::findOrFail($id);
+        $existingCategory = TabDetailPost::where('name', $validatedData['name'])->first();
+        if ($existingCategory &&   $existingCategory != $detailPost ) {
+            return back()->withInput()->withErrors([
+                'name' => __('Tên đã tồn tại!!')
+            ]);
         }
-        // $slug = Str::slug($translatedName[config('app.locale')]);
-        // if (CategoryNews::where('slug', $slug)->exists()) {
-        //     return redirect()->back()->with('error', __('slug_exists'));
-        // }
-
-        // $category->slug = $slug;
-        $category->setTranslations('name', $translatedName);
+        $category = TabDetailPost::findOrFail($id);
+        $category->name = $request->input('name');
         $category->save();
 
         return redirect()->route('tabs_posts.index')->with('success', __('update_success'));
     }
+
     public function destroy($id)
     {
         $category = TabDetailPost::find($id);
