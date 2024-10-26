@@ -213,7 +213,7 @@
                         <div class="col-md-4 mb-4">
                             <label for="birth_year" class="form-label ">Năm sinh:<span class="text-danger">*</span></label>
                             <input type="text" id="birth_year" name="birth_year" class="form-control form-control-sm @error('birth_year') is-invalid @enderror"
-                                required placeholder="Nhập năm sinh">
+                                required placeholder="Nhập năm sinh" value="{{old('birth_year')}}">
                             @error('birth_year')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -247,13 +247,13 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4 mb-4">
-                            <label for="phone" class="form-label">Số điện thoại <span
+                            <label for="phone_number" class="form-label">Số điện thoại <span
                                     class="text-danger">*</span></label>
                             <input type="text"
-                                class="form-control form-control-sm  @error('phone') is-invalid @enderror"
-                                id="phone" placeholder="Nhập số điện thoại" name="phone"
-                                value="{{ old('phone') }}">
-                            @error('phone')
+                                class="form-control form-control-sm  @error('phone_number') is-invalid @enderror"
+                                id="phone_number" placeholder="Nhập số điện thoại" name="phone_number"
+                                value="{{ old('phone_number') }}">
+                            @error('phone_number')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
@@ -288,13 +288,13 @@
                             @enderror
                         </div>
                         <div class="col-md-4 mb-4">
-                            <label for="business_field" class="form-label">Ngành nghề kinh doanh <span
-                                    class="text-danger">*</span></label>
-                            <input type="text"
-                                class="form-control form-control-sm @error('business_field') is-invalid @enderror"
-                                id="business_field" placeholder="Nhập ngành nghề kinh doanh" name="business_field"
-                                value="{{ old('business_field') }}">
-                            @error('business_field')
+                            <label for="business_fields" class="form-label">Ngành nghề kinh doanh:</label>
+                            <select class="form-select form-control form-select-sm @error('business_fields') is-invalid @enderror" id="business_fields" name="business_fields">
+                                @foreach ($business_fields as $field)
+                                    <option value="{{ $field->id }}" {{ old('business_fields') == $field->id ? 'selected' : '' }}>{{ $field->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('business_fields')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
@@ -323,12 +323,12 @@
                             @enderror
                         </div>
                         <div class="col-md-4 mb-4">
-                            <label for="social" class="form-label">Fanpage</label>
+                            <label for="social_channel" class="form-label">Fanpage</label>
                             <input type="url"
-                                class="form-control form-control-sm  @error('fanpage') is-invalid @enderror"
-                                id="social" placeholder="Nhập link fanpage" value="{{ old('fanpage') }}"
-                                name="fanpage">
-                            @error('fanpage')
+                                class="form-control form-control-sm  @error('social_channel') is-invalid @enderror"
+                                id="social_channel" placeholder="Nhập link fanpage" value="{{ old('social_channel') }}"
+                                name="social_channel">
+                            @error('social_channel')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
@@ -349,9 +349,10 @@
                             @foreach ($business_support_needs as $support_need)
                                 <div>
                                     <label>
-                                        <input type="radio" name="support_need" value="{{ $support_need->id }}">
+                                        <input type="radio" name="support_need" value="{{ $support_need->id }}" {{ old('support_need') == $support_need->id ? 'checked' : '' }}>
                                         {{ $support_need->name }}
                                     </label>
+                                    
                                 </div>
                             @endforeach
                         </div>
