@@ -130,6 +130,7 @@
             <img src="{{ $blog && !empty($blog->banner) ? asset($blog->banner) : asset('images/Vayvonkinhdoanh.jpg') }}" alt="Banner Image">
         </div>
         <div class="container my-4">
+            {{-- @dd($blog) --}}
             @if($blog->tabContentDetails->isNotEmpty())
                 <div class="row">
                     <div class="col-md-12">
@@ -144,7 +145,7 @@
                             <div class="tabs-content">
                                 @foreach($blog->tabContentDetails as $key => $tabContent)
                                     <div class="tab-content {{ $key == 0 ? 'active' : '' }}" id="tab-{{ $key }}">
-                                        <p>{!! $tabContent->content !!}</p> 
+                                        <p>{!! $tabContent->content !!}</p>
                                     </div>
                                 @endforeach
                             </div>
@@ -152,7 +153,7 @@
                     </div>
                     <div class="col-md-12">
                         <div class="btn-regis text-center">
-                            <a href="{{route('show.form', ['financialSupportId' => $blog->id])}}" class="btn btn-success" role="button">
+                            <a href="{{route('show.form', ['slug' => $blog->slug])}}" class="btn btn-success" role="button">
                                 <span>{{ __('Đăng ký ngay') }}</span>
                             </a>
                         </div>

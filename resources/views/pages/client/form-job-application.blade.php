@@ -6,8 +6,8 @@
         .form-control:hover,
         .upload-label:focus,
         .upload-label:hover {
-            border-color: #00d274;
-            box-shadow: 0 0 0 2px rgba(5, 255, 95, 0.1);
+            border-color: #80bdff;
+            box-shadow: 0 0 5px rgba(128, 189, 255, 0.5);
             outline: 0;
         }
 
@@ -29,7 +29,17 @@
             background-position: center center;
             z-index: 1;
         }
-
+        .btn-success{
+            background-color: #0056b3;
+            transition: background-color 0.3s ease;
+        }
+        .btn-success:hover{
+            background-color: #004494;
+        }
+        
+        .btn:disabled{
+            background-color: #004494;
+        }
         form {
             position: relative;
             z-index: 1;

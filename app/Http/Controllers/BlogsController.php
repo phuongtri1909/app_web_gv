@@ -350,7 +350,6 @@ class BlogsController extends Controller
                         ->with('tabContentDetails.tab')
                         ->firstOrFail();
         }
-
         return view('pages.client.gv.post-detail', compact('blog'));
     }
     public function showBlogIndexMini($slug)

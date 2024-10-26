@@ -271,7 +271,7 @@
                             <label for="business_address" class="form-label">Địa chỉ kinh doanh:<span
                                     class="text-danger">*</span></label>
                             <input type="text" id="business_address" name="business_address"
-                                class="form-control form-control-sm  @error('business_address') is-invalid @enderror" placeholder="Nhập địa chỉ kinh doanh">
+                                class="form-control form-control-sm  @error('business_address') is-invalid @enderror" placeholder="Nhập địa chỉ kinh doanh" value="{{old('business_address')}}">
                              @error('business_address')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror

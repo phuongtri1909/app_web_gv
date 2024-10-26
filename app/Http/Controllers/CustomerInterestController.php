@@ -67,33 +67,38 @@ class CustomerInterestController extends Controller
         return redirect()->route('customer_interests.index')->with('success', __('Customer interest deleted successfully!'));
     }
 
-    public function showForm($financialSupportId = null)
+    public function showForm($slug = null)
     {
 
-        if ($financialSupportId) {
-            $financialSupport = FinancialSupport::find($financialSupportId);
-
-            if (!$financialSupport) {
-                return redirect()->route('show.home.bank')
-                    ->with('error', __('ID hỗ trợ tài chính không hợp lệ.'));
+        if ($slug) {
+            $financialSupport = FinancialSupport::where('slug',$slug);
+            if ($financialSupport) {
+                    return view('pages.client.gv.form-customer', compact(  'slug'));
             }
-        } else {
-            $financialSupport = null;
+            else{
+                $bank_service = BankServicesInterest::where('slug',$slug);
+                if ($bank_service) {
+                    return view('pages.client.gv.form-customer', compact(  'slug'));
+                }
+            }
+            return redirect()->route('show.home.bank')->with('error', __('Dịch vụ không tồn tại!!.'));
         }
-
-        $bank_services = BankServicesInterest::all();
-        $business_type = PersonalBusinessInterest::all();
-
-        return view('pages.client.gv.form-customer', compact('financialSupportId', 'bank_services', 'business_type', 'financialSupport'));
+        // $bank_services = BankServicesInterest::all();
+        // $business_type = PersonalBusinessInterest::all();
+          return view('pages.client.gv.form-customer');
     }
 
 
-    public function storeForm(Request $request, $financialSupportId = null)
+    public function storeForm(Request $request)
     {
+        // Debugging: Show all request data
+        // dd($request->all());
+    
+        // Validate the request
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'phone_number' => 'required|digits:10',
-            'birth_year' => 'required|digits:4|min:1500|max:' . date('Y'),
+            'birth_year' => 'required|integer|min:1500|max:' . date('Y'),
             'gender' => 'required|string',
             'residence_address' => 'required|string|max:255',
             'business_address' => 'nullable|string|max:255',
@@ -103,7 +108,6 @@ class CustomerInterestController extends Controller
             'email' => 'nullable|email|max:255',
             'fanpage' => 'nullable|string|max:255',
             'support_needs' => 'nullable|string|max:255',
-            'financial_support_id' => 'nullable|exists:financial_support,id',
         ], [
             'full_name.required' => 'Tên là bắt buộc.',
             'phone_number.required' => 'Số điện thoại là bắt buộc.',
@@ -112,32 +116,49 @@ class CustomerInterestController extends Controller
             'birth_year.digits' => 'Năm sinh phải có 4 chữ số.',
             'gender.required' => 'Giới tính là bắt buộc.',
             'residence_address.required' => 'Địa chỉ cư trú là bắt buộc.',
-            'financial_support_id.exists' => 'Hỗ trợ tài chính không tồn tại.',
             'birth_year.min' => 'Năm sinh phải lớn hơn hoặc bằng 1500.',
             'birth_year.max' => 'Năm sinh không được lớn hơn năm hiện tại.',
         ]);
-
-
-        $financialSupportId = $financialSupportId ? $financialSupportId : null;
-
-        CustomerInterest::create([
-            'name' => $validated['full_name'],
-            'phone_number' => $validated['phone_number'],
-            'financial_support_id' => $financialSupportId,
-            'birth_year' => $validated['birth_year'],
-            'gender' => $validated['gender'],
-            'residence_address' => $validated['residence_address'],
-            'business_address' => $validated['business_address'],
-            'company_name' => $validated['company_name'],
-            'business_field' => $validated['business_field'],
-            'tax_code' => $validated['tax_code'],
-            'email' => $validated['email'],
-            'fanpage' => $validated['fanpage'],
-            'support_needs' => $validated['support_needs'],
-        ]);
-
+    
+        // Create a new CustomerInterest instance and populate it
+        $customerInterest = new CustomerInterest();
+        $customerInterest->name = $validated['full_name'];
+        $customerInterest->phone_number = $validated['phone_number'];
+        $customerInterest->birth_year = $validated['birth_year'];
+        $customerInterest->gender = $validated['gender'];
+        $customerInterest->residence_address = $validated['residence_address'];
+        $customerInterest->business_address = $validated['business_address'];
+        $customerInterest->company_name = $validated['company_name'];
+        $customerInterest->business_field = $validated['business_field'];
+        $customerInterest->tax_code = $validated['tax_code'];
+        $customerInterest->email = $validated['email'];
+        $customerInterest->fanpage = $validated['fanpage'];
+        $customerInterest->support_needs = $validated['support_needs'];
+    
+        // Check if a slug is provided and assign financial support or bank service ID
+        if ($request->has('slug')) {
+            $slug = $request->slug; // Get the slug from the request
+    
+            // Check for FinancialSupport
+            $financialSupport = FinancialSupport::where('slug', $slug)->first();
+            if ($financialSupport) {
+                $customerInterest->financial_support_id = $financialSupport->id; // Assuming you want the ID
+            } else {
+                // Check for BankServicesInterest
+                $bankService = BankServicesInterest::where('slug', $slug)->first();
+                if ($bankService) {
+                    $customerInterest->bank_service_id = $bankService->id; // Assuming you want the ID
+                }
+            }
+        }
+    
+        // Save the customer interest record
+        $customerInterest->save();
+    
+        // Redirect back with a success message
         return redirect()->back()->with('success', 'Gửi thành công!');
     }
+    
 
 }
 

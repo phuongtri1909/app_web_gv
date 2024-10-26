@@ -8,7 +8,7 @@ class CustomerInterest extends Model
 {
     protected $table = 'customer_interest';
 
-    protected $fillable = ['name', 'phone_number', 'financial_support_id','birth_year','gender','residence_address','business_address','company_name','business_field','tax_code','email','fanpage','support_needs'];
+    protected $fillable = ['name', 'phone_number', 'financial_support_id','birth_year','gender','residence_address','business_address','company_name','business_field','tax_code','email','fanpage','support_needs','bank_service_id'];
 
     public function financialSupport()
     {
@@ -20,8 +20,8 @@ class CustomerInterest extends Model
     //     return $this->belongsTo(PersonalBusinessInterest::class, 'interest_id');
     // }
 
-    // public function bankServicesInterest()
-    // {
-    //     return $this->belongsTo(BankServicesInterest::class, 'bank_services_id');
-    // }
+    public function bankServicesInterest()
+    {
+        return $this->belongsTo(BankServicesInterest::class, 'bank_service_id');
+    }
 }
