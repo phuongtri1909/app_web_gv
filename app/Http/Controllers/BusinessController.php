@@ -28,7 +28,18 @@ class BusinessController extends Controller
         return view('pages.client.form-business', compact('businesses','wards','category_business'));
     }
 
-
+    public function adminIndex()
+    {
+        $businesses = Business::with(['ward'])->get();
+        $wards = WardGovap::all();
+        $category_business = CategoryBusiness::all();
+        
+        return view('admin.pages.client.form-business.index', compact(
+            'businesses',
+            'wards',
+            'category_business'
+        ));
+    }
     public function create()
     {
         return view('pages.client.form-business');
@@ -142,10 +153,28 @@ class BusinessController extends Controller
 
     public function show($id)
     {
-        $business = Business::findOrFail($id);
-        return view('business.show', compact('business'));
+        $business = Business::with(['ward'])->findOrFail($id);
+        
+        return response()->json([
+            'business_name' => $business->business_name,
+            'business_code' => $business->business_code,
+            'representative_name' => $business->representative_name,
+            'birth_year' => $business->birth_year,
+            'gender' => $business->gender,
+            'email' => $business->email,
+            'phone_number' => $business->phone_number,
+            'address' => $business->address,
+            'business_address' => $business->business_address,
+            'ward' => [
+                'name' => $business->ward->name
+            ],
+            'social_channel' => $business->social_channel,
+            'description' => $business->description,
+            'avt_businesses' => $business->avt_businesses,
+            'business_license' => $business->business_license
+        ]);
     }
-
+    
 
     public function edit($id)
     {
