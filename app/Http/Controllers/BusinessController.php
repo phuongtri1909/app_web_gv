@@ -674,7 +674,7 @@ class BusinessController extends Controller
                 }
             }
             if (!empty($uploadedFiles)) {
-                $data[$inputName] = json_encode($uploadedFiles);
+                $data[$inputName] = count($uploadedFiles) > 1 ? json_encode($uploadedFiles) : $uploadedFiles[0];
             }
         }
     }

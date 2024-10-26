@@ -346,8 +346,8 @@
                         </div>
                     </div>
                     <div class="mb-4">
-                        <label for="description" class="form-label">Nhu cầu hỗ trợ</label>
-                        <textarea class="form-control @error('description') is-invalid @enderror" id="description" rows="4" placeholder="Nhập nhu cầu hỗ trợ" name="description">{{ old('description') }}</textarea>
+                        <label for="description" class="form-label">Thông tin doanh nghiệp</label>
+                        <textarea class="form-control @error('description') is-invalid @enderror" id="description" rows="4" placeholder="Thông tin doanh nghiệp" name="description">{{ old('description') }}</textarea>
                         @error('description')
                             <div class="invalid-feedback" role="alert">{{ $message }}</div>
                         @enderror

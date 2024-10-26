@@ -18,12 +18,12 @@ class MemberBusinessController extends Controller
 
         $request->validate([
             'business_name' => 'required|string|max:255',
-            'business_license_number' => 'required|string|max:255',
+            'business_license_number' => 'required|string|max:25',
             'license_issue_date' => 'required|date',
             'license_issue_place' => 'required|string|max:255',
             'business_field' => 'required|string|max:255',
             'head_office_address' => 'required|string|max:255',
-            'phone' => 'required|digits:11',
+            'phone' =>  'required|string|max:10|regex:/^[0-9]+$/',
             'fax' => 'nullable|string|max:15',
             'email' => 'required|email|max:255',
             'branch_address' => 'nullable|string|max:255',
@@ -31,10 +31,10 @@ class MemberBusinessController extends Controller
             'representative_full_name' => 'required|string|max:255',
             'representative_position' => 'required|string|max:255',
             'gender' => 'required|string',
-            'identity_card' => 'required|digits:12',
+            'identity_card' =>  'required|string|max:12|regex:/^[0-9]+$/',
             'identity_card_issue_date' => 'required|date',
             'home_address' => 'required|string|max:255',
-            'contact_phone' => 'required|digits:11',
+            'contact_phone' =>  'required|string|max:10|regex:/^[0-9]+$/',
             'representative_email' => 'required|email|max:255',
             'business_license_file' => 'required|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
             'identity_card_front_file' => 'required|image|max:2048',
@@ -42,13 +42,15 @@ class MemberBusinessController extends Controller
         ], [
             'business_name.required' => 'Vui lòng nhập tên doanh nghiệp.',
             'business_license_number.required' => 'Vui lòng nhập số giấy ĐKKD.',
+            'business_license_number.max' => 'ĐKKD phải có đúng 25 ký tự.',
             'license_issue_date.required' => 'Vui lòng chọn ngày cấp giấy ĐKKD.',
             'license_issue_date.date' => 'Ngày cấp giấy ĐKKD phải là một ngày hợp lệ.',
             'license_issue_place.required' => 'Vui lòng nhập nơi cấp giấy ĐKKD.',
             'business_field.required' => 'Vui lòng nhập lĩnh vực hoạt động.',
             'head_office_address.required' => 'Vui lòng nhập địa chỉ trụ sở chính.',
             'phone.required' => 'Vui lòng nhập số điện thoại.',
-            'phone.digits' => 'Số điện thoại phải có đúng 11 chữ số.',
+            'phone.regex' => 'Số điện thoại không hợp lệ,số điện thoại phải có 10 số',
+            'phone.max' => 'Số điện thoại không được vượt quá 10 ký tự.',
             'fax.max' => 'Số fax không được vượt quá 15 ký tự.',
             'email.required' => 'Vui lòng nhập email.',
             'email.email' => 'Định dạng email không hợp lệ.',
@@ -58,12 +60,12 @@ class MemberBusinessController extends Controller
             'gender.required' => 'Vui lòng chọn giới tính.',
             'gender.in' => 'Giới tính phải là Nam hoặc Nữ.',
             'identity_card.required' => 'Vui lòng nhập số identity_card/CCCD.',
-            'identity_card.digits' => 'Số identity_card/CCCD không được vượt quá 12.',
             'identity_card_issue_date.required' => 'Vui lòng chọn ngày cấp identity_card/CCCD.',
             'identity_card_issue_date.date' => 'Ngày cấp identity_card/CCCD phải là một ngày hợp lệ.',
             'home_address.required' => 'Vui lòng nhập địa chỉ riêng.',
             'contact_phone.required' => 'Vui lòng nhập số điện thoại liên hệ.',
             'contact_phone.max' => 'Số điện thoại liên hệ không được vượt quá 11 số.',
+            'contact_phone.regex' => 'Số điện thoại liên hệ phải có 10 số',
             'representative_email.required' => 'Vui lòng nhập email đại diện.',
             'representative_email.email' => 'Định dạng email đại diện không hợp lệ.',
             'business_license_file.required' => 'Vui lòng tải lên file giấy ĐKKD.',
@@ -136,7 +138,7 @@ class MemberBusinessController extends Controller
                 }
             }
             if (!empty($uploadedFiles)) {
-                $data[$inputName] = json_encode($uploadedFiles);
+                 $data[$inputName] = count($uploadedFiles) > 1 ? json_encode($uploadedFiles) : $uploadedFiles[0];
             }
         }
     }
