@@ -12,18 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('businesses', function (Blueprint $table) {
-            // $table->unsignedBigInteger('ward_id')->nullable()->change();
-            // $table->string('address')->nullable()->change();
-            // $table->string('avt_businesses')->nullable()->change();
+            $table->unsignedBigInteger('ward_id')->nullable()->change();
+            $table->string('address')->nullable()->change();
+            $table->string('avt_businesses')->nullable()->change();
     
-            // $table->enum('status', ['pending', 'approved', 'rejected', 'other'])->default('pending')->change();
+            $table->enum('status', ['pending', 'approved', 'rejected', 'other'])->default('pending')->change();
     
-            // $table->unsignedBigInteger('business_fields')->nullable()->change();
-            // $table->foreign('business_fields')
-            //     ->references('id')
-            //     ->on('business_fields')
-            //     ->onDelete('cascade');
-                });
+            $table->unsignedBigInteger('business_fields')->nullable();
+            $table->foreign('business_fields')->references('id')->on('business_fields')->onDelete('cascade');
+        });
     }
 
     /**
