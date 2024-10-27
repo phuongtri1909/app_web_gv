@@ -58,4 +58,8 @@ class Business extends Model
     {
         return $this->belongsTo(BusinessField::class, 'business_fields');
     }
+    public function businessCapitalNeed()
+    {
+        return $this->hasMany(BusinessCapitalNeed::class);
+    }
 }

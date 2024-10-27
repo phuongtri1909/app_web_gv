@@ -11,15 +11,7 @@ class BusinessCapitalNeed extends Model
 
     protected $table = 'business_capital_needs';
     protected $fillable = [
-        'business_name',
-        'business_code',
-        'category_business_id',
-        'address',
-        'phone',
-        'fax',
-        'email',
-        'representative_name',
-        'gender',
+        'business_id',
         'interest_rate',
         'finance',
         'mortgage_policy',
@@ -29,9 +21,13 @@ class BusinessCapitalNeed extends Model
         'feedback',
         'status'
     ];
-    public function categoryBusiness()
+    // public function categoryBusiness()
+    // {
+    //     return $this->belongsTo(CategoryBusiness::class, 'category_business_id');
+    // }
+    public function business()
     {
-        return $this->belongsTo(CategoryBusiness::class, 'category_business_id');
+        return $this->belongsTo(Business::class);
     }
 
 }
