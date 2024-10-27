@@ -97,7 +97,7 @@ class CustomerInterestController extends Controller
         // Validate the request
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
-            'phone_number' => 'required|digits:10',
+            'phone_number' => 'required|string|max:10|regex:/^[0-9]+$/',
             'birth_year' => 'required|integer|min:1500|max:' . date('Y'),
             'gender' => 'required|string',
             'residence_address' => 'required|string|max:255',
@@ -111,7 +111,8 @@ class CustomerInterestController extends Controller
         ], [
             'full_name.required' => 'Tên là bắt buộc.',
             'phone_number.required' => 'Số điện thoại là bắt buộc.',
-            'phone_number.digits' => 'Số điện thoại phải có 10 chữ số.',
+            'phone_number.regex' => 'Số điện thoại không đúng định dạng.',  
+            'phone_number.max' => 'Số điện thoại không được quá 10 số.',
             'birth_year.required' => 'Năm sinh là bắt buộc.',
             'birth_year.digits' => 'Năm sinh phải có 4 chữ số.',
             'gender.required' => 'Giới tính là bắt buộc.',

@@ -16,7 +16,7 @@ class LawsController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:15',
+            'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
             'email' => 'required|email|max:255',
             'address' => 'required|string|max:255',
             'company_name' => 'required|string|max:255',
@@ -24,6 +24,8 @@ class LawsController extends Controller
         ], [
             'name.required' => 'Họ và tên là bắt buộc.',
             'phone.required' => 'Số điện thoại là bắt buộc.',
+            'phone.regex' => 'Số điện thoại không hợp lệ.',
+            'phone.max' => 'Số điện thoại không được vượt quá 10 số.',
             'email.required' => 'Email là bắt buộc.',
             'address.required' => 'Địa chỉ là bắt buộc.',
             'company_name.required' => 'Tên công ty/đơn vị là bắt buộc.',

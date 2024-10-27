@@ -13,7 +13,7 @@ class JobApplicationController extends Controller
     {
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
-            'phone' => 'required|digits:10',
+            'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
             'fax' => 'nullable|string|max:255',
             'birth_year' => 'required|integer|min:1500|max:' . date('Y'),
             'gender' => 'required|in:male,female,other',
@@ -24,7 +24,8 @@ class JobApplicationController extends Controller
         ], [
             'full_name.required' => 'Tên là bắt buộc.',
             'phone.required' => 'Số điện thoại là bắt buộc.',
-            'phone.digits' => 'Số điện thoại phải có 10 chữ số.',
+            'phone.regex' => 'Số điện thoại không hợp lệ.',
+            'phone.max' => 'Số điện thoại không được vượt quá 10 số.',
             'birth_year.required' => 'Năm sinh là bắt buộc.',
             'birth_year.digits' => 'Năm sinh phải có 4 chữ số.',
             'birth_year.min' => 'Năm sinh phải lớn hơn hoặc bằng 1500.',
