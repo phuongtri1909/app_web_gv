@@ -302,6 +302,17 @@
                             @enderror
                         </div>
                         <div class="col-md-4 mb-4">
+                            <label for="business_fields" class="form-label">Ngành nghề kinh doanh:</label>
+                            <select class="form-select form-control form-select-sm @error('business_fields') is-invalid @enderror" id="business_fields" name="business_fields">
+                                @foreach ($business_fields as $field)
+                                    <option value="{{ $field->id }}" {{ old('business_fields') == $field->id ? 'selected' : '' }}>{{ $field->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('business_fields')
+                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-4 mb-4">
                             <label for="license" class="form-label @error('business_license') is-invalid @enderror">Giấy phép kinh doanh</label>
                             <div class="input-group">
                                 <input type="file" id="file-uploads" name="business_license" accept="application/pdf"

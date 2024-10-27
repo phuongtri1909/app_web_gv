@@ -12,20 +12,15 @@ class BusinessStartPromotionInvestment extends Model
     protected $table = 'business_start_promotion_investment';
 
     protected $fillable = [
-        'representative_name',
-        'birth_year',
-        'gender',
-        'phone',
-        'address',
-        'business_address',
-        'business_name',
-        'business_field',
-        'business_code',
-        'email',
-        'fanpage',
-        'business_support_needs_id'
+        'business_id',
+        'business_support_needs_id',
+        'status',
     ];
 
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
     public function supportNeeds()
     {
         return $this->belongsTo(BusinessSupportNeed::class, 'business_support_needs_id');

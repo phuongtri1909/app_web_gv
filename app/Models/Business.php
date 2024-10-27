@@ -28,6 +28,8 @@ class Business extends Model
         'birth_year',
         'gender',
         'business_address',
+        'business_fields',
+        'status',
     ];
 
     public function ward()
@@ -47,5 +49,13 @@ class Business extends Model
     public function products()
     {
         return $this->hasMany(ProductBusiness::class);
+    }
+
+    public function businessStartPromotionInvestment(){
+        return $this->hasMany(BusinessStartPromotionInvestment::class);
+    }
+    public function field()
+    {
+        return $this->belongsTo(BusinessField::class, 'business_fields');
     }
 }

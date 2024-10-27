@@ -16,6 +16,7 @@ use App\Models\SupplyDemandConnection;
 use App\Models\WardGovap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException ;
 
 class BusinessController extends Controller
 {
@@ -25,7 +26,8 @@ class BusinessController extends Controller
         $wards = WardGovap::all();
         $category_business = CategoryBusiness::all();
         $businesses = Business::all();
-        return view('pages.client.form-business', compact('businesses','wards','category_business'));
+        $business_fields = BusinessField::all();
+        return view('pages.client.form-business', compact('businesses','wards','category_business','business_fields'));
     }
 
     public function adminIndex()
@@ -33,11 +35,10 @@ class BusinessController extends Controller
         $businesses = Business::with(['ward'])->get();
         $wards = WardGovap::all();
         $category_business = CategoryBusiness::all();
-        
         return view('admin.pages.client.form-business.index', compact(
             'businesses',
             'wards',
-            'category_business'
+            'category_business',
         ));
     }
     public function create()
@@ -51,7 +52,7 @@ class BusinessController extends Controller
         $request->validate([
             'avt_businesses' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'representative_name' => 'required|string|max:255',
-            'birth_year' => 'required|digits:4|max:' . date('Y'),
+            'birth_year' => 'required|digits:4|integer||min:1500|max:' . date('Y'),
             'gender' => 'required|string',
             'phone_number' => 'required|string|max:10|regex:/^[0-9]+$/',
             'address' => 'required|string|max:255',
@@ -63,6 +64,7 @@ class BusinessController extends Controller
             'email' => 'required|email|max:255',
             'social_channel' => 'nullable|url|max:255',
             'description' => 'nullable|string|max:1000',
+            'business_fields' => 'required|exists:business_fields,id',
         ], [
             'business_code.unique' => 'Mã doanh nghiệp này đã tồn tại.',
             'business_code.required' => 'Mã doanh nghiệp là bắt buộc.',
@@ -92,6 +94,8 @@ class BusinessController extends Controller
             'business_address.max' => 'Địa chỉ doanh nghiệp không được vượt quá 255 ký tự.',
             'business_code.regex' => 'Mã doanh nghiệp không được nhỏ hơn 10 hoặc vượt quá 13 số.',
             'avt_businesses.required' => 'Ảnh đại diện doanh nghiệp là bắt buộc',
+            'business_fields.required' => 'Vui lòng chọn ít nhất một lĩnh vực kinh doanh.',
+            'business_fields.exists' => 'Lĩnh vực kinh doanh không hợp lệ.',
         ]);
 
         DB::beginTransaction();
@@ -379,88 +383,103 @@ class BusinessController extends Controller
 
     public function showFormStartPromotion(){
         $business_support_needs = BusinessSupportNeed::all();
-        return view('pages.client.gv.start-promotion-investment',compact('business_support_needs'));
+        $business_fields = BusinessField::all();
+        return view('pages.client.gv.start-promotion-investment',compact('business_support_needs','business_fields'));
     }
     public function storeFormStartPromotion(Request $request)
     {
-        $validatedData = $request->validate([
-            'representative_name' => 'required|string|max:255',
-            'birth_year' => 'required|digits:4|integer|min:1500|max:' . date('Y'),
-            'gender' => 'required|in:male,female,other',
-            'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
-            'address' => 'required|string|max:255',
-            'business_address' => 'required|string|max:255',
-            'business_name' => 'required|string|max:255',
-            'business_field' => 'required|string|max:255',
-            'business_code' => 'required|regex:/^\d{10,13}$/',
-            'email' => 'required|email|max:255',
-            'fanpage' => 'nullable|url|max:255',
-            'support_need' => 'required|exists:business_support_needs,id',
-        ], [
-            'representative_name.required' => 'Họ tên là bắt buộc.',
-            'representative_name.string' => 'Họ tên phải là chuỗi ký tự.',
-            'representative_name.max' => 'Họ tên không được vượt quá :max ký tự.',
+        DB::beginTransaction();
+        // dd($request->all());
+        try {
+            $validatedData = $request->validate([
+                'representative_name' => 'required|string|max:255',
+                'birth_year' => 'required|digits:4|integer|min:1500|max:' . date('Y'),
+                'gender' => 'required|in:male,female,other',
+                'phone_number' => 'required|string|max:10|regex:/^[0-9]+$/',
+                'address' => 'required|string|max:255',
+                'business_address' => 'required|string|max:255',
+                'business_name' => 'required|string|max:255',
+                'business_field' => 'nullable|string|max:255',
+                'business_code' => 'required|regex:/^\d{10,13}$/',
+                'email' => 'required|email|max:255',
+                'social_channel' => 'nullable|url|max:255',
+                'support_need' => 'required|exists:business_support_needs,id',
+                'business_fields' => 'required|exists:business_fields,id',
+            ], [
+                'business_code.unique' => 'Mã doanh nghiệp này đã đăng ký trong hệ thống.',
+                'business_code.regex' => 'Mã số doanh nghiệp/Mã số thuế không được ít hơn 10 và nhiều hơn 13 số.',
+                'business_name.required' => 'Tên doanh nghiệp là bắt buộc.',
+                'representative_name.required' => 'Tên người đại diện là bắt buộc.',
+                'birth_year.required' => 'Năm sinh là bắt buộc.',
+                'birth_year.min' => 'Năm sinh phải lớn hơn hoặc bằng 1500.',
+                'birth_year.max' => 'Năm sinh không được lớn hơn năm hiện tại.',
+                'birth_year.digits' => 'Năm sinh phải có 4 chữ số.',
+                'gender.required' => 'Giới tính là bắt buộc.',
+                'phone_number.required' => 'Số điện thoại là bắt buộc.',
+                'phone_number.regex' => 'Số điện thoại không hợp lệ.',
+                'phone_number.max' => 'Số điện thoại không được vượt quá 10 số.',
+                'address.required' => 'Địa chỉ là bắt buộc.',
+                'email.required' => 'Email là bắt buộc.',
+                'email.email' => 'Email không hợp lệ.',
+                'email.unique' => 'Email này đã được đăng ký trong hệ thống.',
+                'social_channel.url' => 'Đường dẫn social không hợp lệ.',
+                'support_need.required' => 'Vui lòng chọn nhu cầu hỗ trợ.',
+                'support_need.exists' => 'Nhu cầu hỗ trợ không hợp lệ.',
+                'business_fields.required' => 'Vui lòng chọn ngành nghề.',
+                'business_fields.exists' => 'Ngành nghề không hợp lệ.',
+            ]);
+           
+            $existingBusiness = Business::where('business_code', $validatedData['business_code'])->first();
+            if ($existingBusiness) {
+                $response = $this->validateExistingBusiness($existingBusiness, $validatedData);
+                if ($response) return $response;
+                $existingInvestment = BusinessStartPromotionInvestment::where('business_id', $existingBusiness->id)->first();
+                if ($existingInvestment) {
+                    return redirect()->back()->with('error', 'Doanh nghiệp này đã đăng ký trước đó.')->withInput();
+                }
+                BusinessStartPromotionInvestment::create([
+                    'business_support_needs_id' => $validatedData['support_need'],
+                    'business_id' => $existingBusiness->id,
+                ]);
 
-            'birth_year.required' => 'Năm sinh là bắt buộc.',
-            'birth_year.integer' => 'Năm sinh phải là một số nguyên.',
-            'birth_year.min' => 'Năm sinh phải lớn hơn hoặc bằng 1500.',
-            'birth_year.max' => 'Năm sinh không được lớn hơn năm hiện tại.',
-            'birth_year.digits' => 'Năm sinh phải có 4 chữ số.',
-            'gender.required' => 'Giới tính là bắt buộc.',
-            'gender.in' => 'Giới tính không hợp lệ.',
+                DB::commit();
+                return redirect()->back()->with('success', 'Đã thêm Khởi nghiệp-Xúc tiến thương mại-Kêu gọi đầu tư cho doanh nghiệp hiện có.');
+            }
+            $response = $this->checkForExistingEmail($validatedData['email']);
+            if ($response) return $response;
+            $business = Business::create([
+                'business_name' => $validatedData['business_name'],
+                'business_code' => $validatedData['business_code'],
+                'business_address' => $validatedData['business_address'],
+                'business_fields' => $validatedData['business_fields'] ?? null,
+                'representative_name' => $validatedData['representative_name'],
+                'birth_year' => $validatedData['birth_year'],
+                'gender' => $validatedData['gender'],
+                'phone_number' => $validatedData['phone_number'],
+                'address' => $validatedData['address'],
+                'email' => $validatedData['email'],
+                'social_channel' => $validatedData['social_channel'] ?? null,
+                'status' => 'other'
+            ]);
 
-            'phone.required' => 'Số điện thoại là bắt buộc.',
-            'phone.string' => 'Số điện thoại phải là chuỗi ký tự.',
-            'phone.max' => 'Số điện thoại không được vượt quá :max ký tự.',
-            'phone.regex' => 'Số điện thoại không hợp lệ',
+            BusinessStartPromotionInvestment::create([
+                'business_support_needs_id' => $validatedData['support_need'],
+                'business_id' => $business->id,
+            ]);
 
-            'address.required' => 'Địa chỉ cư trú là bắt buộc.',
-            'address.string' => 'Địa chỉ cư trú phải là chuỗi ký tự.',
-            'address.max' => 'Địa chỉ cư trú không được vượt quá :max ký tự.',
-
-            'business_address.required' => 'Địa chỉ kinh doanh là bắt buộc.',
-            'business_address.string' => 'Địa chỉ kinh doanh phải là chuỗi ký tự.',
-            'business_address.max' => 'Địa chỉ kinh doanh không được vượt quá :max ký tự.',
-
-            'business_name.required' => 'Tên doanh nghiệp/hộ kinh doanh là bắt buộc.',
-            'business_name.string' => 'Tên doanh nghiệp/hộ kinh doanh phải là chuỗi ký tự.',
-            'business_name.max' => 'Tên doanh nghiệp/hộ kinh doanh không được vượt quá :max ký tự.',
-
-            'business_field.required' => 'Ngành nghề kinh doanh là bắt buộc.',
-            'business_field.string' => 'Ngành nghề kinh doanh phải là chuỗi ký tự.',
-            'business_field.max' => 'Ngành nghề kinh doanh không được vượt quá :max ký tự.',
-
-            'business_code.required' => 'Mã số thuế là bắt buộc.',
-            'business_code.regex' => 'Mã số doanh nghiệp/Mã số thuế không được ít hơn 10 và nhiều hơn 13 số.',
-            'email.required' => 'Email doanh nghiệp là bắt buộc.',
-            'email.email' => 'Email không hợp lệ.',
-            'email.max' => 'Email không được vượt quá :max ký tự.',
-
-            'fanpage.url' => 'Link fanpage không hợp lệ.',
-            'fanpage.max' => 'Link fanpage không được vượt quá :max ký tự.',
-
-            'support_need.required' => 'Nhu cầu hỗ trợ là bắt buộc.',
-            'support_need.exists' => 'Nhu cầu hỗ trợ không hợp lệ.',
-        ]);
-
-
-
-        BusinessStartPromotionInvestment::create([
-            'representative_name' => $validatedData['representative_name'],
-            'birth_year' => $validatedData['birth_year'],
-            'gender' => $validatedData['gender'],
-            'phone' => $validatedData['phone'],
-            'address' => $validatedData['address'],
-            'business_address' => $validatedData['business_address'],
-            'business_name' => $validatedData['business_name'],
-            'business_code' => $validatedData['business_code'],
-            'business_field' => $validatedData['business_field'],
-            'email' => $validatedData['email'],
-            'fanpage' => $validatedData['fanpage'],
-            'business_support_needs_id' => $validatedData['support_need'],
-        ]);
-        return redirect()->back()->with('success', 'Đăng ký thành công!');
+            DB::commit();
+            return redirect()->back()->with('success', 'Đăng ký Khởi nghiệp-Xúc tiến thương mại-Kêu gọi đầu tư thành công!');
+    
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Đăng ký thất bại: ' . $e->getMessage())->withInput();
+        }
     }
+    
+    
 
 
     public function showFormCapitalNeeds(){
@@ -746,5 +765,22 @@ class BusinessController extends Controller
             }
         }
     }
-
+    private function validateExistingBusiness($existingBusiness, $validatedData)
+    {
+        if ($existingBusiness->business_name !== $validatedData['business_name'] ||
+            $existingBusiness->business_address !== $validatedData['business_address'] ||
+            $existingBusiness->phone_number !== $validatedData['phone_number'] ||
+            $existingBusiness->email !== $validatedData['email'] ||  
+            $existingBusiness->representative_name !== $validatedData['representative_name']) {
+            
+            return redirect()->back()->with('error', 'Thông tin doanh nghiệp không khớp.')->withInput();
+        }
+    }
+    
+    private function checkForExistingEmail($email)
+    {
+        if (Business::where('email', $email)->exists()) {
+            return redirect()->back()->with('error', 'Email này đã được đăng ký trong hệ thống với một doanh nghiệp khác.')->withInput();
+        }
+    }
 }
