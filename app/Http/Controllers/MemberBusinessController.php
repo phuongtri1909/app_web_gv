@@ -25,7 +25,7 @@ class MemberBusinessController extends Controller
             'head_office_address' => 'required|string|max:255',
             'phone' =>  'required|string|max:10|regex:/^[0-9]+$/',
             'fax' => 'nullable|string|max:15',
-            'email' => 'required|email|max:255',
+            'email' => 'nullable|email|max:255',
             'branch_address' => 'nullable|string|max:255',
             'organization_participation' => 'nullable|string|max:255',
             'representative_full_name' => 'required|string|max:255',
