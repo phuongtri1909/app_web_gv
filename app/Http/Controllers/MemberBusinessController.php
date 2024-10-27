@@ -59,9 +59,9 @@ class MemberBusinessController extends Controller
             'representative_position.required' => 'Vui lòng nhập chức vụ.',
             'gender.required' => 'Vui lòng chọn giới tính.',
             'gender.in' => 'Giới tính phải là Nam hoặc Nữ.',
-            'identity_card.required' => 'Vui lòng nhập số identity_card/CCCD.',
-            'identity_card_issue_date.required' => 'Vui lòng chọn ngày cấp identity_card/CCCD.',
-            'identity_card_issue_date.date' => 'Ngày cấp identity_card/CCCD phải là một ngày hợp lệ.',
+            'identity_card.required' => 'Vui lòng nhập số CCCD.',
+            'identity_card_issue_date.required' => 'Vui lòng chọn ngày cấp CCCD.',
+            'identity_card_issue_date.date' => 'Ngày cấp CCCD phải là một ngày hợp lệ.',
             'home_address.required' => 'Vui lòng nhập địa chỉ riêng.',
             'contact_phone.required' => 'Vui lòng nhập số điện thoại liên hệ.',
             'contact_phone.max' => 'Số điện thoại liên hệ không được vượt quá 11 số.',
@@ -121,7 +121,7 @@ class MemberBusinessController extends Controller
         } catch (\Exception $e) {
             DB::rollBack(); 
             $this->cleanupUploadedFiles( $data); 
-            return redirect()->back()->with('error', 'Đăng ký thất bại!');
+            return redirect()->back()->with('error', 'Đăng ký thất bại!')->withInput();
         }
     }
     private function handleFileUpload(Request $request, $inputName, &$data, $suffix = '', $folderType = 'business')

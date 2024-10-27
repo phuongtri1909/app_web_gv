@@ -157,7 +157,7 @@
                     @csrf
                     {{-- <h3 class="text-center title-member-business">Đăng ký gia nhập hội doanh nghiệp quận gò vấp</h3> --}}
                     <div class="mb-3">
-                        <label for="business_name" class="form-label">Tên doanh nghiệp:</label>
+                        <label for="business_name" class="form-label">Tên doanh nghiệp:<span class="text-danger">*</span></label>
                         <input type="text" class="form-control form-control-sm" id="business_name" name="business_name" value="{{ old('business_name') }}" placeholder="Nhập tên doanh nghiệp">
                         @error('business_name')
                             <div class="text-danger">{{ $message }}</div>
@@ -165,7 +165,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="business_license_number" class="form-label">Giấy chứng nhận ĐKKD số:</label>
+                        <label for="business_license_number" class="form-label">Giấy chứng nhận ĐKKD số:<span class="text-danger">*</span></label>
                         <input type="text" class="form-control form-control-sm" id="business_license_number" name="business_license_number" value="{{ old('business_license_number') }}" placeholder="Nhập số ĐKKD">
                         @error('business_license_number')
                             <div class="text-danger">{{ $message }}</div>
@@ -174,14 +174,14 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="license_issue_date" class="form-label">Ngày cấp:</label>
+                            <label for="license_issue_date" class="form-label">Ngày cấp:<span class="text-danger">*</span></label>
                             <input type="date" class="form-control form-control-sm" id="license_issue_date" name="license_issue_date" value="{{ old('license_issue_date') }}">
                             @error('license_issue_date')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-6">
-                            <label for="license_issue_place" class="form-label">Nơi cấp:</label>
+                            <label for="license_issue_place" class="form-label">Nơi cấp:<span class="text-danger">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="license_issue_place" name="license_issue_place" value="{{ old('license_issue_place') }}" placeholder="Nhập nơi cấp">
                             @error('license_issue_place')
                             <div class="text-danger">{{ $message }}</div>
@@ -190,7 +190,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="business_field" class="form-label">Lĩnh vực hoạt động:</label>
+                        <label for="business_field" class="form-label">Lĩnh vực hoạt động:<span class="text-danger">*</span></label>
                         <input type="text" class="form-control form-control-sm" id="business_field" name="business_field" value="{{ old('business_field') }}" placeholder="Ngành nghề đang kinh doanh">
                         @error('business_field')
                             <div class="text-danger">{{ $message }}</div>
@@ -198,7 +198,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="head_office_address" class="form-label">Địa chỉ trụ sở chính:</label>
+                        <label for="head_office_address" class="form-label">Địa chỉ trụ sở chính:<span class="text-danger">*</span></label>
                         <input type="text" class="form-control form-control-sm" id="head_office_address" name="head_office_address" value="{{ old('head_office_address') }}" placeholder="Nhập địa chỉ trụ sở chính">
                         @error('head_office_address')
                         <div class="text-danger">{{ $message }}</div>
@@ -207,7 +207,7 @@
 
                     <div class="row mb-3">
                         <div class="col-md-4">
-                            <label for="phone" class="form-label">Điện thoại:</label>
+                            <label for="phone" class="form-label">Điện thoại:<span class="text-danger">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="phone" name="phone" value="{{ old('phone') }}" placeholder="Nhập số điện thoại">
                             @error('phone')
                             <div class="text-danger">{{ $message }}</div>
@@ -238,7 +238,7 @@
                     </div>
                 
                     <div class="mb-3">
-                        <label for="organization_participation" class="form-label">Đã tham gia tổ chức:</label>
+                        <label for="organization_participation" class="form-label">Đã tham gia tổ chức:<span class="text-danger">*</span></label>
                         <input type="text" class="form-control form-control-sm" id="organization_participation" name="organization_participation" value="{{ old('organization_participation') }}" placeholder="Nhập thông tin tổ chức">
                         @error('organization_participation')
                         <div class="text-danger">{{ $message }}</div>
@@ -248,7 +248,7 @@
                     <h5>(*)Người đại diện gia nhập Hội:</h5>
 
                     <div class="mb-3">
-                        <label for="representative_full_name" class="form-label">Họ và tên:</label>
+                        <label for="representative_full_name" class="form-label">Họ và tên:<span class="text-danger">*</span></label>
                         <input type="text" class="form-control form-control-sm" id="representative_full_name" name="representative_full_name" value="{{ old('representative_full_name') }}" placeholder="Nhập họ và tên">
                         @error('representative_full_name')
                         <div class="text-danger">{{ $message }}</div>
@@ -257,7 +257,7 @@
                 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="representative_position" class="form-label">Chức vụ:</label>
+                            <label for="representative_position" class="form-label">Chức vụ:<span class="text-danger">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="representative_position" name="representative_position" value="{{ old('representative_position') }}" placeholder="Nhập chức vụ">
                             @error('representative_position')
                             <div class="text-danger">{{ $message }}</div>
@@ -287,14 +287,14 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="identity_card" class="form-label">CCCD:</label>
+                            <label for="identity_card" class="form-label">CCCD:<span class="text-danger">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="identity_card" name="identity_card" value="{{ old('identity_card') }}" placeholder="Nhập số CCCD..">
                             @error('identity_card')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-6">
-                            <label for="identity_card_issue_date" class="form-label">Ngày cấp:</label>
+                            <label for="identity_card_issue_date" class="form-label">Ngày cấp:<span class="text-danger">*</span></label>
                             <input type="date" class="form-control form-control-sm" id="identity_card_issue_date" name="identity_card_issue_date" value="{{ old('identity_card_issue_date') }}">
                             @error('identity_card_issue_date')
                             <div class="text-danger">{{ $message }}</div>
@@ -303,7 +303,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="home_address" class="form-label">Địa chỉ nhà riêng:</label>
+                        <label for="home_address" class="form-label">Địa chỉ nhà riêng:<span class="text-danger">*</span></label>
                         <input type="text" class="form-control form-control-sm" id="home_address" name="home_address"
                             placeholder="Nhập địa chỉ nhà riêng" value="{{ old('home_address') }}">
                             @error('home_address')
@@ -313,7 +313,7 @@
 
                     <div class="mb-3">
                         <label for="contact_phone" class="form-label">Điện thoại (di động – cơ quan – nhà
-                            riêng):</label>
+                            riêng):<span class="text-danger">*</span></label>
                         <input type="text" class="form-control form-control-sm" id="contact_phone" name="contact_phone"
                             placeholder="Nhập số điện thoại liên hệ"  value="{{ old('contact_phone') }}" >
                             @error('contact_phone')
@@ -322,7 +322,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="representative_email" class="form-label">Email:</label>
+                        <label for="representative_email" class="form-label">Email:<span class="text-danger">*</span></label>
                         <input type="email" class="form-control form-control-sm" id="representative_email" name="representative_email"
                             placeholder="Nhập email người đại diện" value="{{ old('representative_email') }}">
                             @error('representative_email')
