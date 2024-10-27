@@ -409,7 +409,9 @@ Route::middleware(['language'])->group(function () {
 
                 Route::resource('banks', BanksController::class);
 
-
+                Route::resource('businesses', BusinessController::class);
+                
+                Route::get('/form-business', [BusinessController::class, 'adminIndex'])->name('show.admin.index');
             });
         });
 
