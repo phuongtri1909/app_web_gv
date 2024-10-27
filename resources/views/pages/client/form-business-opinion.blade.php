@@ -100,7 +100,7 @@
 
                         <div class="col-md-6 mb-4">
                             <label for="phone" class="form-label">Số điện thoại liên hệ</label>
-                            <input type="text" class="form-control form-control-sm @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="Nhập số điện thoại" value="{{ old('phone') }}">
+                            <input type="tel" class="form-control form-control-sm @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="Nhập số điện thoại" value="{{ old('phone') }}">
                             @error('phone')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror

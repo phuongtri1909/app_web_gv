@@ -249,7 +249,7 @@
                         <div class="col-md-4 mb-4">
                             <label for="phone_number" class="form-label">Số điện thoại <span
                                     class="text-danger">*</span></label>
-                            <input type="text"
+                            <input type="tel"
                                 class="form-control form-control-sm  @error('phone_number') is-invalid @enderror"
                                 id="phone_number" placeholder="Nhập số điện thoại" name="phone_number"
                                 value="{{ old('phone_number') }}">
@@ -343,7 +343,7 @@
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div> --}}
-                        <label>Nhu cầu hỗ trợ, kết nối:</label>
+                        <label>Nhu cầu hỗ trợ, kết nối:<span class="text-danger">*</span></label>
 
                         <div>
                             @foreach ($business_support_needs as $support_need)

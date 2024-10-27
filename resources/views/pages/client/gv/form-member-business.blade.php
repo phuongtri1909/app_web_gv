@@ -208,7 +208,7 @@
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label for="phone" class="form-label">Điện thoại:<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm" id="phone" name="phone" value="{{ old('phone') }}" placeholder="Nhập số điện thoại">
+                            <input type="tel" class="form-control form-control-sm" id="phone" name="phone" value="{{ old('phone') }}" placeholder="Nhập số điện thoại">
                             @error('phone')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -314,7 +314,7 @@
                     <div class="mb-3">
                         <label for="contact_phone" class="form-label">Điện thoại (di động – cơ quan – nhà
                             riêng):<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control form-control-sm" id="contact_phone" name="contact_phone"
+                        <input type="tel" class="form-control form-control-sm" id="contact_phone" name="contact_phone"
                             placeholder="Nhập số điện thoại liên hệ"  value="{{ old('contact_phone') }}" >
                             @error('contact_phone')
                             <div class="text-danger">{{ $message }}</div>

@@ -50,7 +50,7 @@ class BusinessController extends Controller
     {
 
         $request->validate([
-            'avt_businesses' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'avt_businesses' => 'required|image|mimes:jpeg,png,jpg,gif|max:5048',
             'representative_name' => 'required|string|max:255',
             'birth_year' => 'required|digits:4|integer||min:1500|max:' . date('Y'),
             'gender' => 'required|string',
@@ -399,7 +399,6 @@ class BusinessController extends Controller
                 'address' => 'required|string|max:255',
                 'business_address' => 'required|string|max:255',
                 'business_name' => 'required|string|max:255',
-                'business_field' => 'nullable|string|max:255',
                 'business_code' => 'required|regex:/^\d{10,13}$/',
                 'email' => 'required|email|max:255',
                 'social_channel' => 'nullable|url|max:255',
@@ -489,55 +488,116 @@ class BusinessController extends Controller
     }
     public function storeFormCapitalNeeds(Request $request)
     {
-        $validatedData = $request->validate([
-            'business_name' => 'required|string|max:255',
-            'business_code' => 'required|regex:/^\d{10,13}$/',
-            'category_business_id' => 'required|exists:category_business,id',
-            'address' => 'required|string|max:255',
-            'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
-            'fax' => 'nullable|string|max:20',
-            'email' => 'required|email|max:255',
-            'representative_name' => 'required|string|max:255',
-            'gender' => 'required|in:male,female,other',
-            'interest_rate' => 'required|numeric',
-            'finance' => 'required|numeric',
-            'mortgage_policy' => 'required|string|max:1000',
-            'unsecured_policy' => 'required|string|max:1000',
-            'purpose' => 'required|string|max:1000',
-            'bank_connection' => 'required|string',
-            'feedback' => 'nullable|string|max:1000',
-        ], [
-            'business_name.required' => 'Vui lòng nhập tên doanh nghiệp.',
-            'business_code.required' => 'Mã số doanh nghiệp là bắt buộc.',
-            'business_code.regex' => 'Mã số doanh nghiệp không hợp lệ,ít nhất 10 hoặc không vượt quá 13 số',
-            'category_business_id.required' => 'Vui lòng chọn loại hình kinh doanh.',
-            'category_business_id.exists' => 'Loại hình kinh doanh không hợp lệ.',
-            'address.required' => 'Địa chỉ doanh nghiệp là bắt buộc.',
-            'phone.required' => 'Số điện thoại là bắt buộc.',
-            'phone.max' => 'Số điện thoại không được vượt quá 10 chữ số.',
-            'phone.regex' => 'Số điện thoại chỉ được phép chứa các ký tự số.',
-            'email.required' => 'Vui lòng nhập email hợp lệ.',
-            'email.email' => 'Định dạng email không đúng.',
-            'representative_name.required' => 'Vui lòng nhập tên người đại diện.',
-            'gender.required' => 'Vui lòng chọn giới tính.',
-            'gender.in' => 'Giới tính không hợp lệ.',
-            'interest_rate.numeric' => 'Lãi suất phải là một số hợp lệ.',
-            'interest_rate.required' => 'Vui lòng nhập lãi suất.',
-            'finance.numeric' => 'Số tiền tài chính phải là một số hợp lệ.',
-            'finance.required' => 'Vui lòng nhập số tiền tài chính.',
-            'feedback.max' => 'Phản hồi không được vượt quá 1000 ký tự.',
-            'purpose.required' => 'Vui lòng nhập mục đích của bạn.',
-            'bank_connection.required' => 'Vui lòng nhập thông tin kết nối ngân hàng.',
-            'mortgage_policy.required' => 'Vui lòng cung cấp chính sách thế chấp.',
-            'unsecured_policy.required' => 'Vui lòng cung cấp chính sách tín chấp.',
-            'unsecured_policy.max' => 'Tín chấp không được vượt quá 1000 ký tự.',
-            'mortgage_policy.max' => 'Thế chấp không được vượt quá 1000 ký tự.',
-            'purpose.max' => 'Mục đích không được vượt quá 1000 ký tự.',
+        DB::beginTransaction();
+        try{
+            $validatedData = $request->validate([
+                'representative_name' => 'required|string|max:255',
+                'gender' => 'required|in:male,female,other',
+                'phone_number' => 'required|string|max:10|regex:/^[0-9]+$/',
+                'fax' => 'nullable|string|regex:/^(\+?\d{1,3})?[-.\s]?\(?\d{1,4}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/',
+                'business_address' => 'required|string|max:255',
+                'category_business_id' => 'required|exists:category_business,id',
+                'business_name' => 'required|string|max:255',
+                'business_code' => 'required|regex:/^\d{10,13}$/',
+                'email' => 'required|email|max:255',
+                'interest_rate' => 'required|numeric|min:0',
+                'finance' => 'required|numeric|min:0',
+                'mortgage_policy' => 'required|string|max:1000',
+                'unsecured_policy' => 'required|string|max:1000',
+                'purpose' => 'required|string|max:1000',
+                'bank_connection' => 'required|string',
+                'feedback' => 'nullable|string|max:1000',
+            ], [
+                'business_name.required' => 'Vui lòng nhập tên doanh nghiệp.',
+                'business_code.required' => 'Mã số doanh nghiệp là bắt buộc.',
+                'business_code.regex' => 'Mã số doanh nghiệp không hợp lệ,ít nhất 10 hoặc không vượt quá 13 số',
+                'category_business_id.required' => 'Vui lòng chọn loại hình kinh doanh.',
+                'category_business_id.exists' => 'Loại hình kinh doanh không hợp lệ.',
+                'phone_number.required' => 'Số điện thoại là bắt buộc.',
+                'phone_number.max' => 'Số điện thoại không được vượt quá 10 chữ số.',
+                'phone_number.regex' => 'Số điện thoại chỉ được phép chứa các ký tự số.',
+                'fax.regex' => 'Định dạng số fax không hợp lệ.',
+                'email.required' => 'Vui lòng nhập email hợp lệ.',
+                'email.email' => 'Định dạng email không đúng.',
+                'representative_name.required' => 'Vui lòng nhập tên người đại diện.',
+                'gender.required' => 'Vui lòng chọn giới tính.',
+                'gender.in' => 'Giới tính không hợp lệ.',
+                'interest_rate.numeric' => 'Lãi suất phải là một số hợp lệ.',
+                'interest_rate.required' => 'Vui lòng nhập lãi suất.',
+                'interest_rate.min' => 'Lãi suất không được nhỏ hơn 0',
+                'finance.numeric' => 'Số tiền tài chính phải là một số hợp lệ.',
+                'finance.required' => 'Vui lòng nhập số tiền tài chính.',
+                'finance.min' => 'Số tiền tài chính không được nhỏ hơn 0',
+                'feedback.max' => 'Phản hồi không được vượt quá 1000 ký tự.',
+                'purpose.required' => 'Vui lòng nhập mục đích của bạn.',
+                'bank_connection.required' => 'Vui lòng nhập thông tin kết nối ngân hàng.',
+                'mortgage_policy.required' => 'Vui lòng cung cấp chính sách thế chấp.',
+                'unsecured_policy.required' => 'Vui lòng cung cấp chính sách tín chấp.',
+                'unsecured_policy.max' => 'Tín chấp không được vượt quá 1000 ký tự.',
+                'mortgage_policy.max' => 'Thế chấp không được vượt quá 1000 ký tự.',
+                'purpose.max' => 'Mục đích không được vượt quá 1000 ký tự.',
+                'business_address.required' => 'Vui lòng nhập địa chỉ doanh nghiệp',
+                'business_address.max' => 'Địa chỉ doanh nghiệp không vượt quá 255 ký tự',
+            ]);
+            $existingBusiness = Business::where('business_code', $validatedData['business_code'])->first();
+        if ($existingBusiness) {
+            $response = $this->validateExistingBusiness($existingBusiness, $validatedData);
+            if ($response) return $response;
+            $existingInvestment = BusinessCapitalNeed::where('business_id', $existingBusiness->id)->first();
+            if ($existingInvestment) {
+                return redirect()->back()->with('error', 'Doanh nghiệp này đã đăng ký trước đó.')->withInput();
+            }
+            BusinessCapitalNeed::create([
+                'business_id' => $existingBusiness->id,
+                'interest_rate' => $validatedData['interest_rate'],
+                'finance' => $validatedData['finance'],
+                'mortgage_policy' => $validatedData['mortgage_policy'],
+                'unsecured_policy' => $validatedData['unsecured_policy'],
+                'purpose' => $validatedData['purpose'],
+                'bank_connection' => $validatedData['bank_connection'],
+                'feedback' => $validatedData['feedback'],
+            ]);
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Đã thêm Đăng ký vốn cho doanh nghiệp hiện có.');
+        }
+
+        $response = $this->checkForExistingEmail($validatedData['email']);
+        if ($response) return $response;
+
+        $business = Business::create([
+            'business_name' => $validatedData['business_name'],
+            'business_code' => $validatedData['business_code'],
+            'business_address' => $validatedData['business_address'],
+            'representative_name' => $validatedData['representative_name'],
+            'category_business_id' => $validatedData['category_business_id'],
+            'fax' => $validatedData['fax'],
+            'gender' => $validatedData['gender'],
+            'phone_number' => $validatedData['phone_number'],
+            'email' => $validatedData['email'],
+            'status' => 'other'
         ]);
-        BusinessCapitalNeed::create($validatedData);
 
+        BusinessCapitalNeed::create([
+                'business_id' => $business->id,
+                'interest_rate' => $validatedData['interest_rate'],
+                'finance' => $validatedData['finance'],
+                'mortgage_policy' => $validatedData['mortgage_policy'],
+                'unsecured_policy' => $validatedData['unsecured_policy'],
+                'purpose' => $validatedData['purpose'],
+                'bank_connection' => $validatedData['bank_connection'],
+                'feedback' => $validatedData['feedback'],
+        ]);
 
-        return redirect()->back()->with('success', 'Đăng ký thành công!');
+        DB::commit();
+        return redirect()->back()->with('success', 'Đăng ký vốn thành công!');
+        }catch (ValidationException $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Đăng ký thất bại: ' . $e->getMessage())->withInput();
+        }
     }
     public function showFormPromotional(){
         $business_fields = BusinessField::all();

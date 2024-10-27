@@ -238,21 +238,21 @@
 
                     <div class="row">
                         <div class="col-md-4 mb-4">
-                            <label for="address" class="form-label">Địa chỉ trụ sở chính <span
+                            <label for="business_address" class="form-label">Địa chỉ trụ sở chính <span
                                     class="text-danger">*</span></label>
                             <input type="text"
-                                class="form-control form-control-sm @error('address') is-invalid @enderror" id="address"
-                                name="address" placeholder="Nhập địa chỉ trụ sở chính" value="{{ old('address') }}">
-                            @error('address')
+                                class="form-control form-control-sm @error('business_address') is-invalid @enderror" id="business_address"
+                                name="business_address" placeholder="Nhập địa chỉ trụ sở chính" value="{{ old('business_address') }}">
+                            @error('business_address')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="col-md-4 mb-4">
-                            <label for="phone" class="form-label">Điện thoại <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm @error('phone') is-invalid @enderror"
-                                id="phone" name="phone" placeholder="Nhập số điện thoại" value="{{ old('phone') }}">
-                            @error('phone')
+                            <label for="phone_number" class="form-label">Điện thoại <span class="text-danger">*</span></label>
+                            <input type="tel" class="form-control form-control-sm @error('phone_number') is-invalid @enderror"
+                                id="phone_number" name="phone_number" placeholder="Nhập số điện thoại" value="{{ old('phone_number') }}">
+                            @error('phone_number')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
@@ -319,45 +319,94 @@
 
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <label for="interest_rate">Lãi suất:</label>
-                            <input type="text" class="form-control form-control-sm" id="interest_rate"
-                                name="interest_rate" placeholder="Nhập lãi suất mong muốn">
+                            <label for="interest_rate">Lãi suất:<span class="text-danger">*</span></label>
+                            <input type="number" 
+                                class="form-control form-control-sm @error('interest_rate') is-invalid @enderror" 
+                                id="interest_rate"
+                                name="interest_rate" 
+                                placeholder="Nhập lãi suất mong muốn" 
+                                value="{{old('interest_rate')}}" min="0">
+                            @error('interest_rate')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-
+                    
                         <div class="col-md-4 mb-3">
-                            <label for="finance">Tài chính:</label>
-                            <input type="text" class="form-control form-control-sm" id="finance" name="finance"
-                                placeholder="Nhập số tiền tài chính (đồng)">
+                            <label for="finance">Tài chính:<span class="text-danger">*</span></label>
+                            <input type="number" 
+                                class="form-control form-control-sm @error('finance') is-invalid @enderror" 
+                                id="finance" 
+                                name="finance"
+                                placeholder="Nhập số tiền tài chính (đồng)" 
+                                value="{{old('finance')}}" min="0">
+                            @error('finance')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-
+                    
                         <div class="col-md-4 mb-3">
-                            <label for="mortgage_policy">Chính sách vay thế chấp:</label>
-                            <input type="text" class="form-control form-control-sm" id="mortgage_policy"
-                                name="mortgage_policy" placeholder="Nhập chính sách vay thế chấp">
+                            <label for="mortgage_policy">Chính sách vay thế chấp:<span class="text-danger">*</span></label>
+                            <input type="text" 
+                                class="form-control form-control-sm @error('mortgage_policy') is-invalid @enderror" 
+                                id="mortgage_policy"
+                                name="mortgage_policy" 
+                                placeholder="Nhập chính sách vay thế chấp" 
+                                value="{{old('mortgage_policy')}}">
+                            @error('mortgage_policy')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-
+                    
                         <div class="col-md-4 mb-3">
-                            <label for="unsecured_policy">Tín chấp:</label>
-                            <input type="text" class="form-control form-control-sm" id="unsecured_policy"
-                                name="unsecured_policy" placeholder="Nhập thông tin tín chấp">
+                            <label for="unsecured_policy">Tín chấp:<span class="text-danger">*</span></label>
+                            <input type="text" 
+                                class="form-control form-control-sm @error('unsecured_policy') is-invalid @enderror" 
+                                id="unsecured_policy"
+                                name="unsecured_policy" 
+                                placeholder="Nhập thông tin tín chấp" 
+                                value="{{old('unsecured_policy')}}">
+                            @error('unsecured_policy')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-
+                    
                         <div class="col-md-4 mb-3">
-                            <label for="purpose">Mục đích:</label>
-                            <input type="text" class="form-control form-control-sm" id="purpose" name="purpose"
-                                placeholder="Nhập mục đích vay">
+                            <label for="purpose">Mục đích:<span class="text-danger">*</span></label>
+                            <input type="text" 
+                                class="form-control form-control-sm @error('purpose') is-invalid @enderror" 
+                                id="purpose" 
+                                name="purpose"
+                                placeholder="Nhập mục đích vay" 
+                                value="{{old('purpose')}}">
+                            @error('purpose')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-
+                    
                         <div class="col-md-4 mb-3">
-                            <label for="bank_connection">Kết nối ngân hàng:</label>
-                            <input type="text" class="form-control form-control-sm" id="bank_connection"
-                                name="bank_connection" placeholder="Nhập tên ngân hàng kết nối">
+                            <label for="bank_connection">Kết nối ngân hàng:<span class="text-danger">*</span></label>
+                            <input type="text" 
+                                class="form-control form-control-sm @error('bank_connection') is-invalid @enderror" 
+                                id="bank_connection"
+                                name="bank_connection" 
+                                placeholder="Nhập tên ngân hàng kết nối" 
+                                value="{{old('bank_connection')}}">
+                            @error('bank_connection')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-
+                    
                         <div class="col-md-12 mb-3">
                             <label for="feedback">Phản ánh về việc giải quyết của ngân hàng:</label>
-                            <textarea class="form-control form-control-sm" id="feedback" name="feedback" rows="3"
-                                placeholder="Nhập phản ánh của bạn"></textarea>
+                            <textarea 
+                                class="form-control form-control-sm @error('feedback') is-invalid @enderror" 
+                                id="feedback" 
+                                name="feedback" 
+                                rows="3"
+                                placeholder="{{ __('Nhập phản hồi của bạn') }}">{{ old('feedback') }}</textarea>
+                            @error('feedback')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 

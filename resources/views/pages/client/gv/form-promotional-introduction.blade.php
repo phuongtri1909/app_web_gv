@@ -247,7 +247,7 @@
                     <div class="row">
                         <div class="col-md-4 mb-4">
                             <label for="phone" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
-                            <input type="text"
+                            <input type="tel"
                                 class="form-control form-control-sm @error('phone_number') is-invalid @enderror"
                                 id="phone" placeholder="Nhập số điện thoại" name="phone_number"
                                 value="{{ old('phone_number') }}">
