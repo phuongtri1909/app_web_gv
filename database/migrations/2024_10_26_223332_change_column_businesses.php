@@ -18,9 +18,12 @@ return new class extends Migration
     
             $table->enum('status', ['pending', 'approved', 'rejected', 'other'])->default('pending')->change();
     
-            $table->unsignedBigInteger('business_fields')->nullable();
-            $table->foreign('business_fields')->references('id')->on('business_fields')->onDelete('cascade');
-        });
+            $table->unsignedBigInteger('business_fields')->nullable()->change();
+            $table->foreign('business_fields')
+                ->references('id')
+                ->on('business_fields')
+                ->onDelete('cascade');
+                });
     }
 
     /**
