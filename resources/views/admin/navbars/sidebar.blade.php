@@ -31,153 +31,7 @@
       <li class="nav-item mt-2">
         <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">{{__("setup_page") }}</h6>
       </li>
-
-      {{-- <li class="nav-item">
-        <a class="nav-link {{ Route::currentRouteNamed('banners.*') ? 'active' : '' }}" href="{{ route('banners.index') }}">
-          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-mountain-sun text-dark icon-sidebar"></i>
-          </div>
-          <span class="nav-link-text ms-1">{{ __('banner') }}</span>
-        </a>
-      </li> --}}
-
-      {{-- <li class="nav-item">
-        <a class="nav-link {{ Route::currentRouteNamed('sliders.*') ? 'active' : '' }}" href="{{ route('sliders.index') }}">
-          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-sailboat text-dark icon-sidebar"></i>
-          </div>
-          <span class="nav-link-text ms-1">{{ __('slider') }}</span>
-        </a>
-    </li> --}}
-
-    {{-- <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('tab.aboutUs.custom','aboutUs.*','tab.aboutUs','tab.aboutUs.edit','tab.aboutUs.message','tab.aboutUs.edit','all.data.component','all.data.component.collapse','create.collapse','edit.collapse') ? 'active' : '' }}" href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse" data-bs-target="#about-us" aria-expanded="false">
-          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-address-card text-dark icon-sidebar"></i>
-          </div>
-          <span class="nav-link-text ms-1">{{ __('about_us') }}</span>
-      </a>
-      <div class="collapse mt-1" id="about-us" style="margin-left: 30px">
-        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-          <li>
-            <a class="nav-link {{ Route::currentRouteNamed('aboutUs.*') ? 'active' : '' }}" href="{{ route('aboutUs.index') }}">
-              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="fa-solid fa-house text-dark icon-sidebar"></i>
-              </div>
-              <span class="nav-link-text ms-1">{{ __('home') }}</span>
-            </a>
-          </li>
-
-          <li>
-            <a class="nav-link {{ Route::currentRouteNamed('tab.aboutUs') ? 'active' : '' }}" href="{{ route('tab.aboutUs') }}">
-              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="fa-solid fa-receipt text-dark icon-sidebar"></i>
-              </div>
-              <span class="nav-link-text ms-1">{{ __('about_us') }}</span>
-            </a>
-          </li>
-
-          <li>
-            <a class="nav-link {{ Route::currentRouteNamed('tab.aboutUs.message') ? 'active' : '' }}" href="{{ route('tab.aboutUs.message') }}">
-              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="fa-regular fa-message text-dark icon-sidebar"></i>
-              </div>
-              <span class="nav-link-text ms-1">{{ __('message_board') }}</span>
-            </a>
-          </li>
-
-          <li>
-            <a class="nav-link {{ Route::currentRouteNamed('tab.aboutUs.custom') ? 'active' : '' }}" href="{{ route('tab.aboutUs.custom') }}">
-              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="fa-solid fa-table-list text-dark icon-sidebar"></i>
-              </div>
-              <span class="nav-link-text ms-1">{{ __('tab_about_us') }}</span>
-            </a>
-          </li>
-
-        </ul>
-      </div>
-    </li> --}}
-
-    {{-- <li class="nav-item">
-        <a class="nav-link {{ Route::currentRouteNamed('testimonials.*') ? 'active' : '' }}" href="{{ route('testimonials.index') }}">
-          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-circle-user text-dark icon-sidebar"></i>
-          </div>
-          <span class="nav-link-text ms-1">{{ __('testimonials') }}</span>
-        </a>
-    </li> --}}
-    {{-- <li class="nav-item">
-        <a class="nav-link {{ Route::currentRouteNamed('papers.*') ? 'active' : '' }}" href="{{ route('papers.index') }}">
-          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-circle-user text-dark icon-sidebar"></i>
-          </div>
-          <span class="nav-link-text ms-1">{{ __('papers') }}</span>
-        </a>
-    </li> --}}
-
-      {{-- <li class="nav-item">
-        <a class="nav-link {{ Route::currentRouteNamed('admissions.*') ? 'active' : '' }}" href="{{ route('admissions.index') }}">
-          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-ticket text-dark icon-sidebar"></i>
-          </div>
-          <span class="nav-link-text ms-1">{{ __('admission') }}</span>
-        </a>
-      </li> --}}
-      {{-- <li class="nav-item">
-        <a class="nav-link {{ Route::currentRouteNamed('categories.*','programs.*','overviewprograms.index','slider_programms.index','slide_programs.create','detail_contents.index','details_content.edit') ? 'active' : '' }}" href="{{ route('categories.index') }}">
-          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-sailboat text-dark icon-sidebar"></i>
-          </div>
-          <span class="nav-link-text ms-1">{{ __('program_content') }}</span>
-        </a>
-      </li> --}}
-      {{-- <li class="nav-item">
-        <a class="nav-link {{ Route::currentRouteNamed('tuitions.*','content-tuitions.create','content-tuitions.edit') ? 'active' : '' }}" href="{{ route('tuitions.index') }}">
-          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-sack-dollar text-dark icon-sidebar"></i>
-          </div>
-          <span class="nav-link-text ms-1">{{ __('tuition') }}</span>
-        </a>
-      </li> --}}
-
-      {{-- <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('an_questions.*,categories-questions.*') ? 'active' : '' }}" href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse" data-bs-target="#questions" aria-expanded="false">
-            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="fa-solid fa-person-circle-question text-dark icon-sidebar"></i>
-            </div>
-            <span class="nav-link-text ms-1">{{ __('question') }}</span>
-        </a>
-        <div class="collapse mt-1" id="questions" style="margin-left: 30px">
-          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteNamed('an_questions.*') ? 'active' : '' }}" href="{{ route('admin.questions.index') }}">
-                  <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                    <i class="fa-solid fa-person-circle-question text-dark icon-sidebar"></i>
-                  </div>
-                  <span class="nav-link-text ms-1">{{ __('question') }}</span>
-                </a>
-            </li>
-            <li>
-                <a class="nav-link {{ Route::currentRouteNamed('categories-questions.*') ? 'active' : '' }}" href="{{ route('categories-questions.index') }}">
-                  <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                    <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
-                  </div>
-                  <span class="nav-link-text ms-1">{{ __('category_question') }}</span>
-                </a>
-            </li>
-          </ul>
-        </div>
-      </li> --}}
-
-      {{-- <li class="nav-item">
-        <a class="nav-link {{ Route::currentRouteNamed('forums') ? 'active' : '' }}" href="{{ route('forums.index') }}">
-          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-recycle text-dark icon-sidebar"></i>
-          </div>
-          <span class="nav-link-text ms-1">{{ __('forum') }}</span>
-        </a>
-      </li> --}}
+      
       <li>
         <a class="nav-link {{ Route::currentRouteNamed('form-business') ? 'active' : '' }}" href="{{ route('show.admin.index') }}">
           <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -286,86 +140,17 @@
         </div>
       </li>
 
-      {{-- <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('tabs-environment.*','tabs-admissions.*','admission-process.*','admission-process-detail.*','tabs-programs.*') ? 'active' : '' }}" href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse" data-bs-target="#tab" aria-expanded="false">
-            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="fa-solid fa-list text-dark icon-sidebar"></i>
-            </div>
-            <span class="nav-link-text ms-1">{{ __('tab') }}</span>
-        </a>
-        <div class="collapse mt-1" id="tab" style="margin-left: 30px">
-          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-
-            <li>
-                <a class="nav-link {{ Route::currentRouteNamed('show-page') ? 'active' : '' }}" href="{{ route('show.page.all') }}">
-                  <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                    <i class="fa-regular fa-address-book text-dark icon-sidebar"></i>
-                  </div>
-                  <span class="nav-link-text ms-1">{{ __('page_all') }}</span>
-                </a>
-            </li>
-
-
-            <li>
-              <a class="nav-link {{ Route::currentRouteNamed('tabs-admissions.*','admission-process.*','admission-process-detail.*') ? 'active' : '' }}" href="{{ route('tabs-admissions.index') }}">
-                <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                  <i class="fa-regular fa-address-book text-dark icon-sidebar"></i>
-                </div>
-                <span class="nav-link-text ms-1">{{ __('tab_admission') }}</span>
-              </a>
-            </li>
-
-            <li>
-                <a class="nav-link {{ Route::currentRouteNamed('tabs-programs.*') ? 'active' : '' }}" href="{{ route('tabs-programs.index') }}">
-                  <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                    <i class="fa-regular fa-address-book text-dark icon-sidebar"></i>
-                  </div>
-                  <span class="nav-link-text ms-1">{{ __('programs') }}</span>
-                </a>
-            </li>
-
-            <li>
-                <a class="nav-link {{ Route::currentRouteNamed('tabs-parents.*') ? 'active' : '' }}" href="{{ route('tabs-parents.index') }}">
-                  <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                    <i class="fa-regular fa-address-book text-dark icon-sidebar"></i>
-                  </div>
-                  <span class="nav-link-text ms-1">{{ __('title-page-parent') }}</span>
-                </a>
-            </li>
-
-            <li>
-                <a class="nav-link {{ Route::currentRouteNamed('tabs-environment.*') ? 'active' : '' }}" href="{{ route('tabs-environment.index') }}">
-                  <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                    <i class="fa-regular fa-address-book text-dark icon-sidebar"></i>
-                  </div>
-                  <span class="nav-link-text ms-1">{{ __('learning_environment') }}</span>
-                </a>
-            </li>
-
-          </ul>
-        </div>
-      </li> --}}
-
-      {{-- <li class="nav-item">
-        <a class="nav-link {{ Route::currentRouteNamed('campuses.*') ? 'active' : '' }}" href="{{ route('campuses.index') }}">
-          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-code-branch text-dark icon-sidebar"></i>
-          </div>
-          <span class="nav-link-text ms-1">{{ __('campus') }}</span>
-        </a>
-      </li> --}}
-
-      {{-- <li class="nav-item mt-2">
+      <li class="nav-item mt-2">
         <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">{{ __('feature_page') }}</h6>
-      </li> --}}
-      {{-- <li class="nav-item">
+      </li>
+      <li class="nav-item">
         <a class="nav-link {{ Route::currentRouteNamed('languages.*') ? 'active' : '' }}" href="{{route('languages.index') }}">
           <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="fa-solid fa-language text-dark icon-sidebar"></i>
           </div>
           <span class="nav-link-text ms-1">{{ __('language') }}</span>
         </a>
-      </li> --}}
+      </li>
 
       <li class="nav-item mt-3">
         <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">{{ __('account_page') }}</h6>
@@ -380,8 +165,5 @@
         </a>
       </li>
     </ul>
-  </div>
-  <div class="docs-info">
-    <a href="{{ route('home') }}" class="btn btn-white btn-sm w-100 mb-0">{{ __('home') }}</a>
   </div>
 </aside>

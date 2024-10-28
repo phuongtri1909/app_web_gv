@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\CategoryNews;
@@ -265,62 +266,43 @@ class BlogsController extends Controller
         return redirect()->route('news.index')->with('success', __('news_deleted_successfully'));
     }
 
-    public function blogIndex(Request $request, $slug)
+    public function blogIndex(Request $request)
     {
-        $tab = Tab::where('slug', $slug)->first();
-        if (!$tab) {
-            return abort(404);
-        }
-        switch ($tab->slug) {
-            case 'blogs':
-                $query = News::query();
-                if ($request->has('category') && $request->input('category') !== 'all') {
-                    $categoryId = $request->input('category');
-                    $query->whereHas('categories', function ($q) use ($categoryId) {
-                        $q->where('slug', $categoryId);
-                    });
 
-                    $category = CategoryNews::where('slug', $categoryId)->first();
-                }else{
-                    $category = null;
-                }
+        $query = News::query();
+        if ($request->has('category') && $request->input('category') !== 'all') {
+            $categoryId = $request->input('category');
+            $query->whereHas('categories', function ($q) use ($categoryId) {
+                $q->where('slug', $categoryId);
+            });
 
-                if ($request->has('tag')) {
-                    $tagId = $request->input('tag');
-                    $query->whereHas('tags', function ($q) use ($tagId) {
-                        $q->where('id', $tagId);
-                    });
-                }
-
-                $blogs = $query->orderBy('published_at', 'desc')->paginate(10, ['*'], 'page');
-                $noResults = $blogs->isEmpty();
-                foreach ($blogs as $blog) {
-                    $blog->shortContent = Str::limit(strip_tags($blog->content), 1000);
-                }
-                $categories = CategoryNews::all();
-                $tags = TagNews::all();
-
-                $recentPosts = News::orderBy('published_at', 'desc')
-                    ->take(5)
-                    ->get();
-                $forumsCp3 = Forum::where('active', 'yes')
-                ->where('key_page', 'key_forum_cp3')
-                ->orderBy('created_at', 'desc')
-                ->get();
-                foreach ($forumsCp3 as $forum) {
-                    $forum->image = json_decode($forum->image, true) ?? [];
-                }
-                $tabProject = TabProject::whereRaw('content IS NOT NULL AND content != ?', [json_encode([])])
-                                            ->orderBy('date', 'desc')
-                                            ->take(15)
-                                            ->get();
-                return view('pages.blogs.blogs', compact('tab','blogs', 'categories', 'tags', 'recentPosts', 'noResults','forumsCp3','tabProject','category'));
-                break;
-            default:
-                return abort(404);
-                break;
+            $category = CategoryNews::where('slug', $categoryId)->first();
+        } else {
+            $category = null;
         }
 
+        if ($request->has('tag')) {
+            $tagId = $request->input('tag');
+            $query->whereHas('tags', function ($q) use ($tagId) {
+                $q->where('id', $tagId);
+            });
+        }
+
+        $blogs = $query->orderBy('published_at', 'desc')->paginate(10, ['*'], 'page');
+        $noResults = $blogs->isEmpty();
+        foreach ($blogs as $blog) {
+            $blog->shortContent = Str::limit(strip_tags($blog->content), 1000);
+        }
+        $categories = CategoryNews::all();
+        $tags = TagNews::all();
+
+        $recentPosts = News::orderBy('published_at', 'desc')
+            ->take(5)
+            ->get();
+
+
+        return view('pages.blogs.blogs', compact( 'blogs', 'categories', 'tags', 'recentPosts', 'noResults', 'category'));
+        
     }
 
 
@@ -343,12 +325,12 @@ class BlogsController extends Controller
     {
 
         $blog = FinancialSupport::where('slug', $slug)
-        ->with('tabContentDetails.tab')
-        ->first();
+            ->with('tabContentDetails.tab')
+            ->first();
         if (!$blog) {
             $blog = BankServicesInterest::where('slug', $slug)
-                        ->with('tabContentDetails.tab')
-                        ->firstOrFail();
+                ->with('tabContentDetails.tab')
+                ->firstOrFail();
         }
         return view('pages.client.gv.post-detail', compact('blog'));
     }
@@ -359,7 +341,7 @@ class BlogsController extends Controller
         $blog->formatted_published_at = $this->formatDate($blog->published_at);
 
 
-        return view('pages.detail-dev-blog', compact('blog', ));
+        return view('pages.detail-dev-blog', compact('blog',));
     }
 
 
