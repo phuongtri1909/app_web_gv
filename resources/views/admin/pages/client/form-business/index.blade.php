@@ -46,27 +46,14 @@
                     <table class="table align-items-center mb-0">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                    {{ __('STT') }}
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                    {{ __('Tên doanh nghiệp') }}
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                    {{ __('Ảnh đại diện') }}
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                    {{ __('Mã số thuế') }}
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                    {{ __('Email') }}
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                    {{ __('Số điện thoại') }}
-                                </th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                    {{ __('Thao tác') }}
-                                </th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ __('STT') }}</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('Tên doanh nghiệp') }}</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('Mã số thuế') }}</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('Người đại diện') }}</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('Số điện thoại') }}</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('Email') }}</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('Trạng thái') }}</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Thao tác') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -76,26 +63,25 @@
                                         <p class="text-xs font-weight-bold mb-0">{{ $key + 1 }}</p>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $business->business_name }}</p>
+                                        <p class="text-xs font-weight-bold mb-0">{{ $business->business_name ?? '-' }}</p>
                                     </td>
                                     <td>
-                                        @if (!empty($business->avt_businesses))
-                                            <div>
-                                                <img src="{{ asset($business->avt_businesses) }}" class="img-fluid img-square" alt="Business Image">
-                                            </div>
-                                        @else
-                                            <p class="text-xs font-weight-bold mb-0">{{ __('no_image') }}</p>
-                                        @endif
+                                        <p class="text-xs font-weight-bold mb-0">{{ $business->business_code ?? '-' }}</p>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $business->business_code }}</p>
+                                        <p class="text-xs font-weight-bold mb-0">{{ $business->representative_name ?? '-' }}</p>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $business->email }}</p>
+                                        <p class="text-xs font-weight-bold mb-0">{{ $business->phone_number ?? '-' }}</p>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $business->phone_number }}</p>
+                                        <p class="text-xs font-weight-bold mb-0">{{ $business->email ?? '-' }}</p>
                                     </td>
+                                    <td>
+                                        <span class="badge badge-sm bg-{{ $business->status == 'approved' ? 'success' : ($business->status == 'rejected' ? 'danger' : 'warning') }}">
+                                            {{ $business->status == 'approved' ? 'Đã duyệt' : ($business->status == 'rejected' ? 'Đã từ chối' : 'Đang chờ') }}
+                                        </span>
+                                    </td>                                    
                                     <td class="text-center">
                                         <a href="{{ route('businesses.edit', $business->id) }}" class="mx-3" title="{{ __('edit') }}">
                                             <i class="fa-solid fa-pencil"></i>
@@ -107,12 +93,13 @@
                                         ])
                                         <a href="javascript:void(0)" class="mx-3 view-business" data-id="{{ $business->id }}" title="{{ __('Xem chi tiết') }}">
                                             <i class="fa-solid fa-eye"></i>
-                                        </a>                                        
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+                    
                 </div>
             </div>
         </div>
@@ -139,6 +126,7 @@
                                     </div>
                                     <h6 id="modal-business-name" class="fw-bold text-primary"></h6>
                                     <p class="text-muted small">MST: <span id="modal-business-code"></span></p>
+                                    <span id="modal-status" class="badge badge-sm"></span>
                                 </div>
                                 
                                 <div class="col-md-8">
@@ -162,6 +150,18 @@
                                                 </label>
                                                 <p id="modal-gender" class="text-sm mb-2"></p>
                                             </div>
+                                            <div class="info-group">
+                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                    <i class="fas fa-phone me-2"></i>{{ __('Số điện thoại') }}
+                                                </label>
+                                                <p id="modal-phone" class="text-sm mb-2"></p>
+                                            </div>
+                                            <div class="info-group">
+                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                    <i class="fas fa-fax me-2"></i>{{ __('Số Fax') }}
+                                                </label>
+                                                <p id="modal-fax" class="text-sm mb-2"></p>
+                                            </div>
                                         </div>
                                         
                                         <div class="col-md-6">
@@ -173,15 +173,21 @@
                                             </div>
                                             <div class="info-group">
                                                 <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-phone me-2"></i>{{ __('Số điện thoại') }}
-                                                </label>
-                                                <p id="modal-phone" class="text-sm mb-2"></p>
-                                            </div>
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
                                                     <i class="fas fa-share-alt me-2"></i>{{ __('Kênh social') }}
                                                 </label>
                                                 <p id="modal-social" class="text-sm mb-2"></p>
+                                            </div>
+                                            <div class="info-group">
+                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                    <i class="fas fa-building me-2"></i>{{ __('Loại hình doanh nghiệp') }}
+                                                </label>
+                                                <p id="modal-category-business" class="text-sm mb-2"></p>
+                                            </div>
+                                            <div class="info-group">
+                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                    <i class="fas fa-briefcase me-2"></i>{{ __('Lĩnh vực kinh doanh') }}
+                                                </label>
+                                                <p id="modal-business-field" class="text-sm mb-2"></p>
                                             </div>
                                         </div>
                                     </div>
@@ -246,25 +252,53 @@
                 url: '/admin/businesses/' + businessId,
                 type: 'GET',
                 success: function(response) {
-                    $('#modal-business-name').text(response.business_name);
-                    $('#modal-business-code').text(response.business_code);
-                    $('#modal-representative-name').text(response.representative_name);
-                    $('#modal-birth-year').text(response.birth_year);
-                    $('#modal-gender').text(response.gender);
-                    $('#modal-email').text(response.email);
-                    $('#modal-phone').text(response.phone_number);
-                    $('#modal-address').text(response.address);
-                    $('#modal-business-address').text(response.business_address);
-                    $('#modal-ward').text(response.ward.name);
-                    $('#modal-social').text(response.social_channel || 'N/A');
-                    $('#modal-description').text(response.description || 'N/A');
-                    $('#modal-avatar').attr('src', response.avt_businesses ? '/' + response.avt_businesses : '');
+                    $('#modal-business-name').text(response.business_name || '-');
+                    $('#modal-business-code').text(response.business_code || '-');
+                    $('#modal-representative-name').text(response.representative_name || '-');
+                    $('#modal-birth-year').text(response.birth_year || '-');
+                    const genderText = {
+                        'male': 'Nam',
+                        'female': 'Nữ',
+                        'other': 'Không xác định'
+                    }[response.gender] || '-';
+
+                    $('#modal-gender').text(genderText);
+
+                    $('#modal-email').text(response.email || '-');
+                    $('#modal-phone').text(response.phone_number || '-');
+                    $('#modal-fax').text(response.fax_number || '-');
+                    $('#modal-address').text(response.address || '-');
+                    $('#modal-business-address').text(response.business_address || '-');
+                    $('#modal-ward').text(response.ward?.name || '-');
+                    $('#modal-social').text(response.social_channel || '-');
+                    $('#modal-category-business').text(response.category_business?.name || '-');
+                    $('#modal-business-field').text(response.business_field?.name || '-');
+                    $('#modal-description').text(response.description || '-');
+                    $('#modal-avatar').attr('src', response.avt_businesses ? '/' + response.avt_businesses : 'image.jpg');
                     $('#modal-license').attr('href', response.business_license ? '/' + response.business_license : '#');
                     
+                    const statusBadgeClass = {
+                        'approved': 'bg-success',
+                        'rejected': 'bg-danger',
+                        'pending': 'bg-warning'
+                    }[response.status] || 'bg-secondary';
+
+                    const statusText = {
+                        'approved': 'Đã duyệt',
+                        'rejected': 'Đã từ chối',
+                        'pending': 'Đang chờ'
+                    }[response.status] || '-';
+
+                    $('#modal-status')
+                        .removeClass('bg-success bg-danger bg-warning bg-secondary')
+                        .addClass(statusBadgeClass)
+                        .text(statusText);
+
                     $('#businessDetailModal').modal('show');
                 }
             });
         });
     });
     </script>
+    
 @endpush

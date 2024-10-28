@@ -24,6 +24,27 @@
             color: red;
             margin-top: 10px;
         }
+        #form-business-opinion {
+            position: relative;
+            /* margin: 30px auto; */
+            /* padding: 20px 0px 20px 0px; */
+            /* max-width: 800px; */
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            background: url('{{ asset('images/logo.png') }}') no-repeat;
+            background-size: 30%;
+            background-attachment: fixed;
+            background-position: center center;
+            z-index: 1;
+        }
+
+        form {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(255, 255, 255, 0.9);
+            /* padding: 20px; */
+            border-radius: 8px;
+        }
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 @endpush
@@ -62,7 +83,7 @@
                         </div>
 
                         <div class="col-md-6 mb-4">
-                            <label for="owner_full_name" class="form-label">Họ tên chủ doanh nghiệp</label>
+                            <label for="owner_full_name" class="form-label">Họ tên chủ doanh nghiệp<span class="text-danger">*</span></label>
                             <input type="text" class="form-control form-control-sm @error('owner_full_name') is-invalid @enderror" id="owner_full_name" name="owner_full_name" placeholder="Nhập họ và tên" value="{{ old('owner_full_name') }}">
                             @error('owner_full_name')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
@@ -70,7 +91,7 @@
                         </div>
 
                         <div class="col-6 col-md-6 mb-4">
-                            <label for="birth_year" class="form-label">Năm sinh</label>
+                            <label for="birth_year" class="form-label">Năm sinh<span class="text-danger">*</span></label>
                             <input type="text" class="form-control form-control-sm @error('birth_year') is-invalid @enderror" id="birth_year" name="birth_year" placeholder="Nhập năm sinh" value="{{ old('birth_year') }}">
                             @error('birth_year')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
@@ -78,7 +99,7 @@
                         </div>
 
                         <div class="col-6 col-md-6 mb-4">
-                            <label class="form-label">Giới tính</label>
+                            <label class="form-label">Giới tính<span class="text-danger">*</span></label>
                             <div class="d-flex justify-content-around">
                                 <div class="form-check me-1 ps-0">
                                     <input class="form-check-input" type="radio" name="gender" id="male" value="male" {{ old('gender') == 'male' ? 'checked' : '' }}>
@@ -99,7 +120,7 @@
                         </div>
 
                         <div class="col-md-6 mb-4">
-                            <label for="phone" class="form-label">Số điện thoại liên hệ</label>
+                            <label for="phone" class="form-label">Số điện thoại liên hệ<span class="text-danger">*</span></label>
                             <input type="tel" class="form-control form-control-sm @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="Nhập số điện thoại" value="{{ old('phone') }}">
                             @error('phone')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
@@ -107,7 +128,7 @@
                         </div>
 
                         <div class="col-md-12 mb-4">
-                            <label for="residential_address" class="form-label">Địa chỉ cư trú</label>
+                            <label for="residential_address" class="form-label">Địa chỉ cư trú<span class="text-danger">*</span></label>
                             <input type="text" class="form-control form-control-sm @error('residential_address') is-invalid @enderror" id="residential_address" name="residential_address" placeholder="Nhập địa chỉ cư trú" value="{{ old('residential_address') }}">
                             @error('residential_address')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
@@ -115,7 +136,7 @@
                         </div>
 
                         <div class="col-md-12 mb-4">
-                            <label for="business_name" class="form-label">Tên doanh nghiệp/hộ kinh doanh</label>
+                            <label for="business_name" class="form-label">Tên doanh nghiệp/hộ kinh doanh<span class="text-danger">*</span></label>
                             <input type="text" class="form-control form-control-sm @error('business_name') is-invalid @enderror" id="business_name" name="business_name" placeholder="Nhập tên doanh nghiệp/hộ kinh doanh" value="{{ old('business_name') }}">
                             @error('business_name')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
@@ -123,7 +144,7 @@
                         </div>
 
                         <div class="col-md-12 mb-4">
-                            <label for="business_address" class="form-label">Địa chỉ kinh doanh</label>
+                            <label for="business_address" class="form-label">Địa chỉ kinh doanh<span class="text-danger">*</span></label>
                             <input type="text" class="form-control form-control-sm @error('business_address') is-invalid @enderror" id="business_address" name="business_address" placeholder="Nhập địa chỉ kinh doanh" value="{{ old('business_address') }}">
                             @error('business_address')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
@@ -141,7 +162,7 @@
                         </div>
 
                         <div class="col-6 col-md-12 mb-4">
-                            <label for="business_license" class="form-label">Giấy phép kinh doanh</label>
+                            <label for="business_license" class="form-label">Giấy phép kinh doanh<span class="text-danger">*</span></label>
                             <input type="file" class="form-control form-control-sm @error('business_license') is-invalid @enderror" id="business_license" name="business_license" accept="application/pdf">
                             @error('business_license')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>

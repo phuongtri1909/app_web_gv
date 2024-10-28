@@ -357,7 +357,6 @@
                     </div>
                     <button type="submit" class="btn btn-primary">Gửi thông tin</button>
                 </form>
-
             </div>
         </div>
     </section>

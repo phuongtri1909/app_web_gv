@@ -16,6 +16,27 @@
             color: red;
             margin-top: 10px;
         }
+        #form-business {
+            position: relative;
+            /* margin: 30px auto; */
+            /* padding: 20px 0px 20px 0px; */
+            /* max-width: 800px; */
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            background: url('{{ asset('images/logo.png') }}') no-repeat;
+            background-size: 30%;
+            background-attachment: fixed;
+            background-position: center center;
+            z-index: 1;
+        }
+
+        form {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(255, 255, 255, 0.9);
+            /* padding: 20px; */
+            border-radius: 8px;
+        }
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 @endpush

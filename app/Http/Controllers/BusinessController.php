@@ -32,7 +32,7 @@ class BusinessController extends Controller
 
     public function adminIndex()
     {
-        $businesses = Business::with(['ward'])->get();
+        $businesses = Business::whereNot('status','other')->get();
         $wards = WardGovap::all();
         $category_business = CategoryBusiness::all();
         return view('admin.pages.client.form-business.index', compact(
@@ -157,7 +157,9 @@ class BusinessController extends Controller
 
     public function show($id)
     {
-        $business = Business::with(['ward'])->findOrFail($id);
+        $business = Business::with(['ward', 'categoryBusiness', 'field'])
+            ->whereNot('status', 'other')
+            ->findOrFail($id);
         
         return response()->json([
             'business_name' => $business->business_name,
@@ -167,17 +169,26 @@ class BusinessController extends Controller
             'gender' => $business->gender,
             'email' => $business->email,
             'phone_number' => $business->phone_number,
+            'fax_number' => $business->fax_number,
             'address' => $business->address,
             'business_address' => $business->business_address,
             'ward' => [
-                'name' => $business->ward->name
+                'name' => $business->ward ? $business->ward->name : null
+            ],
+            'category_business' => [
+                'name' => $business->categoryBusiness ? $business->categoryBusiness->name : null
+            ],
+            'business_fields' => [
+                'name' => $business->businessField ? $business->businessField->name : null
             ],
             'social_channel' => $business->social_channel,
             'description' => $business->description,
             'avt_businesses' => $business->avt_businesses,
-            'business_license' => $business->business_license
+            'business_license' => $business->business_license,
+            'status' => $business->status
         ]);
     }
+    
     
 
     public function edit($id)
@@ -607,7 +618,6 @@ class BusinessController extends Controller
     {
         DB::beginTransaction();
         $data = [];
-
         try {
             $request->validate([
                 'representative_name' => 'required|string|max:255',
@@ -684,7 +694,7 @@ class BusinessController extends Controller
                     $business->businessField()->attach($businessField->id);
                 }
             }
-
+            
             DB::commit();
             return redirect()->back()->with('success', 'Đăng ký thành công!');
 
@@ -718,8 +728,9 @@ class BusinessController extends Controller
                 'residential_address' => 'required|string|max:255',
                 'business_name' => 'required|string|max:255',
                 'business_address' => 'required|string|max:255',
-                'email' => 'required|email|max:255',
+                'email' => 'nullable|email|max:255',
                 'business_license' => 'required|file|mimes:pdf|max:4048',
+                'fanpage' => 'nullable|string|max:1000'
             ], [
                 'opinion.required' => 'Vui lòng nhập ý kiến.',
                 'opinion.max' => 'Ý kiến không được vượt quá 1000 ký tự.',
@@ -742,11 +753,13 @@ class BusinessController extends Controller
                 'email.email' => 'Email không hợp lệ.',
                 'business_license.mimes' => 'Giấy phép kinh doanh phải là file dạng: pdf',
                 'business_license.max' => 'Giấy phép kinh doanh không được vượt quá 3MB.',
+                'fanpage.max' => 'Fanpage không được vượt quá 1000 ký tự.',
+
             ]);
             $businessOpinion = new BusinessFeedback();
             $businessOpinion->fill($request->only([
                 'opinion', 'suggestions', 'owner_full_name', 'birth_year', 'gender', 'phone',
-                'residential_address', 'business_name', 'business_address', 'email'
+                'residential_address', 'business_name', 'business_address', 'email','fanpage',
             ]));
             $this->handleFileUpload($request, 'attached_images', $data, '_attached_images_', 'feedback');
             $this->handleFileUpload($request, 'business_license', $data, '_business_license_', 'business');
