@@ -16,8 +16,7 @@ return new class extends Migration
             $table->bigInteger('price_member');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->enum('status', ['Đang chờ', 'Phê duyệt', 'Từ chối'])
-            ->default('Đang chờ');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
         });
     }
 
