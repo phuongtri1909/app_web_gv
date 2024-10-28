@@ -33,11 +33,7 @@
           </a>
         </li>
       </ul>
-      <ul class="navbar-nav d-lg-block d-none">
-        <li class="nav-item">
-          <a href="{{ route('home') }}" class="btn btn-sm btn-round mb-0 me-1 bg-gradient-dark">{{ __('back-to-home') }}</a>
-        </li>
-      </ul>
+    
     </div>
   </div>
 </nav>
