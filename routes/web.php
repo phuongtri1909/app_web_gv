@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\BusinessStartPromotionInvestment;
 use App\Models\Tab;
 use App\Models\SlideProgram;
 use Illuminate\Support\Facades\Route;
@@ -410,6 +411,8 @@ Route::middleware(['language'])->group(function () {
                 Route::resource('banks', BanksController::class);
 
                 Route::resource('businesses', BusinessController::class);
+
+                Route::resource('business-start-promotion-investment', BusinessStartPromotionInvestment::class);
                 
                 Route::get('/form-business', [BusinessController::class, 'adminIndex'])->name('show.admin.index');
             });
