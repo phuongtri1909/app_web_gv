@@ -121,8 +121,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="full_name">Họ tên:</label>
-                                    <input type="text" id="full_name" name="full_name" class="form-control form-control-sm" required placeholder="Nhập họ tên" value="{{ old('full_name') }}">
+                                    <label for="full_name">Họ tên: <span class="text-danger">*</span></label>
+                                    <input type="text" id="full_name" name="full_name" class="form-control form-control-sm @error('full_name') is-invalid @enderror" required placeholder="Nhập họ tên" value="{{ old('full_name') }}">
                                     @error('full_name')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -130,20 +130,20 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="birth_year">Năm sinh:</label>
-                                    <input type="text" id="birth_year" name="birth_year" class="form-control form-control-sm" required placeholder="Nhập năm sinh" value="{{ old('birth_year') }}">
+                                    <label for="birth_year">Năm sinh: <span class="text-danger">*</span></label>
+                                    <input type="text" id="birth_year" name="birth_year" class="form-control form-control-sm @error('birth_year') is-invalid @enderror" required placeholder="Nhập năm sinh" value="{{ old('birth_year') }}">
                                     @error('birth_year')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
                         </div>
-                    
+
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="gender">Giới tính:</label>
-                                    <select id="gender" name="gender" class="form-control form-control-sm" required>
+                                    <label for="gender">Giới tính: <span class="text-danger">*</span></label>
+                                    <select id="gender" name="gender" class="form-control form-control-sm @error('gender') is-invalid @enderror" required>
                                         <option value="" disabled selected>Chọn giới tính</option>
                                         <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Nam</option>
                                         <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Nữ</option>
@@ -156,83 +156,84 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="phone_number">Số điện thoại liên hệ:</label>
-                                    <input type="tel" id="phone_number" name="phone_number" class="form-control form-control-sm" required pattern="[0-9]{10}" placeholder="Nhập số điện thoại" value="{{ old('phone_number') }}">
+                                    <label for="phone_number">Số điện thoại liên hệ: <span class="text-danger">*</span></label>
+                                    <input type="tel" id="phone_number" name="phone_number" class="form-control form-control-sm @error('phone_number') is-invalid @enderror" required pattern="[0-9]{10}" placeholder="Nhập số điện thoại" value="{{ old('phone_number') }}">
                                     @error('phone_number')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
                         </div>
-                    
+
                         <div class="form-group">
-                            <label for="residence_address">Địa chỉ cư trú:</label>
-                            <input type="text" id="residence_address" name="residence_address" class="form-control form-control-sm" required placeholder="Nhập địa chỉ cư trú" value="{{ old('residence_address') }}">
+                            <label for="residence_address">Địa chỉ cư trú: <span class="text-danger">*</span></label>
+                            <input type="text" id="residence_address" name="residence_address" class="form-control form-control-sm @error('residence_address') is-invalid @enderror" required placeholder="Nhập địa chỉ cư trú" value="{{ old('residence_address') }}">
                             @error('residence_address')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="form-group">
-                            <label for="business_address">Địa chỉ kinh doanh:</label>
-                            <input type="text" id="business_address" name="business_address" class="form-control form-control-sm" placeholder="Nhập địa chỉ kinh doanh" value="{{ old('business_address') }}">
+                            <label for="business_address">Địa chỉ kinh doanh: <span class="text-danger">*</span></label>
+                            <input type="text" id="business_address" name="business_address" class="form-control form-control-sm @error('business_address') is-invalid @enderror" placeholder="Nhập địa chỉ kinh doanh" value="{{ old('business_address') }}">
                             @error('business_address')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="form-group">
-                            <label for="company_name">Tên doanh nghiệp/hộ kinh doanh:</label>
-                            <input type="text" id="company_name" name="company_name" class="form-control form-control-sm" placeholder="Nhập tên doanh nghiệp" value="{{ old('company_name') }}">
+                            <label for="company_name">Tên doanh nghiệp/hộ kinh doanh: <span class="text-danger">*</span></label>
+                            <input type="text" id="company_name" name="company_name" class="form-control form-control-sm @error('company_name') is-invalid @enderror" placeholder="Nhập tên doanh nghiệp" value="{{ old('company_name') }}">
                             @error('company_name')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="form-group">
-                            <label for="business_field">Ngành nghề kinh doanh:</label>
-                            <input type="text" id="business_field" name="business_field" class="form-control form-control-sm" placeholder="Nhập ngành nghề kinh doanh" value="{{ old('business_field') }}">
+                            <label for="business_field">Ngành nghề kinh doanh: <span class="text-danger">*</span></label>
+                            <input type="text" id="business_field" name="business_field" class="form-control form-control-sm @error('business_field') is-invalid @enderror" placeholder="Nhập ngành nghề kinh doanh" value="{{ old('business_field') }}">
                             @error('business_field')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="form-group">
-                            <label for="tax_code">Mã số thuế:</label>
-                            <input type="text" id="tax_code" name="tax_code" class="form-control form-control-sm" placeholder="Nhập mã số thuế" value="{{ old('tax_code') }}">
+                            <label for="tax_code">Mã số thuế: <span class="text-danger">*</span></label>
+                            <input type="text" id="tax_code" name="tax_code" class="form-control form-control-sm @error('tax_code') is-invalid @enderror" placeholder="Nhập mã số thuế" value="{{ old('tax_code') }}">
                             @error('tax_code')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="form-group">
                             <label for="email">Email:</label>
-                            <input type="email" id="email" name="email" class="form-control form-control-sm" placeholder="Nhập email" value="{{ old('email') }}">
+                            <input type="email" id="email" name="email" class="form-control form-control-sm @error('email') is-invalid @enderror" placeholder="Nhập email" value="{{ old('email') }}">
                             @error('email')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="form-group">
                             <label for="fanpage">Fanpage:</label>
-                            <input type="text" id="fanpage" name="fanpage" class="form-control form-control-sm" placeholder="Nhập fanpage" value="{{ old('fanpage') }}">
+                            <input type="text" id="fanpage" name="fanpage" class="form-control form-control-sm @error('fanpage') is-invalid @enderror" placeholder="Nhập fanpage" value="{{ old('fanpage') }}">
                             @error('fanpage')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="form-group">
-                            <label for="support_needs">Nhu cầu hỗ trợ, kết nối:</label>
-                            <textarea id="support_needs" name="support_needs" class="form-control form-control-sm" placeholder="Nhập nhu cầu hỗ trợ, kết nối">{{ old('support_needs') }}</textarea>
+                            <label for="support_needs">Nhu cầu hỗ trợ, kết nối: <span class="text-danger">*</span></label>
+                            <textarea id="support_needs" name="support_needs" class="form-control form-control-sm @error('support_needs') is-invalid @enderror" placeholder="Nhập nhu cầu hỗ trợ, kết nối">{{ old('support_needs') }}</textarea>
                             @error('support_needs')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="text-end">
                             <button type="submit" class="btn btn-success">Gửi</button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
