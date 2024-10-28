@@ -177,7 +177,7 @@ Route::middleware(['language'])->group(function () {
 
                 Route::resource('businesses', BusinessController::class);
 
-                Route::resource('business-start-promotion-investment', BusinessStartPromotionInvestment::class);
+                Route::resource('start-promotion-investment', BusinessStartPromotionInvestment::class);
 
                 Route::get('/form-business', [BusinessController::class, 'adminIndex'])->name('show.admin.index');
             });
