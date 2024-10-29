@@ -31,7 +31,7 @@
       <li class="nav-item mt-2">
         <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">{{__("setup_page") }}</h6>
       </li>
-      
+
       <li>
         <a class="nav-link {{ Route::currentRouteNamed('form-business') ? 'active' : '' }}" href="{{ route('show.admin.index') }}">
           <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -41,7 +41,7 @@
         </a>
       </li>
       <li>
-        <a class="nav-link {{ Route::currentRouteNamed('form-business') ? 'active' : '' }}" href="{{ route('show.admin.index') }}">
+        <a class="nav-link {{ Route::currentRouteNamed('start-promotion-investment') ? 'active' : '' }}" href="{{ route('start-promotion-investment.index') }}">
           <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
           </div>

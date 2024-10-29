@@ -109,7 +109,7 @@
         {{-- <div class="banner">
             <img src="{{asset('images/Vayvonkinhdoanh.jpg')}}" alt="Banner Image">
         </div> --}}
-        <div class="container my-5">
+        {{-- <div class="container my-5">
             <div class="row">
                 <div class="form-container">
                     @include('pages.notification.success-error')
@@ -236,7 +236,7 @@
 
                 </div>
             </div>
-        </div>
+        </div> --}}
     </section>
 @endsection
 @push('child-scripts')

@@ -10,12 +10,12 @@ class BusinessStartPromotionInvestmentController extends Controller
     public function index()
     {
         $promotions = BusinessStartPromotionInvestment::with(['business', 'businessSupportNeed'])->get();
-        return view('admin.pages.business-promotions.index', compact('promotions'));
+        return view('admin.pages.client.form-start-promotion-invertment.index', compact('promotions'));
     }
 
     public function create()
     {
-        return view('admin.pages.business-promotions.create');
+        return view('admin.pages.client.form-start-promotion-invertment.create');
     }
 
     public function store(Request $request)
@@ -26,19 +26,19 @@ class BusinessStartPromotionInvestmentController extends Controller
         ]);
 
         BusinessStartPromotionInvestment::create($validatedData);
-        return redirect()->route('business-promotions.index')->with('success', 'Thêm mới thành công');
+        return redirect()->route('client.form-start-promotion-invertment.index')->with('success', 'Thêm mới thành công');
     }
 
     public function show($id)
     {
         $promotion = BusinessStartPromotionInvestment::with(['business', 'businessSupportNeed'])->findOrFail($id);
-        return view('admin.pages.business-promotions.show', compact('promotion'));
+        return view('admin.pages.client.form-start-promotion-invertment.show', compact('promotion'));
     }
 
     public function edit($id)
     {
         $promotion = BusinessStartPromotionInvestment::findOrFail($id);
-        return view('admin.pages.business-promotions.edit', compact('promotion'));
+        return view('admin.pages.client.form-start-promotion-invertment.edit', compact('promotion'));
     }
 
     public function update(Request $request, $id)
@@ -50,14 +50,14 @@ class BusinessStartPromotionInvestmentController extends Controller
 
         $promotion = BusinessStartPromotionInvestment::findOrFail($id);
         $promotion->update($validatedData);
-        return redirect()->route('business-promotions.index')->with('success', 'Cập nhật thành công');
+        return redirect()->route('client.form-start-promotion-invertment.index')->with('success', 'Cập nhật thành công');
     }
 
     public function destroy($id)
     {
         $promotion = BusinessStartPromotionInvestment::findOrFail($id);
         $promotion->delete();
-        return redirect()->route('business-promotions.index')->with('success', 'Xóa thành công');
+        return redirect()->route('client.form-start-promotion-invertment.index')->with('success', 'Xóa thành công');
     }
 }
 

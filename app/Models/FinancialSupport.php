@@ -16,9 +16,12 @@ class FinancialSupport extends Model
     protected $fillable = ['name', 'slug','avt_financial_support','url_financial_support','bank_id'];
 
 
-    public function customerInterests()
-    {
-        return $this->hasMany(CustomerInterest::class);
+    // public function customerInterests()
+    // {
+    //     return $this->hasMany(CustomerInterest::class);
+    // }
+    public function businessCapitalNeed(){
+        return $this->hasMany(BusinessCapitalNeed::class);
     }
     public function tabContentDetails()
     {

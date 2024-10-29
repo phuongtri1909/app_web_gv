@@ -19,7 +19,9 @@ class BusinessCapitalNeed extends Model
         'purpose',
         'bank_connection',
         'feedback',
-        'status'
+        'status',
+        'financial_support_id',
+        'bank_service_id'
     ];
     // public function categoryBusiness()
     // {
@@ -28,6 +30,15 @@ class BusinessCapitalNeed extends Model
     public function business()
     {
         return $this->belongsTo(Business::class);
+    }
+    public function financialSupport()
+    {
+        return $this->belongsTo(FinancialSupport::class,'financial_support_id');
+    }
+
+    public function bankServicesInterest()
+    {
+        return $this->belongsTo(BankServicesInterest::class, 'bank_service_id');
     }
 
 }
