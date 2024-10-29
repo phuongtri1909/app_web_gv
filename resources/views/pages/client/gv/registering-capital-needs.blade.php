@@ -198,7 +198,7 @@
                 <form action="{{ route('show.form.capital.need.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @if (isset($slug))
-                        <input type="hidden" id="slug" name="slug" value="{{ $slug}}">
+                        <input type="hidden" id="slug" name="slug" value="{{ $slug }}">
                     @endif
                     <div class="row">
                         <div class="col-md-4 mb-4">
@@ -228,7 +228,8 @@
                         <div class="col-md-4 mb-4">
                             <label for="category_business_id" class="form-label">Loại hình doanh nghiệp <span
                                     class="text-danger">*</span></label>
-                            <select class="form-select form-control form-select-sm" id="category_business_id" name="category_business_id">
+                            <select class="form-select form-control form-select-sm" id="category_business_id"
+                                name="category_business_id">
                                 @foreach ($category_business as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
@@ -244,17 +245,21 @@
                             <label for="business_address" class="form-label">Địa chỉ trụ sở chính <span
                                     class="text-danger">*</span></label>
                             <input type="text"
-                                class="form-control form-control-sm @error('business_address') is-invalid @enderror" id="business_address"
-                                name="business_address" placeholder="Nhập địa chỉ trụ sở chính" value="{{ old('business_address') }}">
+                                class="form-control form-control-sm @error('business_address') is-invalid @enderror"
+                                id="business_address" name="business_address" placeholder="Nhập địa chỉ trụ sở chính"
+                                value="{{ old('business_address') }}">
                             @error('business_address')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="col-md-4 mb-4">
-                            <label for="phone_number" class="form-label">Điện thoại <span class="text-danger">*</span></label>
-                            <input type="tel" class="form-control form-control-sm @error('phone_number') is-invalid @enderror"
-                                id="phone_number" name="phone_number" placeholder="Nhập số điện thoại" value="{{ old('phone_number') }}">
+                            <label for="phone_number" class="form-label">Điện thoại <span
+                                    class="text-danger">*</span></label>
+                            <input type="tel"
+                                class="form-control form-control-sm @error('phone_number') is-invalid @enderror"
+                                id="phone_number" name="phone_number" placeholder="Nhập số điện thoại"
+                                value="{{ old('phone_number') }}">
                             @error('phone_number')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -295,19 +300,25 @@
                             <label class="form-label">Giới tính:<span class="text-danger">*</span></label>
                             <div class="d-flex align-items-center">
                                 <div class="form-check me-3">
-                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderMale" value="male" {{ old('gender') == 'male' ? 'checked' : '' }} required>
+                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio"
+                                        name="gender" id="genderMale" value="male"
+                                        {{ old('gender') == 'male' ? 'checked' : '' }} required>
                                     <label class="form-check-label" for="genderMale">
                                         Nam
                                     </label>
                                 </div>
                                 <div class="form-check me-3">
-                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderFemale" value="female" {{ old('gender') == 'female' ? 'checked' : '' }} required>
+                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio"
+                                        name="gender" id="genderFemale" value="female"
+                                        {{ old('gender') == 'female' ? 'checked' : '' }} required>
                                     <label class="form-check-label" for="genderFemale">
                                         Nữ
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderOther" value="other" {{ old('gender') == 'other' ? 'checked' : '' }} required>
+                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio"
+                                        name="gender" id="genderOther" value="other"
+                                        {{ old('gender') == 'other' ? 'checked' : '' }} required>
                                     <label class="form-check-label" for="genderOther">
                                         Khác
                                     </label>
@@ -323,90 +334,75 @@
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label for="interest_rate">Lãi suất:<span class="text-danger">*</span></label>
-                            <input type="number" 
-                                class="form-control form-control-sm @error('interest_rate') is-invalid @enderror" 
-                                id="interest_rate"
-                                name="interest_rate" 
-                                placeholder="Nhập lãi suất mong muốn" 
-                                value="{{old('interest_rate')}}" min="0">
+                            <input type="number"
+                                class="form-control form-control-sm @error('interest_rate') is-invalid @enderror"
+                                id="interest_rate" name="interest_rate" placeholder="Nhập lãi suất mong muốn"
+                                value="{{ old('interest_rate') }}" min="0">
                             @error('interest_rate')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="col-md-4 mb-3">
                             <label for="finance">Tài chính:<span class="text-danger">*</span></label>
-                            <input type="number" 
-                                class="form-control form-control-sm @error('finance') is-invalid @enderror" 
-                                id="finance" 
-                                name="finance"
-                                placeholder="Nhập số tiền tài chính (đồng)" 
-                                value="{{old('finance')}}" min="0">
+                            <input type="number"
+                                class="form-control form-control-sm @error('finance') is-invalid @enderror"
+                                id="finance" name="finance" placeholder="Nhập số tiền tài chính (đồng)"
+                                value="{{ old('finance') }}" min="0">
                             @error('finance')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="col-md-4 mb-3">
-                            <label for="mortgage_policy">Chính sách vay thế chấp:<span class="text-danger">*</span></label>
-                            <input type="text" 
-                                class="form-control form-control-sm @error('mortgage_policy') is-invalid @enderror" 
-                                id="mortgage_policy"
-                                name="mortgage_policy" 
-                                placeholder="Nhập chính sách vay thế chấp" 
-                                value="{{old('mortgage_policy')}}">
+                            <label for="mortgage_policy">Chính sách vay thế chấp:<span
+                                    class="text-danger">*</span></label>
+                            <input type="text"
+                                class="form-control form-control-sm @error('mortgage_policy') is-invalid @enderror"
+                                id="mortgage_policy" name="mortgage_policy" placeholder="Nhập chính sách vay thế chấp"
+                                value="{{ old('mortgage_policy') }}">
                             @error('mortgage_policy')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="col-md-4 mb-3">
                             <label for="unsecured_policy">Tín chấp:<span class="text-danger">*</span></label>
-                            <input type="text" 
-                                class="form-control form-control-sm @error('unsecured_policy') is-invalid @enderror" 
-                                id="unsecured_policy"
-                                name="unsecured_policy" 
-                                placeholder="Nhập thông tin tín chấp" 
-                                value="{{old('unsecured_policy')}}">
+                            <input type="text"
+                                class="form-control form-control-sm @error('unsecured_policy') is-invalid @enderror"
+                                id="unsecured_policy" name="unsecured_policy" placeholder="Nhập thông tin tín chấp"
+                                value="{{ old('unsecured_policy') }}">
                             @error('unsecured_policy')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="col-md-4 mb-3">
                             <label for="purpose">Mục đích:<span class="text-danger">*</span></label>
-                            <input type="text" 
-                                class="form-control form-control-sm @error('purpose') is-invalid @enderror" 
-                                id="purpose" 
-                                name="purpose"
-                                placeholder="Nhập mục đích vay" 
-                                value="{{old('purpose')}}">
+                            <input type="text"
+                                class="form-control form-control-sm @error('purpose') is-invalid @enderror"
+                                id="purpose" name="purpose" placeholder="Nhập mục đích vay"
+                                value="{{ old('purpose') }}">
                             @error('purpose')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="col-md-4 mb-3">
                             <label for="bank_connection">Kết nối ngân hàng:<span class="text-danger">*</span></label>
-                            <input type="text" 
-                                class="form-control form-control-sm @error('bank_connection') is-invalid @enderror" 
-                                id="bank_connection"
-                                name="bank_connection" 
-                                placeholder="Nhập tên ngân hàng kết nối" 
-                                value="{{old('bank_connection')}}">
+                            <input type="text"
+                                class="form-control form-control-sm @error('bank_connection') is-invalid @enderror"
+                                id="bank_connection" name="bank_connection" placeholder="Nhập tên ngân hàng kết nối"
+                                value="{{ old('bank_connection') }}">
                             @error('bank_connection')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="col-md-12 mb-3">
                             <label for="feedback">Phản ánh về việc giải quyết của ngân hàng:</label>
-                            <textarea 
-                                class="form-control form-control-sm @error('feedback') is-invalid @enderror" 
-                                id="feedback" 
-                                name="feedback" 
-                                rows="3"
-                                placeholder="{{ __('Nhập phản hồi của bạn') }}">{{ old('feedback') }}</textarea>
+                            <textarea class="form-control form-control-sm @error('feedback') is-invalid @enderror" id="feedback"
+                                name="feedback" rows="3" placeholder="{{ __('Nhập phản hồi của bạn') }}">{{ old('feedback') }}</textarea>
                             @error('feedback')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -415,6 +411,45 @@
 
                     <div class="text-end my-3">
                         <button type="submit" class="btn btn-success">Đăng ký</button>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <div class="border border-custom rounded mb-3">
+                            <div class="bg-business rounded-top py-2 px-3 mb-3">
+                                <h5 class="mb-0 fw-bold text-dark">NCB Cộng Hòa</h5>
+                            </div>
+                            <div class="px-3">
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2 mb-0">Địa chỉ:</p>
+                                    <p class="mb-0">18H Cộng Hòa, Phường 4, Quận Tân Bình, Thành phố Hồ Chí Minh</p>
+                                </div>
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2 mb-0">Số Fax:</p>
+                                    <p class="mb-0">(08)38125351</p>
+                                </div>
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2 mb-0">GĐ chi nhánh:</p>
+                                    <p class="mb-0">Trịnh Minh Châu</p>
+                                </div>
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2 mb-0">Số điện thoại:</p>
+                                    <p class="mb-0">0987.338339 - 0786.338339</p>
+                                </div>
+                                <hr>
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2 mb-0">Họ và tên:</p>
+                                    <p class="mb-0">Dương Văn Thịnh</p>
+                                </div>
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2 mb-0">Số điện thoại:</p>
+                                    <p class="mb-0">0901967068</p>
+                                </div>
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2 mb-0">Email:</p>
+                                    <p class="mb-0">thinhdv1@ncb-bank.vn</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
