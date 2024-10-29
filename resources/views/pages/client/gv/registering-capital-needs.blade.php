@@ -1,5 +1,5 @@
 @extends('pages.layouts.page')
-
+@section('title', 'Đăng ký nhu cầu vốn')
 @push('child-styles')
     <style>
         .upload-container {
@@ -197,6 +197,9 @@
                 @include('pages.notification.success-error')
                 <form action="{{ route('show.form.capital.need.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    @if (isset($slug))
+                        <input type="hidden" id="slug" name="slug" value="{{ $slug}}">
+                    @endif
                     <div class="row">
                         <div class="col-md-4 mb-4">
                             <label for="business_name" class="form-label">Tên doanh nghiệp <span
@@ -269,7 +272,7 @@
 
                     <div class="row">
                         <div class="col-md-4 mb-4">
-                            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                            <label for="email" class="form-label">Email</label>
                             <input type="email" class="form-control form-control-sm @error('email') is-invalid @enderror"
                                 id="email" name="email" placeholder="Nhập email" value="{{ old('email') }}">
                             @error('email')
@@ -316,7 +319,7 @@
                         </div>
                     </div>
 
-
+                    <label for="">Nhu cầu hỗ trợ vốn:</label>
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label for="interest_rate">Lãi suất:<span class="text-danger">*</span></label>

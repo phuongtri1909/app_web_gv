@@ -153,7 +153,7 @@
                     </div>
                     <div class="col-md-12">
                         <div class="btn-regis text-center">
-                            <a href="{{route('show.form', ['slug' => $blog->slug])}}" class="btn btn-success" role="button">
+                            <a href="{{route('show.form.capital.need', ['slug' => $blog->slug])}}" class="btn btn-success" role="button">
                                 <span>{{ __('Đăng ký ngay') }}</span>
                             </a>
                         </div>

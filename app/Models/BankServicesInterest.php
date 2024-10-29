@@ -11,9 +11,12 @@ class BankServicesInterest extends Model
 
     protected $fillable = ['name','avt_bank_services','slug','bank_id'];
 
-    public function customerInterests()
-    {
-        return $this->hasMany(CustomerInterest::class);
+    // public function customerInterests()
+    // {
+    //     return $this->hasMany(CustomerInterest::class);
+    // }
+    public function businessCapitalNeed(){
+        return $this->hasMany(BusinessCapitalNeed::class);
     }
     public function bank()
     {

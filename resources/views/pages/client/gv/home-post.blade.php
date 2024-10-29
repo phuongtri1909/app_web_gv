@@ -116,7 +116,7 @@
     @push('child-scripts')
     @endpush
     @section('content-page')
-    @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký nhu cầu', 'buttonLink' => route('show.form')])
+    @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký nhu cầu', 'buttonLink' => route('show.form.capital.need')])
         <section id="home-post">
             <div class="banner">
                 <img src="{{asset('images/Vayvonkinhdoanh.jpg')}}" alt="Banner Image">

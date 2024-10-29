@@ -124,7 +124,7 @@
 @endpush
 @section('content-page')
     @include('pages.notification.success-error')
-    @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký nhu cầu', 'buttonLink' => route('show.form')])
+    @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký nhu cầu', 'buttonLink' => route('show.form.capital.need')])
     <section id="home-post">
         <div class="banner">
             <img src="{{ asset('images/Vayvonkinhdoanh.jpg') }}" alt="Banner Image">
@@ -148,9 +148,9 @@
                 @endforeach
             </div>
 
-           
+
             <h6 class="fw-bolder">Hội Doanh Nghiệp Quận Gò Vấp sẽ liên tục cập nhật thông tin chính sách của các ngân hàng tới Quý Hội Viên.</h6>
-            
+
         </div>
     </section>
 @endsection

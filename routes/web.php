@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BusinessCapitalNeedController;
 use App\Models\BusinessStartPromotionInvestment;
 use App\Models\Tab;
 use App\Models\SlideProgram;
@@ -48,6 +49,7 @@ use App\Http\Controllers\FinancialSupportController;
 use App\Http\Controllers\BusinessRecruitmentController;
 use App\Http\Controllers\ContactConsultationController;
 use App\Http\Controllers\AdmissionProcessDetailController;
+use App\Http\Controllers\BusinessStartPromotionInvestmentController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PersonalBusinessInterestController;
 
@@ -84,8 +86,8 @@ Route::middleware(['language'])->group(function () {
         Route::get('/form-start-promotion', [BusinessController::class, 'showFormStartPromotion'])->name('show.form.start.promotion'); // khởi nghiệp xúc tiến thương mại đầu tư
         Route::post('/form-start-promotion', [BusinessController::class, 'storeFormStartPromotion'])->name('form.start.promotion.store');
 
-        Route::get('/form-registering-capital-needs', [BusinessController::class, 'showFormCapitalNeeds'])->name('show.form.capital.need'); //ĐĂNG KÝ NHU CẦU VỀ VỐN
-        Route::post('/form-registering-capital-needs', [BusinessController::class, 'storeFormCapitalNeeds'])->name('show.form.capital.need.store');
+        Route::get('/form-registering-capital-needs/{slug?}', [BusinessCapitalNeedController::class, 'showFormCapitalNeeds'])->name('show.form.capital.need'); //ĐĂNG KÝ NHU CẦU VỀ VỐN
+        Route::post('/form-registering-capital-needs', [BusinessCapitalNeedController::class, 'storeFormCapitalNeeds'])->name('show.form.capital.need.store');
 
         Route::get('/form-promotional-introduction', [BusinessController::class, 'showFormPromotional'])->name('show.form.promotional'); //form đăng ký điểm đến
         Route::post('/form-promotional-introduction', [BusinessController::class, 'storeFormPromotional'])->name('form.promotional.store');
@@ -185,7 +187,11 @@ Route::middleware(['language'])->group(function () {
 
                 Route::resource('businesses', BusinessController::class);
 
-                Route::resource('start-promotion-investment', BusinessStartPromotionInvestment::class);
+                Route::resource('start-promotion-investment', BusinessStartPromotionInvestmentController::class);
+
+                Route::resource('capital-needs', BusinessCapitalNeedController::class);
+
+                Route::resource('job-applications', JobApplicationController::class);
 
                 Route::get('/form-business', [BusinessController::class, 'adminIndex'])->name('show.admin.index');
             });
