@@ -185,8 +185,16 @@
                                     <p class="mb-0">18H Cộng Hòa, Phường 4, Quận Tân Bình, Thành phố Hồ Chí Minh</p>
                                 </div>
                                 <div class="d-flex">
+                                    <p class="fw-semibold me-2 mb-0">Họ và tên:</p>
+                                    <p class="mb-0">Dương Văn Thịnh</p>
+                                </div>
+                                <div class="d-flex">
                                     <p class="fw-semibold me-2 mb-0">Số điện thoại:</p>
-                                    <p class="mb-0">(08)38125352</p>
+                                    <p class="mb-0">0901967068</p>
+                                </div>
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2 mb-0">Email:</p>
+                                    <p class="mb-0">thinhdv1@ncb-bank.vn</p>
                                 </div>
                                 <div class="d-flex">
                                     <p class="fw-semibold me-2 mb-0">Số Fax:</p>
