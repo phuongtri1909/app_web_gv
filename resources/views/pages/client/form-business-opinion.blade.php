@@ -54,12 +54,12 @@
         <div class="container">
             <div class="row">
                 @include('pages.notification.success-error')
-                <form action="{{route('business.opinion.store')}}" method="POST" enctype="multipart/form-data">
+                <form id="business-opinion"action="{{route('business.opinion.store')}}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="col-md-12 mb-4">
                             <label for="opinion" class="form-label">Ý kiến <span class="text-danger">*</span></label>
-                            <textarea class="form-control form-control-sm @error('opinion') is-invalid @enderror" id="opinion" name="opinion" placeholder="Nhập ý kiến">{{ old('opinion') }}</textarea>
+                            <textarea class="form-control form-control-sm @error('opinion') is-invalid @enderror" id="opinion" name="opinion" placeholder="Nhập ý kiến" required>{{ old('opinion') }}</textarea>
                             @error('opinion')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -67,7 +67,7 @@
 
                         <div class="col-md-12 mb-4">
                             <label for="attached_images" class="form-label">Hình ảnh đính kèm <span class="text-danger">*</span></label>
-                            <input type="file" class="form-control form-control-sm @error('attached_images') is-invalid @enderror" id="attached_images" name="attached_images[]" multiple accept="image/*">
+                            <input type="file" class="form-control form-control-sm @error('attached_images') is-invalid @enderror" id="attached_images" name="attached_images[]" multiple accept="image/*" required >
                             @error('attached_images')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -84,7 +84,7 @@
 
                         <div class="col-md-6 mb-4">
                             <label for="owner_full_name" class="form-label">Họ tên chủ doanh nghiệp<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm @error('owner_full_name') is-invalid @enderror" id="owner_full_name" name="owner_full_name" placeholder="Nhập họ và tên" value="{{ old('owner_full_name') }}">
+                            <input type="text" class="form-control form-control-sm @error('owner_full_name') is-invalid @enderror" id="owner_full_name" name="owner_full_name" placeholder="Nhập họ và tên" value="{{ old('owner_full_name') }}" required>
                             @error('owner_full_name')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -92,7 +92,7 @@
 
                         <div class="col-6 col-md-6 mb-4">
                             <label for="birth_year" class="form-label">Năm sinh<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm @error('birth_year') is-invalid @enderror" id="birth_year" name="birth_year" placeholder="Nhập năm sinh" value="{{ old('birth_year') }}">
+                            <input type="text" class="form-control form-control-sm @error('birth_year') is-invalid @enderror" id="birth_year" name="birth_year" placeholder="Nhập năm sinh" value="{{ old('birth_year') }}" required>
                             @error('birth_year')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -102,15 +102,15 @@
                             <label class="form-label">Giới tính<span class="text-danger">*</span></label>
                             <div class="d-flex justify-content-around">
                                 <div class="form-check me-1 ps-0">
-                                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" {{ old('gender') == 'male' ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" {{ old('gender') == 'male' ? 'checked' : '' }} required>
                                     <label class="form-check-label" for="male">Nam</label>
                                 </div>
                                 <div class="form-check me-1">
-                                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" {{ old('gender') == 'female' ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" {{ old('gender') == 'female' ? 'checked' : '' }} required>
                                     <label class="form-check-label" for="female">Nữ</label>
                                 </div>
                                 <div class="form-check me-1">
-                                    <input class="form-check-input" type="radio" name="gender" id="other" value="other" {{ old('gender') == 'other' ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="radio" name="gender" id="other" value="other" {{ old('gender') == 'other' ? 'checked' : '' }} required>
                                     <label class="form-check-label" for="other">Khác</label>
                                 </div>
                             </div>
@@ -121,7 +121,7 @@
 
                         <div class="col-md-6 mb-4">
                             <label for="phone" class="form-label">Số điện thoại liên hệ<span class="text-danger">*</span></label>
-                            <input type="tel" class="form-control form-control-sm @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="Nhập số điện thoại" value="{{ old('phone') }}">
+                            <input type="tel" class="form-control form-control-sm @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="Nhập số điện thoại" value="{{ old('phone') }}" required>
                             @error('phone')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -129,7 +129,7 @@
 
                         <div class="col-md-12 mb-4">
                             <label for="residential_address" class="form-label">Địa chỉ cư trú<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm @error('residential_address') is-invalid @enderror" id="residential_address" name="residential_address" placeholder="Nhập địa chỉ cư trú" value="{{ old('residential_address') }}">
+                            <input type="text" class="form-control form-control-sm @error('residential_address') is-invalid @enderror" id="residential_address" name="residential_address" placeholder="Nhập địa chỉ cư trú" value="{{ old('residential_address') }}" required>
                             @error('residential_address')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -137,7 +137,7 @@
 
                         <div class="col-md-12 mb-4">
                             <label for="business_name" class="form-label">Tên doanh nghiệp/hộ kinh doanh<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm @error('business_name') is-invalid @enderror" id="business_name" name="business_name" placeholder="Nhập tên doanh nghiệp/hộ kinh doanh" value="{{ old('business_name') }}">
+                            <input type="text" class="form-control form-control-sm @error('business_name') is-invalid @enderror" id="business_name" name="business_name" placeholder="Nhập tên doanh nghiệp/hộ kinh doanh" value="{{ old('business_name') }}" required>
                             @error('business_name')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -145,7 +145,7 @@
 
                         <div class="col-md-12 mb-4">
                             <label for="business_address" class="form-label">Địa chỉ kinh doanh<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm @error('business_address') is-invalid @enderror" id="business_address" name="business_address" placeholder="Nhập địa chỉ kinh doanh" value="{{ old('business_address') }}">
+                            <input type="text" class="form-control form-control-sm @error('business_address') is-invalid @enderror" id="business_address" name="business_address" placeholder="Nhập địa chỉ kinh doanh" value="{{ old('business_address') }}" required>
                             @error('business_address')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -163,7 +163,7 @@
 
                         <div class="col-6 col-md-12 mb-4">
                             <label for="business_license" class="form-label">Giấy phép kinh doanh<span class="text-danger">*</span></label>
-                            <input type="file" class="form-control form-control-sm @error('business_license') is-invalid @enderror" id="business_license" name="business_license" accept="application/pdf">
+                            <input type="file" class="form-control form-control-sm @error('business_license') is-invalid @enderror" id="business_license" name="business_license" accept="application/pdf" required>
                             @error('business_license')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -221,5 +221,5 @@
                 reader.readAsDataURL(file);
             });
         });
-    </script>
+    </script>     
 @endpush

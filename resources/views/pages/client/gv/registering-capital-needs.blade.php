@@ -207,7 +207,7 @@
                             <input type="text"
                                 class="form-control form-control-sm @error('business_name') is-invalid @enderror"
                                 id="business_name" name="business_name" placeholder="Nhập tên doanh nghiệp"
-                                value="{{ old('business_name') }}">
+                                value="{{ old('business_name') }}" required>
                             @error('business_name')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -219,7 +219,7 @@
                             <input type="text"
                                 class="form-control form-control-sm @error('business_code') is-invalid @enderror"
                                 id="business_code" name="business_code" placeholder="Nhập mã số doanh nghiệp/mã số thuế"
-                                value="{{ old('business_code') }}">
+                                value="{{ old('business_code') }}" required>
                             @error('business_code')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -245,7 +245,7 @@
                                     class="text-danger">*</span></label>
                             <input type="text"
                                 class="form-control form-control-sm @error('business_address') is-invalid @enderror" id="business_address"
-                                name="business_address" placeholder="Nhập địa chỉ trụ sở chính" value="{{ old('business_address') }}">
+                                name="business_address" placeholder="Nhập địa chỉ trụ sở chính" value="{{ old('business_address') }}" required>
                             @error('business_address')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -254,7 +254,7 @@
                         <div class="col-md-4 mb-4">
                             <label for="phone_number" class="form-label">Điện thoại <span class="text-danger">*</span></label>
                             <input type="tel" class="form-control form-control-sm @error('phone_number') is-invalid @enderror"
-                                id="phone_number" name="phone_number" placeholder="Nhập số điện thoại" value="{{ old('phone_number') }}">
+                                id="phone_number" name="phone_number" placeholder="Nhập số điện thoại" value="{{ old('phone_number') }}" required>
                             @error('phone_number')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -285,7 +285,7 @@
                             <input type="text"
                                 class="form-control form-control-sm @error('representative_name') is-invalid @enderror"
                                 id="representative_name" name="representative_name" placeholder="Nhập tên người đại diện"
-                                value="{{ old('representative_name') }}">
+                                value="{{ old('representative_name') }}" required>
                             @error('representative_name')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -328,7 +328,7 @@
                                 id="interest_rate"
                                 name="interest_rate" 
                                 placeholder="Nhập lãi suất mong muốn" 
-                                value="{{old('interest_rate')}}" min="0">
+                                value="{{old('interest_rate')}}" min="0" required>
                             @error('interest_rate')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -341,7 +341,7 @@
                                 id="finance" 
                                 name="finance"
                                 placeholder="Nhập số tiền tài chính (đồng)" 
-                                value="{{old('finance')}}" min="0">
+                                value="{{old('finance')}}" min="0" required>
                             @error('finance')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -354,7 +354,7 @@
                                 id="mortgage_policy"
                                 name="mortgage_policy" 
                                 placeholder="Nhập chính sách vay thế chấp" 
-                                value="{{old('mortgage_policy')}}">
+                                value="{{old('mortgage_policy')}}" required>
                             @error('mortgage_policy')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -367,7 +367,7 @@
                                 id="unsecured_policy"
                                 name="unsecured_policy" 
                                 placeholder="Nhập thông tin tín chấp" 
-                                value="{{old('unsecured_policy')}}">
+                                value="{{old('unsecured_policy')}}" required>
                             @error('unsecured_policy')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -380,7 +380,7 @@
                                 id="purpose" 
                                 name="purpose"
                                 placeholder="Nhập mục đích vay" 
-                                value="{{old('purpose')}}">
+                                value="{{old('purpose')}}" required>
                             @error('purpose')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -393,7 +393,7 @@
                                 id="bank_connection"
                                 name="bank_connection" 
                                 placeholder="Nhập tên ngân hàng kết nối" 
-                                value="{{old('bank_connection')}}">
+                                value="{{old('bank_connection')}}" required>
                             @error('bank_connection')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

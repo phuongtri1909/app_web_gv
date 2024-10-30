@@ -7,14 +7,17 @@
             height: 100px;
             object-fit: cover;
         }
+
         .info-group label {
-        color: #8392AB;
-        margin-bottom: 4px;
+            color: #8392AB;
+            margin-bottom: 4px;
         }
+
         .info-group p {
             color: #344767;
             font-weight: 500;
         }
+
         .avatar-preview {
             border: 3px solid #5e72e4;
             padding: 3px;
@@ -31,12 +34,12 @@
                 <div class="card-header pb-0">
                     <div class="d-flex flex-row justify-content-between">
                         <div>
-                            <h5 class="mb-0">
-                                {{ __('Danh sách đăng ký Khởi nghiệp, Xúc tiến thương mại – Kêu gọi đầu tư') }}</h5>
+                            <h5 class="mb-0">{{ __('Danh sách đăng ký nhu cầu vay vốn') }}</h5>
                         </div>
-                        {{-- <a href="{{ route('start-promotion-investment.create') }}" class="btn bg-gradient-primary btn-sm mb-0 px-2" type="button">
-                        <i class="fa-solid fa-plus"></i> {{ __('Thêm mới') }}
-                    </a> --}}
+                        {{-- <a href="{{ route('capital-needs.create') }}" class="btn bg-gradient-primary btn-sm mb-0 px-2"
+                            type="button">
+                            <i class="fa-solid fa-plus"></i> {{ __('Thêm mới') }}
+                        </a> --}}
                     </div>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
@@ -53,7 +56,9 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         {{ __('Mã số thuế') }}</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('Nhu cầu hỗ trợ') }}</th>
+                                        {{ __('Số tiền') }}</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        {{ __('Lãi suất') }}</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         {{ __('Trạng thái') }}</th>
                                     <th
@@ -62,34 +67,40 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($promotions as $key => $promotion)
+                                @foreach ($capitalNeeds as $key => $capitalNeed)
                                     <tr>
                                         <td class="ps-4">
                                             <p class="text-xs font-weight-bold mb-0">{{ $key + 1 }}</p>
                                         </td>
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">
-                                                {{ $promotion->business->business_name ?? '-' }}</p>
+                                                {{ $capitalNeed->business->business_name ?? '-' }}</p>
                                         </td>
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">
-                                                {{ $promotion->business->business_code ?? '-' }}</p>
+                                                {{ $capitalNeed->business->business_code ?? '-' }}</p>
                                         </td>
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">
-                                                {{ $promotion->supportNeeds->name ?? '-' }}</p>
+                                                {{ format_currency_vnd($capitalNeed->finance) }}
+                                            </p>
                                         </td>
                                         <td>
-                                            <span id="status-badge-{{ $promotion->id }}"
-                                                class="badge badge-sm bg-{{ $promotion->status == 'approved' ? 'success' : ($promotion->status == 'rejected' ? 'danger' : 'warning') }}"
-                                                data-status="{{ $promotion->status }}">
-                                                {{ $promotion->status == 'approved' ? 'Đã duyệt' : ($promotion->status == 'rejected' ? 'Đã từ chối' : 'Đang chờ') }}
+                                            <p class="text-xs font-weight-bold mb-0">
+                                                {{ number_format($capitalNeed->interest_rate, 1, ',', '.') }}%
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <span id="status-badge-{{ $capitalNeed->id }}"
+                                                class="badge badge-sm bg-{{ $capitalNeed->status == 'approved' ? 'success' : ($capitalNeed->status == 'rejected' ? 'danger' : 'warning') }}"  data-status="{{ $capitalNeed->status }}">
+                                                {{ $capitalNeed->status == 'approved' ? 'Đã duyệt' : ($capitalNeed->status == 'rejected' ? 'Đã từ chối' : 'Đang chờ') }}
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            {{-- <a href="{{ route('start-promotion-investment.edit', $promotion->id) }}" class="mx-3" title="{{ __('edit') }}">
-                                            <i class="fa-solid fa-pencil"></i>
-                                        </a> --}}
+                                            {{-- <a href="{{ route('capital-needs.edit', $capitalNeed->id) }}" class="mx-3"
+                                                title="{{ __('edit') }}">
+                                                <i class="fa-solid fa-pencil"></i>
+                                            </a> --}}
                                             <div class="dropdown">
                                                 <button class="btn btn-sm p-0 border-0 mb-0" type="button"
                                                     data-bs-toggle="dropdown" aria-expanded="false"
@@ -99,34 +110,31 @@
                                                 <ul class="dropdown-menu">
                                                     <li>
                                                         <a class="dropdown-item" href="#"
-                                                            onclick="updateStatus('BusinessStartPromotionInvestment', {{ $promotion->id }}, 'approved')">
+                                                            onclick="updateStatus('BusinessCapitalNeed', {{ $capitalNeed->id }}, 'approved')">
                                                             <i class="fas fa-check-circle text-success me-2"></i>Duyệt
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <a class="dropdown-item" href="#"
-                                                            onclick="updateStatus('BusinessStartPromotionInvestment', {{ $promotion->id }}, 'rejected')">
+                                                            onclick="updateStatus('BusinessCapitalNeed', {{ $capitalNeed->id }}, 'rejected')">
                                                             <i class="fas fa-times-circle text-danger me-2"></i>Từ chối
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <a class="dropdown-item" href="#"
-                                                            onclick="updateStatus('BusinessStartPromotionInvestment', {{ $promotion->id }}, 'pending')">
+                                                            onclick="updateStatus('BusinessCapitalNeed', {{ $capitalNeed->id }}, 'pending')">
                                                             <i class="fa fa-hourglass-half text-warning me-2"></i>Đang chờ
                                                         </a>
                                                     </li>
                                                 </ul>
                                             </div>
-
                                             @include('admin.pages.components.delete-form', [
-                                                'id' => $promotion->id,
-                                                'route' => route(
-                                                    'start-promotion-investment.destroy',
-                                                    $promotion->id),
+                                                'id' => $capitalNeed->id,
+                                                'route' => route('capital-needs.destroy', $capitalNeed->id),
                                                 'message' => __('delete_message'),
                                             ])
-                                            <a href="javascript:void(0)" class="mx-3 view-promotion"
-                                                data-id="{{ $promotion->id }}" title="{{ __('Xem chi tiết') }}">
+                                            <a href="javascript:void(0)" class="mx-3 view-capitalNeed"
+                                                data-id="{{ $capitalNeed->id }}" title="{{ __('Xem chi tiết') }}">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
                                         </td>
@@ -138,7 +146,7 @@
 
                 </div>
             </div>
-            <div class="modal fade" id="promotionDetailModal" tabindex="-1" aria-labelledby="promotionDetailModal"
+            <div class="modal fade" id="capitalNeedDetailModal" tabindex="-1" aria-labelledby="capitalNeedDetailModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -201,7 +209,6 @@
                                                     <p id="modal-fax" class="text-sm mb-2"></p>
                                                 </div>
                                             </div>
-
                                             <div class="col-md-6">
                                                 <div class="info-group">
                                                     <label class="text-uppercase text-xs font-weight-bolder opacity-7">
@@ -253,13 +260,55 @@
                                                 </div>
                                                 <div class="info-group">
                                                     <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i
-                                                            class="fas fa-hands-helping me-2"></i>{{ __('Nhu cầu hỗ trợ') }}
+                                                        <i class="fas fa-bullseye me-2"></i>{{ __('Mục đích vay') }}
                                                     </label>
-                                                    <p id="modal-support-needs" class="text-sm mb-2"></p>
+                                                    <p id="modal-purpose" class="text-sm mb-2"></p>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
+                                                <div class="info-group">
+                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                        <i class="fas fa-money-bill me-2"></i>{{ __('Số tiền vay') }}
+                                                    </label>
+                                                    <p id="modal-finance" class="text-sm mb-2"></p>
+                                                </div>
+                                                <div class="info-group">
+                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                        <i class="fas fa-percentage me-2"></i>{{ __('Lãi suất') }}
+                                                    </label>
+                                                    <p id="modal-interest-rate" class="text-sm mb-2"></p>
+                                                </div>
+                                                <div class="info-group">
+                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                        <i
+                                                            class="fas fa-shield-alt me-2"></i>{{ __('Chính sách thế chấp') }}
+                                                    </label>
+                                                    <p id="modal-mortgage-policy" class="text-sm mb-2"></p>
+                                                </div>
+                                                <div class="info-group">
+                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                        <i
+                                                            class="fas fa-handshake me-2"></i>{{ __('Chính sách tín chấp') }}
+                                                    </label>
+                                                    <p id="modal-unsecured-policy" class="text-sm mb-2"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <div class="info-group">
+                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                        <i
+                                                            class="fas fa-university me-2"></i>{{ __('Kết nối ngân hàng') }}
+                                                    </label>
+                                                    <p id="modal-bank-connection" class="text-sm mb-2"></p>
+                                                </div>
+                                                <div class="info-group">
+                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                        <i class="fas fa-comments me-2"></i>{{ __('Phản hồi') }}
+                                                    </label>
+                                                    <p id="modal-feedback" class="text-sm mb-2"></p>
+                                                </div>
                                                 <div class="info-group">
                                                     <label class="text-uppercase text-xs font-weight-bolder opacity-7">
                                                         <i class="fas fa-clock me-2"></i>{{ __('Ngày đăng ký') }}
@@ -294,6 +343,8 @@
                     </div>
                 </div>
             </div>
+
+
         </div>
     </div>
 @endsection
@@ -303,10 +354,10 @@
     </script>
     <script>
         $(document).ready(function() {
-            $('.view-promotion').click(function() {
-                var promotionId = $(this).data('id');
+            $('.view-capitalNeed').click(function() {
+                var capitalNeedId = $(this).data('id');
                 $.ajax({
-                    url: '/admin/start-promotion-investment/' + promotionId,
+                    url: '/admin/capital-needs/' + capitalNeedId,
                     type: 'GET',
                     success: function(response) {
                         var formattedDate = dayjs(response.created_at).format(
@@ -335,7 +386,22 @@
                             '-');
                         $('#modal-business-field').text(response.business_field?.name || '-');
                         $('#modal-description').text(response.description || '-');
-                        $('#modal-support-needs').text(response.supportNeeds?.name || '-');
+                        $('#modal-finance').text(new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND'
+                        }).format(response.finance));
+                        $('#modal-interest-rate').text(
+                            new Intl.NumberFormat('vi-VN', {
+                                style: 'percent',
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 1
+                            }).format(response.interest_rate / 100)
+                        );
+                        $('#modal-mortgage-policy').text(response.mortgage_policy || '-');
+                        $('#modal-unsecured-policy').text(response.unsecured_policy || '-');
+                        $('#modal-purpose').text(response.purpose || '-');
+                        $('#modal-bank-connection').text(response.bank_connection || '-');
+                        $('#modal-feedback').text(response.feedback || '-');
                         $('#modal-created-at').text(formattedDate);
                         $('#modal-avatar').attr('src', response.avt_businesses ? '/' + response
                             .avt_businesses : '');
@@ -358,11 +424,17 @@
                             .removeClass('bg-success bg-danger bg-warning bg-secondary')
                             .addClass(statusBadgeClass)
                             .text(statusText);
-                        $('#promotionDetailModal').modal('show');
+
+                        $('#capitalNeedDetailModal').modal('show');
                         // console.log(response);
+
                     }
                 });
             });
         });
+    </script>
+    <script>
+
+
     </script>
 @endpush

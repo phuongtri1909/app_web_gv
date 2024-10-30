@@ -12,6 +12,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
     <link id="pagestyle" href="{{ asset('css/dashboard.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css">
     @stack('styles-admin')
     <title>{{ __('dashboard') }}</title>
 </head>
@@ -54,10 +55,13 @@
     </div>
 
     <footer>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.4/dayjs.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
         {{-- <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script> --}}
         <script src="{{ asset('js/dashboard.min.js') }}"></script>
+        <script src="{{ asset('js/app.js') }}"></script>
         <script>
             $(document).ready(function() {
                 $('.language-switch').on('click', function(e) {

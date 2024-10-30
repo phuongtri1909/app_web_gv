@@ -169,7 +169,7 @@ class BusinessCapitalNeedController extends Controller
             ], [
                 'business_name.required' => 'Vui lòng nhập tên doanh nghiệp.',
                 'business_code.required' => 'Mã số doanh nghiệp là bắt buộc.',
-                'business_code.regex' => 'Mã số doanh nghiệp không hợp lệ,ít nhất 10 hoặc không vượt quá 13 số',
+                'business_code.regex' => 'Mã số doanh nghiệp không hợp lệ, ít nhất 10 hoặc không vượt quá 13 số',
                 'category_business_id.required' => 'Vui lòng chọn loại hình kinh doanh.',
                 'category_business_id.exists' => 'Loại hình kinh doanh không hợp lệ.',
                 'phone_number.required' => 'Số điện thoại là bắt buộc.',
@@ -180,23 +180,23 @@ class BusinessCapitalNeedController extends Controller
                 'representative_name.required' => 'Vui lòng nhập tên người đại diện.',
                 'gender.required' => 'Vui lòng chọn giới tính.',
                 'gender.in' => 'Giới tính không hợp lệ.',
-                'interest_rate.numeric' => 'Lãi suất phải là một số hợp lệ.',
                 'interest_rate.required' => 'Vui lòng nhập lãi suất.',
-                'interest_rate.min' => 'Lãi suất không được nhỏ hơn 0',
-                'finance.numeric' => 'Số tiền tài chính phải là một số hợp lệ.',
+                'interest_rate.numeric' => 'Lãi suất phải là một số hợp lệ.',
+                'interest_rate.min' => 'Lãi suất không được nhỏ hơn 0.',
                 'finance.required' => 'Vui lòng nhập số tiền tài chính.',
-                'finance.min' => 'Số tiền tài chính không được nhỏ hơn 0',
+                'finance.numeric' => 'Số tiền tài chính phải là một số hợp lệ.',
+                'finance.min' => 'Số tiền tài chính không được nhỏ hơn 0.',
                 'feedback.max' => 'Phản hồi không được vượt quá 1000 ký tự.',
                 'purpose.required' => 'Vui lòng nhập mục đích của bạn.',
+                'purpose.max' => 'Mục đích không được vượt quá 1000 ký tự.',
                 'bank_connection.required' => 'Vui lòng nhập thông tin kết nối ngân hàng.',
                 'mortgage_policy.required' => 'Vui lòng cung cấp chính sách thế chấp.',
+                'mortgage_policy.max' => 'Thế chấp không được vượt quá 1000 ký tự.',
                 'unsecured_policy.required' => 'Vui lòng cung cấp chính sách tín chấp.',
                 'unsecured_policy.max' => 'Tín chấp không được vượt quá 1000 ký tự.',
-                'mortgage_policy.max' => 'Thế chấp không được vượt quá 1000 ký tự.',
-                'purpose.max' => 'Mục đích không được vượt quá 1000 ký tự.',
-                'business_address.required' => 'Vui lòng nhập địa chỉ doanh nghiệp',
-                'business_address.max' => 'Địa chỉ doanh nghiệp không vượt quá 255 ký tự',
-            ]);
+                'business_address.required' => 'Vui lòng nhập địa chỉ doanh nghiệp.',
+                'business_address.max' => 'Địa chỉ doanh nghiệp không vượt quá 255 ký tự.',
+            ]);            
             $existingBusiness = Business::where('business_code', $validatedData['business_code'])->first();
             if ($existingBusiness) {
              $response = $this->validateExistingBusiness($existingBusiness, $validatedData);
