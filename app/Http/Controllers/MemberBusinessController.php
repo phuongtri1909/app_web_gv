@@ -36,9 +36,9 @@ class MemberBusinessController extends Controller
             'home_address' => 'required|string|max:255',
             'contact_phone' =>  'required|string|max:10|regex:/^[0-9]+$/',
             'representative_email' => 'required|email|max:255',
-            'business_license_file' => 'required|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
-            'identity_card_front_file' => 'required|image|max:2048',
-            'identity_card_back_file' => 'required|image|max:2048',
+            'business_license_file' => 'required|file|mimes:jpg,jpeg,png,pdf,doc,docx',
+            'identity_card_front_file' => 'required|image',
+            'identity_card_back_file' => 'required|image',
         ], [
             'business_name.required' => 'Vui lòng nhập tên doanh nghiệp.',
             'business_license_number.required' => 'Vui lòng nhập số giấy ĐKKD.',
