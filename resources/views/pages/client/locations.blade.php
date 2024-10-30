@@ -1,19 +1,10 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', 'Chỉ dẫn điểm đến')
 @section('description', 'Chỉ dẫn điểm đến')
 @section('keyword', 'Chỉ dẫn điểm đến')
 @push('styles')
     <style>
-        #map {
-            height: 100%;
-        }
 
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
     </style>
 @endpush
 

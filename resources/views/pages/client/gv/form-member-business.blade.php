@@ -1,7 +1,7 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', 'Đăng ký đặc quyền hội viên')
 
-@push('child-styles')
+@push('styles')
     <style>
         #form-member-business {
             position: relative;
@@ -148,11 +148,11 @@
     </style>
 @endpush
 
-@section('content-page')
+@section('content')
     <section id="form-member-business">
         <div class="container my-4">
             <div class="row">
-                @include('pages.notification.success-error')
+                
                 <form id="business-member" action="{{ route('form.member.business.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     {{-- <h3 class="text-center title-member-business">Đăng ký gia nhập hội doanh nghiệp quận gò vấp</h3> --}}
@@ -399,7 +399,7 @@
     </section>
 @endsection
 
-@push('child-scripts')
+@push('scripts')
     <script>
         document.getElementById('business_license_file-button').addEventListener('click', function() {
             handleFileUpload('business_license_file', 'upload-list-business_license_file', 'error-message-business_license_file');

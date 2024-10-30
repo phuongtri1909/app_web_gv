@@ -1,4 +1,4 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', 'Chi tiết sản phẩm')
 @push('styles')
     <style>

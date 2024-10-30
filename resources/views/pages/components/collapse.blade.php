@@ -1,4 +1,4 @@
-@push('child-styles')
+@push('styles')
     <style>
         :root {
             --bg: #fff;

@@ -37,7 +37,7 @@ class MemberBusinessController extends Controller
             'ward_id' => 'required|integer|exists:ward_govap,id',
             'business_name' => 'required|string|max:255',
             'business_license' => 'nullable|mimes:pdf',
-            'business_code' => 'required|regex:/^\d{10,13}$/',
+            'business_code' => 'required|regex:/^\d{10}(-\d{3})?$/',
             'email' => 'required|email|max:255',
             'social_channel' => 'nullable|url|max:255',
             'description' => 'nullable|string|max:1000',

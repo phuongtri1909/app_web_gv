@@ -1,4 +1,4 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', 'Kết nối giao thương')
 @section('description', 'Kết nối giao thương')
 @section('keyword', 'Kết nối giao thương')

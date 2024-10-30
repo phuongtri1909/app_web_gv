@@ -1,6 +1,6 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', 'Kết nối ngân hàng')
-@push('child-styles')
+@push('styles')
     <style>
         .icon-box {
             width: 100px;
@@ -120,10 +120,10 @@
         }
     </style>
 @endpush
-@push('child-scripts')
+@push('scripts')
 @endpush
-@section('content-page')
-    @include('pages.notification.success-error')
+@section('content')
+    
     @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký nhu cầu', 'buttonLink' => route('show.form.capital.need')])
     <section id="home-post">
         <div class="banner">

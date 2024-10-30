@@ -1,7 +1,7 @@
 @if ($financialSupports->isNotEmpty() || $bankServicers->isNotEmpty())
-    @extends('pages.layouts.page')
+    @extends('layouts.app')
     @section('title', 'Kết nối ngân hàng '  . $bank->name)
-    @push('child-styles')
+    @push('styles')
         <style>
             .icon-box {
                 width: 100px;
@@ -113,9 +113,9 @@
         .waves{display: block !important}
         </style>
     @endpush
-    @push('child-scripts')
+    @push('scripts')
     @endpush
-    @section('content-page')
+    @section('content')
     @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký nhu cầu', 'buttonLink' => route('show.form.capital.need')])
         <section id="home-post">
             <div class="banner">

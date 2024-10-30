@@ -1,4 +1,4 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', 'Đăng ký doanh nghiệp')
 @section('description', 'Đăng ký doanh nghiệp')
 @section('keyword', 'Đăng ký doanh nghiệp')
@@ -188,7 +188,7 @@
     <section id="form-business" class="form-business mt-5rem">
         <div class="container my-4">
             <div class="row">
-                @include('pages.notification.success-error')
+                
                 <form action="{{ route('business.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="col-md-12 mb-5">

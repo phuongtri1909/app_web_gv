@@ -1,6 +1,6 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', 'Đăng ký tư vấn pháp luật')
-@push('child-styles')
+@push('styles')
     <style>
         .legal-advice-form {
             width: 100%;
@@ -165,14 +165,14 @@
     </style>
 @endpush
 
-@section('content-page')
+@section('content')
     <section id="form-law">
         {{-- <div class="banner">
             <img src="{{ asset('images/Vayvonkinhdoanh.jpg') }}" alt="Banner Image">
         </div> --}}
         <div class="container my-5">
             <div class="row">
-                @include('pages.notification.success-error')
+                
                 <form action="{{ route('legal.advice.store') }}" method="POST" class="legal-advice-form">
                     @csrf
                     <h3>Tư Vấn Pháp Luật</h3>
@@ -240,7 +240,7 @@
     </section>
 @endsection
 
-@push('child-scripts')
+@push('scripts')
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 @endpush

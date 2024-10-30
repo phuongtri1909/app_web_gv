@@ -1,4 +1,4 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', 'Tư vấn pháp luật')
 @section('description', 'Tư vấn pháp luật')
 @section('keyword', 'Tư vấn pháp luật')

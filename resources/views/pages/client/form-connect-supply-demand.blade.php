@@ -1,4 +1,4 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', 'Đăng ký kết nối cung cầu')
 @push('styles')
     <style>
@@ -45,7 +45,7 @@
     <section id="form-business" class="form-business mt-5rem">
         <div class="container">
             <div class="row">
-                @include('pages.notification.success-error')
+                
                 <form action="{{route('connect.supply.demand.store')}}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row ">

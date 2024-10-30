@@ -1,9 +1,9 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', $category != null ? $category->name : "Tất cả")
 @section('description', $category != null ? $category->name : "Tất cả")
 @section('keyword', $category != null ? $category->name : "Tất cả")
 
-@push('child-styles')
+@push('styles')
     <style>
         .title-news h2 {
             text-align: center;
@@ -247,7 +247,7 @@
     </style>
 @endpush
 
-@section('content-page')
+@section('content')
 
 
 @switch($category != null ? $category->slug : "")
@@ -384,7 +384,7 @@
     </div> --}}
 @endsection
 
-@push('child-scripts')
+@push('scripts')
     <script>
         let currentForumIndex = {};
 

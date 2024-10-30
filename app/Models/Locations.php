@@ -10,13 +10,25 @@ class Locations extends Model
     use HasFactory;
 
     protected $fillable = [
+        'business_id',
+        'business_field_id', //lấy data từ bảng business_fields dùng để lấy ngành nghề kinh doanh
         'name',
         'address_address',
         'address_latitude',
         'address_longitude',
+        'description',
+        'image',
+        'status',
     ];
-    public function businessPromotionalIntroductions()
+    
+    public function businessField()
     {
-        return $this->belongsTo(BusinessPromotionalIntroduction::class, 'business_code_id', 'business_code'); 
+        return $this->belongsTo(BusinessField::class, 'business_field_id');
     }
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class, 'business_id');
+    }
+
 }
