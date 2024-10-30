@@ -1,7 +1,7 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', 'Đăng ký Khởi nghiệp, Xúc tiến thương mại – Kêu gọi đầu tư')
 
-@push('child-styles')
+@push('styles')
     <style>
         .upload-container {
             display: flex;
@@ -191,11 +191,11 @@
 @endpush
 
 
-@section('content-page')
+@section('content')
     <section id="start-promotion">
         <div class="container my-4">
             <div class="row">
-                @include('pages.notification.success-error')
+                
                 <form action="{{ route('form.start.promotion.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
@@ -366,5 +366,5 @@
     </section>
 @endsection
 
-@push('child-scripts')
+@push('scripts')
 @endpush

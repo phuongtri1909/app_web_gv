@@ -1,7 +1,7 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', $blog->name)
 
-@push('child-styles')
+@push('styles')
     <style>
     .tabs-container {
         max-width: 100%;
@@ -122,7 +122,7 @@
     </style>
 @endpush
 
-@section('content-page')
+@section('content')
 
     @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký nhu cầu', 'buttonLink' => route('show.form.capital.need',$blog->slug)])
     <section id="blog-detail">
@@ -164,7 +164,7 @@
     </section>
 @endsection
 
-@push('child-scripts')
+@push('scripts')
     <script>
        document.querySelectorAll('.tab-button').forEach(button => {
         button.addEventListener('click', () => {

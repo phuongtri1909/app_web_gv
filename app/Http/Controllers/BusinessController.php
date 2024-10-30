@@ -3,20 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Business;
-use App\Models\BusinessCapitalNeed;
-use App\Models\BusinessFeedback;
-use App\Models\BusinessField;
-use App\Models\BusinessPromotionalIntroduction;
-use App\Models\BusinessStartPromotionInvestment;
-use App\Models\BusinessSupportNeed;
-use App\Models\CategoryBusiness;
-use App\Models\CategoryProductBusiness;
-use App\Models\ProductBusiness;
-use App\Models\SupplyDemandConnection;
+use App\Models\Locations;
 use App\Models\WardGovap;
 use Illuminate\Http\Request;
+use App\Models\BusinessField;
+use App\Models\LocationProduct;
+use App\Models\ProductBusiness;
+use App\Models\BusinessFeedback;
+use App\Models\CategoryBusiness;
 use Illuminate\Support\Facades\DB;
+use App\Models\BusinessCapitalNeed;
+use App\Models\BusinessSupportNeed;
+use App\Models\SupplyDemandConnection;
+use App\Models\CategoryProductBusiness;
+use App\Models\BusinessPromotionalIntroduction;
 use Illuminate\Validation\ValidationException ;
+use App\Models\BusinessStartPromotionInvestment;
 
 class BusinessController extends Controller
 {
@@ -60,7 +62,7 @@ class BusinessController extends Controller
             'ward_id' => 'required|integer|exists:ward_govap,id',
             'business_name' => 'required|string|max:255',
             'business_license' => 'nullable|mimes:pdf',
-            'business_code' => 'required|regex:/^\d{10,13}$/|unique:businesses,business_code', 
+            'business_code' => 'required|regex:/^\d{10}(-\d{3})?$/|unique:businesses,business_code', 
             'email' => 'nullable|email|max:255|',
             'social_channel' => 'nullable|url|max:255',
             'description' => 'nullable|string|max:1000',
@@ -324,7 +326,7 @@ class BusinessController extends Controller
                 'residential_address' => 'required|string|max:255',
                 'business_address' => 'required|string|max:255',
                 'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
-                'business_code' => 'required|regex:/^\d{10,13}$/',
+                'business_code' => 'required|regex:/^\d{10}(-\d{3})?$/',
                 'business_name' => 'required|string|max:255',
                 'business_field' => 'required|string',
                 'email' => 'required|email|max:255',
@@ -358,7 +360,7 @@ class BusinessController extends Controller
                 'business_name.required' => 'Vui lòng nhập tên doanh nghiệp/hộ kinh doanh.',
                 'business_name.max' => 'Tên doanh nghiệp/hộ kinh doanh không được vượt quá 255 ký tự.',
                 'business_code.required' => 'Vui lòng nhập mã số thuế.',
-                'business_code.regex' => 'Mã số doanh nghiệp/Mã số thuế không được ít hơn 10 và nhiều hơn 13 số.',
+                'business_code.regex' => 'Mã số thuế phải gồm 10 chữ số hoặc 13 chữ số với định dạng 10-3.',
                 'email.required' => 'Vui lòng nhập email.',
                 'email.email' => 'Email không hợp lệ.',
                 'fanpage.url' => 'Đường dẫn fanpage không hợp lệ.',
@@ -418,8 +420,11 @@ class BusinessController extends Controller
         $business_fields = BusinessField::all();
         return view('pages.client.gv.form-promotional-introduction',compact('business_fields'));
     }
+    
     public function storeFormPromotional(Request $request)
     {
+        //dd($request->all());
+        //return redirect()->back()->with('success', 'Đăng ký thành công!');
         DB::beginTransaction();
         $data = [];
         try {
@@ -431,15 +436,20 @@ class BusinessController extends Controller
                 'address' => 'required|string|max:255',
                 'business_address' => 'required|string|max:255',
                 'business_name' => 'required|string|max:255',
-                'license' => 'required|file|mimes:pdf|max:4048',
-                'business_code' => 'required|regex:/^\d{10,13}$/',
-                'business_field' => 'required|string',
-                'email' => 'required|email|max:255',
+                'license' => 'nullable|file|mimes:pdf|max:10240',
+                'business_code' => 'required|regex:/^\d{10}(-\d{3})?$/',
+                'business_field' => 'required|exists:business_fields,id',
+                'email' => 'nullable|email|max:255',
                 'social_channel' => 'nullable|url',
-                'logo' => 'required|image|max:2048',
-                'product_image.*' => 'image|max:2048',
-                'product_image' => 'array|max:5',
+                'logo' => 'required|image|max:10240|mimes:jpg,png,jpeg,gif',
+                'product_image.*' => 'image|max:10240|mimes:jpg,png,jpeg,gif',
+                'product_image' => 'array',
                 'product_video' => 'nullable|file|mimes:mp4,mov,avi|max:20480',
+                'description' => 'nullable|string',
+                'name' => 'required|string|max:255',
+                'address_address' => 'required|string|max:255',
+                'address_latitude' => 'required|numeric|between:-90,90',
+                'address_longitude' => 'required|numeric|between:-180,180',
             ], [
                 'representative_name.required' => 'Vui lòng nhập họ tên chủ doanh nghiệp.',
                 'birth_year.required' => 'Năm sinh là bắt buộc.',
@@ -454,58 +464,139 @@ class BusinessController extends Controller
                 'business_address.required' => 'Vui lòng nhập địa chỉ kinh doanh.',
                 'business_name.required' => 'Vui lòng nhập tên doanh nghiệp/hộ kinh doanh.',
                 'business_code.required' => 'Vui lòng nhập mã số thuế.',
-                'business_code.regex' => 'Mã số doanh nghiệp/Mã số thuế không được ít hơn 10 và nhiều hơn 13 số.',
-                'email.required' => 'Vui lòng nhập email doanh nghiệp.',
+                'business_code.regex' => 'Mã số thuế phải gồm 10 chữ số hoặc 13 chữ số với định dạng 10-3.',
                 'email.email' => 'Email không hợp lệ.',
                 'social_channel.url' => 'Đường dẫn fanpage không hợp lệ.',
                 'logo.required' => 'Vui lòng tải logo doanh nghiệp.',
                 'logo.image' => 'Logo phải là một hình ảnh.',
                 'logo.mimes' => 'Logo phải có định dạng jpg, png, jpeg, hoặc gif.',
-                'logo.max' => 'Logo không được vượt quá 2MB.',
-                'product_image.image' => 'Hình ảnh sản phẩm phải là một hình ảnh.',
-                'product_image.mimes' => 'Hình ảnh sản phẩm phải có định dạng jpg, png, jpeg, hoặc gif.',
-                'product_image.max' => 'Hình ảnh sản phẩm không được vượt quá 2MB.',
+                'logo.max' => 'Logo không được vượt quá 10MB.',
+                'product_image.required' => 'Vui lòng tải lên ít nhất một hình ảnh sản phẩm.',
+                'product_image.array' => 'Hình ảnh sản phẩm phải là một mảng.',
+                'product_image.*.image' => 'Hình ảnh sản phẩm phải là một hình ảnh.',
+                'product_image.*.mimes' => 'Hình ảnh sản phẩm phải có định dạng jpg, png, jpeg, hoặc gif.',
+                'product_image.*.max' => 'Hình ảnh sản phẩm không vượt quá 10MB.',
                 'product_video.file' => 'Video phải là một tệp.',
                 'product_video.mimes' => 'Video phải có định dạng mp4, mov, hoặc avi.',
                 'product_video.max' => 'Video không được vượt quá 20MB.',
                 'business_field.required' => 'Vui lòng chọn ngành nghề kinh doanh.',
+                'business_field.exists' => 'Ngành nghề kinh doanh không hợp lệ.',
                 'license.required' => 'Vui lòng tải lên giấy phép kinh doanh.',
                 'license.file' => 'Giấy phép kinh doanh phải là một tệp.',
                 'license.mimes' => 'Giấy phép kinh doanh phải có định dạng pdf.',
-                'license.max' => 'Giấy phép kinh doanh không được vượt quá 4MB.',
+                'license.max' => 'Giấy phép kinh doanh không được vượt quá 10MB.',
+                'name.required' => 'Vui lòng chọn vị trí để lấy tên địa điểm.',
+                'name.max' => 'Tên địa điểm không được vượt quá 255 ký tự.',
+                'address_address.required' => 'Vui lòng chọn vị trí để lấy địa chỉ.',
+                'address_address.max' => 'Địa chỉ không được vượt quá 255 ký tự.',
+                'address_latitude.required' => 'Vui lòng chọn vị trí để lấy vĩ độ.',
+                'address_latitude.numeric' => 'Vĩ độ phải là một số.',
+                'address_latitude.between' => 'Vĩ độ phải nằm trong khoảng -90 đến 90.',
+                'address_longitude.required' => 'Vui lòng chọn vị trí để lấy kinh độ.',
+                'address_longitude.numeric' => 'Kinh độ phải là một số.',
+                'address_longitude.between' => 'Kinh độ phải nằm trong khoảng -180 đến 180.',
             ]);
 
-            $business = new BusinessPromotionalIntroduction();
-            $business->fill($request->only([
-                'representative_name', 'birth_year', 'gender', 'phone_number',
-                'address', 'business_address', 'business_name',
-                'business_code', 'email', 'social_channel'
-            ]));
-            $this->handleFileUpload($request, 'logo', $data, '_logo_','business');
-            $this->handleFileUpload($request, 'product_image', $data, '_product_','business');
-            $this->handleFileUpload($request, 'product_video', $data, '_video_','business');
-            $this->handleFileUpload($request, 'license', $data, '_license_','business');
+            $business = Business::where('business_code', $request->business_code)->first();
+            if(!$business){
+                $business = new Business();
+                $business->representative_name = $request->representative_name;
+                $business->birth_year = $request->birth_year;
+                $business->gender = $request->gender;
+                $business->phone_number = $request->phone_number;
+                $business->address = $request->address;
+                $business->business_address = $request->business_address;
+                $business->business_name = $request->business_name;
+    
+                $this->handleFileUpload($request, 'license', $data, '_license_', 'business');
+                $business->business_license = $data['license'];
+    
+                $business->business_fields = $request->business_field;
+                $business->business_code = $request->business_code;
+                $business->email = $request->email;
+                $business->social_channel = $request->social_channel;
+                $business->description = $request->description;
+                $business->status = 'other';
+                $business->save();
+            }else{
+                if ($business->status === 'other') {
+                    $business->representative_name = $request->representative_name;
+                    $business->birth_year = $request->birth_year;
+                    $business->gender = $request->gender;
+                    $business->phone_number = $request->phone_number;
+                    $business->address = $request->address;
+                    $business->business_address = $request->business_address;
+                    $business->business_name = $request->business_name;
+        
+                    $this->handleFileUpload($request, 'license', $data, '_license_', 'business');
+                    $business->business_license = $data['license'];
+        
+                    $business->business_fields = $request->business_field;
+                    $business->business_code = $request->business_code;
+                    $business->email = $request->email;
+                    $business->social_channel = $request->social_channel;
+                    $business->description = $request->description;
+                    $business->save();
+                }
+            }
 
-            $business->logo = $data['logo'];
-            $business->product_image = $data['product_image'];
-            $business->product_video = $data['product_video'];
-            $business->license = $data['license'];
-            $business->save();
+            $location = new Locations();
+            $location->name = $request->name;
+            $location->address_address = $request->address_address;
+            $location->address_latitude = $request->address_latitude;
+            $location->address_longitude = $request->address_longitude;
+            $location->business_id = $business->id;
+            $location->business_field_id = $request->business_field;
+            $location->description = $request->description;
 
-            if ($request->business_field) {
-                $businessField = BusinessField::where('name', $request->business_field)->first();
-                if ($businessField) {
-                    $business->businessField()->attach($businessField->id);
+            $this->handleFileUpload($request, 'logo', $data, '_logo_', 'business');
+            $location->image = $data['logo'];
+            $location->save();
+
+            if ($request->hasFile('product_image')) {
+                $images = $request->file('product_image');
+                $folderName = date('Y/m');
+                $uploadedImages = [];
+                foreach ($images as $image) {
+                    if ($image->isValid()) {
+                        $originalFileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                        $extension = $image->getClientOriginalExtension();
+                        $fileName = $originalFileName . '_' . time() . '.' . $extension;
+                        $image->move(public_path('/uploads/images/product_location/' . $folderName), $fileName);
+                        $uploadedImages[] = 'uploads/images/product_location/' . $folderName . '/' . $fileName;
+            
+                        // Tạo đối tượng LocationProduct cho mỗi hình ảnh
+                        $locationProduct = new LocationProduct();
+                        $locationProduct->location_id = $location->id;
+                        $locationProduct->file_path = 'uploads/images/product_location/' . $folderName . '/' . $fileName;
+                        $locationProduct->media_type = 'image';
+                        $locationProduct->save();
+                    }
+                }
+                if (!empty($uploadedImages)) {
+                    $data['product_image'] = count($uploadedImages) > 1 ? json_encode($uploadedImages) : $uploadedImages[0];
                 }
             }
             
+            // Xử lý video
+            $this->handleFileUpload($request, 'product_video', $data, '_video_', 'business');
+            
+            if (isset($data['product_video'])) {
+                $locationProduct = new LocationProduct();
+                $locationProduct->location_id = $location->id;
+                $locationProduct->file_path = $data['product_video'];
+                $locationProduct->media_type = 'video';
+                $locationProduct->save();
+            }
+            
+
+            
+
             DB::commit();
-            return redirect()->back()->with('success', 'Đăng ký thành công!');
+            return redirect()->back()->with('success', 'Đăng ký địa điểm thành công!');
 
         } catch (\Exception $e) {
             DB::rollBack();
-
-            $this->cleanupUploadedFiles($data);
 
             return redirect()->back()->withInput()->with('error', 'Gửi thất bại: ' . $e->getMessage());
         }

@@ -1,6 +1,6 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', 'Đăng ký nhu cầu vốn')
-@push('child-styles')
+@push('styles')
     <style>
         .upload-container {
             display: flex;
@@ -190,11 +190,11 @@
 @endpush
 
 
-@section('content-page')
+@section('content')
     <section id="registering-capital">
         <div class="container my-4">
             <div class="row">
-                @include('pages.notification.success-error')
+                
                 <form action="{{ route('show.form.capital.need.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @if (isset($slug))
@@ -464,5 +464,5 @@
     </section>
 @endsection
 
-@push('child-scripts')
+@push('scripts')
 @endpush

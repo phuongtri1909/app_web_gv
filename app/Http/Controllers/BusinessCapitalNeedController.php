@@ -157,7 +157,7 @@ class BusinessCapitalNeedController extends Controller
                 'business_address' => 'required|string|max:255',
                 'category_business_id' => 'required|exists:category_business,id',
                 'business_name' => 'required|string|max:255',
-                'business_code' => 'required|regex:/^\d{10,13}$/',
+                'business_code' => 'required|regex:/^\d{10}(-\d{3})?$/',
                 'email' => 'nullable|email|max:255',
                 'interest_rate' => 'required|numeric|min:0',
                 'finance' => 'required|numeric|min:0',

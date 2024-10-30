@@ -32,7 +32,9 @@ return new class extends Migration
             $table->unsignedBigInteger('ward_id')->nullable(false)->change();
             $table->string('address')->nullable(false)->change();
             $table->string('avt_businesses')->nullable(false)->change();
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending')->change();
+    
+            $table->enum('status', ['pending', 'approved', 'rejected', 'other'])->default('pending')->change();
+    
             $table->dropForeign(['business_fields']);
             $table->dropColumn('business_fields');
         });

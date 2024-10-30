@@ -62,4 +62,9 @@ class Business extends Model
     {
         return $this->hasMany(BusinessCapitalNeed::class);
     }
+
+    public function locations()
+    {
+        return $this->hasMany(Locations::class);
+    }
 }

@@ -1,4 +1,4 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', 'Đăng ký tìm việc')
 @push('styles')
     <style>
@@ -54,7 +54,7 @@
     <section id="form-job-application" class="form-job-application mt-5rem">
         <div class="container">
             <div class="row">
-                @include('pages.notification.success-error')
+                
                 <form action="{{ route('job.application.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">

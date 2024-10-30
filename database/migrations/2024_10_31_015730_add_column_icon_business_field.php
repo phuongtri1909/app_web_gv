@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tabs_detail_posts', function (Blueprint $table) {
-            $table->string('name')->change();
+        Schema::table('business_fields', function (Blueprint $table) {
+            $table->string('icon')->nullable()->after('name');
         });
     }
 
@@ -21,9 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tabs_detail_posts', function (Blueprint $table) {
-            $table->json('name')->change();
-            
+        Schema::table('business_fields', function (Blueprint $table) {
+            $table->dropColumn('icon');
         });
     }
 };

@@ -63,7 +63,7 @@ public function show($id)
     {
         $validated = $request->validate([
             'business_name' => 'required|string|max:255',
-            'business_code' => 'required|regex:/^\d{10,13}$/',
+            'business_code' => 'required|regex:/^\d{10}(-\d{3})?$/',
             'category_business_id' => 'required|exists:category_business,id',
             'head_office_address' => 'required|string|max:255',
             'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
@@ -75,7 +75,7 @@ public function show($id)
         ], [
             'business_name.required' => 'Tên doanh nghiệp là bắt buộc.',
             'business_code.required' => 'Mã số doanh nghiệp/Mã số thuế là bắt buộc.',
-            'business_code.regex' => 'Mã số doanh nghiệp/Mã số thuế không được ít hơn 10 và nhiều hơn 13 số.',
+            'business_code.regex' => 'Mã số thuế phải gồm 10 chữ số hoặc 13 chữ số với định dạng 10-3.',
             'category_business_id.required' => 'Loại hình doanh nghiệp là bắt buộc.',
             'category_business_id.exists' => 'Loại hình doanh nghiệp không hợp lệ.',
             'head_office_address.required' => 'Địa chỉ trụ sở chính là bắt buộc.',

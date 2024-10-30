@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('locations', function (Blueprint $table) {
-            $table->dropForeign(['business_code_id']);
             DB::statement('ALTER TABLE locations CHANGE business_code_id business_id BIGINT UNSIGNED');
             $table->foreign('business_id')
                   ->references('id')

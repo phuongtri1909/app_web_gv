@@ -1,7 +1,7 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', 'Đăng ký kết nối ngân hàng')
 
-@push('child-styles')
+@push('styles')
     <style>
         .form-container {
             /* background-color: white; */
@@ -104,7 +104,7 @@
     </style>
 @endpush
 
-@section('content-page')
+@section('content')
     <section id="form-customer">
         {{-- <div class="banner">
             <img src="{{asset('images/Vayvonkinhdoanh.jpg')}}" alt="Banner Image">
@@ -112,7 +112,7 @@
         {{-- <div class="container my-5">
             <div class="row">
                 <div class="form-container">
-                    @include('pages.notification.success-error')
+                    
                     <form id="myForm" action="{{ route('store.form') }}" method="POST">
                         @csrf
                         @if (isset($slug))
@@ -239,7 +239,7 @@
         </div> --}}
     </section>
 @endsection
-@push('child-scripts')
+@push('scripts')
 <script>
     function toggleOtherInput() {
         const otherInput = document.getElementById('otherInput');

@@ -1,4 +1,4 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', 'Đăng ký tuyển dụng')
 @push('styles')
     <style>
@@ -50,7 +50,7 @@
     <section id="form-business" class="form-business mt-5rem">
         <div class="container">
             <div class="row">
-                @include('pages.notification.success-error')
+                
                 <form action="{{route('recruitment.registration.store')}}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">

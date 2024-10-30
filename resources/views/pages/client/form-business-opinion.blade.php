@@ -1,4 +1,4 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', 'Ý kiên doanh nghiệp')
 @section('description', 'Ý kiên doanh nghiệp')
 @push('styles')
@@ -53,7 +53,7 @@
     <section id="form-business-opinion" class="form-business-opinion mt-5rem">
         <div class="container">
             <div class="row">
-                @include('pages.notification.success-error')
+                
                 <form id="business-opinion"action="{{route('business.opinion.store')}}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">

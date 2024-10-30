@@ -1,11 +1,11 @@
-@extends('pages.layouts.page')
+@extends('layouts.app')
 @section('title', $blog->title)
 @section('description', $blog->content)
 @section('keyword', implode(', ', $blog->tags->pluck('name')->toArray()))
 @section('title-page', __('news'))
 
 
-@push('child-styles')
+@push('styles')
     <style>
         .post-detail-container {
             margin: 30px auto;
@@ -154,7 +154,7 @@
     </style>
 @endpush
 
-@section('content-page')
+@section('content')
     <section id="blog-detail">
         <div class="container">
             <div class="row">
@@ -207,5 +207,5 @@
     </section>
 @endsection
 
-@push('child-scripts')
+@push('scripts')
 @endpush

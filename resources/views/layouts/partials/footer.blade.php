@@ -105,7 +105,16 @@
     <script src="{{ asset('js/animation.js') }}" ></script>
 
     
-
+    <script>
+        
+        $(document).ready(function() {
+            @if (session('success'))
+                showToast('{{ session('success') }}', 'success');
+            @elseif (session('error'))
+                showToast('{{ session('error') }}', 'error');
+            @endif
+        });
+    </script>
     @stack('scripts')
 </body>
 </html>
