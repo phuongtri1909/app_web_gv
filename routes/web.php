@@ -106,9 +106,6 @@ Route::middleware(['language'])->group(function () {
         Route::post('/form-business', [BusinessController::class, 'store'])->name('business.store'); //form đăng ký doanh nghiệp
         Route::get('/form-business', [BusinessController::class, 'index'])->name('business.index');
 
-        Route::get('/form-customer/{slug?}', [CustomerInterestController::class, 'showForm'])->name('show.form');
-        Route::post('/form-customer', [CustomerInterestController::class, 'storeForm'])->name('store.form');
-
         Route::get('/home-bank/{slug}', [FinancialSupportController::class, 'showFinancial'])->name('show.financical');
         Route::get('/home-bank', [BanksController::class, 'showHomeBank'])->name('show.home.bank');
 

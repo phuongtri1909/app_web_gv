@@ -198,7 +198,7 @@
                 <form action="{{ route('show.form.capital.need.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @if (isset($slug))
-                        <input type="hidden" id="slug" name="slug" value="{{ $slug}}">
+                        <input type="hidden" id="slug" name="slug" value="{{ $slug }}">
                     @endif
                     <div class="row">
                         <div class="col-md-4 mb-4">
@@ -228,7 +228,8 @@
                         <div class="col-md-4 mb-4">
                             <label for="category_business_id" class="form-label">Loại hình doanh nghiệp <span
                                     class="text-danger">*</span></label>
-                            <select class="form-select form-control form-select-sm" id="category_business_id" name="category_business_id">
+                            <select class="form-select form-control form-select-sm" id="category_business_id"
+                                name="category_business_id">
                                 @foreach ($category_business as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
@@ -295,19 +296,25 @@
                             <label class="form-label">Giới tính:<span class="text-danger">*</span></label>
                             <div class="d-flex align-items-center">
                                 <div class="form-check me-3">
-                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderMale" value="male" {{ old('gender') == 'male' ? 'checked' : '' }} required>
+                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio"
+                                        name="gender" id="genderMale" value="male"
+                                        {{ old('gender') == 'male' ? 'checked' : '' }} required>
                                     <label class="form-check-label" for="genderMale">
                                         Nam
                                     </label>
                                 </div>
                                 <div class="form-check me-3">
-                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderFemale" value="female" {{ old('gender') == 'female' ? 'checked' : '' }} required>
+                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio"
+                                        name="gender" id="genderFemale" value="female"
+                                        {{ old('gender') == 'female' ? 'checked' : '' }} required>
                                     <label class="form-check-label" for="genderFemale">
                                         Nữ
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderOther" value="other" {{ old('gender') == 'other' ? 'checked' : '' }} required>
+                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio"
+                                        name="gender" id="genderOther" value="other"
+                                        {{ old('gender') == 'other' ? 'checked' : '' }} required>
                                     <label class="form-check-label" for="genderOther">
                                         Khác
                                     </label>
@@ -333,7 +340,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="col-md-4 mb-3">
                             <label for="finance">Tài chính:<span class="text-danger">*</span></label>
                             <input type="number" 
@@ -346,7 +353,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="col-md-4 mb-3">
                             <label for="mortgage_policy">Chính sách vay thế chấp:<span class="text-danger">*</span></label>
                             <input type="text" 
@@ -359,7 +366,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="col-md-4 mb-3">
                             <label for="unsecured_policy">Tín chấp:<span class="text-danger">*</span></label>
                             <input type="text" 
@@ -372,7 +379,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="col-md-4 mb-3">
                             <label for="purpose">Mục đích:<span class="text-danger">*</span></label>
                             <input type="text" 
@@ -385,7 +392,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="col-md-4 mb-3">
                             <label for="bank_connection">Kết nối ngân hàng:<span class="text-danger">*</span></label>
                             <input type="text" 
@@ -398,15 +405,11 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                    
+
                         <div class="col-md-12 mb-3">
                             <label for="feedback">Phản ánh về việc giải quyết của ngân hàng:</label>
-                            <textarea 
-                                class="form-control form-control-sm @error('feedback') is-invalid @enderror" 
-                                id="feedback" 
-                                name="feedback" 
-                                rows="3"
-                                placeholder="{{ __('Nhập phản hồi của bạn') }}">{{ old('feedback') }}</textarea>
+                            <textarea class="form-control form-control-sm @error('feedback') is-invalid @enderror" id="feedback"
+                                name="feedback" rows="3" placeholder="{{ __('Nhập phản hồi của bạn') }}">{{ old('feedback') }}</textarea>
                             @error('feedback')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -415,6 +418,45 @@
 
                     <div class="text-end my-3">
                         <button type="submit" class="btn btn-success">Đăng ký</button>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <div class="border border-custom rounded mb-3">
+                            <div class="bg-business rounded-top py-2 px-3 mb-3">
+                                <h5 class="mb-0 fw-bold text-dark">NCB Cộng Hòa</h5>
+                            </div>
+                            <div class="px-3">
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2 mb-0">Địa chỉ:</p>
+                                    <p class="mb-0">18H Cộng Hòa, Phường 4, Quận Tân Bình, Thành phố Hồ Chí Minh</p>
+                                </div>
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2 mb-0">Số Fax:</p>
+                                    <p class="mb-0">(08)38125351</p>
+                                </div>
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2 mb-0">GĐ chi nhánh:</p>
+                                    <p class="mb-0">Trịnh Minh Châu</p>
+                                </div>
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2 mb-0">Số điện thoại:</p>
+                                    <p class="mb-0">0987.338339 - 0786.338339</p>
+                                </div>
+                                <hr>
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2 mb-0">Họ và tên:</p>
+                                    <p class="mb-0">Dương Văn Thịnh</p>
+                                </div>
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2 mb-0">Số điện thoại:</p>
+                                    <p class="mb-0">0901967068</p>
+                                </div>
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2 mb-0">Email:</p>
+                                    <p class="mb-0">thinhdv1@ncb-bank.vn</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>

@@ -27,7 +27,7 @@ class MemberBusinessController extends Controller
         $data = [];
 
         $request->validate([
-            'avt_businesses' => 'required|image|mimes:jpeg,png,jpg,gif|max:5048',
+            'avt_businesses' => 'required|image|mimes:jpeg,png,jpg,gif',
             'representative_name' => 'required|string|max:255',
             'birth_year' => 'required|digits:4|integer|min:1500|max:' . date('Y'),
             'gender' => 'required|string',
@@ -36,17 +36,24 @@ class MemberBusinessController extends Controller
             'business_address' => 'required|string|max:255',
             'ward_id' => 'required|integer|exists:ward_govap,id',
             'business_name' => 'required|string|max:255',
-            'business_license' => 'nullable|mimes:pdf|max:3048',
+            'business_license' => 'nullable|mimes:pdf',
             'business_code' => 'required|regex:/^\d{10,13}$/',
             'email' => 'required|email|max:255',
             'social_channel' => 'nullable|url|max:255',
             'description' => 'nullable|string|max:1000',
             'business_fields' => 'required|exists:business_fields,id',
+            'identity_card' =>  'required|string|max:12|regex:/^[0-9]+$/',
+            'identity_card_issue_date' => 'required|date',
+            'home_address' => 'required|string|max:255',
+            'contact_phone' =>  'required|string|max:10|regex:/^[0-9]+$/',
+            'representative_email' => 'required|email|max:255',
+            'business_license_file' => 'required|file|mimes:jpg,jpeg,png,pdf,doc,docx',
+            'identity_card_front_file' => 'required|image',
+            'identity_card_back_file' => 'required|image',
         ], [
             'avt_businesses.required' => 'Ảnh đại diện doanh nghiệp là bắt buộc.',
             'avt_businesses.image' => 'Ảnh đại diện phải là một file hình ảnh.',
             'avt_businesses.mimes' => 'Ảnh đại diện phải có định dạng jpg, jpeg, png hoặc gif.',
-            'avt_businesses.max' => 'Ảnh đại diện không được vượt quá 5MB.',
             
             'representative_name.required' => 'Tên người đại diện pháp luật là bắt buộc.',
             
@@ -73,7 +80,6 @@ class MemberBusinessController extends Controller
             'business_name.required' => 'Tên doanh nghiệp là bắt buộc.',
             
             'business_license.mimes' => 'Giấy phép kinh doanh phải là file dạng pdf.',
-            'business_license.max' => 'Giấy phép kinh doanh không được vượt quá 3MB.',
             
             'business_code.required' => 'Mã doanh nghiệp là bắt buộc.',
             'business_code.regex' => 'Mã doanh nghiệp phải có từ 10 đến 13 chữ số.',
@@ -89,7 +95,26 @@ class MemberBusinessController extends Controller
             
             'business_fields.required' => 'Vui lòng chọn ít nhất một lĩnh vực kinh doanh.',
             'business_fields.exists' => 'Lĩnh vực kinh doanh không hợp lệ.',
+            
+            'identity_card.required' => 'CCCD là bắt buộc.',
+            'identity_card.max' => 'CCCD không được vượt quá 12 ký tự.',
+            'identity_card.regex' => 'CCCD chỉ chứa số.',
+            
+            'identity_card_issue_date.required' => 'Ngày cấp CCCD là bắt buộc.',
+            
+            'home_address.required' => 'Địa chỉ nhà là bắt buộc.',
+            
+            'contact_phone.required' => 'Số điện thoại liên hệ là bắt buộc.',
+            'contact_phone.max' => 'Số điện thoại liên hệ không được vượt quá 10 chữ số.',
+            'contact_phone.regex' => 'Số điện thoại liên hệ chỉ chứa số.',
+            
+            'representative_email.required' => 'Email của người đại diện là bắt buộc.',
+            
+            'business_license_file.required' => 'File giấy phép kinh doanh là bắt buộc.',
+            'identity_card_front_file.required' => 'File mặt trước chứng minh thư là bắt buộc.',
+            'identity_card_back_file.required' => 'File mặt sau chứng minh thư là bắt buộc.',
         ]);
+        
         
         
         $businesMember = new BusinessMember();

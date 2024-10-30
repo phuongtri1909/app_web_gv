@@ -124,7 +124,7 @@
 
 @section('content-page')
 
-    @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký nhu cầu', 'buttonLink' => route('show.form',$blog->id)])
+    @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký nhu cầu', 'buttonLink' => route('show.form.capital.need',$blog->slug)])
     <section id="blog-detail">
         <div class="banner">
             <img src="{{ $blog && !empty($blog->banner) ? asset($blog->banner) : asset('images/Vayvonkinhdoanh.jpg') }}" alt="Banner Image">
