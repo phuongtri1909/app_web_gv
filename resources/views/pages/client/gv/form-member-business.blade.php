@@ -153,12 +153,12 @@
         <div class="container my-4">
             <div class="row">
                 @include('pages.notification.success-error')
-                <form action="{{ route('form.member.business.store') }}" method="POST" enctype="multipart/form-data">
+                <form id="business-member" action="{{ route('form.member.business.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     {{-- <h3 class="text-center title-member-business">Đăng ký gia nhập hội doanh nghiệp quận gò vấp</h3> --}}
                     <div class="mb-3">
                         <label for="business_name" class="form-label">Tên doanh nghiệp:<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control form-control-sm" id="business_name" name="business_name" value="{{ old('business_name') }}" placeholder="Nhập tên doanh nghiệp">
+                        <input type="text" class="form-control form-control-sm" id="business_name" name="business_name" value="{{ old('business_name') }}" placeholder="Nhập tên doanh nghiệp" required>
                         @error('business_name')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -166,7 +166,7 @@
 
                     <div class="mb-3">
                         <label for="business_license_number" class="form-label">Giấy chứng nhận ĐKKD số:<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control form-control-sm" id="business_license_number" name="business_license_number" value="{{ old('business_license_number') }}" placeholder="Nhập số ĐKKD">
+                        <input type="text" class="form-control form-control-sm" id="business_license_number" name="business_license_number" value="{{ old('business_license_number') }}" placeholder="Nhập số ĐKKD" required>
                         @error('business_license_number')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -175,14 +175,14 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="license_issue_date" class="form-label">Ngày cấp:<span class="text-danger">*</span></label>
-                            <input type="date" class="form-control form-control-sm" id="license_issue_date" name="license_issue_date" value="{{ old('license_issue_date') }}">
+                            <input type="date" class="form-control form-control-sm" id="license_issue_date" name="license_issue_date" value="{{ old('license_issue_date') }}" required>
                             @error('license_issue_date')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="license_issue_place" class="form-label">Nơi cấp:<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm" id="license_issue_place" name="license_issue_place" value="{{ old('license_issue_place') }}" placeholder="Nhập nơi cấp">
+                            <input type="text" class="form-control form-control-sm" id="license_issue_place" name="license_issue_place" value="{{ old('license_issue_place') }}" placeholder="Nhập nơi cấp" required>
                             @error('license_issue_place')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -191,7 +191,7 @@
 
                     <div class="mb-3">
                         <label for="business_field" class="form-label">Lĩnh vực hoạt động:<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control form-control-sm" id="business_field" name="business_field" value="{{ old('business_field') }}" placeholder="Ngành nghề đang kinh doanh">
+                        <input type="text" class="form-control form-control-sm" id="business_field" name="business_field" value="{{ old('business_field') }}" placeholder="Ngành nghề đang kinh doanh" required>
                         @error('business_field')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -199,7 +199,7 @@
 
                     <div class="mb-3">
                         <label for="head_office_address" class="form-label">Địa chỉ trụ sở chính:<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control form-control-sm" id="head_office_address" name="head_office_address" value="{{ old('head_office_address') }}" placeholder="Nhập địa chỉ trụ sở chính">
+                        <input type="text" class="form-control form-control-sm" id="head_office_address" name="head_office_address" value="{{ old('head_office_address') }}" placeholder="Nhập địa chỉ trụ sở chính" required>
                         @error('head_office_address')
                         <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -208,7 +208,7 @@
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label for="phone" class="form-label">Điện thoại:<span class="text-danger">*</span></label>
-                            <input type="tel" class="form-control form-control-sm" id="phone" name="phone" value="{{ old('phone') }}" placeholder="Nhập số điện thoại">
+                            <input type="tel" class="form-control form-control-sm" id="phone" name="phone" value="{{ old('phone') }}" placeholder="Nhập số điện thoại" required>
                             @error('phone')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -239,7 +239,7 @@
                 
                     <div class="mb-3">
                         <label for="organization_participation" class="form-label">Đã tham gia tổ chức:<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control form-control-sm" id="organization_participation" name="organization_participation" value="{{ old('organization_participation') }}" placeholder="Nhập thông tin tổ chức">
+                        <input type="text" class="form-control form-control-sm" id="organization_participation" name="organization_participation" value="{{ old('organization_participation') }}" placeholder="Nhập thông tin tổ chức" required>
                         @error('organization_participation')
                         <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -249,7 +249,7 @@
 
                     <div class="mb-3">
                         <label for="representative_full_name" class="form-label">Họ và tên:<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control form-control-sm" id="representative_full_name" name="representative_full_name" value="{{ old('representative_full_name') }}" placeholder="Nhập họ và tên">
+                        <input type="text" class="form-control form-control-sm" id="representative_full_name" name="representative_full_name" value="{{ old('representative_full_name') }}" placeholder="Nhập họ và tên" required>
                         @error('representative_full_name')
                         <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -258,7 +258,7 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="representative_position" class="form-label">Chức vụ:<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm" id="representative_position" name="representative_position" value="{{ old('representative_position') }}" placeholder="Nhập chức vụ">
+                            <input type="text" class="form-control form-control-sm" id="representative_position" name="representative_position" value="{{ old('representative_position') }}" placeholder="Nhập chức vụ" required>
                             @error('representative_position')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -288,14 +288,14 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="identity_card" class="form-label">CCCD:<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm" id="identity_card" name="identity_card" value="{{ old('identity_card') }}" placeholder="Nhập số CCCD..">
+                            <input type="text" class="form-control form-control-sm" id="identity_card" name="identity_card" value="{{ old('identity_card') }}" placeholder="Nhập số CCCD.." required>
                             @error('identity_card')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="identity_card_issue_date" class="form-label">Ngày cấp:<span class="text-danger">*</span></label>
-                            <input type="date" class="form-control form-control-sm" id="identity_card_issue_date" name="identity_card_issue_date" value="{{ old('identity_card_issue_date') }}">
+                            <input type="date" class="form-control form-control-sm" id="identity_card_issue_date" name="identity_card_issue_date" value="{{ old('identity_card_issue_date') }}" required>
                             @error('identity_card_issue_date')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -305,7 +305,7 @@
                     <div class="mb-3">
                         <label for="home_address" class="form-label">Địa chỉ nhà riêng:<span class="text-danger">*</span></label>
                         <input type="text" class="form-control form-control-sm" id="home_address" name="home_address"
-                            placeholder="Nhập địa chỉ nhà riêng" value="{{ old('home_address') }}">
+                            placeholder="Nhập địa chỉ nhà riêng" value="{{ old('home_address') }}" required>
                             @error('home_address')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -315,7 +315,7 @@
                         <label for="contact_phone" class="form-label">Điện thoại (di động – cơ quan – nhà
                             riêng):<span class="text-danger">*</span></label>
                         <input type="tel" class="form-control form-control-sm" id="contact_phone" name="contact_phone"
-                            placeholder="Nhập số điện thoại liên hệ"  value="{{ old('contact_phone') }}" >
+                            placeholder="Nhập số điện thoại liên hệ"  value="{{ old('contact_phone') }}" required>
                             @error('contact_phone')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -324,7 +324,7 @@
                     <div class="mb-3">
                         <label for="representative_email" class="form-label">Email:<span class="text-danger">*</span></label>
                         <input type="email" class="form-control form-control-sm" id="representative_email" name="representative_email"
-                            placeholder="Nhập email người đại diện" value="{{ old('representative_email') }}">
+                            placeholder="Nhập email người đại diện" value="{{ old('representative_email') }}" >
                             @error('representative_email')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -334,7 +334,7 @@
                         <label for="business_license_file">Giấy CNĐKKD :<span class="text-danger">*</span></label>
                         <div class="input-group">
                             <input type="file" id="business_license_file" name="business_license_file" accept=".jpg,.jpeg,.png,application/pdf,.doc,.docx"
-                                value="{{ old('business_license_file') }}" style="display: none;" />
+                                value="{{ old('business_license_file') }}" style="display: none;" required >
                             <button type="button" class="btn btn-success @error('business_license_file') is-invalid @enderror" id="business_license_file-button">
                                 <i class="bi bi-upload"></i> Upload tệp
                             </button>
@@ -349,7 +349,7 @@
                     <div class="mb-3">
                         <label for="identity_card_front_file">CCCD:(mặt trước)<span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="file" id="identity_card_front_file" name="identity_card_front_file" accept="image/*" value="{{ old('identity_card_front_file') }}" style="display: none;" />
+                            <input type="file" id="identity_card_front_file" name="identity_card_front_file" accept="image/*" value="{{ old('identity_card_front_file') }}" style="display: none;" required >
                             <button type="button" class="btn btn-success @error('identity_card_front_file') is-invalid @enderror" id="identity_card_front_file-button">
                                 <i class="bi bi-upload"></i> CCCD mặt trước
                             </button>
@@ -364,7 +364,7 @@
                     <div class="mb-3">
                         <label for="identity_card_back_file">CCCD:(mặt sau)<span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="file" id="identity_card_back_file" name="identity_card_back_file" accept="image/*" value="{{ old('identity_card_back_file') }}" style="display: none;" />
+                            <input type="file" id="identity_card_back_file" name="identity_card_back_file" accept="image/*" value="{{ old('identity_card_back_file') }}" style="display: none;" required >
                             <button type="button" class="btn btn-success @error('identity_card_back_file') is-invalid @enderror" id="identity_card_back_file-button">
                                 <i class="bi bi-upload"></i> CCCD mặt sau
                             </button>
@@ -394,7 +394,6 @@
                         <button type="submit" class="btn btn-success">Đăng ký</button>
                     </div>
                 </form>
-
             </div>
         </div>
     </section>
@@ -500,5 +499,42 @@
             uploadList.appendChild(fileItem);
         }
 
+    </script>
+    <script>
+        // Khai báo biến để lưu thời gian bắt đầu
+        let startTime;
+    
+        // Bắt sự kiện gửi form
+        document.getElementById('business-member').addEventListener('submit', function(event) {
+            startTime = Date.now(); // Bắt đầu đo thời gian
+        });
+    
+        // Sử dụng Fetch API để xử lý yêu cầu và đo thời gian phản hồi
+        document.getElementById('business-member').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Ngăn chặn gửi form mặc định
+            const formData = new FormData(this);
+    
+            startTime = Date.now(); // Bắt đầu đo thời gian
+    
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    body: formData
+                });
+    
+                const endTime = Date.now(); // Kết thúc đo thời gian
+                const duration = endTime - startTime; // Tính thời gian gửi và nhận phản hồi
+    
+                if (response.ok) {
+                    console.log('Gửi form thành công!');
+                } else {
+                    console.log('Lỗi khi gửi form!');
+                }
+    
+                alert(`Thời gian xử lý: ${duration}ms`);
+            } catch (error) {
+                console.log('Có lỗi xảy ra:', error);
+            }
+        });
     </script>
 @endpush

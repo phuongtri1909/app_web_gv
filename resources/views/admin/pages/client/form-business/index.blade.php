@@ -83,9 +83,9 @@
                                         </span>
                                     </td>                                    
                                     <td class="text-center">
-                                        <a href="{{ route('businesses.edit', $business->id) }}" class="mx-3" title="{{ __('edit') }}">
+                                        {{-- <a href="{{ route('businesses.edit', $business->id) }}" class="mx-3" title="{{ __('edit') }}">
                                             <i class="fa-solid fa-pencil"></i>
-                                        </a>
+                                        </a> --}}
                                         @include('admin.pages.components.delete-form', [
                                             'id' => $business->id,
                                             'route' => route('businesses.destroy', $business->id),

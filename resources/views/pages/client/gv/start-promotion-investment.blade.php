@@ -205,7 +205,7 @@
                             <input type="text"
                                 class="form-control form-control-sm @error('representative_name') is-invalid @enderror"
                                 id="representative_name" name="representative_name" placeholder="Nhập họ tên "
-                                value="{{ old('representative_name') }}">
+                                value="{{ old('representative_name') }}" required>
                             @error('representative_name')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -213,7 +213,7 @@
                         <div class="col-md-4 mb-4">
                             <label for="birth_year" class="form-label ">Năm sinh:<span class="text-danger">*</span></label>
                             <input type="text" id="birth_year" name="birth_year" class="form-control form-control-sm @error('birth_year') is-invalid @enderror"
-                                required placeholder="Nhập năm sinh" value="{{old('birth_year')}}">
+                                required placeholder="Nhập năm sinh" value="{{old('birth_year')}}" required>
                             @error('birth_year')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -252,7 +252,7 @@
                             <input type="tel"
                                 class="form-control form-control-sm  @error('phone_number') is-invalid @enderror"
                                 id="phone_number" placeholder="Nhập số điện thoại" name="phone_number"
-                                value="{{ old('phone_number') }}">
+                                value="{{ old('phone_number') }}" required>
                             @error('phone_number')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -262,7 +262,7 @@
                                     class="text-danger">*</span></label>
                             <input type="text"
                                 class="form-control form-control-sm  @error('address') is-invalid @enderror" id="address"
-                                placeholder="Nhập địa chỉ" name="address" value="{{ old('address') }}">
+                                placeholder="Nhập địa chỉ" name="address" value="{{ old('address') }}" required>
                             @error('address')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -271,7 +271,7 @@
                             <label for="business_address" class="form-label">Địa chỉ kinh doanh:<span
                                     class="text-danger">*</span></label>
                             <input type="text" id="business_address" name="business_address"
-                                class="form-control form-control-sm  @error('business_address') is-invalid @enderror" placeholder="Nhập địa chỉ kinh doanh" value="{{old('business_address')}}">
+                                class="form-control form-control-sm  @error('business_address') is-invalid @enderror" placeholder="Nhập địa chỉ kinh doanh" value="{{old('business_address')}}" required>
                              @error('business_address')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -282,7 +282,7 @@
                             <label for="businessName" class="form-label @error('business_name') is-invalid @enderror">Tên
                                 doanh nghiệp/hộ kinh doanh: <span class="text-danger">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="businessName"
-                                name="business_name" placeholder="Nhập tên doanh nghiệp" value="{{ old('business_name') }}">
+                                name="business_name" placeholder="Nhập tên doanh nghiệp" value="{{ old('business_name') }}" required>
                             @error('business_name')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -304,7 +304,7 @@
                             <input type="text"
                                 class="form-control form-control-sm  @error('business_code') is-invalid @enderror"
                                 id="businessCode" name="business_code" placeholder="Nhập mã số thuế"
-                                value="{{ old('business_code') }}">
+                                value="{{ old('business_code') }}" required>
                             @error('business_code')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -349,7 +349,7 @@
                             @foreach ($business_support_needs as $support_need)
                                 <div>
                                     <label>
-                                        <input type="radio" name="support_need" value="{{ $support_need->id }}" {{ old('support_need') == $support_need->id ? 'checked' : '' }}>
+                                        <input type="radio" name="support_need" value="{{ $support_need->id }}" {{ old('support_need') == $support_need->id ? 'checked' : '' }} required>
                                         {{ $support_need->name }}
                                     </label>
                                     

@@ -49,6 +49,38 @@
         </a>
       </li>
       <li>
+        <a class="nav-link {{ Route::currentRouteNamed('capital-needs') ? 'active' : '' }}" href="{{ route('capital-needs.index') }}">
+          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+          </div>
+          <span class="nav-link-text ms-1">{{ __('ĐK nhu cầu vay vốn') }}</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-link {{ Route::currentRouteNamed('job-applications') ? 'active' : '' }}" href="{{ route('job-applications.index') }}">
+          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+          </div>
+          <span class="nav-link-text ms-1">{{ __('Tìm việc làm') }}</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-link {{ Route::currentRouteNamed('recruitment') ? 'active' : '' }}" href="{{ route('recruitment.index') }}">
+          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+          </div>
+          <span class="nav-link-text ms-1">{{ __('Tuyển dụng') }}</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-link {{ Route::currentRouteNamed('feedback') ? 'active' : '' }}" href="{{ route('feedback.index') }}">
+          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+          </div>
+          <span class="nav-link-text ms-1">{{ __('Ý kiến doanh nghiệp') }}</span>
+        </a>
+      </li>
+      <li>
         <a class="nav-link {{ Route::currentRouteNamed('banks.*') ? 'active' : '' }}" href="{{ route('banks.index') }}">
           <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>

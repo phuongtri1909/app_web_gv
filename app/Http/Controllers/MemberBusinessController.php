@@ -7,6 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 class MemberBusinessController extends Controller
 {
+
+    public function index()
+    {
+        $members = BusinessMember::latest()->paginate(10);
+        return view('admin.pages.member-business.index', compact('members'));
+    }
+    public function show($id){
+        $member = BusinessMember::find($id);
+        return view('admin.pages.member-business.show', compact('member'));
+    }
     //
     public function showFormMemberBusiness()
     {
@@ -17,20 +27,21 @@ class MemberBusinessController extends Controller
         $data = [];
 
         $request->validate([
-            'business_name' => 'required|string|max:255',
-            'business_license_number' => 'required|string|max:25',
-            'license_issue_date' => 'required|date',
-            'license_issue_place' => 'required|string|max:255',
-            'business_field' => 'required|string|max:255',
-            'head_office_address' => 'required|string|max:255',
-            'phone' =>  'required|string|max:10|regex:/^[0-9]+$/',
-            'fax' => 'nullable|string|max:15',
-            'email' => 'nullable|email|max:255',
-            'branch_address' => 'nullable|string|max:255',
-            'organization_participation' => 'nullable|string|max:255',
-            'representative_full_name' => 'required|string|max:255',
-            'representative_position' => 'required|string|max:255',
+            'avt_businesses' => 'required|image|mimes:jpeg,png,jpg,gif',
+            'representative_name' => 'required|string|max:255',
+            'birth_year' => 'required|digits:4|integer|min:1500|max:' . date('Y'),
             'gender' => 'required|string',
+            'phone_number' => 'required|string|max:10|regex:/^[0-9]+$/',
+            'address' => 'required|string|max:255',
+            'business_address' => 'required|string|max:255',
+            'ward_id' => 'required|integer|exists:ward_govap,id',
+            'business_name' => 'required|string|max:255',
+            'business_license' => 'nullable|mimes:pdf',
+            'business_code' => 'required|regex:/^\d{10,13}$/',
+            'email' => 'required|email|max:255',
+            'social_channel' => 'nullable|url|max:255',
+            'description' => 'nullable|string|max:1000',
+            'business_fields' => 'required|exists:business_fields,id',
             'identity_card' =>  'required|string|max:12|regex:/^[0-9]+$/',
             'identity_card_issue_date' => 'required|date',
             'home_address' => 'required|string|max:255',
@@ -40,47 +51,72 @@ class MemberBusinessController extends Controller
             'identity_card_front_file' => 'required|image',
             'identity_card_back_file' => 'required|image',
         ], [
-            'business_name.required' => 'Vui lòng nhập tên doanh nghiệp.',
-            'business_license_number.required' => 'Vui lòng nhập số giấy ĐKKD.',
-            'business_license_number.max' => 'ĐKKD phải có đúng 25 ký tự.',
-            'license_issue_date.required' => 'Vui lòng chọn ngày cấp giấy ĐKKD.',
-            'license_issue_date.date' => 'Ngày cấp giấy ĐKKD phải là một ngày hợp lệ.',
-            'license_issue_place.required' => 'Vui lòng nhập nơi cấp giấy ĐKKD.',
-            'business_field.required' => 'Vui lòng nhập lĩnh vực hoạt động.',
-            'head_office_address.required' => 'Vui lòng nhập địa chỉ trụ sở chính.',
-            'phone.required' => 'Vui lòng nhập số điện thoại.',
-            'phone.regex' => 'Số điện thoại không hợp lệ',
-            'phone.max' => 'Số điện thoại không được vượt quá 10 số.',
-            'fax.max' => 'Số fax không được vượt quá 15 ký tự.',
-            'email.required' => 'Vui lòng nhập email.',
-            'email.email' => 'Định dạng email không hợp lệ.',
-            'branch_address.max' => 'Địa chỉ chi nhánh không được vượt quá 255 ký tự.',
-            'representative_full_name.required' => 'Vui lòng nhập họ và tên.',
-            'representative_position.required' => 'Vui lòng nhập chức vụ.',
-            'gender.required' => 'Vui lòng chọn giới tính.',
-            'gender.in' => 'Giới tính phải là Nam hoặc Nữ.',
-            'identity_card.required' => 'Vui lòng nhập số CCCD.',
-            'identity_card_issue_date.required' => 'Vui lòng chọn ngày cấp CCCD.',
-            'identity_card_issue_date.date' => 'Ngày cấp CCCD phải là một ngày hợp lệ.',
-            'home_address.required' => 'Vui lòng nhập địa chỉ riêng.',
-            'contact_phone.required' => 'Vui lòng nhập số điện thoại liên hệ.',
-            'contact_phone.max' => 'Số điện thoại liên hệ không được vượt quá 11 số.',
-            'contact_phone.regex' => 'Số điện thoại liên hệ phải có 10 số',
-            'representative_email.required' => 'Vui lòng nhập email đại diện.',
-            'representative_email.email' => 'Định dạng email đại diện không hợp lệ.',
-            'business_license_file.required' => 'Vui lòng tải lên file giấy ĐKKD.',
-            'business_license_file.mimes' => 'File giấy ĐKKD phải là một file có định dạng jpg, jpeg, png hoặc pdf.',
-            'business_license_file.max' => 'File giấy ĐKKD không được vượt quá 2MB.',
-            'identity_card_front_file.required' => 'Vui lòng tải lên file ảnh mặt trước CCCD.',
-            'identity_card_front_file.image' => 'File ảnh mặt trước CCCD phải là định dạng ảnh.',
-            'identity_card_front_file.mimes' => 'File ảnh mặt trước CCCD phải là một file có định dạng jpg, jpeg hoặc png.',
-            'identity_card_front_file.max' => 'File ảnh mặt trước CCCD không được vượt quá 2MB.',
-        
-            'identity_card_back_file.required' => 'Vui lòng tải lên file ảnh mặt sau CCCD.',
-            'identity_card_back_file.image' => 'File ảnh mặt sau CCCD phải là định dạng ảnh.',
-            'identity_card_back_file.mimes' => 'File ảnh mặt sau CCCD phải là một file có định dạng jpg, jpeg hoặc png.',
-            'identity_card_back_file.max' => 'File ảnh mặt sau CCCD không được vượt quá 2MB.',
+            'avt_businesses.required' => 'Ảnh đại diện doanh nghiệp là bắt buộc.',
+            'avt_businesses.image' => 'Ảnh đại diện phải là một file hình ảnh.',
+            'avt_businesses.mimes' => 'Ảnh đại diện phải có định dạng jpg, jpeg, png hoặc gif.',
+            
+            'representative_name.required' => 'Tên người đại diện pháp luật là bắt buộc.',
+            
+            'birth_year.required' => 'Năm sinh là bắt buộc.',
+            'birth_year.digits' => 'Năm sinh phải có 4 chữ số.',
+            'birth_year.min' => 'Năm sinh phải lớn hơn hoặc bằng 1500.',
+            'birth_year.max' => 'Năm sinh không được lớn hơn năm hiện tại.',
+            
+            'gender.required' => 'Giới tính là bắt buộc.',
+            
+            'phone_number.required' => 'Số điện thoại là bắt buộc.',
+            'phone_number.regex' => 'Số điện thoại chỉ chứa số.',
+            'phone_number.max' => 'Số điện thoại không được vượt quá 10 chữ số.',
+            
+            'address.required' => 'Địa chỉ là bắt buộc.',
+            'address.max' => 'Địa chỉ không được vượt quá 255 ký tự.',
+            
+            'business_address.required' => 'Địa chỉ doanh nghiệp là bắt buộc.',
+            'business_address.max' => 'Địa chỉ doanh nghiệp không được vượt quá 255 ký tự.',
+            
+            'ward_id.required' => 'Vui lòng chọn phường.',
+            'ward_id.exists' => 'Phường đã chọn không tồn tại.',
+            
+            'business_name.required' => 'Tên doanh nghiệp là bắt buộc.',
+            
+            'business_license.mimes' => 'Giấy phép kinh doanh phải là file dạng pdf.',
+            
+            'business_code.required' => 'Mã doanh nghiệp là bắt buộc.',
+            'business_code.regex' => 'Mã doanh nghiệp phải có từ 10 đến 13 chữ số.',
+            'business_code.unique' => 'Mã doanh nghiệp này đã tồn tại.',
+            
+            'email.required' => 'Email là bắt buộc.',
+            'email.email' => 'Email không hợp lệ.',
+            'email.unique' => 'Email này đã được sử dụng.',
+            
+            'social_channel.url' => 'Đường dẫn mạng xã hội không hợp lệ.',
+            
+            'description.max' => 'Mô tả không được vượt quá 1000 ký tự.',
+            
+            'business_fields.required' => 'Vui lòng chọn ít nhất một lĩnh vực kinh doanh.',
+            'business_fields.exists' => 'Lĩnh vực kinh doanh không hợp lệ.',
+            
+            'identity_card.required' => 'CCCD là bắt buộc.',
+            'identity_card.max' => 'CCCD không được vượt quá 12 ký tự.',
+            'identity_card.regex' => 'CCCD chỉ chứa số.',
+            
+            'identity_card_issue_date.required' => 'Ngày cấp CCCD là bắt buộc.',
+            
+            'home_address.required' => 'Địa chỉ nhà là bắt buộc.',
+            
+            'contact_phone.required' => 'Số điện thoại liên hệ là bắt buộc.',
+            'contact_phone.max' => 'Số điện thoại liên hệ không được vượt quá 10 chữ số.',
+            'contact_phone.regex' => 'Số điện thoại liên hệ chỉ chứa số.',
+            
+            'representative_email.required' => 'Email của người đại diện là bắt buộc.',
+            
+            'business_license_file.required' => 'File giấy phép kinh doanh là bắt buộc.',
+            'identity_card_front_file.required' => 'File mặt trước chứng minh thư là bắt buộc.',
+            'identity_card_back_file.required' => 'File mặt sau chứng minh thư là bắt buộc.',
         ]);
+        
+        
+        
         $businesMember = new BusinessMember();
         $businesMember->fill($request->only([
             'business_name',

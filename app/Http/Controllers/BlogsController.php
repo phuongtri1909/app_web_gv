@@ -302,7 +302,7 @@ class BlogsController extends Controller
 
 
         return view('pages.blogs.blogs', compact( 'blogs', 'categories', 'tags', 'recentPosts', 'noResults', 'category'));
-        
+
     }
 
 
@@ -334,15 +334,15 @@ class BlogsController extends Controller
         }
         return view('pages.client.gv.post-detail', compact('blog'));
     }
-    public function showBlogIndexMini($slug)
-    {
-        $blog = TabProject::where('slug', $slug)->firstOrFail();
+    // public function showBlogIndexMini($slug)
+    // {
+    //     $blog = TabProject::where('slug', $slug)->firstOrFail();
 
-        $blog->formatted_published_at = $this->formatDate($blog->published_at);
+    //     $blog->formatted_published_at = $this->formatDate($blog->published_at);
 
 
-        return view('pages.detail-dev-blog', compact('blog',));
-    }
+    //     return view('pages.detail-dev-blog', compact('blog',));
+    // }
 
 
 

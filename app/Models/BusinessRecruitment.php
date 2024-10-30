@@ -23,4 +23,9 @@ class BusinessRecruitment extends Model
         'recruitment_info',
         'status'
     ];
+
+    public function categoryBusiness()
+    {
+        return $this->belongsTo(CategoryBusiness::class, 'category_business_id');
+    }
 }

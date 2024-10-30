@@ -49,9 +49,11 @@ use App\Http\Controllers\FinancialSupportController;
 use App\Http\Controllers\BusinessRecruitmentController;
 use App\Http\Controllers\ContactConsultationController;
 use App\Http\Controllers\AdmissionProcessDetailController;
+use App\Http\Controllers\BusinessFeedBackController;
 use App\Http\Controllers\BusinessStartPromotionInvestmentController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PersonalBusinessInterestController;
+use App\Http\Controllers\StatusController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,8 +85,8 @@ Route::middleware(['language'])->group(function () {
         Route::get('/form-connect-supply-demand', [BusinessController::class, 'connectSupplyDemand'])->name('connect.supply.demand'); //form kết nối cung cầu
         Route::post('/form-connect-supply-demand', [BusinessController::class, 'storeConnectSupplyDemand'])->name('connect.supply.demand.store');
 
-        Route::get('/form-start-promotion', [BusinessController::class, 'showFormStartPromotion'])->name('show.form.start.promotion'); // khởi nghiệp xúc tiến thương mại đầu tư
-        Route::post('/form-start-promotion', [BusinessController::class, 'storeFormStartPromotion'])->name('form.start.promotion.store');
+        Route::get('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'showFormStartPromotion'])->name('show.form.start.promotion'); // khởi nghiệp xúc tiến thương mại đầu tư
+        Route::post('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'storeFormStartPromotion'])->name('form.start.promotion.store');
 
         Route::get('/form-registering-capital-needs/{slug?}', [BusinessCapitalNeedController::class, 'showFormCapitalNeeds'])->name('show.form.capital.need'); //ĐĂNG KÝ NHU CẦU VỀ VỐN
         Route::post('/form-registering-capital-needs', [BusinessCapitalNeedController::class, 'storeFormCapitalNeeds'])->name('show.form.capital.need.store');
@@ -98,8 +100,8 @@ Route::middleware(['language'])->group(function () {
         Route::get('/form-job-application', [JobApplicationController::class, 'jobApplication'])->name('job.application'); //form ứng tuyển
         Route::post('/form-job-application', [JobApplicationController::class, 'storeForm'])->name('job.application.store');
 
-        Route::get('/form-business-opinion', [BusinessController::class, 'businessOpinion'])->name('business.opinion'); //form ý kiến doanh nghiệp
-        Route::post('/form-business-opinion', [BusinessController::class, 'storeBusinessOpinion'])->name('business.opinion.store');
+        Route::get('/form-business-opinion', [BusinessFeedBackController::class, 'businessOpinion'])->name('business.opinion'); //form ý kiến doanh nghiệp
+        Route::post('/form-business-opinion', [BusinessFeedBackController::class, 'storeBusinessOpinion'])->name('business.opinion.store');
 
         Route::post('/form-business', [BusinessController::class, 'store'])->name('business.store'); //form đăng ký doanh nghiệp
         Route::get('/form-business', [BusinessController::class, 'index'])->name('business.index');
@@ -190,7 +192,14 @@ Route::middleware(['language'])->group(function () {
 
                 Route::resource('job-applications', JobApplicationController::class);
 
+                Route::resource('feedback', BusinessFeedBackController::class);
+
+                Route::resource('recruitment',  BusinessRecruitmentController::class);
+
                 Route::get('/form-business', [BusinessController::class, 'adminIndex'])->name('show.admin.index');
+
+                Route::post('/update-status', [StatusController::class, 'updateStatus'])->name('update.status');
+
             });
         });
 

@@ -178,7 +178,7 @@
                     <h3>Tư Vấn Pháp Luật</h3>
 
                     <div class="form-group">
-                        <label for="name">Họ và tên:</label>
+                        <label for="name">Họ và tên:<span class="text-danger">*</span></label>
                         <input type="text" id="name" name="name" class="form-control form-control-sm @error('name') is-invalid @enderror" placeholder="Nhập họ tên" required>
                         @error('name')
                             <div class="text-danger">{{ $message }}</div>
@@ -186,7 +186,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="phone">Số Điện Thoại:</label>
+                        <label for="phone">Số Điện Thoại:<span class="text-danger">*</span></label>
                         <input type="tel" id="phone" name="phone" class="form-control form-control-sm @error('phone') is-invalid @enderror" placeholder="Nhập số điện thoại" required>
                         @error('phone')
                             <div class="text-danger">{{ $message }}</div>
@@ -195,14 +195,14 @@
 
                     <div class="form-group">
                         <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" class="form-control form-control-sm @error('email') is-invalid @enderror" placeholder="Nhập email" required>
+                        <input type="email" id="email" name="email" class="form-control form-control-sm @error('email') is-invalid @enderror" placeholder="Nhập email" >
                         @error('email')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="form-group">
-                        <label for="address">Địa Chỉ:</label>
+                        <label for="address">Địa Chỉ:<span class="text-danger">*</span></label>
                         <input type="text" id="address" name="address" class="form-control form-control-sm @error('address') is-invalid @enderror" placeholder="Nhập địa chỉ" required>
                         @error('address')
                             <div class="text-danger">{{ $message }}</div>
@@ -210,7 +210,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="company_name">Tên Công Ty/Đơn Vị:</label>
+                        <label for="company_name">Tên Công Ty/Đơn Vị:<span class="text-danger">*</span></label>
                         <input type="text" id="company_name" name="company_name" class="form-control form-control-sm @error('company_name') is-invalid @enderror" placeholder="Nhập tên công ty hoặc đơn vị" required>
                         @error('company_name')
                             <div class="text-danger">{{ $message }}</div>
@@ -218,7 +218,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="advice_content">Nội Dung Cần Tư Vấn:</label>
+                        <label for="advice_content">Nội Dung Cần Tư Vấn:<span class="text-danger">*</span></label>
                         <textarea id="advice_content" name="advice_content" class="form-control form-control-sm @error('advice_content') is-invalid @enderror" placeholder="Mô tả chi tiết vấn đề cần tư vấn" rows="5" required></textarea>
                         @error('advice_content')
                             <div class="text-danger">{{ $message }}</div>
