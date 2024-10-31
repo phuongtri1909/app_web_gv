@@ -133,6 +133,7 @@
         .error-message1 {
             color: red;
             margin-top: 10px;
+            font-size:12px;
         }
 
         .btn-success {
@@ -207,7 +208,8 @@
                             <input type="text"
                                 class="form-control form-control-sm @error('business_name') is-invalid @enderror"
                                 id="business_name" name="business_name" placeholder="Nhập tên doanh nghiệp"
-                                value="{{ old('business_name') }}" required>
+                                value="{{ old('business_name') }}">
+                            <span class="error-message"></span>
                             @error('business_name')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -219,7 +221,8 @@
                             <input type="text"
                                 class="form-control form-control-sm @error('business_code') is-invalid @enderror"
                                 id="business_code" name="business_code" placeholder="Nhập mã số doanh nghiệp/mã số thuế"
-                                value="{{ old('business_code') }}" required>
+                                value="{{ old('business_code') }}" >
+                            <span class="error-message"></span>
                             @error('business_code')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -246,7 +249,8 @@
                                     class="text-danger">*</span></label>
                             <input type="text"
                                 class="form-control form-control-sm @error('business_address') is-invalid @enderror" id="business_address"
-                                name="business_address" placeholder="Nhập địa chỉ trụ sở chính" value="{{ old('business_address') }}" required>
+                                name="business_address" placeholder="Nhập địa chỉ trụ sở chính" value="{{ old('business_address') }}" >
+                            <span class="error-message"></span>
                             @error('business_address')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -255,7 +259,8 @@
                         <div class="col-md-4 mb-4">
                             <label for="phone_number" class="form-label">Điện thoại <span class="text-danger">*</span></label>
                             <input type="tel" class="form-control form-control-sm @error('phone_number') is-invalid @enderror"
-                                id="phone_number" name="phone_number" placeholder="Nhập số điện thoại" value="{{ old('phone_number') }}" required>
+                                id="phone_number" name="phone_number" placeholder="Nhập số điện thoại" value="{{ old('phone_number') }}" >
+                             <span class="error-message"></span>
                             @error('phone_number')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -286,7 +291,8 @@
                             <input type="text"
                                 class="form-control form-control-sm @error('representative_name') is-invalid @enderror"
                                 id="representative_name" name="representative_name" placeholder="Nhập tên người đại diện"
-                                value="{{ old('representative_name') }}" required>
+                                value="{{ old('representative_name') }}" >
+                            <span class="error-message"></span>
                             @error('representative_name')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -298,7 +304,7 @@
                                 <div class="form-check me-3">
                                     <input class="form-check-input @error('gender') is-invalid @enderror" type="radio"
                                         name="gender" id="genderMale" value="male"
-                                        {{ old('gender') == 'male' ? 'checked' : '' }} required>
+                                        {{ old('gender') == 'male' ? 'checked' : '' }} >
                                     <label class="form-check-label" for="genderMale">
                                         Nam
                                     </label>
@@ -306,7 +312,7 @@
                                 <div class="form-check me-3">
                                     <input class="form-check-input @error('gender') is-invalid @enderror" type="radio"
                                         name="gender" id="genderFemale" value="female"
-                                        {{ old('gender') == 'female' ? 'checked' : '' }} required>
+                                        {{ old('gender') == 'female' ? 'checked' : '' }} >
                                     <label class="form-check-label" for="genderFemale">
                                         Nữ
                                     </label>
@@ -314,12 +320,13 @@
                                 <div class="form-check">
                                     <input class="form-check-input @error('gender') is-invalid @enderror" type="radio"
                                         name="gender" id="genderOther" value="other"
-                                        {{ old('gender') == 'other' ? 'checked' : '' }} required>
+                                        {{ old('gender') == 'other' ? 'checked' : '' }} >
                                     <label class="form-check-label" for="genderOther">
                                         Khác
                                     </label>
                                 </div>
                             </div>
+                            <span class="error-message gender-error"></span>
                             @error('gender')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -335,7 +342,8 @@
                                 id="interest_rate"
                                 name="interest_rate" 
                                 placeholder="Nhập lãi suất mong muốn" 
-                                value="{{old('interest_rate')}}" min="0" required>
+                                value="{{old('interest_rate')}}" min="0" >
+                            <span class="error-message"></span>
                             @error('interest_rate')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -348,7 +356,8 @@
                                 id="finance" 
                                 name="finance"
                                 placeholder="Nhập số tiền tài chính (đồng)" 
-                                value="{{old('finance')}}" min="0" required>
+                                value="{{old('finance')}}" min="0" >
+                            <span class="error-message"></span>
                             @error('finance')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -361,7 +370,8 @@
                                 id="mortgage_policy"
                                 name="mortgage_policy" 
                                 placeholder="Nhập chính sách vay thế chấp" 
-                                value="{{old('mortgage_policy')}}" required>
+                                value="{{old('mortgage_policy')}}" >
+                            <span class="error-message"></span>
                             @error('mortgage_policy')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -374,7 +384,8 @@
                                 id="unsecured_policy"
                                 name="unsecured_policy" 
                                 placeholder="Nhập thông tin tín chấp" 
-                                value="{{old('unsecured_policy')}}" required>
+                                value="{{old('unsecured_policy')}}" >
+                            <span class="error-message"></span>
                             @error('unsecured_policy')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -387,7 +398,8 @@
                                 id="purpose" 
                                 name="purpose"
                                 placeholder="Nhập mục đích vay" 
-                                value="{{old('purpose')}}" required>
+                                value="{{old('purpose')}}" >
+                            <span class="error-message"></span>
                             @error('purpose')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -400,7 +412,8 @@
                                 id="bank_connection"
                                 name="bank_connection" 
                                 placeholder="Nhập tên ngân hàng kết nối" 
-                                value="{{old('bank_connection')}}" required>
+                                value="{{old('bank_connection')}}" >
+                            <span class="error-message"></span>
                             @error('bank_connection')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -415,7 +428,13 @@
                             @enderror
                         </div>
                     </div>
-
+                    <div class="d-flex justify-content-center">
+                        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+                    </div>
+                    @if ($errors->has('error'))
+                        <div class="invalid-feedback d-block text-center" role="alert">{{ $errors->first('error') }}</div>
+                    @endif
+                    <div id="recaptcha-error" class="text-danger text-center mt-2"></div>
                     <div class="text-end my-3">
                         <button type="submit" class="btn btn-success">Đăng ký</button>
                     </div>
@@ -465,4 +484,5 @@
 @endsection
 
 @push('scripts')
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 @endpush

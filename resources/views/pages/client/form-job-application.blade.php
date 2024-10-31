@@ -15,6 +15,7 @@
         .error-message1 {
             color: red;
             margin-top: 10px;
+            font-size: 12px;
         }
         #form-job-application{
             position: relative;
@@ -60,7 +61,8 @@
                     <div class="row">
                         <div class="col-md-12 mb-4">
                             <label for="full_name" class="form-label">Họ và tên <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm @error('full_name') is-invalid @enderror" id="full_name" name="full_name" placeholder="Nhập họ và tên" value="{{ old('full_name') }}" required>
+                            <input type="text" class="form-control form-control-sm @error('full_name') is-invalid @enderror" id="full_name" name="full_name" placeholder="Nhập họ và tên" value="{{ old('full_name') }}" >
+                            <span class="error-message"></span>
                             @error('full_name')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -68,7 +70,8 @@
 
                         <div class="col-md-4 mb-4">
                             <label for="birth_year" class="form-label">Năm sinh <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm @error('birth_year') is-invalid @enderror" id="birth_year" name="birth_year" placeholder="Nhập năm sinh" value="{{ old('birth_year') }}" required>
+                            <input type="text" class="form-control form-control-sm @error('birth_year') is-invalid @enderror" id="birth_year" name="birth_year" placeholder="Nhập năm sinh" value="{{ old('birth_year') }}" >
+                            <span class="error-message"></span>
                             @error('birth_year')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -78,18 +81,19 @@
                             <label class="form-label">Giới tính <span class="text-danger">*</span></label>
                             <div class="d-flex justify-content-around">
                                 <div class="form-check me-1 ps-0">
-                                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" {{ old('gender') == 'male' ? 'checked' : '' }} required>
+                                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" {{ old('gender') == 'male' ? 'checked' : '' }} >
                                     <label class="form-check-label" for="male">Nam</label>
                                 </div>
                                 <div class="form-check me-1">
-                                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" {{ old('gender') == 'female' ? 'checked' : '' }} required>
+                                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" {{ old('gender') == 'female' ? 'checked' : '' }} >
                                     <label class="form-check-label" for="female">Nữ</label>
                                 </div>
                                 <div class="form-check me-1">
-                                    <input class="form-check-input" type="radio" name="gender" id="other" value="other" {{ old('gender') == 'other' ? 'checked' : '' }} required>
+                                    <input class="form-check-input" type="radio" name="gender" id="other" value="other" {{ old('gender') == 'other' ? 'checked' : '' }} >
                                     <label class="form-check-label" for="other">Khác</label>
                                 </div>
                             </div>
+                            <span class="error-message gender-error"></span>
                             @error('gender')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -97,7 +101,8 @@
 
                         <div class="col-md-4 mb-4">
                             <label for="phone" class="form-label">Điện thoại <span class="text-danger">*</span></label>
-                            <input type="tel" class="form-control form-control-sm @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="Nhập số điện thoại" value="{{ old('phone') }}" required>
+                            <input type="tel" class="form-control form-control-sm @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="Nhập số điện thoại" value="{{ old('phone') }}" >
+                            <span class="error-message"></span>
                             @error('phone')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -121,7 +126,8 @@
 
                         <div class="col-md-12 mb-4">
                             <label for="introduction" class="form-label">Thông tin/giới thiệu bản thân <span class="text-danger">*</span></label>
-                            <textarea class="form-control form-control-sm @error('introduction') is-invalid @enderror" id="introduction" name="introduction" placeholder="Nhập thông tin/giới thiệu bản thân" required> {{ old('introduction') }}</textarea>
+                            <textarea class="form-control form-control-sm @error('introduction') is-invalid @enderror" id="introduction" name="introduction" placeholder="Nhập thông tin/giới thiệu bản thân" > {{ old('introduction') }}</textarea>
+                            <span class="error-message"></span>
                             @error('introduction')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -129,18 +135,19 @@
 
                         <div class="col-md-12 mb-4">
                             <label for="job_registration" class="form-label">Đăng ký tìm việc <span class="text-danger">*</span></label>
-                            <textarea class="form-control form-control-sm @error('job_registration') is-invalid @enderror" id="job_registration" name="job_registration" placeholder="Nhập thông tin đăng ký tìm việc" required>{{ old('job_registration') }}</textarea>
+                            <textarea class="form-control form-control-sm @error('job_registration') is-invalid @enderror" id="job_registration" name="job_registration" placeholder="Nhập thông tin đăng ký tìm việc" >{{ old('job_registration') }}</textarea>
+                            <span class="error-message"></span>
                             @error('job_registration')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
                     <div class="col-md-4 mb-4">
-                        <label for="license" class="form-label @error('cv') is-invalid @enderror">Upload CV:<span class="text-danger">*</span></label>
+                        <label for="license" class="form-label">Upload CV:<span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="file" id="file-uploads" name="cv" accept="application/pdf"
-                                value="{{ old('cv') }}" style="display: none;" required>
-                            <button type="button" class="btn btn-success @error('cv') is-invalid @enderror" id="upload-button">
+                            <input type="file" id="file-uploads" name="cv" class=" @error('cv') is-invalid @enderror" accept="application/pdf"
+                                value="{{ old('cv') }}" style="display: none;">
+                            <button type="button" class="btn btn-success" id="upload-button">
                                 <i class="bi bi-upload"></i> Upload
                             </button>
                         </div>
@@ -153,6 +160,10 @@
                     <div class="d-flex justify-content-center">
                         <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
                     </div>
+                    @if ($errors->has('error'))
+                        <div class="invalid-feedback d-block text-center" role="alert">{{ $errors->first('error') }}</div>
+                    @endif
+                    <div id="recaptcha-error" class="text-danger text-center mt-2"></div>
                     <div class="text-end my-3">
                         <button type="submit" class="btn btn-success">Lưu xác nhận</button>
                     </div>
@@ -255,5 +266,26 @@
             }
         });
     });
+    document.querySelector("form").addEventListener("submit", function(e) {
+        const fileInput = document.getElementById("file-uploads");
+        const errorMessage = document.getElementById("error-message");
+        const recaptchaResponse = grecaptcha.getResponse();
+        const recaptchaError = document.getElementById('recaptcha-error');
+
+        if (!recaptchaResponse) {
+            e.preventDefault();
+            recaptchaError.textContent = 'Vui lòng hoàn thành CAPTCHA để tiếp tục.';
+        } else {
+            recaptchaError.textContent = '';
+        }
+
+        if (fileInput.files.length === 0) {
+            e.preventDefault();
+            errorMessage.textContent = "Vui lòng chọn file để tải lên.";
+        } else {
+            errorMessage.textContent = '';
+        }
+    });
+
 </script>
 @endpush

@@ -151,14 +151,13 @@ Route::middleware(['language'])->group(function () {
     })->name('select-campus');
 
     Route::middleware(['auth'])->group(function () {
-
+        Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
         Route::middleware(['role.admin'])->group(function () {
             Route::prefix('admin')->group(function () {
                 Route::get('/', function () {
                     return view('admin.pages.dashboard');
                 })->name('admin.dashboard');
 
-                Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
 
                 Route::resource('languages', LanguageController::class)->except(['show']);
                 Route::get('languages/edit-system/{locale}', [LanguageController::class, 'editSystem'])->name('languages.edit-system');

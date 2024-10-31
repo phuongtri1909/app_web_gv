@@ -8,6 +8,7 @@ use App\Models\BusinessStartPromotionInvestment;
 use App\Models\BusinessSupportNeed;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException ;
 class BusinessStartPromotionInvestmentController extends Controller
 {
@@ -36,7 +37,8 @@ class BusinessStartPromotionInvestmentController extends Controller
                 'support_need' => 'required|exists:business_support_needs,id',
                 'business_fields' => 'required|exists:business_fields,id',
             ], [
-                'business_code.unique' => 'Mã doanh nghiệp này đã đăng ký trong hệ thống.',
+                'business_code.required' => 'Mã doanh nghiệp là bắt buộc.',
+                'business_code.unique' => 'Mã doanh nghiệp này đã đăng ký trong hệ thống.', 
                 'business_code.regex' => 'Mã số thuế phải gồm 10 chữ số hoặc 13 chữ số với định dạng 10-3.',
                 'business_name.required' => 'Tên doanh nghiệp là bắt buộc.',
                 'representative_name.required' => 'Tên người đại diện là bắt buộc.',
@@ -49,6 +51,7 @@ class BusinessStartPromotionInvestmentController extends Controller
                 'phone_number.regex' => 'Số điện thoại không hợp lệ.',
                 'phone_number.max' => 'Số điện thoại không được vượt quá 10 số.',
                 'address.required' => 'Địa chỉ là bắt buộc.',
+                'business_address.required' => 'Địa chỉ doanh nghiệp là bắt buộc.',
                 'email.required' => 'Email là bắt buộc.',
                 'email.email' => 'Email không hợp lệ.',
                 'email.unique' => 'Email này đã được đăng ký trong hệ thống.',
@@ -58,7 +61,18 @@ class BusinessStartPromotionInvestmentController extends Controller
                 'business_fields.required' => 'Vui lòng chọn ngành nghề.',
                 'business_fields.exists' => 'Ngành nghề không hợp lệ.',
             ]);
-
+            $recaptchaResponse = $request->input('g-recaptcha-response');
+            $secretKey = env('RECAPTCHA_SECRET_KEY');
+            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => $secretKey,
+                'response' => $recaptchaResponse,
+            ]);
+        
+            $responseBody = json_decode($response->body());
+        
+            if (!$responseBody->success) {
+                return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
+            }
             $existingBusiness = Business::where('business_code', $validatedData['business_code'])->first();
             if ($existingBusiness) {
                 $response = $this->validateExistingBusiness($existingBusiness, $validatedData);

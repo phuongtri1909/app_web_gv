@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\JobApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class JobApplicationController extends Controller
 {
 
     public function storeForm(Request $request)
     {
+        DB::beginTransaction();
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
@@ -37,7 +39,18 @@ class JobApplicationController extends Controller
             'cv.mimes' => 'File phải là file PDF.',
         ]);
         
-        DB::beginTransaction();
+        $recaptchaResponse = $request->input('g-recaptcha-response');
+        $secretKey = env('RECAPTCHA_SECRET_KEY');
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $secretKey,
+            'response' => $recaptchaResponse,
+        ]);
+    
+        $responseBody = json_decode($response->body());
+    
+        if (!$responseBody->success) {
+            return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
+        }
         try {
             $data = $request->except(['cv']);
 
@@ -122,43 +135,7 @@ class JobApplicationController extends Controller
 
     public function update(Request $request, JobApplication $jobApplication)
     {
-        $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
-            'fax' => 'nullable|string|max:255',
-            'birth_year' => 'required|integer|min:1500|max:' . date('Y'),
-            'gender' => 'required|in:male,female,other',
-            'email' => 'nullable|email|max:255',
-            'introduction' => 'required|string',
-            'job_registration' => 'required|string',
-            'cv' => 'nullable|mimes:pdf|max:3048',
-        ]);
-
-        DB::beginTransaction();
-        try {
-            $data = $request->except(['cv']);
-
-            if ($request->hasFile('cv')) {
-                if ($jobApplication->cv && file_exists(public_path($jobApplication->cv))) {
-                    unlink(public_path($jobApplication->cv));
-                }
-
-                $image = $request->file('cv');
-                $folderName = date('Y/m');
-                $originalFileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
-                $extension = $image->getClientOriginalExtension();
-                $fileName = $originalFileName . '_' . time() . '.' . $extension;
-                $image->move(public_path('/uploads/images/cv/' . $folderName), $fileName);
-                $data['cv'] = 'uploads/images/cv/' . $folderName . '/' . $fileName;
-            }
-
-            $jobApplication->update($data);
-            DB::commit();
-            return redirect()->route('job-applications.index')->with('success', 'Cập nhật thành công!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Cập nhật thất bại: ' . $e->getMessage());
-        }
+        
     }
 
     public function destroy(JobApplication $jobApplication)

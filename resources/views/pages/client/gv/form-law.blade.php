@@ -227,6 +227,9 @@
 
                     <div class="d-flex justify-content-center">
                         <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+                        @if ($errors->has('error'))
+                            <div class="invalid-feedback" role="alert">{{ $errors->first('error') }}</div>
+                        @endif
                     </div>
 
                     <div class="text-end my-3">

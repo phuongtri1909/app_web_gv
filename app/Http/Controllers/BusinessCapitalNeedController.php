@@ -9,6 +9,7 @@ use App\Models\CategoryBusiness;
 use App\Models\FinancialSupport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException ;
 class BusinessCapitalNeedController extends Controller
 {
@@ -196,7 +197,19 @@ class BusinessCapitalNeedController extends Controller
                 'unsecured_policy.max' => 'Tín chấp không được vượt quá 1000 ký tự.',
                 'business_address.required' => 'Vui lòng nhập địa chỉ doanh nghiệp.',
                 'business_address.max' => 'Địa chỉ doanh nghiệp không vượt quá 255 ký tự.',
-            ]);            
+            ]);
+            $recaptchaResponse = $request->input('g-recaptcha-response');
+            $secretKey = env('RECAPTCHA_SECRET_KEY');
+            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => $secretKey,
+                'response' => $recaptchaResponse,
+            ]);
+        
+            $responseBody = json_decode($response->body());
+        
+            if (!$responseBody->success) {
+                return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
+            }           
             $existingBusiness = Business::where('business_code', $validatedData['business_code'])->first();
             if ($existingBusiness) {
              $response = $this->validateExistingBusiness($existingBusiness, $validatedData);
@@ -215,7 +228,7 @@ class BusinessCapitalNeedController extends Controller
                 'bank_connection' => $validatedData['bank_connection'],
                 'feedback' => $validatedData['feedback'],
                 'financial_support_id' => $request->has('slug') && ($financialSupport = FinancialSupport::where('slug', $request->slug)->first()) ? $financialSupport->id : null,
-                'bank_service_id' => $request->has('slug') && ($bankService = BankServicesInterest::where('slug', $request->slug)->first()) ? $bankService->id : null
+                'bank_services_interest_id' => $request->has('slug') && ($bankService = BankServicesInterest::where('slug', $request->slug)->first()) ? $bankService->id : null
             ]);
 
 

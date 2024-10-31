@@ -19,6 +19,7 @@ use App\Models\CategoryProductBusiness;
 use App\Models\BusinessPromotionalIntroduction;
 use Illuminate\Validation\ValidationException ;
 use App\Models\BusinessStartPromotionInvestment;
+use Illuminate\Support\Facades\Http;
 
 class BusinessController extends Controller
 {
@@ -50,6 +51,7 @@ class BusinessController extends Controller
 
     public function store(Request $request)
     {
+        DB::beginTransaction();
 
         $request->validate([
             'avt_businesses' => 'required|image|mimes:jpeg,png,jpg,gif',
@@ -62,7 +64,7 @@ class BusinessController extends Controller
             'ward_id' => 'required|integer|exists:ward_govap,id',
             'business_name' => 'required|string|max:255',
             'business_license' => 'nullable|mimes:pdf',
-            'business_code' => 'required|regex:/^\d{10}(-\d{3})?$/|unique:businesses,business_code', 
+            'business_code' => 'required|regex:/^\d{10}(-\d{3})?$/', 
             'email' => 'nullable|email|max:255|',
             'social_channel' => 'nullable|url|max:255',
             'description' => 'nullable|string|max:1000',
@@ -109,7 +111,7 @@ class BusinessController extends Controller
         
             'business_code.required' => 'Mã doanh nghiệp là bắt buộc.',
             'business_code.regex' => 'Mã doanh nghiệp không được nhỏ hơn 10 hoặc vượt quá 13 số.',
-            'business_code.unique' => 'Mã doanh nghiệp này đã tồn tại.',
+            // 'business_code.unique' => 'Mã doanh nghiệp này đã tồn tại.',
         
             'email.email' => 'Email không hợp lệ.',
             'email.max' => 'Email không được vượt quá 255 ký tự.',
@@ -122,8 +124,18 @@ class BusinessController extends Controller
             'business_fields.exists' => 'Lĩnh vực kinh doanh không hợp lệ.',
         ]);
         
-
-        DB::beginTransaction();
+        $recaptchaResponse = $request->input('g-recaptcha-response');
+        $secretKey = env('RECAPTCHA_SECRET_KEY');
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $secretKey,
+            'response' => $recaptchaResponse,
+        ]);
+    
+        $responseBody = json_decode($response->body());
+    
+        if (!$responseBody->success) {
+            return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
+        }
 
         try {
             $data = $request->except(['business_license', 'avt_businesses']);
@@ -149,15 +161,26 @@ class BusinessController extends Controller
                 $file->move(public_path('/uploads/images/business/' . $folderName), $licenseName);
                 $data['business_license'] = 'uploads/images/business/' . $folderName . '/' . $licenseName;
             }
+            
+            // $existingEmail = Business::where('email', $request->email)->first();
+            // if ($existingEmail) {
+            //     return redirect()->back()->withInput()->withErrors(['email' => 'Email đã được sử dụng.']);
+            // }
             $existingBusiness = Business::where('business_code', $request->business_code)->first();
+
             if ($existingBusiness) {
-                return redirect()->back()->withInput()->withErrors(['business_code' => 'Mã số thuế đã đăng ký.']);
+                if ($existingBusiness->status === 'other') {
+                    $existingBusiness->status = 'pending';
+                    $existingBusiness->fill($data);
+                    $existingBusiness->save();
+                }else{
+                    return redirect()->back()->withInput()->withErrors(['business_code' => 'Mã số thuế đã đăng ký.']);
+                }
+            } else {
+                Business::create($data);
             }
-            $existingEmail = Business::where('email', $request->email)->first();
-            if ($existingEmail) {
-                return redirect()->back()->withInput()->withErrors(['email' => 'Email đã được sử dụng.']);
-            }
-            Business::create($data);
+            
+            // Business::create($data);
 
             DB::commit();
 
@@ -204,7 +227,7 @@ class BusinessController extends Controller
                 'name' => $business->categoryBusiness ? $business->categoryBusiness->name : null
             ],
             'business_fields' => [
-                'name' => $business->businessField ? $business->businessField->name : null
+                'name' => $business->field ? $business->field->name : null
             ],
             'social_channel' => $business->social_channel,
             'description' => $business->description,
@@ -333,8 +356,8 @@ class BusinessController extends Controller
                 'fanpage' => 'nullable|url',
                 'product_info' => 'required|string',
                 'product_standard' => 'required|string',
-                'product_avatar' => 'required|image|max:2048',
-                'product_images.*' => 'image|max:2048',
+                'product_avatar' => 'required|image',
+                'product_images.*' => 'image',
                 'product_images' => 'array|max:5',
                 'product_price' => 'required|numeric|min:0',
                 'product_price_mini_app' => 'required|numeric|min:0',
@@ -368,11 +391,9 @@ class BusinessController extends Controller
                 'product_standard.required' => 'Vui lòng nhập tiêu chuẩn sản phẩm.',
                 'product_avatar.required' => 'Vui lòng tải hình ảnh sản phẩm.',
                 'product_avatar.image' => 'File phải là hình ảnh.',
-                'product_avatar.max' => 'Hình ảnh không được vượt quá 2MB.',
                 'product_images.array' => 'Danh sách hình ảnh không hợp lệ.',
                 'product_images.max' => 'Số lượng hình ảnh không được vượt quá 5.',
                 'product_images.*.image' => 'File phải là hình ảnh.',
-                'product_images.*.max' => 'Hình ảnh không được vượt quá 2MB.',
                 'product_price.required' => 'Vui lòng nhập giá sản phẩm.',
                 'product_price.numeric' => 'Giá sản phẩm phải là số.',
                 'product_price.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
@@ -388,7 +409,18 @@ class BusinessController extends Controller
                 'end_date.date' => 'Ngày kết thúc không hợp lệ.',
                 'end_date.after' => 'Ngày kết thúc phải lớn hơn ngày bắt đầu.',
             ]);
-    
+            $recaptchaResponse = $request->input('g-recaptcha-response');
+            $secretKey = env('RECAPTCHA_SECRET_KEY');
+            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => $secretKey,
+                'response' => $recaptchaResponse,
+            ]);
+        
+            $responseBody = json_decode($response->body());
+        
+            if (!$responseBody->success) {
+                return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
+            }
             $connection = new SupplyDemandConnection();
             $connection->fill($request->only([
                 'owner_full_name', 'birth_year', 'gender', 'residential_address',
@@ -496,7 +528,18 @@ class BusinessController extends Controller
                 'address_longitude.numeric' => 'Kinh độ phải là một số.',
                 'address_longitude.between' => 'Kinh độ phải nằm trong khoảng -180 đến 180.',
             ]);
-
+            $recaptchaResponse = $request->input('g-recaptcha-response');
+            $secretKey = env('RECAPTCHA_SECRET_KEY');
+            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => $secretKey,
+                'response' => $recaptchaResponse,
+            ]);
+        
+            $responseBody = json_decode($response->body());
+        
+            if (!$responseBody->success) {
+                return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
+            }
             $business = Business::where('business_code', $request->business_code)->first();
             if(!$business){
                 $business = new Business();

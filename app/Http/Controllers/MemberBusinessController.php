@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BusinessMember;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 class MemberBusinessController extends Controller
 {
 
@@ -115,7 +116,18 @@ class MemberBusinessController extends Controller
             'identity_card_back_file.required' => 'File mặt sau chứng minh thư là bắt buộc.',
         ]);
         
-        
+        $recaptchaResponse = $request->input('g-recaptcha-response');
+        $secretKey = env('RECAPTCHA_SECRET_KEY');
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $secretKey,
+            'response' => $recaptchaResponse,
+        ]);
+    
+        $responseBody = json_decode($response->body());
+    
+        if (!$responseBody->success) {
+            return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
+        }
         
         $businesMember = new BusinessMember();
         $businesMember->fill($request->only([
