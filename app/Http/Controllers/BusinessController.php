@@ -64,7 +64,7 @@ class BusinessController extends Controller
             'ward_id' => 'required|integer|exists:ward_govap,id',
             'business_name' => 'required|string|max:255',
             'business_license' => 'nullable|mimes:pdf',
-            'business_code' => 'required|regex:/^\d{10}(-\d{3})?$/', 
+            'business_code' => 'required|regex:/^\d{10}(-\d{3})?$/',
             'email' => 'nullable|email|max:255|',
             'social_channel' => 'nullable|url|max:255',
             'description' => 'nullable|string|max:1000',
@@ -73,66 +73,66 @@ class BusinessController extends Controller
             'avt_businesses.required' => 'Ảnh đại diện doanh nghiệp là bắt buộc.',
             'avt_businesses.image' => 'Ảnh đại diện phải là hình ảnh.',
             'avt_businesses.mimes' => 'Hình ảnh đại diện phải là file dạng: jpg, jpeg, png.',
-        
+
             'representative_name.required' => 'Tên người đại diện pháp luật là bắt buộc.',
             'representative_name.string' => 'Tên người đại diện phải là một chuỗi.',
             'representative_name.max' => 'Tên người đại diện không được vượt quá 255 ký tự.',
-        
+
             'birth_year.required' => 'Năm sinh là bắt buộc.',
             'birth_year.digits' => 'Năm sinh phải có 4 chữ số.',
             'birth_year.integer' => 'Năm sinh phải là số nguyên.',
             'birth_year.min' => 'Năm sinh phải lớn hơn hoặc bằng 1500.',
             'birth_year.max' => 'Năm sinh không được lớn hơn năm hiện tại.',
-        
+
             'gender.required' => 'Giới tính là bắt buộc.',
             'gender.in' => 'Giới tính không hợp lệ.',
-        
+
             'phone_number.required' => 'Số điện thoại là bắt buộc.',
             'phone_number.string' => 'Số điện thoại phải là một chuỗi.',
             'phone_number.max' => 'Số điện thoại không được hơn 10 số.',
             'phone_number.regex' => 'Số điện thoại chỉ chứa số.',
-        
+
             'address.required' => 'Địa chỉ là bắt buộc.',
             'address.string' => 'Địa chỉ phải là một chuỗi.',
             'address.max' => 'Địa chỉ không được vượt quá 255 ký tự.',
-        
+
             'business_address.required' => 'Địa chỉ doanh nghiệp là bắt buộc.',
             'business_address.max' => 'Địa chỉ doanh nghiệp không được vượt quá 255 ký tự.',
-        
+
             'ward_id.required' => 'Vui lòng chọn phường.',
             'ward_id.integer' => 'Phường không hợp lệ.',
             'ward_id.exists' => 'Phường không tồn tại.',
-        
+
             'business_name.required' => 'Tên doanh nghiệp là bắt buộc.',
             'business_name.string' => 'Tên doanh nghiệp phải là một chuỗi.',
             'business_name.max' => 'Tên doanh nghiệp không được vượt quá 255 ký tự.',
-        
+
             'business_license.mimes' => 'Giấy phép kinh doanh phải là file dạng: pdf.',
-        
+
             'business_code.required' => 'Mã doanh nghiệp là bắt buộc.',
             'business_code.regex' => 'Mã doanh nghiệp không được nhỏ hơn 10 hoặc vượt quá 13 số.',
             // 'business_code.unique' => 'Mã doanh nghiệp này đã tồn tại.',
-        
+
             'email.email' => 'Email không hợp lệ.',
             'email.max' => 'Email không được vượt quá 255 ký tự.',
             'email.unique' => 'Email này đã được sử dụng.',
-        
+
             'social_channel.url' => 'Đường dẫn social không hợp lệ.',
             'description.max' => 'Mô tả không được vượt quá 1000 ký tự.',
-        
+
             'business_fields.required' => 'Vui lòng chọn ít nhất một lĩnh vực kinh doanh.',
             'business_fields.exists' => 'Lĩnh vực kinh doanh không hợp lệ.',
         ]);
-        
+
         $recaptchaResponse = $request->input('g-recaptcha-response');
         $secretKey = env('RECAPTCHA_SECRET_KEY');
         $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
             'secret' => $secretKey,
             'response' => $recaptchaResponse,
         ]);
-    
+
         $responseBody = json_decode($response->body());
-    
+
         if (!$responseBody->success) {
             return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
         }
@@ -161,25 +161,23 @@ class BusinessController extends Controller
                 $file->move(public_path('/uploads/images/business/' . $folderName), $licenseName);
                 $data['business_license'] = 'uploads/images/business/' . $folderName . '/' . $licenseName;
             }
-            
-            // $existingEmail = Business::where('email', $request->email)->first();
-            // if ($existingEmail) {
-            //     return redirect()->back()->withInput()->withErrors(['email' => 'Email đã được sử dụng.']);
-            // }
-            $existingBusiness = Business::where('business_code', $request->business_code)->first();
+            $existingBusiness = Business::where('business_code', $request->business_code)
+                                    ->where('email', $request->email)
+                                    ->first();
 
             if ($existingBusiness) {
                 if ($existingBusiness->status === 'other') {
                     $existingBusiness->status = 'pending';
                     $existingBusiness->fill($data);
                     $existingBusiness->save();
-                }else{
+                } else {
                     return redirect()->back()->withInput()->withErrors(['business_code' => 'Mã số thuế đã đăng ký.']);
                 }
             } else {
                 Business::create($data);
             }
-            
+
+
             // Business::create($data);
 
             DB::commit();
@@ -208,7 +206,7 @@ class BusinessController extends Controller
         $business = Business::with(['ward', 'categoryBusiness', 'field'])
             ->whereNot('status', 'other')
             ->findOrFail($id);
-        
+
         return response()->json([
             'business_name' => $business->business_name,
             'business_code' => $business->business_code,
@@ -236,8 +234,8 @@ class BusinessController extends Controller
             'status' => $business->status
         ]);
     }
-    
-    
+
+
 
     public function edit($id)
     {
@@ -340,7 +338,7 @@ class BusinessController extends Controller
     {
         DB::beginTransaction();
         $data = [];
-    
+
         try {
             $request->validate([
                 'owner_full_name' => 'required|string|max:255',
@@ -415,9 +413,9 @@ class BusinessController extends Controller
                 'secret' => $secretKey,
                 'response' => $recaptchaResponse,
             ]);
-        
+
             $responseBody = json_decode($response->body());
-        
+
             if (!$responseBody->success) {
                 return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
             }
@@ -429,17 +427,17 @@ class BusinessController extends Controller
                 'product_standard', 'product_price', 'product_price_mini_app',
                 'product_price_member', 'start_date', 'end_date'
             ]));
-    
+
             $this->handleFileUpload($request, 'product_avatar', $data, '_avatar_', 'supplydemand');
             $this->handleFileUpload($request, 'product_images', $data, '_images_', 'supplydemand');
-    
+
             $connection->product_avatar = $data['product_avatar'];
             $connection->product_images = $data['product_images'];
             $connection->save();
-    
+
             DB::commit();
             return redirect()->back()->with('success', 'Đăng ký kết nối cung cầu thành công!');
-    
+
         } catch (\Exception $e) {
             DB::rollBack();
             $this->cleanupUploadedFiles($data);
@@ -452,7 +450,7 @@ class BusinessController extends Controller
         $business_fields = BusinessField::all();
         return view('pages.client.gv.form-promotional-introduction',compact('business_fields'));
     }
-    
+
     public function storeFormPromotional(Request $request)
     {
         //dd($request->all());
@@ -534,9 +532,9 @@ class BusinessController extends Controller
                 'secret' => $secretKey,
                 'response' => $recaptchaResponse,
             ]);
-        
+
             $responseBody = json_decode($response->body());
-        
+
             if (!$responseBody->success) {
                 return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
             }
@@ -550,10 +548,10 @@ class BusinessController extends Controller
                 $business->address = $request->address;
                 $business->business_address = $request->business_address;
                 $business->business_name = $request->business_name;
-    
+
                 $this->handleFileUpload($request, 'license', $data, '_license_', 'business');
                 $business->business_license = $data['license'];
-    
+
                 $business->business_fields = $request->business_field;
                 $business->business_code = $request->business_code;
                 $business->email = $request->email;
@@ -570,10 +568,10 @@ class BusinessController extends Controller
                     $business->address = $request->address;
                     $business->business_address = $request->business_address;
                     $business->business_name = $request->business_name;
-        
+
                     $this->handleFileUpload($request, 'license', $data, '_license_', 'business');
                     $business->business_license = $data['license'];
-        
+
                     $business->business_fields = $request->business_field;
                     $business->business_code = $request->business_code;
                     $business->email = $request->email;
@@ -607,7 +605,7 @@ class BusinessController extends Controller
                         $fileName = $originalFileName . '_' . time() . '.' . $extension;
                         $image->move(public_path('/uploads/images/product_location/' . $folderName), $fileName);
                         $uploadedImages[] = 'uploads/images/product_location/' . $folderName . '/' . $fileName;
-            
+
                         // Tạo đối tượng LocationProduct cho mỗi hình ảnh
                         $locationProduct = new LocationProduct();
                         $locationProduct->location_id = $location->id;
@@ -620,10 +618,10 @@ class BusinessController extends Controller
                     $data['product_image'] = count($uploadedImages) > 1 ? json_encode($uploadedImages) : $uploadedImages[0];
                 }
             }
-            
+
             // Xử lý video
             $this->handleFileUpload($request, 'product_video', $data, '_video_', 'business');
-            
+
             if (isset($data['product_video'])) {
                 $locationProduct = new LocationProduct();
                 $locationProduct->location_id = $location->id;
@@ -631,9 +629,9 @@ class BusinessController extends Controller
                 $locationProduct->media_type = 'video';
                 $locationProduct->save();
             }
-            
 
-            
+
+
 
             DB::commit();
             return redirect()->back()->with('success', 'Đăng ký địa điểm thành công!');
@@ -708,13 +706,13 @@ class BusinessController extends Controller
         if ($existingBusiness->business_name !== $validatedData['business_name'] ||
             $existingBusiness->business_address !== $validatedData['business_address'] ||
             $existingBusiness->phone_number !== $validatedData['phone_number'] ||
-            $existingBusiness->email !== $validatedData['email'] ||  
+            $existingBusiness->email !== $validatedData['email'] ||
             $existingBusiness->representative_name !== $validatedData['representative_name']) {
-            
+
             return redirect()->back()->with('error', 'Thông tin doanh nghiệp không khớp.')->withInput();
         }
     }
-    
+
     private function checkForExistingEmail($email)
     {
         if (Business::where('email', $email)->exists()) {
