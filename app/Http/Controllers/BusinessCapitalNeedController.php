@@ -51,7 +51,7 @@ class BusinessCapitalNeedController extends Controller
                 'financialSupport',
                 'bankServicesInterest'
             ])->findOrFail($id);
-    
+
             return response()->json([
                 'id' => $capitalNeed->id,
                 'business_name' => $capitalNeed->business->business_name,
@@ -83,12 +83,12 @@ class BusinessCapitalNeedController extends Controller
                 'bank_service' => $capitalNeed->bankService,
                 'created_at' => $capitalNeed->created_at,
             ], 200);
-    
+
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch details'], 500);
         }
     }
-    
+
 
     public function destroy($id)
     {
@@ -204,12 +204,12 @@ class BusinessCapitalNeedController extends Controller
                 'secret' => $secretKey,
                 'response' => $recaptchaResponse,
             ]);
-        
+
             $responseBody = json_decode($response->body());
-        
+
             if (!$responseBody->success) {
                 return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
-            }           
+            }
             $existingBusiness = Business::where('business_code', $validatedData['business_code'])->first();
             if ($existingBusiness) {
              $response = $this->validateExistingBusiness($existingBusiness, $validatedData);
@@ -278,10 +278,7 @@ class BusinessCapitalNeedController extends Controller
     private function validateExistingBusiness($existingBusiness, $validatedData)
     {
         if ($existingBusiness->business_name !== $validatedData['business_name'] ||
-            $existingBusiness->business_address !== $validatedData['business_address'] ||
-            $existingBusiness->phone_number !== $validatedData['phone_number'] ||
-            $existingBusiness->email !== $validatedData['email'] ||
-            $existingBusiness->representative_name !== $validatedData['representative_name']) {
+            $existingBusiness->email !== $validatedData['email']) {
 
             return redirect()->back()->with('error', 'Thông tin doanh nghiệp không khớp.')->withInput();
         }

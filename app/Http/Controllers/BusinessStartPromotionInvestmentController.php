@@ -38,7 +38,7 @@ class BusinessStartPromotionInvestmentController extends Controller
                 'business_fields' => 'required|exists:business_fields,id',
             ], [
                 'business_code.required' => 'Mã doanh nghiệp là bắt buộc.',
-                'business_code.unique' => 'Mã doanh nghiệp này đã đăng ký trong hệ thống.', 
+                'business_code.unique' => 'Mã doanh nghiệp này đã đăng ký trong hệ thống.',
                 'business_code.regex' => 'Mã số thuế phải gồm 10 chữ số hoặc 13 chữ số với định dạng 10-3.',
                 'business_name.required' => 'Tên doanh nghiệp là bắt buộc.',
                 'representative_name.required' => 'Tên người đại diện là bắt buộc.',
@@ -67,9 +67,9 @@ class BusinessStartPromotionInvestmentController extends Controller
                 'secret' => $secretKey,
                 'response' => $recaptchaResponse,
             ]);
-        
+
             $responseBody = json_decode($response->body());
-        
+
             if (!$responseBody->success) {
                 return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
             }
@@ -87,7 +87,7 @@ class BusinessStartPromotionInvestmentController extends Controller
                 ]);
 
                 DB::commit();
-                return redirect()->back()->with('success', 'Đã thêm Khởi nghiệp-Xúc tiến thương mại-Kêu gọi đầu tư cho doanh nghiệp hiện có.');
+                return redirect()->back()->with('success', 'Đã thêm Khởi nghiệp-Xúc tiến thương mại-Kêu gọi đầu tư cho doanh nghiệp.');
             }
             $response = $this->checkForExistingEmail($validatedData['email']);
             if ($response) return $response;
@@ -152,7 +152,7 @@ class BusinessStartPromotionInvestmentController extends Controller
             'business.ward',
             'supportNeeds'
         ])->findOrFail($id);
-        
+
         return response()->json([
             'id' => $promotion->id,
             'business_name' => $promotion->business->business_name,
@@ -177,7 +177,7 @@ class BusinessStartPromotionInvestmentController extends Controller
             'created_at' => $promotion->created_at
         ]);
     }
-    
+
 
 
     public function edit($id)
@@ -203,6 +203,20 @@ class BusinessStartPromotionInvestmentController extends Controller
         $promotion = BusinessStartPromotionInvestment::findOrFail($id);
         $promotion->delete();
         return redirect()->route('client.form-start-promotion-invertment.index')->with('success', 'Xóa thành công');
+    }
+    private function validateExistingBusiness($existingBusiness, $validatedData)
+    {
+        if ($existingBusiness->business_name !== $validatedData['business_name'] ||
+            $existingBusiness->email !== $validatedData['email'] ) {
+            return redirect()->back()->with('error', 'Thông tin doanh nghiệp không khớp.')->withInput();
+        }
+    }
+
+    private function checkForExistingEmail($email)
+    {
+        if (Business::where('email', $email)->exists()) {
+            return redirect()->back()->with('error', 'Email này đã được đăng ký trong hệ thống với một doanh nghiệp khác.')->withInput();
+        }
     }
 }
 
