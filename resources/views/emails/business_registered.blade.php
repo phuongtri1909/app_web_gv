@@ -139,7 +139,7 @@
                     @endif
                 @endforeach
 
-                <div class="info-item">
+                {{-- <div class="info-item">
                     <strong>Tên doanh nghiệp:</strong> {{ $businessData->business_name }}
                 </div>
                 <div class="info-item">
@@ -159,7 +159,7 @@
                 </div>
                 <div class="info-item">
                     <strong>Địa chỉ:</strong> {{ $businessData->address }}
-                </div>
+                </div> --}}
                 @if (isset($businessData->categoryBusiness) && !empty($businessData->categoryBusines))
                     <div class="info-item">
                         <strong>Loại doanh nghiệp:</strong> {{ $businessData->categoryBusiness->name }}
