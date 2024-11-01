@@ -272,7 +272,7 @@
                     $('#modal-ward').text(response.ward?.name || '-');
                     $('#modal-social').text(response.social_channel || '-');
                     $('#modal-category-business').text(response.category_business?.name || '-');
-                    $('#modal-business-field').text(response.business_field?.name || '-');
+                    $('#modal-business-field').text(response.business_fields?.name || '-');
                     $('#modal-description').text(response.description || '-');
                     $('#modal-avatar').attr('src', response.avt_businesses ? '/' + response.avt_businesses : 'image.jpg');
                     $('#modal-license').attr('href', response.business_license ? '/' + response.business_license : '#');

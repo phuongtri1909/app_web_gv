@@ -390,6 +390,13 @@
                             <li>identity_card người đại diện</li>
                         </ul>
                     </div> --}}
+                    <div class="d-flex justify-content-center">
+                        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+                        @if ($errors->has('error'))
+                            <div class="invalid-feedback" role="alert">{{ $errors->first('error') }}</div>
+                        @endif
+                    </div>
+                    
                     <div class="text-end my-3">
                         <button type="submit" class="btn btn-success">Đăng ký</button>
                     </div>
@@ -400,6 +407,8 @@
 @endsection
 
 @push('scripts')
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <script>
         document.getElementById('business_license_file-button').addEventListener('click', function() {
             handleFileUpload('business_license_file', 'upload-list-business_license_file', 'error-message-business_license_file');
@@ -499,42 +508,5 @@
             uploadList.appendChild(fileItem);
         }
 
-    </script>
-    <script>
-        // Khai báo biến để lưu thời gian bắt đầu
-        let startTime;
-    
-        // Bắt sự kiện gửi form
-        document.getElementById('business-member').addEventListener('submit', function(event) {
-            startTime = Date.now(); // Bắt đầu đo thời gian
-        });
-    
-        // Sử dụng Fetch API để xử lý yêu cầu và đo thời gian phản hồi
-        document.getElementById('business-member').addEventListener('submit', async function(event) {
-            event.preventDefault(); // Ngăn chặn gửi form mặc định
-            const formData = new FormData(this);
-    
-            startTime = Date.now(); // Bắt đầu đo thời gian
-    
-            try {
-                const response = await fetch(this.action, {
-                    method: 'POST',
-                    body: formData
-                });
-    
-                const endTime = Date.now(); // Kết thúc đo thời gian
-                const duration = endTime - startTime; // Tính thời gian gửi và nhận phản hồi
-    
-                if (response.ok) {
-                    console.log('Gửi form thành công!');
-                } else {
-                    console.log('Lỗi khi gửi form!');
-                }
-    
-                alert(`Thời gian xử lý: ${duration}ms`);
-            } catch (error) {
-                console.log('Có lỗi xảy ra:', error);
-            }
-        });
     </script>
 @endpush

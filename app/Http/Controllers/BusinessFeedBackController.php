@@ -6,6 +6,7 @@ use App\Models\Business;
 use App\Models\BusinessFeedback;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException ;
 class BusinessFeedBackController extends Controller
 {
@@ -64,7 +65,18 @@ class BusinessFeedBackController extends Controller
                 'business_license.mimes' => 'Giấy phép kinh doanh phải là file dạng pdf.',
                 'fanpage.max' => 'Fanpage không được vượt quá 1000 ký tự.',
             ]);
-            
+            $recaptchaResponse = $request->input('g-recaptcha-response');
+            $secretKey = env('RECAPTCHA_SECRET_KEY');
+            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => $secretKey,
+                'response' => $recaptchaResponse,
+            ]);
+        
+            $responseBody = json_decode($response->body());
+        
+            if (!$responseBody->success) {
+                return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
+            }
             $businessOpinion = new BusinessFeedback();
             $businessOpinion->fill($request->only([
                 'opinion', 'suggestions', 'owner_full_name', 'birth_year', 'gender', 'phone',

@@ -56,6 +56,7 @@
                                 class="form-control form-control-sm  @error('owner_full_name') is-invalid @enderror"
                                 id="owner_full_name" name="owner_full_name" placeholder="Nhập họ và tên"
                                 value="{{ old('owner_full_name') }}">
+                            <span class="error-message"></span>
                             @error('owner_full_name')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -286,7 +287,12 @@
                             @enderror
                         </div>
                     </div>
-
+                    <div class="d-flex justify-content-center">
+                        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+                        @if ($errors->has('error'))
+                            <div class="invalid-feedback" role="alert">{{ $errors->first('error') }}</div>
+                        @endif
+                    </div>
                     <div class="text-end my-3">
                         <button type="submit" class="btn btn-success">Lưu xác nhận</button>
                     </div>
@@ -298,6 +304,7 @@
 
 
 @push('scripts')
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         flatpickr("#start_date", {

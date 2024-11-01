@@ -16,7 +16,7 @@ class RoleAdmin
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->user()->role !== 'admin') {
-            return redirect()->route('home');
+            return redirect()->route('business');
         }
 
         return $next($request);

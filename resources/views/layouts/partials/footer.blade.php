@@ -102,6 +102,7 @@
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
     <script src="{{ asset('js/script.js') }}" ></script>
+    <script src="{{ asset('js/app.js') }}" ></script>
     <script src="{{ asset('js/animation.js') }}" ></script>
 
     
