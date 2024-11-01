@@ -22,6 +22,9 @@
             border-radius: 50%;
             display: inline-block;
         }
+        .form-control:focus {
+            box-shadow: none;
+        }
     </style>
 @endpush
 
@@ -57,49 +60,57 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($businesses as $key => $business)
+                            @if ($businesses->isEmpty())
                                 <tr>
-                                    <td class="ps-4">
-                                        <p class="text-xs font-weight-bold mb-0">{{ $key + 1 }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $business->business_name ?? '-' }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $business->business_code ?? '-' }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $business->representative_name ?? '-' }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $business->phone_number ?? '-' }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $business->email ?? '-' }}</p>
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-sm bg-{{ $business->status == 'approved' ? 'success' : ($business->status == 'rejected' ? 'danger' : 'warning') }}">
-                                            {{ $business->status == 'approved' ? 'Đã duyệt' : ($business->status == 'rejected' ? 'Đã từ chối' : 'Đang chờ') }}
-                                        </span>
-                                    </td>                                    
-                                    <td class="text-center">
-                                        {{-- <a href="{{ route('businesses.edit', $business->id) }}" class="mx-3" title="{{ __('edit') }}">
-                                            <i class="fa-solid fa-pencil"></i>
-                                        </a> --}}
-                                        @include('admin.pages.components.delete-form', [
-                                            'id' => $business->id,
-                                            'route' => route('businesses.destroy', $business->id),
-                                            'message' => __('delete_message'),
-                                        ])
-                                        <a href="javascript:void(0)" class="mx-3 view-business" data-id="{{ $business->id }}" title="{{ __('Xem chi tiết') }}">
-                                            <i class="fa-solid fa-eye"></i>
-                                        </a>
+                                    <td colspan="8" class="text-center">
+                                        <p class="text-xs font-weight-bold mb-0">{{ __('Không có kết quả nào.') }}</p>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @else
+                                @foreach ($businesses as $key => $business)
+                                    <tr>
+                                        <td class="ps-4">
+                                            <p class="text-xs font-weight-bold mb-0">{{ $key + 1 }}</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $business->business_name ?? '-' }}</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $business->business_code ?? '-' }}</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $business->representative_name ?? '-' }}</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $business->phone_number ?? '-' }}</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $business->email ?? '-' }}</p>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-sm bg-{{ $business->status == 'approved' ? 'success' : ($business->status == 'rejected' ? 'danger' : 'warning') }}">
+                                                {{ $business->status == 'approved' ? 'Đã duyệt' : ($business->status == 'rejected' ? 'Đã từ chối' : 'Đang chờ') }}
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            {{-- <a href="{{ route('businesses.edit', $business->id) }}" class="mx-3" title="{{ __('edit') }}">
+                                                <i class="fa-solid fa-pencil"></i>
+                                            </a> --}}
+                                            @include('admin.pages.components.delete-form', [
+                                                'id' => $business->id,
+                                                'route' => route('businesses.destroy', $business->id),
+                                                'message' => __('delete_message'),
+                                            ])
+                                            <a href="javascript:void(0)" class="mx-3 view-business" data-id="{{ $business->id }}" title="{{ __('Xem chi tiết') }}">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
-                    
+                    <x-pagination :paginator="$businesses" />
                 </div>
             </div>
         </div>
@@ -128,7 +139,7 @@
                                     <p class="text-muted small">MST: <span id="modal-business-code"></span></p>
                                     <span id="modal-status" class="badge badge-sm"></span>
                                 </div>
-                                
+
                                 <div class="col-md-8">
                                     <div class="row g-3">
                                         <div class="col-md-6">
@@ -163,7 +174,7 @@
                                                 <p id="modal-fax" class="text-sm mb-2"></p>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="col-md-6">
                                             <div class="info-group">
                                                 <label class="text-uppercase text-xs font-weight-bolder opacity-7">
@@ -191,7 +202,7 @@
                                             </div>
                                         </div>
                                     </div>
-        
+
                                     <div class="mt-4">
                                         <div class="info-group">
                                             <label class="text-uppercase text-xs font-weight-bolder opacity-7">
@@ -214,7 +225,7 @@
                                     </div>
                                 </div>
                             </div>
-        
+
                             <div class="row mt-4">
                                 <div class="col-12">
                                     <div class="info-group">
@@ -225,7 +236,7 @@
                                     </div>
                                 </div>
                             </div>
-        
+
                             <div class="row mt-4">
                                 <div class="col-12">
                                     <a id="modal-license" href="" target="_blank" class="btn btn-primary">
@@ -238,8 +249,8 @@
                 </div>
             </div>
         </div>
-        
-        
+
+
     </div>
 </div>
 @endsection
@@ -276,7 +287,7 @@
                     $('#modal-description').text(response.description || '-');
                     $('#modal-avatar').attr('src', response.avt_businesses ? '/' + response.avt_businesses : 'image.jpg');
                     $('#modal-license').attr('href', response.business_license ? '/' + response.business_license : '#');
-                    
+
                     const statusBadgeClass = {
                         'approved': 'bg-success',
                         'rejected': 'bg-danger',
@@ -300,5 +311,5 @@
         });
     });
     </script>
-    
+
 @endpush

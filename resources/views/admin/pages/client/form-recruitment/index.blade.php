@@ -106,6 +106,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <x-pagination :paginator="$businessRecruitments" />
                     </div>
                 </div>
                 <div class="modal fade" id="recruitmentDetailModal" tabindex="-1" aria-labelledby="recruitmentDetailModalLabel" aria-hidden="true">

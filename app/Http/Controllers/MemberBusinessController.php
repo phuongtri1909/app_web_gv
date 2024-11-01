@@ -12,7 +12,7 @@ class MemberBusinessController extends Controller
     public function index()
     {
         $members = BusinessMember::latest()->paginate(10);
-        return view('admin.pages.member-business.index', compact('members'));
+        return view('admin.pages.client.form-member.index', compact('members'));
     }
     public function show($id){
         $member = BusinessMember::find($id);

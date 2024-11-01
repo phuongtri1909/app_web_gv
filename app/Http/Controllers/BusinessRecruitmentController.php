@@ -11,9 +11,17 @@ use Illuminate\Support\Facades\Http;
 class BusinessRecruitmentController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
-        $businessRecruitments = BusinessRecruitment::with('categoryBusiness')->get();
+        $search = $request->input('search');
+        $businessRecruitments = BusinessRecruitment::with('categoryBusiness')->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('business_name', 'like', "%{$search}%")
+                    ->orWhere('business_code', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
+                });
+        })
+        ->paginate(15);
         return view('admin.pages.client.form-recruitment.index', compact('businessRecruitments'));
     }
 

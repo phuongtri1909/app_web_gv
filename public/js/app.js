@@ -57,7 +57,7 @@ function updateStatus(model, id, status) {
 // thong bao loi form ngoai client
 
 document.querySelector("form").addEventListener("submit", function (e) {
-    let isValid = true; 
+    let isValid = true;
 
     const errorMessages = {
         recaptcha: 'Vui lòng hoàn thành CAPTCHA để tiếp tục.',
@@ -193,3 +193,8 @@ document.querySelector("form").addEventListener("submit", function (e) {
         e.preventDefault();
     }
 });
+
+
+
+
+

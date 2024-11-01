@@ -199,6 +199,9 @@ Route::middleware(['language'])->group(function () {
 
                 Route::post('/update-status', [StatusController::class, 'updateStatus'])->name('update.status');
 
+                Route::resource('members',  MemberBusinessController::class);
+
+
             });
         });
 

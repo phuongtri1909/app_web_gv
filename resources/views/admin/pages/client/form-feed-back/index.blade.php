@@ -102,6 +102,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <x-pagination :paginator="$businessFeedbacks" />
                     </div>
                 </div>
                 <div class="modal fade" id="feedbackDetailModal" tabindex="-1" aria-labelledby="feedbackDetailModalLabel"
