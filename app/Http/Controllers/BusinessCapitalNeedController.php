@@ -11,12 +11,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException ;
+use App\Mail\BusinessRegistered;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 class BusinessCapitalNeedController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
-        $capitalNeeds = BusinessCapitalNeed::with(['business', 'financialSupport', 'bankServicesInterest'])->get();
+        $search = $request->input('search');
+        $capitalNeeds = BusinessCapitalNeed::with(['business', 'financialSupport', 'bankServicesInterest'])->when($search,function($query, $search) {
+            return $query->whereHas('business', function ($query) use ($search) {
+                $query->where('business_name', 'like', "%{$search}%")
+                    ->orWhere('business_code', 'like', "%{$search}%");
+            });
+        })
+        ->paginate(15);
         return view('admin.pages.client.form-capital-needs.index', compact('capitalNeeds'));
     }
 
@@ -206,72 +216,124 @@ class BusinessCapitalNeedController extends Controller
             ]);
 
             $responseBody = json_decode($response->body());
-
+            $validatedData['subject'] = 'Đăng ký nhu cầu về vốn';
             if (!$responseBody->success) {
                 return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
             }
+
             $existingBusiness = Business::where('business_code', $validatedData['business_code'])->first();
             if ($existingBusiness) {
-             $response = $this->validateExistingBusiness($existingBusiness, $validatedData);
-            if ($response) return $response;
-            $existingInvestment = BusinessCapitalNeed::where('business_id', $existingBusiness->id)->first();
-            if ($existingInvestment) {
-                return redirect()->back()->with('error', 'Doanh nghiệp này đã đăng ký trước đó.')->withInput();
+                $response = $this->validateExistingBusiness($existingBusiness, $validatedData);
+                if ($response) return $response;
+                $existingInvestment = BusinessCapitalNeed::where('business_id', $existingBusiness->id)->first();
+                if ($existingInvestment) {
+                    return redirect()->back()->with('error', 'Doanh nghiệp này đã đăng ký trước đó.')->withInput();
+                }
+                $validatedData['financial_support_id'] = $request->has('slug') ? FinancialSupport::where('slug', $request->slug)->first() : null;
+                $validatedData['bank_services_interest_id']  = $request->has('slug') ? BankServicesInterest::where('slug', $request->slug)->first() : null;
+                BusinessCapitalNeed::create([
+                    'business_id' => $existingBusiness->id,
+                    'interest_rate' => $validatedData['interest_rate'],
+                    'finance' => $validatedData['finance'],
+                    'mortgage_policy' => $validatedData['mortgage_policy'],
+                    'unsecured_policy' => $validatedData['unsecured_policy'],
+                    'purpose' => $validatedData['purpose'],
+                    'bank_connection' => $validatedData['bank_connection'],
+                    'feedback' => $validatedData['feedback'],
+                    'financial_support_id' =>  $validatedData['financial_support_id'] ?  $validatedData['financial_support_id']->id : null,
+                    'bank_services_interest_id' => $validatedData['bank_services_interest_id'] ? $validatedData['bank_services_interest_id']->id : null,
+                ]);
+                DB::commit();
+                if (!empty($validatedData['email'])) {
+                    $businessData = BusinessCapitalNeed::with(['financialSupport', 'bankServicesInterest'])->where('business_id', $existingBusiness->id)->first();
+                    $business = Business::find($existingBusiness->id);
+
+                    $businessData->append(['business_name' => $business->business_name, 'business_code' => $business->business_code,
+                                           'business_address' => $business->business_address, 'phone_number' => $business->phone_number,
+                                           'representative_name' => $business->representative_name, 'email' => $business->email,
+                                           'fax_number' => $business->fax_number
+                                        ]);
+
+                    // Attempt to send the email and log any errors
+                    try {
+                        Mail::to($validatedData['email'])->send(new BusinessRegistered($businessData));
+                    } catch (\Exception $mailException) {
+                        Log::error('Email Sending Exception: ' . $mailException->getMessage(), [
+                            'email' => $validatedData['email'],
+                            'business_id' => $existingBusiness->id,
+                            'validated_data' => $validatedData,
+                        ]);
+                        // You can choose to return an error message to the user here if desired
+                    }
+                }
+                return redirect()->back()->with('success', 'Đã thêm Đăng ký vốn cho doanh nghiệp hiện có.');
             }
-            BusinessCapitalNeed::create([
-                'business_id' => $existingBusiness->id,
-                'interest_rate' => $validatedData['interest_rate'],
-                'finance' => $validatedData['finance'],
-                'mortgage_policy' => $validatedData['mortgage_policy'],
-                'unsecured_policy' => $validatedData['unsecured_policy'],
-                'purpose' => $validatedData['purpose'],
-                'bank_connection' => $validatedData['bank_connection'],
-                'feedback' => $validatedData['feedback'],
-                'financial_support_id' => $request->has('slug') && ($financialSupport = FinancialSupport::where('slug', $request->slug)->first()) ? $financialSupport->id : null,
-                'bank_services_interest_id' => $request->has('slug') && ($bankService = BankServicesInterest::where('slug', $request->slug)->first()) ? $bankService->id : null
+
+            $response = $this->checkForExistingEmail($validatedData['email']);
+            if ($response) return $response;
+
+            $business = Business::create([
+                'business_name' => $validatedData['business_name'],
+                'business_code' => $validatedData['business_code'],
+                'business_address' => $validatedData['business_address'],
+                'representative_name' => $validatedData['representative_name'],
+                'category_business_id' => $validatedData['category_business_id'],
+                'fax' => $validatedData['fax'],
+                'gender' => $validatedData['gender'],
+                'phone_number' => $validatedData['phone_number'],
+                'email' => $validatedData['email'],
+                'status' => 'other'
             ]);
 
+            $validatedData['financial_support_id'] = $request->has('slug') ? FinancialSupport::where('slug', $request->slug)->first() : null;
+            $validatedData['bank_services_interest_id']  = $request->has('slug') ? BankServicesInterest::where('slug', $request->slug)->first() : null;
 
+            BusinessCapitalNeed::create([
+                    'business_id' => $business->id,
+                    'interest_rate' => $validatedData['interest_rate'],
+                    'finance' => $validatedData['finance'],
+                    'mortgage_policy' => $validatedData['mortgage_policy'],
+                    'unsecured_policy' => $validatedData['unsecured_policy'],
+                    'purpose' => $validatedData['purpose'],
+                    'bank_connection' => $validatedData['bank_connection'],
+                    'feedback' => $validatedData['feedback'],
+                    'financial_support_id' =>   $validatedData['financial_support_id'] ?   $validatedData['financial_support_id']->id : null,
+                    'bank_services_interest_id' => $validatedData['bank_services_interest_id']  ? $validatedData['bank_services_interest_id']->id : null,
+            ]);
             DB::commit();
-            return redirect()->back()->with('success', 'Đã thêm Đăng ký vốn cho doanh nghiệp hiện có.');
-        }
+            if (!empty($validatedData['email'])) {
+                $businessData = BusinessCapitalNeed::with(['financialSupport', 'bankServicesInterest'])->where('business_id', $business->id)->first();
+                $business = Business::find($business->id);
 
-        $response = $this->checkForExistingEmail($validatedData['email']);
-        if ($response) return $response;
+                $businessData->append(['business_name' => $business->business_name, 'business_code' => $business->business_code,
+                                           'business_address' => $business->business_address, 'phone_number' => $business->phone_number,
+                                           'representative_name' => $business->representative_name, 'email' => $business->email,
+                                           'fax_number' => $business->fax_number
+                                          ]);
 
-        $business = Business::create([
-            'business_name' => $validatedData['business_name'],
-            'business_code' => $validatedData['business_code'],
-            'business_address' => $validatedData['business_address'],
-            'representative_name' => $validatedData['representative_name'],
-            'category_business_id' => $validatedData['category_business_id'],
-            'fax' => $validatedData['fax'],
-            'gender' => $validatedData['gender'],
-            'phone_number' => $validatedData['phone_number'],
-            'email' => $validatedData['email'],
-            'status' => 'other'
-        ]);
-
-        BusinessCapitalNeed::create([
-                'business_id' => $business->id,
-                'interest_rate' => $validatedData['interest_rate'],
-                'finance' => $validatedData['finance'],
-                'mortgage_policy' => $validatedData['mortgage_policy'],
-                'unsecured_policy' => $validatedData['unsecured_policy'],
-                'purpose' => $validatedData['purpose'],
-                'bank_connection' => $validatedData['bank_connection'],
-                'feedback' => $validatedData['feedback'],
-                'financial_support_id' => $request->has('slug') && ($financialSupport = FinancialSupport::where('slug', $request->slug)->first()) ? $financialSupport->id : null,
-                'bank_service_id' => $request->has('slug') && ($bankService = BankServicesInterest::where('slug', $request->slug)->first()) ? $bankService->id : null
-        ]);
-
-        DB::commit();
-        return redirect()->back()->with('success', 'Đăng ký vốn thành công!');
+                 try {
+                    Mail::to($validatedData['email'])->send(new BusinessRegistered($businessData));
+                } catch (\Exception $mailException) {
+                    Log::error('Email Sending Exception: ' . $mailException->getMessage(), [
+                        'email' => $validatedData['email'],
+                        'business_id' => $business->id,
+                        'validated_data' => $validatedData,
+                    ]);
+                    // You can choose to return an error message to the user here if desired
+                }
+                // Mail::to($validatedData['email'])->send(new BusinessRegistered($businessData));
+            }
+            return redirect()->back()->with('success', 'Đăng ký vốn thành công!');
         }catch (ValidationException $e) {
             DB::rollBack();
+            Log::error('Validation Exception: ', $e->errors());
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('General Exception: ' . $e->getMessage(), [
+                'input' => $request->all(),
+                'validated_data' => $validatedData ?? null,
+            ]);
             return redirect()->back()->with('error', 'Đăng ký thất bại: ' . $e->getMessage())->withInput();
         }
     }

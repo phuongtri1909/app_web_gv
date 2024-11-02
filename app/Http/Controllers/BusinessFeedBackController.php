@@ -100,9 +100,17 @@ class BusinessFeedBackController extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $businessFeedbacks = BusinessFeedback::all();
+        $search = $request->input('search');
+        $businessFeedbacks = BusinessFeedback::when($search, function ($query) use ($search) {
+            return $query->where(function ($q) use ($search) {
+                $q->where('business_name', 'like', '%' . $search . '%')
+                ->orWhere('owner_full_name', 'like', '%' . $search . '%')
+                ->orWhere('phone', 'like', '%' . $search . '%');
+            });
+        })
+        ->paginate(15);
         return view('admin.pages.client.form-feed-back.index', compact('businessFeedbacks'));
     }
 

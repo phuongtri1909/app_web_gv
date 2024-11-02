@@ -125,6 +125,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <x-pagination :paginator="$jobApplications" />
                         <div class="modal fade" id="applicationDetailModal" tabindex="-1"
                             aria-labelledby="applicationDetailModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg">

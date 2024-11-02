@@ -142,6 +142,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <x-pagination :paginator="$capitalNeeds" />
                     </div>
 
                 </div>

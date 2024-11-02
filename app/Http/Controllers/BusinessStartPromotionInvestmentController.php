@@ -122,9 +122,18 @@ class BusinessStartPromotionInvestmentController extends Controller
             return redirect()->back()->with('error', 'Đăng ký thất bại: ' . $e->getMessage())->withInput();
         }
     }
-    public function index()
+    public function index(Request $request)
     {
-        $promotions = BusinessStartPromotionInvestment::with(['business', 'supportNeeds'])->get();
+        $search = $request->input('search');
+        $promotions = BusinessStartPromotionInvestment::with(['business', 'supportNeeds'])
+            ->when($search, function ($query, $search) {
+                $query->whereHas('business', function ($query) use ($search) {
+                    $query->where('business_name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('business_code', 'like', "%{$search}%");
+                });
+        })
+            ->paginate(15);
         return view('admin.pages.client.form-start-promotion-invertment.index', compact('promotions'));
     }
 

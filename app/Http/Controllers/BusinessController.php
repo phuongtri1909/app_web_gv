@@ -20,6 +20,8 @@ use App\Models\BusinessPromotionalIntroduction;
 use Illuminate\Validation\ValidationException ;
 use App\Models\BusinessStartPromotionInvestment;
 use Illuminate\Support\Facades\Http;
+use App\Mail\BusinessRegistered;
+use Illuminate\Support\Facades\Mail;
 
 class BusinessController extends Controller
 {
@@ -33,17 +35,29 @@ class BusinessController extends Controller
         return view('pages.client.form-business', compact('businesses','wards','category_business','business_fields'));
     }
 
-    public function adminIndex()
+    public function adminIndex(Request $request)
     {
-        $businesses = Business::whereNot('status','other')->get();
+        $search = $request->input('search');
+        $businesses = Business::whereNot('status', 'other')
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('business_name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('business_code', 'like', "%{$search}%");
+                });
+            })
+            ->paginate(15);
         $wards = WardGovap::all();
         $category_business = CategoryBusiness::all();
+
         return view('admin.pages.client.form-business.index', compact(
             'businesses',
             'wards',
-            'category_business',
+            'category_business'
         ));
     }
+
+
     public function create()
     {
         return view('pages.client.form-business');
@@ -139,7 +153,7 @@ class BusinessController extends Controller
 
         try {
             $data = $request->except(['business_license', 'avt_businesses']);
-
+            $data['subject'] = 'Đăng ký doanh nghiệp';
 
             if ($request->hasFile('avt_businesses')) {
                 $image = $request->file('avt_businesses');
@@ -170,18 +184,21 @@ class BusinessController extends Controller
                     $existingBusiness->status = 'pending';
                     $existingBusiness->fill($data);
                     $existingBusiness->save();
+                    $businessData = Business::with(['categoryBusiness', 'field', 'ward'])->find($existingBusiness->id);
+                    Mail::to($data['email'])->send(new BusinessRegistered($businessData));
                 } else {
                     return redirect()->back()->withInput()->withErrors(['business_code' => 'Mã số thuế đã đăng ký.']);
                 }
             } else {
-                Business::create($data);
+                $business = Business::create($data);
+                $businessData = Business::with(['categoryBusiness', 'field', 'ward'])->find($business->id);
+                Mail::to($data['email'])->send(new BusinessRegistered($businessData));
             }
 
 
             // Business::create($data);
 
             DB::commit();
-
             return redirect()->route('business.index')->with('success', 'Gửi thành công!!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -194,7 +211,7 @@ class BusinessController extends Controller
                 unlink(public_path( $data['avt_businesses']));
             }
 
-            return redirect()->back()->with('error', 'Gửi thất bại: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gửi thất bại: ' . $e->getMessage())->withInput();
         }
     }
 
