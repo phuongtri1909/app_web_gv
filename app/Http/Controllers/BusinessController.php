@@ -185,18 +185,16 @@ class BusinessController extends Controller
                     $existingBusiness->status = 'pending';
                     $existingBusiness->fill($data);
                     $existingBusiness->save();
-                    if (!empty($data['email'])) {
-                        $businessData = Business::with(['categoryBusiness', 'field', 'ward'])->find($existingBusiness->id);
-                        $businessData['subject'] = 'Đăng ký doanh nghiệp';
-                        try {
-                            Mail::to($data['email'])->send(new BusinessRegistered($businessData));
-                        } catch (\Exception $e) {
-                            Log::error('Email Sending Error:', [
-                                'message' => $e->getMessage(),
-                                'email' => $data['email'],
-                                'business_id' => $existingBusiness->id
-                            ]);
-                        }
+                    $businessData = Business::with(['categoryBusiness', 'field', 'ward'])->find($existingBusiness->id);
+                    $businessData['subject'] = 'Đăng ký doanh nghiệp';
+                    try {
+                        Mail::to('thanhvu08103@gmail.com')->send(new BusinessRegistered($businessData));
+                    } catch (\Exception $e) {
+                        Log::error('Email Sending Error:', [
+                            'message' => $e->getMessage(),
+                            'email' => $data['email'],
+                            'business_id' => $existingBusiness->id
+                        ]);
                     }
                     
                 } else {
@@ -204,19 +202,18 @@ class BusinessController extends Controller
                 }
             } else {
                 $business = Business::create($data);
-                if (!empty($data['email'])) {
-                    $businessData = Business::with(['categoryBusiness', 'field', 'ward'])->find($business->id);
-                    $businessData['subject'] = 'Đăng ký doanh nghiệp';
+               
+                $businessData = Business::with(['categoryBusiness', 'field', 'ward'])->find($business->id);
+                $businessData['subject'] = 'Đăng ký doanh nghiệp';
                     
-                    try {
-                        Mail::to($data['email'])->send(new BusinessRegistered($businessData));
-                    } catch (\Exception $e) {
-                        Log::error('Email Sending Error:', [
-                            'message' => $e->getMessage(),
-                            'email' => $data['email'],
-                            'business_id' => $business->id
-                        ]);
-                    }
+                 try {
+                    Mail::to('thinhdv1@ncb-bank.vn')->send(new BusinessRegistered($businessData));
+                } catch (\Exception $e) {
+                    Log::error('Email Sending Error:', [
+                        'message' => $e->getMessage(),
+                        'email' => $data['email'],
+                        'business_id' => $business->id
+                    ]);
                 }
                 
             }

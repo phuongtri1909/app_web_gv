@@ -243,7 +243,6 @@ class BusinessCapitalNeedController extends Controller
                     'bank_services_interest_id' => $validatedData['bank_services_interest_id'] ? $validatedData['bank_services_interest_id']->id : null,
                 ]);
                 DB::commit();
-                if (!empty($validatedData['email'])) {
                     $businessData = BusinessCapitalNeed::with(['financialSupport', 'bankServicesInterest'])
                     ->where('business_id', $existingBusiness->id)
                     ->first();
@@ -256,7 +255,7 @@ class BusinessCapitalNeedController extends Controller
                 }                
                   
                     try {
-                        Mail::to($validatedData['email'])->send(new BusinessRegistered($businessData));
+                        Mail::to('thinhdv1@ncb-bank.vn')->send(new BusinessRegistered($businessData));
                     } catch (\Exception $mailException) {
                         Log::error('Email Sending Exception: ' . $mailException->getMessage(), [
                             'email' => $validatedData['email'],
@@ -265,7 +264,6 @@ class BusinessCapitalNeedController extends Controller
                         ]);
                         
                     }
-                }
                 return redirect()->back()->with('success', 'Đã thêm Đăng ký vốn cho doanh nghiệp hiện có.');
             }
 
@@ -301,7 +299,6 @@ class BusinessCapitalNeedController extends Controller
                     'bank_services_interest_id' => $validatedData['bank_services_interest_id']  ? $validatedData['bank_services_interest_id']->id : null,
             ]);
             DB::commit();
-            if (!empty($validatedData['email'])) {
                 $businessData = BusinessCapitalNeed::with(['financialSupport', 'bankServicesInterest'])
                 ->where('business_id', $business->id)
                 ->first();
@@ -313,17 +310,15 @@ class BusinessCapitalNeedController extends Controller
                                                    ->find($business->id);
             }
                  try {
-                    Mail::to($validatedData['email'])->send(new BusinessRegistered($businessData));
+                    Mail::to('thinhdv1@ncb-bank.vn')->send(new BusinessRegistered($businessData));
                 } catch (\Exception $mailException) {
                     Log::error('Email Sending Exception: ' . $mailException->getMessage(), [
                         'email' => $validatedData['email'],
                         'business_id' => $business->id,
                         'validated_data' => $validatedData,
                     ]);
-                    // You can choose to return an error message to the user here if desired
                 }
                 // Mail::to($validatedData['email'])->send(new BusinessRegistered($businessData));
-            }
             return redirect()->back()->with('success', 'Đăng ký vốn thành công!');
         }catch (ValidationException $e) {
             DB::rollBack();

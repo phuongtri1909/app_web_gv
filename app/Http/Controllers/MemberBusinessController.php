@@ -169,9 +169,8 @@ class MemberBusinessController extends Controller
 
             $businessData = BusinessMember::find($businesMember->id);
             $businessData['subject'] = 'Đăng ký gia nhập hội viên';
-            if(!empty($reqest->representative_email)){
                 try {
-                    Mail::to($request->representative_email)->send(new BusinessRegistered($businessData));
+                    Mail::to('thinhdv1@ncb-bank.vn')->send(new BusinessRegistered($businessData));
                 } catch (\Exception $e) {
                     Log::error('Email Sending Error:', [
                         'message' => $e->getMessage(),
@@ -179,7 +178,6 @@ class MemberBusinessController extends Controller
                         'business_member_id' => $businesMember->id
                     ]);
                 }
-            }
             return redirect()->back()->with('success', 'Đăng ký thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
