@@ -32,5 +32,6 @@ class BusinessMember extends Model
         'business_license_file',
         'identity_card_front_file',
         'identity_card_back_file',
+        'status',
     ];
 }
