@@ -216,7 +216,6 @@ class BusinessCapitalNeedController extends Controller
             ]);
 
             $responseBody = json_decode($response->body());
-            $validatedData['subject'] = 'Đăng ký nhu cầu về vốn';
             if (!$responseBody->success) {
                 return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
             }
@@ -245,16 +244,17 @@ class BusinessCapitalNeedController extends Controller
                 ]);
                 DB::commit();
                 if (!empty($validatedData['email'])) {
-                    $businessData = BusinessCapitalNeed::with(['financialSupport', 'bankServicesInterest'])->where('business_id', $existingBusiness->id)->first();
-                    $business = Business::find($existingBusiness->id);
-
-                    $businessData->append(['business_name' => $business->business_name, 'business_code' => $business->business_code,
-                                           'business_address' => $business->business_address, 'phone_number' => $business->phone_number,
-                                           'representative_name' => $business->representative_name, 'email' => $business->email,
-                                           'fax_number' => $business->fax_number
-                                        ]);
-
-                    // Attempt to send the email and log any errors
+                    $businessData = BusinessCapitalNeed::with(['financialSupport', 'bankServicesInterest'])
+                    ->where('business_id', $existingBusiness->id)
+                    ->first();
+                    $businessData['subject'] = 'Đăng ký nhu cầu về vốn';
+                
+                if ($businessData) {
+                    $businessData->business = Business::select('business_name', 'business_code', 'business_address', 'phone_number', 
+                                                               'representative_name', 'email', 'fax_number')
+                                                       ->find($existingBusiness->id);
+                }                
+                  
                     try {
                         Mail::to($validatedData['email'])->send(new BusinessRegistered($businessData));
                     } catch (\Exception $mailException) {
@@ -263,7 +263,7 @@ class BusinessCapitalNeedController extends Controller
                             'business_id' => $existingBusiness->id,
                             'validated_data' => $validatedData,
                         ]);
-                        // You can choose to return an error message to the user here if desired
+                        
                     }
                 }
                 return redirect()->back()->with('success', 'Đã thêm Đăng ký vốn cho doanh nghiệp hiện có.');
@@ -278,7 +278,7 @@ class BusinessCapitalNeedController extends Controller
                 'business_address' => $validatedData['business_address'],
                 'representative_name' => $validatedData['representative_name'],
                 'category_business_id' => $validatedData['category_business_id'],
-                'fax' => $validatedData['fax'],
+                'fax_number' => $validatedData['fax'],
                 'gender' => $validatedData['gender'],
                 'phone_number' => $validatedData['phone_number'],
                 'email' => $validatedData['email'],
@@ -302,15 +302,16 @@ class BusinessCapitalNeedController extends Controller
             ]);
             DB::commit();
             if (!empty($validatedData['email'])) {
-                $businessData = BusinessCapitalNeed::with(['financialSupport', 'bankServicesInterest'])->where('business_id', $business->id)->first();
-                $business = Business::find($business->id);
-
-                $businessData->append(['business_name' => $business->business_name, 'business_code' => $business->business_code,
-                                           'business_address' => $business->business_address, 'phone_number' => $business->phone_number,
-                                           'representative_name' => $business->representative_name, 'email' => $business->email,
-                                           'fax_number' => $business->fax_number
-                                          ]);
-
+                $businessData = BusinessCapitalNeed::with(['financialSupport', 'bankServicesInterest'])
+                ->where('business_id', $business->id)
+                ->first();
+                $businessData['subject'] = 'Đăng ký nhu cầu về vốn';
+            
+            if ($businessData) {
+                $businessData->business = Business::select('business_name', 'business_code', 'business_address', 'phone_number', 
+                                                           'representative_name', 'email', 'fax_number')
+                                                   ->find($business->id);
+            }
                  try {
                     Mail::to($validatedData['email'])->send(new BusinessRegistered($businessData));
                 } catch (\Exception $mailException) {

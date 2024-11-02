@@ -111,9 +111,15 @@
         </div>
         {{-- {{ dd($businessData) }} --}}
         <div class="content">
-            <p class="greeting">Xin chào <span class="highlight">{{ $businessData['representative_name'] }}</span>,</p>
+            <p class="greeting">Xin chào <span class="highlight">
+                {{
+                    $businessData['representative_name'] 
+                    ?? $businessData->business->name 
+                    ?? $businessData['representative_full_name'] 
+                }}
+            </span>,</p>
             <p>Cảm ơn bạn đã đăng ký tại Gò Vấp E-Business. Chúng tôi xin xác nhận rằng đơn đăng ký của bạn
-                đã được tiếp nhận thành công.</p>
+                đã được tiếp nhận thành công.</p>            
             <div class="info-list">
                 @php
                     $fields = [
@@ -128,6 +134,23 @@
                         'purpose' => 'Mục đích',
                         'unsecured_policy' => 'Chính sách vay thế chấp',
                         'mortgage_policy' => 'Tín chấp',
+                        'business_name' => 'Tên doanh nghiệp',
+                        'business_license_number' => 'Mã số doanh nghiệp',
+                        'license_issue_date' => 'Ngày cấp',
+                        'license_issue_place' => 'Nơi cấp',
+                        'business_field' => 'Ngành nghề kinh doanh',
+                        'head_office_address' => 'Địa chỉ trụ sở chính',
+                        'phone' => 'Số điện thoại',
+                        'fax' => 'Số Fax',
+                        'branch_address' => 'Địa chỉ chi nhánh',
+                        'organization_participation' => 'Tham gia tổ chức',
+                        'representative_full_name' => 'Người đại diện',
+                        'representative_position' => 'Chức vụ',
+                        'identity_card' => 'CCCD/CMND',
+                        'identity_card_issue_date' => 'Ngày cấp CCCD/CMND',
+                        'home_address' => 'Địa chỉ nhà',
+                        'contact_phone' => 'Số điện thoại liên hệ',
+                        'representative_email' => 'Email người đại diện'
                     ];
                 @endphp
 
@@ -139,27 +162,6 @@
                     @endif
                 @endforeach
 
-                {{-- <div class="info-item">
-                    <strong>Tên doanh nghiệp:</strong> {{ $businessData->business_name }}
-                </div>
-                <div class="info-item">
-                    <strong>Mã số doanh nghiệp:</strong> {{ $businessData->business_code}}
-                </div>
-                <div class="info-item">
-                    <strong>Địa chỉ kinh doanh:</strong> {{ $businessData->business_address }}
-                </div>
-                <div class="info-item">
-                    <strong>Số điện thoại:</strong> {{ $businessData->phone_number }}
-                </div>
-                <div class="info-item">
-                    <strong>Số Fax:</strong> {{ $businessData->fax_number }}
-                </div>
-                <div class="info-item">
-                    <strong>Email:</strong> {{ $businessData->email }}
-                </div>
-                <div class="info-item">
-                    <strong>Địa chỉ:</strong> {{ $businessData->address }}
-                </div> --}}
                 @if (isset($businessData->categoryBusiness) && !empty($businessData->categoryBusines))
                     <div class="info-item">
                         <strong>Loại doanh nghiệp:</strong> {{ $businessData->categoryBusiness->name }}
@@ -177,6 +179,27 @@
                         <strong>Ngành nghề kinh doanh:</strong> {{ $businessData->field->name }}
                     </div>
                 @endif
+
+                @php
+                $fields = [
+                    'business_name' => 'Tên doanh nghiệp',
+                    'business_code' => 'Mã số doanh nghiệp',
+                    'business_address' => 'Địa chỉ kinh doanh',
+                    'phone_number' => 'Số điện thoại',
+                    'fax_number' => 'Số Fax',
+                    'email' => 'Email',
+                    'address' => 'Địa chỉ',
+                ];
+            @endphp
+
+            @foreach ($fields as $key => $label)
+                @if (isset($businessData->business->$key) && !empty($businessData->business->$key))
+                    <div class="info-item">
+                        <strong>{{ $label }}:</strong> {{ $businessData->business->$key }}
+                    </div>
+                @endif
+            @endforeach
+
                 @if (isset($businessData->financialSupport) && !empty($businessData->financialSupport))
                     <div class="info-item">
                         <strong>SPKHDN:</strong> {{ $businessData->financialSupport->name }}

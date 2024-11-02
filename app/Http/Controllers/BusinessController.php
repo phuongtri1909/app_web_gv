@@ -22,6 +22,8 @@ use App\Models\BusinessStartPromotionInvestment;
 use Illuminate\Support\Facades\Http;
 use App\Mail\BusinessRegistered;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+
 
 class BusinessController extends Controller
 {
@@ -153,7 +155,6 @@ class BusinessController extends Controller
 
         try {
             $data = $request->except(['business_license', 'avt_businesses']);
-            $data['subject'] = 'Đăng ký doanh nghiệp';
 
             if ($request->hasFile('avt_businesses')) {
                 $image = $request->file('avt_businesses');
@@ -184,15 +185,40 @@ class BusinessController extends Controller
                     $existingBusiness->status = 'pending';
                     $existingBusiness->fill($data);
                     $existingBusiness->save();
-                    $businessData = Business::with(['categoryBusiness', 'field', 'ward'])->find($existingBusiness->id);
-                    Mail::to($data['email'])->send(new BusinessRegistered($businessData));
+                    if (!empty($data['email'])) {
+                        $businessData = Business::with(['categoryBusiness', 'field', 'ward'])->find($existingBusiness->id);
+                        $businessData['subject'] = 'Đăng ký doanh nghiệp';
+                        try {
+                            Mail::to($data['email'])->send(new BusinessRegistered($businessData));
+                        } catch (\Exception $e) {
+                            Log::error('Email Sending Error:', [
+                                'message' => $e->getMessage(),
+                                'email' => $data['email'],
+                                'business_id' => $existingBusiness->id
+                            ]);
+                        }
+                    }
+                    
                 } else {
                     return redirect()->back()->withInput()->withErrors(['business_code' => 'Mã số thuế đã đăng ký.']);
                 }
             } else {
                 $business = Business::create($data);
-                $businessData = Business::with(['categoryBusiness', 'field', 'ward'])->find($business->id);
-                Mail::to($data['email'])->send(new BusinessRegistered($businessData));
+                if (!empty($data['email'])) {
+                    $businessData = Business::with(['categoryBusiness', 'field', 'ward'])->find($business->id);
+                    $businessData['subject'] = 'Đăng ký doanh nghiệp';
+                    
+                    try {
+                        Mail::to($data['email'])->send(new BusinessRegistered($businessData));
+                    } catch (\Exception $e) {
+                        Log::error('Email Sending Error:', [
+                            'message' => $e->getMessage(),
+                            'email' => $data['email'],
+                            'business_id' => $business->id
+                        ]);
+                    }
+                }
+                
             }
 
 

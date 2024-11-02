@@ -6,6 +6,10 @@ use App\Models\BusinessMember;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use App\Mail\BusinessRegistered;
+
 class MemberBusinessController extends Controller
 {
 
@@ -168,6 +172,19 @@ class MemberBusinessController extends Controller
             $businesMember->save();
             DB::commit();
 
+            $businessData = BusinessMember::find($businesMember->id);
+            $businessData['subject'] = 'Đăng ký gia nhập hội viên';
+            if(!empty($reqest->representative_email)){
+                try {
+                    Mail::to($request->representative_email)->send(new BusinessRegistered($businessData));
+                } catch (\Exception $e) {
+                    Log::error('Email Sending Error:', [
+                        'message' => $e->getMessage(),
+                        'email' => $request->representative_email,
+                        'business_member_id' => $businesMember->id
+                    ]);
+                }
+            }
             return redirect()->back()->with('success', 'Đăng ký thành công!');
         } catch (\Exception $e) {
             DB::rollBack();

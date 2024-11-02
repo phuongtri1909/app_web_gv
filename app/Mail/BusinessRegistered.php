@@ -26,12 +26,12 @@ class BusinessRegistered extends Mailable
     /**
      * Get the message envelope.
      */
-    public function envelope(): Envelope
-    {
-        return new Envelope(
-            subject: $this->businessData['subject'] ?? 'Business Registered'
-        );
-    }
+    // public function envelope(): Envelope
+    // {
+    //     return new Envelope(
+    //         subject: $this->businessData['subject'] ?? 'Business Registered'
+    //     );
+    // }
 
     /**
      * Get the message content definition.
@@ -54,7 +54,11 @@ class BusinessRegistered extends Mailable
     }
     public function build()
     {
+        $subject = $this->businessData['subject'] ?? 'Business Registered';
+    
         return $this->view('emails.business_registered')
-                    ->with('businessData', $this->businessData);
+                    ->with('businessData', $this->businessData)
+                    ->subject($subject);
     }
+    
 }
