@@ -291,9 +291,13 @@ class BusinessController extends Controller
             $businesses = Business::where('status', 'approved')
                 ->whereHas('products', function ($query) use ($category_product_business) {
                     $query->where('category_product_id', $category_product_business->id);
-                })->get();
+                })
+                ->orderBy('created_at', 'asc')
+                ->get();
         } else {
-            $businesses = Business::where('status', 'approved')->get();
+            $businesses = Business::where('status', 'approved')
+                ->orderBy('created_at', 'asc') 
+                ->get();
         }
         $category_product_business = CategoryProductBusiness::get();
 
