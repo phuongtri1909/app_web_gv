@@ -31,7 +31,7 @@ class BusinessController extends Controller
         $wards = WardGovap::all();
         $category_business = CategoryBusiness::all();
         $businesses = Business::all();
-        $business_fields = BusinessField::all();
+        $business_fields = BusinessField::orderBy('created_at','DESC')->all();
         return view('pages.client.form-business', compact('businesses','wards','category_business','business_fields'));
     }
 
