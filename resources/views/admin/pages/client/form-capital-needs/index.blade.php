@@ -434,8 +434,4 @@
             });
         });
     </script>
-    <script>
-
-
-    </script>
 @endpush

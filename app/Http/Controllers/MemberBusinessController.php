@@ -6,6 +6,10 @@ use App\Models\BusinessMember;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use App\Mail\BusinessRegistered;
+
 class MemberBusinessController extends Controller
 {
 
@@ -14,11 +18,6 @@ class MemberBusinessController extends Controller
         $members = BusinessMember::latest()->paginate(10);
         return view('admin.pages.client.form-member.index', compact('members'));
     }
-    public function show($id){
-        $member = BusinessMember::find($id);
-        return view('admin.pages.member-business.show', compact('member'));
-    }
-    //
     public function showFormMemberBusiness()
     {
         return view('pages.client.gv.form-member-business');
@@ -168,6 +167,19 @@ class MemberBusinessController extends Controller
             $businesMember->save();
             DB::commit();
 
+            $businessData = BusinessMember::find($businesMember->id);
+            $businessData['subject'] = 'Đăng ký gia nhập hội viên';
+            if(!empty($reqest->representative_email)){
+                try {
+                    Mail::to($request->representative_email)->send(new BusinessRegistered($businessData));
+                } catch (\Exception $e) {
+                    Log::error('Email Sending Error:', [
+                        'message' => $e->getMessage(),
+                        'email' => $request->representative_email,
+                        'business_member_id' => $businesMember->id
+                    ]);
+                }
+            }
             return redirect()->back()->with('success', 'Đăng ký thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -229,5 +241,47 @@ class MemberBusinessController extends Controller
             }
         }
     }
+    public function show($id)
+    {
+        if (!is_numeric($id)) {
+            return response()->json(['error' => 'Invalid ID format'], 400);
+        }
+
+        try {
+            $member = BusinessMember::findOrFail($id);
+
+            return response()->json([
+                'id' => $member->id,
+                'business_name' => $member->business_name,
+                'business_license_number' => $member->business_license_number,
+                'license_issue_date' => $member->license_issue_date,
+                'license_issue_place' => $member->license_issue_place,
+                'business_field' => $member->business_field,
+                'head_office_address' => $member->head_office_address,
+                'phone' => $member->phone,
+                'fax' => $member->fax,
+                'email' => $member->email,
+                'branch_address' => $member->branch_address,
+                'organization_participation' => $member->organization_participation,
+                'representative_full_name' => $member->representative_full_name,
+                'representative_position' => $member->representative_position,
+                'representative_email' => $member->representative_email,
+                'home_address' => $member->home_address,
+                'contact_phone' => $member->contact_phone,  
+                'gender' => $member->gender,
+                'identity_card' => $member->identity_card,
+                'identity_card_issue_date' => $member->identity_card_issue_date,
+                'business_license_file' => $member->business_license_file,
+                'identity_card_front_file' => $member->identity_card_front_file,
+                'identity_card_back_file' => $member->identity_card_back_file,
+                'created_at' => $member->created_at,
+                'status' => $member->status,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch member details'], 500);
+        }
+    }
+
 
 }
