@@ -126,6 +126,10 @@
                                 <p>Giám đốc chi nhánh</p>
                             </div>
                             <div class="d-flex">
+                                <p class="fw-semibold me-2">Email:</p>
+                                <p>chautm2@ncb-bank.vn</p>
+                            </div>
+                            <div class="d-flex">
                                 <p class="fw-semibold me-2">Năm sinh:</p>
                                 <p>{{ $business->birth_year }}</p>
                             </div>
