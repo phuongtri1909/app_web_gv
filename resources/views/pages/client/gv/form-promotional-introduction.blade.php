@@ -191,7 +191,6 @@
     </style>
 @endpush
 
-
 @section('content')
     <section id="start-promotion">
         <div class="container my-4">
@@ -304,7 +303,7 @@
                             @enderror
                         </div>
                         <div class="col-md-4 mb-4">
-                            <label for="license" class="form-label">Giấy phép kinh doanh:<span
+                            <label for="license" class="form-label">Giấy phép kinh doanh: <= 10MB<span
                                     class="text-danger">*</span></label>
                             <input  type="file" class="form-control form-control-sm" id="license"
                                 accept="application/pdf" name="license">
@@ -410,10 +409,8 @@
 
                         <div class="mb-3">
                             <div class="col-12 mb-3">
-                                <label for="place-name" class="form-label">Nhập tên địa điểm <span
-                                        class="text-danger">*</span></label>
-
-                                <input  type="text" id="place-name" class="form-control" placeholder="Lấy thông tin dựa trên ví trí chọn">
+                                <label for="place-name" class="form-label">Nhập tên địa điểm <span class="text-danger">*</span></label>
+                                <input type="text" id="place-name" class="form-control" placeholder="Lấy thông tin dựa trên ví trí chọn" value="{{ old('name') }}">
                                 <span class="error-message"></span>
                                 @error('name')
                                     <span class="invalid-feedback" role="alert">
@@ -436,10 +433,10 @@
                                     </span>
                                 @enderror
                             </div>
-                            <input required type="hidden" id="name" name="name">
-                            <input required type="hidden" id="address_address" name="address_address">
-                            <input required type="hidden" id="address_latitude" name="address_latitude">
-                            <input required type="hidden" id="address_longitude" name="address_longitude">
+                            <input required type="hidden" id="name" name="name" value="{{ old('name') }}">
+                            <input required type="hidden" id="address_address" name="address_address" value="{{ old('address_address') }}">
+                            <input required type="hidden" id="address_latitude" name="address_latitude" value="{{ old('address_latitude') }}">
+                            <input required type="hidden" id="address_longitude" name="address_longitude" value="{{ old('address_longitude') }}">
                             <div id="map" style="height: 500px;"></div>
                         </div>
                     </div>
@@ -540,29 +537,33 @@
     <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&callback=initMap&libraries=places&v=weekly" async></script>
     <script>
         let map, marker, infowindow, service, autocomplete;
-
+    
         function initMap() {
+            const oldLatitude = parseFloat("{{ old('address_latitude') }}");
+            const oldLongitude = parseFloat("{{ old('address_longitude') }}");
+            const oldAddress = "{{ old('address_address') }}";
+    
             map = new google.maps.Map(document.getElementById("map"), {
                 center: {
-                    lat: 10.8231,
-                    lng: 106.6297
+                    lat: oldLatitude || 10.8231,
+                    lng: oldLongitude || 106.6297
                 },
                 zoom: 10,
             });
-
+    
             map.addListener("click", (event) => {
                 placeMarker(event.latLng);
                 getGeocode(event.latLng);
             });
-
+    
             infowindow = new google.maps.InfoWindow();
             service = new google.maps.places.PlacesService(map);
-
-           // tạo ô tìm kiếm địa điểm
+    
+            // tạo ô tìm kiếm địa điểm
             const input = document.getElementById('place-name');
             autocomplete = new google.maps.places.Autocomplete(input);
             autocomplete.bindTo('bounds', map);
-
+    
             autocomplete.addListener('place_changed', () => {
                 const place = autocomplete.getPlace();
                 if (!place.geometry || !place.geometry.location) {
@@ -571,42 +572,57 @@
                 }
                 map.setCenter(place.geometry.location);
                 placeMarker(place.geometry.location);
-
+    
                 // lấy thông tin chi tiết về địa điểm
                 service.getDetails({
                     placeId: place.place_id
                 }, (placeDetails, status) => {
                     if (status === google.maps.places.PlacesServiceStatus.OK) {
-                         // cập nhật lại vị trí cho input
-                         document.getElementById('name').value = place.name;
-                                document.getElementById('address_address').value = place.formatted_address;
-                                document.getElementById('address_latitude').value = place.geometry.location.lat();
-                                document.getElementById('address_longitude').value = place.geometry.location.lng();
+                        // cập nhật lại vị trí cho input
+                        document.getElementById('name').value = placeDetails.name;
+                        document.getElementById('address_address').value = placeDetails.formatted_address;
+                        document.getElementById('address_latitude').value = placeDetails.geometry.location.lat();
+                        document.getElementById('address_longitude').value = placeDetails.geometry.location.lng();
                         // màn hình console sẽ hiển thị thông tin chi tiết về địa điểm
                         infowindow.setContent(`
-                    <div>
-                        <strong>${placeDetails.name}</strong><br>
-                        ${placeDetails.formatted_address}<br>
-                    </div>
-                `);
+                            <div>
+                                <strong>${placeDetails.name}</strong><br>
+                                ${placeDetails.formatted_address}<br>
+                            </div>
+                        `);
                         infowindow.open(map, marker);
                         document.getElementById('place-name').value = placeDetails.formatted_address;
                     } else {
-                       
                         showToast('Không thể lấy thông tin chi tiết về địa điểm' + status, 'error');
                     }
                 });
             });
+    
+            // If there are old values, place the marker and update the inputs
+            if (!isNaN(oldLatitude) && !isNaN(oldLongitude)) {
+                const oldLatLng = new google.maps.LatLng(oldLatitude, oldLongitude);
+                placeMarker(oldLatLng);
+                document.getElementById('place-name').value = oldAddress;
+    
+                // Set infowindow content and open it
+                infowindow.setContent(`
+                    <div>
+                        <strong>{{ old('name') }}</strong><br>
+                        {{ old('address_address') }}<br>
+                    </div>
+                `);
+                infowindow.open(map, marker);
+            }
         }
-
+    
         function placeMarker(location) {
             const icon = {
-                url: 'path/to/your/custom-icon.png', // URL cho icon
+                // url: 'path/to/your/custom-icon.png', // URL cho icon
                 scaledSize: new google.maps.Size(50, 50), // Kích thước icon
                 origin: new google.maps.Point(0, 0), // Vị trí bắt đầu cắt icon
                 anchor: new google.maps.Point(25, 50) // Vị trí gắn icon
             };
-
+    
             if (marker) {
                 marker.setPosition(location);
             } else {
@@ -617,7 +633,7 @@
                 });
             }
         }
-
+    
         function getGeocode(latLng) {
             const geocoder = new google.maps.Geocoder();
             geocoder.geocode({
@@ -630,7 +646,7 @@
                         infowindow.setContent(address);
                         infowindow.open(map, marker);
                         document.getElementById('place-name').value = address;
-
+    
                         // lấy thông tin chi tiết về địa điểm
                         service.getDetails({
                             placeId: placeId
@@ -641,7 +657,7 @@
                                 document.getElementById('address_address').value = place.formatted_address;
                                 document.getElementById('address_latitude').value = place.geometry.location.lat();
                                 document.getElementById('address_longitude').value = place.geometry.location.lng();
-                               // màn hình console sẽ hiển thị thông tin chi tiết về địa điểm
+                                // màn hình console sẽ hiển thị thông tin chi tiết về địa điểm
                                 infowindow.setContent(`
                                     <div>
                                         <strong>${place.name}</strong><br>
@@ -659,5 +675,9 @@
                 }
             });
         }
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+        });
     </script>
 @endpush

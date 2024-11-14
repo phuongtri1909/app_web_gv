@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\BusinessCapitalNeedController;
-use App\Models\BusinessStartPromotionInvestment;
 use App\Models\Tab;
 use App\Models\SlideProgram;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +15,7 @@ use App\Http\Controllers\PaperController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\SliderController;
+use App\Http\Controllers\StatusController;
 use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\BannersController;
 use App\Http\Controllers\TagNewsController;
@@ -35,7 +34,9 @@ use App\Http\Controllers\ParentsChildController;
 use App\Http\Controllers\SlideProgramController;
 use App\Http\Controllers\TabAdmissionController;
 use App\Http\Controllers\TestimonialsController;
+use App\Models\BusinessStartPromotionInvestment;
 use App\Http\Controllers\AdminQuestionController;
+use App\Http\Controllers\BusinessFieldController;
 use App\Http\Controllers\DetailContentController;
 use App\Http\Controllers\TabDetailPostController;
 use App\Http\Controllers\JobApplicationController;
@@ -43,17 +44,18 @@ use App\Http\Controllers\MemberBusinessController;
 use App\Http\Controllers\TabsForParentsController;
 use App\Http\Controllers\ProgramOverviewController;
 use App\Http\Controllers\AdmissionProcessController;
+use App\Http\Controllers\BusinessFeedBackController;
 use App\Http\Controllers\CategoryQuestionController;
 use App\Http\Controllers\CustomerInterestController;
 use App\Http\Controllers\FinancialSupportController;
+use App\Http\Controllers\BusinessCapitalNeedController;
 use App\Http\Controllers\BusinessRecruitmentController;
 use App\Http\Controllers\ContactConsultationController;
 use App\Http\Controllers\AdmissionProcessDetailController;
-use App\Http\Controllers\BusinessFeedBackController;
-use App\Http\Controllers\BusinessStartPromotionInvestmentController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PersonalBusinessInterestController;
-use App\Http\Controllers\StatusController;
+use App\Http\Controllers\BusinessStartPromotionInvestmentController;
+use App\Http\Controllers\LocationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,8 +93,8 @@ Route::middleware(['language'])->group(function () {
         Route::get('/form-registering-capital-needs/{slug?}', [BusinessCapitalNeedController::class, 'showFormCapitalNeeds'])->name('show.form.capital.need'); //ĐĂNG KÝ NHU CẦU VỀ VỐN
         Route::post('/form-registering-capital-needs', [BusinessCapitalNeedController::class, 'storeFormCapitalNeeds'])->name('show.form.capital.need.store');
 
-        Route::get('/form-promotional-introduction', [BusinessController::class, 'showFormPromotional'])->name('show.form.promotional'); //form đăng ký điểm đến
-        Route::post('/form-promotional-introduction', [BusinessController::class, 'storeFormPromotional'])->name('form.promotional.store');
+        Route::get('/form-promotional-introduction', [LocationController::class, 'showFormPromotional'])->name('show.form.promotional'); //form đăng ký điểm đến
+        Route::post('/form-promotional-introduction', [LocationController::class, 'storeFormPromotional'])->name('form.promotional.store');
 
         Route::get('/form-recruitment-registration', [BusinessRecruitmentController::class, 'recruitmentRegistration'])->name('recruitment.registration'); //form đăng ký tuyển dụng
         Route::post('/form-recruitment-registration', [BusinessRecruitmentController::class, 'storeForm'])->name('recruitment.registration.store');
@@ -124,10 +126,10 @@ Route::middleware(['language'])->group(function () {
 
         Route::get('/legal-advice', [ContactConsultationController::class, 'legalAdvice'])->name('legal-advice');
 
-        //tạm gán cho locations
-        Route::get('/locations', function () {
-            return view('pages.client.locations');
-        })->name('locations');
+        //Locations
+        Route::get('/locations', [LocationController::class, 'clientIndex'])->name('locations');
+        Route::get('/search-locations', [LocationController::class, 'searchLocations'])->name('search.locations');
+        Route::get('/get-locations', [LocationController::class, 'getAllLocations'])->name('get.locations');
 
         //tam gán trang intro HDN
         Route::get('/intro-hdn', function () {
@@ -146,9 +148,6 @@ Route::middleware(['language'])->group(function () {
         return view('pages.tab-custom.index', compact('slug'));
     })->name('page.tab');
 
-    Route::get('select-campus', function () {
-        return abort(404);
-    })->name('select-campus');
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
@@ -195,11 +194,13 @@ Route::middleware(['language'])->group(function () {
 
                 Route::resource('recruitment',  BusinessRecruitmentController::class);
 
-                Route::get('/form-business', [BusinessController::class, 'adminIndex'])->name('show.admin.index');
+                Route::get('/form-business', [BusinessController::class, 'adminIndex'])->name('admin.business');
 
                 Route::post('/update-status', [StatusController::class, 'updateStatus'])->name('update.status');
 
                 Route::resource('members',  MemberBusinessController::class);
+
+                Route::resource('business-fields',  BusinessFieldController::class);
 
 
             });

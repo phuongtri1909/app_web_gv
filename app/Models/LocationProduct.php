@@ -16,4 +16,9 @@ class LocationProduct extends Model
         'file_path',
         'media_type',
     ];
+
+    public function location()
+    {
+        return $this->belongsTo(Locations::class, 'location_id');
+    }
 }

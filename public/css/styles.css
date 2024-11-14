@@ -137,6 +137,14 @@ header.header-sticky .navbar-toggler {
     }
 }
 
+.header{
+    position: fixed;
+    top: 0;
+    left: 50%;
+    z-index: 999;
+    transform: translateX(-50%);
+}
+
 /* End header */
 
 /* Banner video */

@@ -40,19 +40,13 @@
     <!-- JavaScript -->
     <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-    @include('pages.components.toast')
+   
     @stack('styles')
 </head>
 
 <body>
-    <section class="main-header" id="header">
-        <header class="header d-flex justify-content-center">
-            <nav class="navbar navbar-expand-lg navbar-dark ">
-                <div class="container">
-                    <img src="{{ asset('images/logo-hoi-doanh-nghiep.png') }}" alt="Flowbite Logo"
-                        style="width: 80px; height: 80px;" />
-
-                </div>
-            </nav>
-        </header>
-    </section>
+    @include('pages.components.toast')
+    <header class="header">
+        <img src="{{ asset('images/logo-hoi-doanh-nghiep.png') }}" alt="Flowbite Logo"
+            style="width: 80px; height: 80px;" />
+    </header>

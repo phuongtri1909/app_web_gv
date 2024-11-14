@@ -31,4 +31,9 @@ class Locations extends Model
         return $this->belongsTo(Business::class, 'business_id');
     }
 
+    public function locationProducts()
+    {
+        return $this->hasMany(LocationProduct::class, 'location_id');
+    }
+
 }
