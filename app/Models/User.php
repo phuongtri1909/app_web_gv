@@ -25,12 +25,18 @@ class User extends Authenticatable
         'language',
         'password',
         'role',
-        'business_id',
+        'business_member_id',
+        'status',
     ];
+
+    public function businessMember()
+    {
+         return $this->belongsTo(BusinessMember::class);
+    }
 
     public function business()
     {
-        return $this->belongsTo(Business::class);
+        return $this->belongsTo(BusinessMember::class);
     }
 
     /**

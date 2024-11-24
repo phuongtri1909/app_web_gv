@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\BusinessMember;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -16,32 +17,12 @@ class BusinessRegistered extends Mailable
     /**
      * Create a new message instance.
      */
-    public $businessData;
+    public BusinessMember $businessMember;
 
-    public function __construct($businessData)
+    public function __construct(BusinessMember $businessMember)
     {
-        $this->businessData = $businessData;
+        $this->businessMember = $businessMember;
     }
-
-    /**
-     * Get the message envelope.
-     */
-    // public function envelope(): Envelope
-    // {
-    //     return new Envelope(
-    //         subject: $this->businessData['subject'] ?? 'Business Registered'
-    //     );
-    // }
-
-    /**
-     * Get the message content definition.
-     */
-    // public function content(): Content
-    // {
-    //     return new Content(
-    //         view: 'view.name',
-    //     );
-    // }
 
     /**
      * Get the attachments for the message.
@@ -52,12 +33,13 @@ class BusinessRegistered extends Mailable
     {
         return [];
     }
+
     public function build()
     {
-        $subject = $this->businessData['subject'] ?? 'Business Registered';
-    
+        $subject = $this->businessMember->subject ?? 'Đăng ký tham gia app';
+
         return $this->view('emails.business_registered')
-                    ->with('businessData', $this->businessData)
+                    ->with('businessMember', $this->businessMember)
                     ->subject($subject);
     }
     

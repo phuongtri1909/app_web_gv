@@ -213,3 +213,25 @@ if (form) {
         }
     })
 }
+
+function showToast(message, status) {
+    const toastElement = $('#liveToast');
+    const toastBody = toastElement.find('.toast-body');
+
+    // Cập nhật nội dung tin nhắn
+    toastBody.text(message);
+
+    // Xóa các lớp nền cũ
+    toastElement.removeClass('bg-success bg-danger text-white');
+
+    // Thêm lớp nền dựa trên trạng thái
+    if (status === 'success') {
+        toastElement.addClass('bg-success text-white');
+    } else if (status === 'error') {
+        toastElement.addClass('bg-danger text-white');
+    }
+
+    // Hiển thị toast
+    const toast = new bootstrap.Toast(toastElement[0]);
+    toast.show();
+}

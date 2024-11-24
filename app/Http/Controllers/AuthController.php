@@ -9,19 +9,19 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required',
+            'username' => 'required',
             'password' => 'required',
         ],[
-            'email.required' => 'The provided credentials do not match our records.',
-            'password.required' => 'The provided credentials do not match our records.',
+            'username.required' => 'Thông tin xác thực được cung cấp không khớp với hồ sơ của chúng tôi.',
+            'password.required' => 'Thông tin xác thực được cung cấp không khớp với hồ sơ của chúng tôi.',
         ]);
         if (auth()->attempt($credentials)) {
             $request->session()->regenerate();
            return redirect()->route('admin.dashboard');
         } 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->withInput($request->only('email'));
+            'username' => 'Thông tin xác thực được cung cấp không khớp với hồ sơ của chúng tôi.',
+        ])->withInput($request->only('username'));
     }
 
     public function logout(Request $request)

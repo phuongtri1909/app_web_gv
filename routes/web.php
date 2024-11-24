@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Tab;
+use App\Models\User;
 use App\Models\SlideProgram;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
@@ -8,6 +9,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LawsController;
 use App\Http\Controllers\TabsController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\BanksController;
 use App\Http\Controllers\BlogsController;
 use App\Http\Controllers\ForumController;
@@ -23,6 +25,7 @@ use App\Http\Controllers\TuitionController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\AdmissionController;
 use App\Http\Controllers\EvironmentController;
@@ -55,7 +58,6 @@ use App\Http\Controllers\AdmissionProcessDetailController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PersonalBusinessInterestController;
 use App\Http\Controllers\BusinessStartPromotionInvestmentController;
-use App\Http\Controllers\LocationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -116,7 +118,7 @@ Route::middleware(['language'])->group(function () {
 
         Route::get('/post-detail/{slug}', [BlogsController::class, 'showPostIndex'])->name('post-detail');
 
-        Route::get('/member-business', [MemberBusinessController::class, 'showFormMemberBusiness'])->name('show.form.member.business'); //form đk hội viên doanh nghiệp
+        Route::get('/member-business', [MemberBusinessController::class, 'showFormMemberBusiness'])->name('show.form.member.business'); //form đk hội viên doanh nghiệp chuyển sang đk app
         Route::post('/member-business', [MemberBusinessController::class, 'storFormMemberBusiness'])->name('form.member.business.store');
 
         //tạm gán như này cho kết nối việc làm
@@ -201,6 +203,10 @@ Route::middleware(['language'])->group(function () {
                 Route::resource('members',  MemberBusinessController::class);
 
                 Route::resource('business-fields',  BusinessFieldController::class);
+
+                Route::resource('users', UserController::class)->except('show');
+
+                Route::post('/user/status', [UserController::class, 'changeStatus'])->name('user.changeStatus');
 
 
             });

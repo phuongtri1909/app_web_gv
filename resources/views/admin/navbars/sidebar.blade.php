@@ -42,6 +42,28 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link {{ Route::currentRouteNamed('members.index') ? 'active' : '' }}"
+                    href="{{ route('members.index') }}">
+                    <div
+                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-users text-dark icon-sidebar"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Đăng ký app</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ Route::currentRouteNamed('users.index') ? 'active' : '' }}"
+                    href="{{ route('users.index') }}">
+                    <div
+                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-user-gear text-dark icon-sidebar"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Tài khoản</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteNamed('admin.business') ? 'active' : '' }}"
                     href="{{ route('admin.business') }}">
                     <div
@@ -52,16 +74,7 @@
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteNamed('members.index') ? 'active' : '' }}"
-                    href="{{ route('members.index') }}">
-                    <div
-                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">{{ __('GN hội thành viên') }}</span>
-                </a>
-            </li>
+            
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteNamed('start-promotion-investment.index') ? 'active' : '' }}"
                     href="{{ route('start-promotion-investment.index') }}">

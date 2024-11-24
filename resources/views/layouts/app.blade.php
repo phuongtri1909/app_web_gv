@@ -17,7 +17,7 @@
         @yield('content')
     </div>
 
-    <button id="back-to-top" title="Top">
+    <button id="back-to-top" title="Top" style="z-index: 9999">
         <svg class="chevrons" xmlns="http://www.w3.org/2000/svg" viewBox="0 3 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="7 11 12 6 17 11"></polyline>
