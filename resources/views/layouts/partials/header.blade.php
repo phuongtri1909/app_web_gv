@@ -48,5 +48,5 @@
     @include('pages.components.toast')
     <header class="header">
         <img src="{{ asset('images/logo-hoi-doanh-nghiep.png') }}" alt="Flowbite Logo"
-            style="width: 80px; height: 80px;" />
+            style="width: 45px; height: 45px;" />
     </header>

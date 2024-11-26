@@ -76,7 +76,7 @@
 @section('content')
     <section id="business" class="business mt-5rem mb-5">
         <div class="container">
-            @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký DN', 'buttonLink' => route('business.index')])
+            @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký kết nối giao thương', 'buttonLink' => route('business.index')])
             @include('admin.pages.notification.success-error')
             <div class="category mt-3">
                 <a href="{{ route('business', ['category' => '']) }}"
