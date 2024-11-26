@@ -55,10 +55,10 @@
                     <img class="bg-white rounded logo-business" src="{{ asset($business->avt_businesses) }}" alt="">
                 </div>
                 <div class="ms-3 text-white mt-3 md-md-0">
-                    <h2 class="responsive-h2">{{ $business->business_name }}</h2>
+                    <h2 class="responsive-h2">{{ $business->businessMember->business_name }}</h2>
                     <div class="d-flex align-items-baseline business-location">
                         <i class="fa-solid fa-location-dot"></i>
-                        <p class="ms-2">{{ $business->business_address }}</p>
+                        <p class="ms-2">{{ $business->businessMember->address }}</p>
                     </div>
                 </div>
             </div>
@@ -73,39 +73,34 @@
                         </div>
                         <div class="px-3">
                             <div class="d-flex">
-                                <p>{{ $business->business_name }}</p>
+                                <p>{{ $business->businessMember->business_name }}</p>
                             </div>
+
+                            <div class="d-flex">
+                                <p class="fw-semibold me-2">Mã số thuế:</p>
+                                <p>{{ $business->businessMember->business_code }}</p>
+                            </div>
+
                             <div class="d-flex">
                                 <p class="fw-semibold me-2">Địa chỉ:</p>
-                                <p>{{ $business->business_address }}</p>
+                                <p>{{ $business->businessMember->address }}</p>
                             </div>
                             <div class="d-flex">
                                 <p class="fw-semibold me-2">SĐT liên hệ:</p>
-                                <p>{{ $business->phone_number }}</p>
+                                <p>{{ $business->businessMember->phone_zalo }}</p>
                             </div>
-                            {{-- <div class="d-flex">
-                                <p class="fw-semibold me-2">Email:</p>
-                                <p>{{ $business->email }}</p>
-                            </div> --}}
-                            @if ($business->fax_number)
+
+                            @if ($business->businessMember->email) 
                                 <div class="d-flex">
-                                    <p class="fw-semibold me-2">Fax:</p>
-                                    <p>{{ $business->fax_number }}</p>
+                                    <p class="fw-semibold me-2">Email:</p>
+                                    <p>{{ $business->businessMember->email }}</p>
                                 </div>
                             @endif
-                            @if ($business->business_license)
+
+                            @if ($business->businessMember->businessField)
                                 <div class="d-flex">
-                                    <p class="fw-semibold me-2">Giấy phép:</p>
-                                    <a href="{{ asset($business->business_license) }}" target="_blank"
-                                        rel="noopener noreferrer">
-                                        Xem giấy phép
-                                    </a>
-                                </div>
-                            @endif
-                            @if ($business->social_channel)
-                                <div class="d-flex">
-                                    <a href="{{ $business->social_channel }}" target="_blank">{{ $business->social_channel }}</a>
-                                    {{-- <p>{{ $business->social_channel }}</p> --}}
+                                    <p class="fw-semibold me-2">Ngành nghề kinh doanh:</p>
+                                    <p>{{ $business->businessMember->businessField->name }}</p>
                                 </div>
                             @endif
 
@@ -119,57 +114,19 @@
                         <div class="px-3">
                             <div class="d-flex">
                                 <p class="fw-semibold me-2">Họ và tên:</p>
-                                <p>{{ Str::title(Str::lower($business->representative_name)) }}</p>
+                                <p>{{ Str::title(Str::lower($business->businessMember->representative_name)) }}</p>
                             </div>
-                            <div class="d-flex">
-                                <p class="fw-semibold me-2">Chức vụ:</p>
-                                <p>Giám đốc chi nhánh</p>
-                            </div>
-                            <div class="d-flex">
-                                <p class="fw-semibold me-2">Email:</p>
-                                <p>{{ $business->email }}</p>
-                            </div>
-                            <div class="d-flex">
-                                <p class="fw-semibold me-2">Năm sinh:</p>
-                                <p>{{ $business->birth_year }}</p>
-                            </div>
-
-                            <div class="d-flex">
-                                <p class="fw-semibold me-2">Giới tính:</p>
-                                <p>
-                                    @switch($business->gender)
-                                        @case('male')
-                                            Nam
-                                        @break
-                                        @case('female')
-                                            Nữ
-                                        @break
-                                        @default
-                                            Khác
-                                    @endswitch
-                                </p>
-                            </div>
+                        
                             <div class="d-flex">
                                 <p class="fw-semibold me-2">SĐT:</p>
-                                <p>
-                                    0987.338339-0786.338339
-                                </p>
+                                <p>{{ $business->businessMember->representative_phone }}</p>
                             </div>
-
-                            {{-- <div class="d-flex">
-                                <p class="fw-semibold me-2">Địa chỉ:</p>
-                                <p>
-                                    {{ $business->address }}
-                                </p>
-                            </div> --}}
-
                         </div>
                     </div>
                 </div>
 
                 <div class="col-12 col-md-8">
                     <div class="border border-custom rounded">
-
                         <div class="bg-business rounded-top py-2 px-3 mb-3">
                             <h5 class="mb-0 fw-bold text-white">Giới thiệu doanh nghiệp</h5>
                         </div>
@@ -178,11 +135,7 @@
                         @else
                             <p class="px-3">Chưa có thông tin</p>
                         @endif
-
-
                     </div>
-
-
                 </div>
             </div>
         </div>

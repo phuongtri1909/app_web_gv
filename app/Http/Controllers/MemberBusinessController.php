@@ -115,58 +115,6 @@ class MemberBusinessController extends Controller
         }
     }
 
-    private function handleFileUpload(Request $request, $inputName, &$data, $suffix = '', $folderType = 'business')
-    {
-        if ($request->hasFile($inputName)) {
-            $files = is_array($request->file($inputName)) ? $request->file($inputName) : [$request->file($inputName)];
-            $uploadedFiles = [];
-            $folderName = date('Y/m');
-
-            foreach ($files as $file) {
-                if ($file->isValid()) {
-                    $filePath = $this->moveFile($file, $folderName, $suffix, $folderType);
-                    $uploadedFiles[] = $filePath;
-                }
-            }
-            if (!empty($uploadedFiles)) {
-                $data[$inputName] = count($uploadedFiles) > 1 ? json_encode($uploadedFiles) : $uploadedFiles[0];
-            }
-        }
-    }
-
-    private function moveFile($file, $folderName, $suffix, $folderType)
-    {
-        $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $extension = $file->getClientOriginalExtension();
-        $fileName = $originalFileName . $suffix . time() . '.' . $extension;
-
-        $basePath = '';
-        switch ($folderType) {
-            case 'business_license_file':
-                $basePath = 'uploads/images/cndkkd/';
-                break;
-            case 'CCCD':
-                $basePath = 'uploads/images/cccd/';
-                break;
-            case 'other':
-                $basePath = 'uploads/images/other/';
-                break;
-            default:
-                throw new \Exception('Thư mục không hợp lệ.');
-        }
-
-        $file->move(public_path($basePath . $folderName), $fileName);
-        return $basePath . $folderName . '/' . $fileName;
-    }
-
-    private function cleanupUploadedFiles(array $data)
-    {
-        foreach ($data as $filePath) {
-            if (file_exists(public_path($filePath))) {
-                unlink(public_path($filePath));
-            }
-        }
-    }
 
     public function show($id)
     {
