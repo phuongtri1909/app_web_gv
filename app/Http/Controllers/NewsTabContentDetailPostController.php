@@ -133,7 +133,7 @@ class NewsTabContentDetailPostController extends Controller
     public function update(Request $request, string $id)
     {
         $rules = [
-            'content' => 'required|string|max:255',
+            'content' => 'required|string',
             'financial_support_id' => 'nullable|exists:financial_support,id',
             'bank_service_id' => 'nullable|exists:bank_services_interest,id',
             'tab_id' => 'required|exists:tabs_detail_posts,id',
@@ -142,7 +142,6 @@ class NewsTabContentDetailPostController extends Controller
         $messages = [
             'content.required' => __('content') . __(' is_required.'),
             'content.string' => __('content_string'),
-            'content.max' => __('content_max', ['max' => 255]),
         ];
 
         $validatedData = $request->validate($rules, $messages);

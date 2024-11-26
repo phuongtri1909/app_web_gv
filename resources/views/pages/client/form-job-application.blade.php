@@ -37,7 +37,7 @@
         .btn-success:hover{
             background-color: #004494;
         }
-        
+
         .btn:disabled{
             background-color: #004494;
         }
@@ -55,12 +55,12 @@
     <section id="form-job-application" class="form-job-application mt-5rem">
         <div class="container">
             <div class="row">
-                
+
                 <form action="{{ route('job.application.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="col-md-12 mb-4">
-                            <label for="full_name" class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                            <label for="full_name" class="form-label">Họ tên người lao động <span class="text-danger">*</span></label>
                             <input type="text" class="form-control form-control-sm @error('full_name') is-invalid @enderror" id="full_name" name="full_name" placeholder="Nhập họ và tên" value="{{ old('full_name') }}" >
                             <span class="error-message"></span>
                             @error('full_name')
@@ -100,41 +100,15 @@
                         </div>
 
                         <div class="col-md-4 mb-4">
-                            <label for="phone" class="form-label">Điện thoại <span class="text-danger">*</span></label>
+                            <label for="phone" class="form-label">Số điện thoại liên lạc<span class="text-danger">*</span></label>
                             <input type="tel" class="form-control form-control-sm @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="Nhập số điện thoại" value="{{ old('phone') }}" >
                             <span class="error-message"></span>
                             @error('phone')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
-
-                        <div class="col-md-4 mb-4">
-                            <label for="fax" class="form-label">Fax</label>
-                            <input type="text" class="form-control form-control-sm @error('fax') is-invalid @enderror" id="fax" name="fax" placeholder="Nhập số fax" value="{{ old('fax') }}">
-                            @error('fax')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-4 mb-4">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control form-control-sm @error('email') is-invalid @enderror" id="email" name="email" placeholder="Nhập email" value="{{ old('email') }}">
-                            @error('email')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-
                         <div class="col-md-12 mb-4">
-                            <label for="introduction" class="form-label">Thông tin/giới thiệu bản thân <span class="text-danger">*</span></label>
-                            <textarea class="form-control form-control-sm @error('introduction') is-invalid @enderror" id="introduction" name="introduction" placeholder="Nhập thông tin/giới thiệu bản thân" > {{ old('introduction') }}</textarea>
-                            <span class="error-message"></span>
-                            @error('introduction')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-12 mb-4">
-                            <label for="job_registration" class="form-label">Đăng ký tìm việc <span class="text-danger">*</span></label>
+                            <label for="job_registration" class="form-label">Thông tin công việc cần tìm kiếm <span class="text-danger">*</span></label>
                             <textarea class="form-control form-control-sm @error('job_registration') is-invalid @enderror" id="job_registration" name="job_registration" placeholder="Nhập thông tin đăng ký tìm việc" >{{ old('job_registration') }}</textarea>
                             <span class="error-message"></span>
                             @error('job_registration')

@@ -16,11 +16,8 @@ class JobApplicationController extends Controller
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
-            'fax' => 'nullable|string|max:255',
             'birth_year' => 'required|integer|min:1500|max:' . date('Y'),
             'gender' => 'required|in:male,female,other',
-            'email' => 'nullable|email|max:255',
-            'introduction' => 'required|string',
             'job_registration' => 'required|string',
             'cv' => 'nullable|mimes:pdf',
         ], [
@@ -33,21 +30,19 @@ class JobApplicationController extends Controller
             'birth_year.min' => 'Năm sinh phải lớn hơn hoặc bằng 1500.',
             'birth_year.max' => 'Năm sinh không được lớn hơn năm hiện tại.',
             'gender.required' => 'Giới tính là bắt buộc.',
-            'email.email' => 'Email không hợp lệ.',
-            'introduction.required' => 'Thông tin/giới thiệu bản thân là bắt buộc.',
             'job_registration.required' => 'Đăng ký tìm việc là bắt buộc.',
             'cv.mimes' => 'File phải là file PDF.',
         ]);
-        
+
         $recaptchaResponse = $request->input('g-recaptcha-response');
         $secretKey = env('RECAPTCHA_SECRET_KEY');
         $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
             'secret' => $secretKey,
             'response' => $recaptchaResponse,
         ]);
-    
+
         $responseBody = json_decode($response->body());
-    
+
         if (!$responseBody->success) {
             return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
         }
@@ -67,11 +62,8 @@ class JobApplicationController extends Controller
             JobApplication::create([
             'full_name' => $validated['full_name'],
             'phone' => $validated['phone'],
-            'fax' => $validated['fax'],
             'birth_year' => $validated['birth_year'],
             'gender' => $validated['gender'],
-            'email' => $validated['email'],
-            'introduction' => $validated['introduction'],
             'job_registration' => $validated['job_registration'],
             'cv' => $data['cv'],
         ]);
@@ -125,9 +117,6 @@ class JobApplicationController extends Controller
             'birth_year' => $jobApplication->birth_year,
             'gender' => $jobApplication->gender,
             'phone' => $jobApplication->phone,
-            'fax' => $jobApplication->fax,
-            'email' => $jobApplication->email,
-            'introduction' => $jobApplication->introduction,
             'job_registration' => $jobApplication->job_registration,
             'cv' => $jobApplication->cv,
             'status' => $jobApplication->status,
@@ -143,7 +132,7 @@ class JobApplicationController extends Controller
 
     public function update(Request $request, JobApplication $jobApplication)
     {
-        
+
     }
 
     public function destroy(JobApplication $jobApplication)

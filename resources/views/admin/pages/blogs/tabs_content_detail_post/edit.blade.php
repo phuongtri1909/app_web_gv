@@ -13,7 +13,7 @@
                         @csrf
                         @method('PUT')
                         <div class="row">
-                            <div class="form-group mb-3 col-md-6">
+                            <div class="form-group mb-3 col-md-12">
                                 <label for="content">{{ __('content') }}</label>
                                 <textarea name="content"
                                           id="content"
@@ -83,3 +83,9 @@
         </div>
     </div>
 @endsection
+@push('scripts-admin')
+    <script>
+            CKEDITOR.replace("content", {
+            });
+    </script>
+@endpush

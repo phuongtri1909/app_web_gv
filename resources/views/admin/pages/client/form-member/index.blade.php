@@ -85,32 +85,34 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <div class="dropdown">
-                                                <button class="btn btn-sm p-0 border-0 mb-0" type="button"
-                                                    data-bs-toggle="dropdown" aria-expanded="false"
-                                                    title="Thay đổi trạng thái">
-                                                    <i class="fas fa-retweet"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li>
-                                                        <a class="dropdown-item" href="#"
-                                                            onclick="updateStatus('BusinessMember', {{ $member->id }}, 'approved')">
-                                                            <i class="fas fa-check-circle text-success me-2"></i>Duyệt
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="#"
-                                                            onclick="updateStatus('BusinessMember', {{ $member->id }}, 'rejected')">
-                                                            <i class="fas fa-times-circle text-danger me-2"></i>Từ chối
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="#"
-                                                            onclick="updateStatus('BusinessMember', {{ $member->id }}, 'pending')">
-                                                            <i class="fa fa-hourglass-half text-warning me-2"></i>Đang chờ
-                                                        </a>
-                                                    </li>
-                                                </ul>
+                                            <div class="menu">
+                                                <div class="dropstart d-block">
+                                                    <button class="btn btn-sm p-0 border-0 mb-0" type="button"
+                                                        data-bs-toggle="dropdown"  aria-expanded="false"
+                                                        title="Thay đổi trạng thái">
+                                                        <i class="fas fa-retweet"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a class="dropdown-item" href="#"
+                                                                onclick="updateStatus('BusinessMember', {{ $member->id }}, 'approved')">
+                                                                <i class="fas fa-check-circle text-success me-2"></i>Duyệt
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#"
+                                                                onclick="updateStatus('BusinessMember', {{ $member->id }}, 'rejected')">
+                                                                <i class="fas fa-times-circle text-danger me-2"></i>Từ chối
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#"
+                                                                onclick="updateStatus('BusinessMember', {{ $member->id }}, 'pending')">
+                                                                <i class="fa fa-hourglass-half text-warning me-2"></i>Đang chờ
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                             @include('admin.pages.components.delete-form', [
                                                 'id' => $member->id,
@@ -120,6 +122,9 @@
                                             <a href="javascript:void(0)" class="mx-3 view-member" data-id="{{ $member->id }}" title="{{ __('Xem chi tiết') }}">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
+                                        </td>
+                                        <td class="text-center">
+                                            
                                         </td>
                                     </tr>
                                 @endforeach

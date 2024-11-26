@@ -28,8 +28,6 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         {{ __('Số điện thoại') }}</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('Email') }}</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         {{ __('CV') }}</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         {{ __('Trạng thái') }}</th>
@@ -65,9 +63,6 @@
                                             <p class="text-xs font-weight-bold mb-0">{{ $application->phone }}</p>
                                         </td>
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $application->email ?? '-' }}</p>
-                                        </td>
-                                        <td>
                                             @if ($application->cv)
                                                 <a href="{{ asset($application->cv) }}" target="_blank"
                                                     class="btn btn-link text-primary px-3 mb-0">
@@ -84,7 +79,7 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <div class="dropdown">
+                                            <div class="dropstart">
                                                 <button class="btn btn-sm p-0 border-0 mb-0" type="button"
                                                     data-bs-toggle="dropdown" aria-expanded="false"
                                                     title="Thay đổi trạng thái">
@@ -174,40 +169,21 @@
                                                     </div>
                                                     <div class="info-group">
                                                         <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                            <i class="fas fa-fax me-2"></i>{{ __('Số Fax') }}
-                                                        </label>
-                                                        <p id="modal-fax" class="text-sm mb-2"></p>
-                                                    </div>
-                                                    <div class="info-group">
-                                                        <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                            <i class="fas fa-envelope me-2"></i>{{ __('Email') }}
-                                                        </label>
-                                                        <p id="modal-email" class="text-sm mb-2"></p>
-                                                    </div>
-                                                    <div class="info-group">
-                                                        <label class="text-uppercase text-xs font-weight-bolder opacity-7">
                                                             <i class="fas fa-clock me-2"></i>{{ __('Ngày gửi cv') }}
                                                         </label>
                                                         <p id="modal-created-at" class="text-sm mb-2"></p>
+                                                    </div>
+                                                    <div class="info-group">
+                                                        <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                            <i
+                                                                class="fas fa-briefcase me-2"></i>{{ __('Thông tin công việc cần tìm kiếm') }}
+                                                        </label>
+                                                        <p id="modal-job-registration" class="text-sm mb-2"></p>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="row mt-4">
                                                 <div class="col-12">
-                                                    <div class="info-group">
-                                                        <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                            <i
-                                                                class="fas fa-align-left me-2"></i>{{ __('Giới thiệu bản thân') }}
-                                                        </label>
-                                                        <p id="modal-introduction" class="text-sm mb-2"></p>
-                                                    </div>
-                                                    <div class="info-group">
-                                                        <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                            <i
-                                                                class="fas fa-briefcase me-2"></i>{{ __('Đăng ký tìm việc') }}
-                                                        </label>
-                                                        <p id="modal-job-registration" class="text-sm mb-2"></p>
-                                                    </div>
                                                     <span id="modal-status" class="badge badge-sm"></span>
                                                 </div>
                                             </div>
@@ -253,9 +229,6 @@
                         } [response.gender] || '-';
                         $('#modal-gender').text(genderText);
                         $('#modal-phone').text(response.phone || '-');
-                        $('#modal-fax').text(response.fax || '-');
-                        $('#modal-email').text(response.email || '-');
-                        $('#modal-introduction').text(response.introduction || '-');
                         $('#modal-job-registration').text(response.job_registration || '-');
                         $('#modal-cv').attr('href', response.cv ? '/' + response.cv : '#');
                         $('#modal-created-at').text(formattedDate);
