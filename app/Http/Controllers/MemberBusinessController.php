@@ -15,9 +15,26 @@ use Illuminate\Support\Facades\Mail;
 class MemberBusinessController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $members = BusinessMember::latest()->paginate(10);
+        $search = $request->input('search');
+        $searchStatus = $request->input('search-status');
+
+        $members = BusinessMember::query()
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($query) use ($search) {
+                    $query->where('business_name', 'like', "%{$search}%")
+                        ->orWhere('business_code', 'like', "%{$search}%")
+                        ->orWhere('phone_zalo', 'like', "%{$search}%")
+                        ->orWhere('representative_full_name', 'like', "%{$search}%")
+                        ->orWhere('representative_phone', 'like', "%{$search}%");
+                });
+            })
+            ->when($searchStatus, function ($query, $searchStatus) {
+                return $query->where('status', $searchStatus);
+            })
+            ->latest()
+            ->paginate(15);
         return view('admin.pages.client.form-member.index', compact('members'));
     }
 
@@ -140,6 +157,19 @@ class MemberBusinessController extends Controller
             ], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch member details'], 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $member = BusinessMember::findOrFail($id);
+            $member->delete();
+
+            return redirect()->route('members.index')->with('success', 'Xóa thành công doanh nghiệp');
+        } catch (\Exception $e) {
+
+            return redirect()->route('members.index')->with('error', 'Xóa thất bại doanh nghiệp');
         }
     }
 }

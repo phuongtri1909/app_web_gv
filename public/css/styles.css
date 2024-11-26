@@ -1919,3 +1919,13 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+.bg-app-gv{
+    background: linear-gradient(45deg, orange, yellow) !important;
+}
+
+.text-app-gv {
+    background: linear-gradient(45deg, orange, yellow) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}

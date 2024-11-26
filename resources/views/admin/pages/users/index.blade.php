@@ -25,7 +25,7 @@
 @endpush
 
 @section('content-auth')
-@include('pages.components.toast')
+
 <div class="row">
     <div class="col-12">
         <div class="card mb-4 mx-4">
@@ -37,6 +37,24 @@
                     <a href="{{ route('users.create') }}" class="btn bg-gradient-primary btn-sm mb-0 px-2" type="button">
                         <i class="fa-solid fa-plus"></i> Thêm tài khoản
                     </a>
+                </div>
+                <div class="mt-2">
+                    <form method="GET" class="d-md-flex">
+                        @if (request('search'))
+                            <input type="hidden" name="search" value="{{ request('search') }}">  
+                        @endif
+                        <select name="search-role" class="form-control-sm me-2">
+                            <option value="">Tất cả role</option>
+                            <option value="admin" {{ request('search-role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                            <option value="business" {{ request('search-role') == 'business' ? 'selected' : '' }}>Business</option>
+                        </select>
+                        <select name="search-status" class="form-control-sm me-2">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="active" {{ request('search-status') == 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="inactive" {{ request('search-status') == 'inactive' ? 'selected' : '' }}>In active</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm mb-0 mt-2 mt-md-0">Tìm kiếm</button>
+                    </form>
                 </div>
             </div>
             <div class="card-body px-0 pt-0 pb-2">

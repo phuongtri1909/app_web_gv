@@ -98,7 +98,7 @@
                 @endforeach
                 @if ($category_product_business->count() > 8)
                     <div class="text-center mt-4">
-                        <a id="show-more" class="fst-italic">Xem tất cả</a>
+                        <a id="show-more" class="fst-italic text-app-gv">Xem tất cả</a>
                     </div>
                 @endif
             </div>
