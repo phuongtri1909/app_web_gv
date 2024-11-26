@@ -11,27 +11,33 @@ class BusinessMember extends Model
     protected $table = 'business_registrations';
     protected $fillable = [
         'business_name',
-        'business_license_number',
-        'license_issue_date',
-        'license_issue_place',
-        'business_field',
-        'head_office_address',
-        'phone',
-        'fax',
+        'business_code',
+        'address',
         'email',
-        'branch_address',
-        'organization_participation',
+        'phone_zalo',
+        'business_field_id',
         'representative_full_name',
-        'representative_position',
-        'gender',
-        'identity_card',
-        'identity_card_issue_date',
-        'home_address',
-        'contact_phone',
-        'representative_email',
-        'business_license_file',
-        'identity_card_front_file',
-        'identity_card_back_file',
+        'representative_phone',
         'status',
     ];
+
+    public function businessField()
+    {
+        return $this->belongsTo(BusinessField::class, 'business_field_id');
+    }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'business_member_id');
+    }
+
+    public function businesses()
+    {
+        return $this->hasMany(Business::class, 'business_member_id');
+    }
+
+    public function business()
+    {
+        return $this->hasOne(Business::class, 'business_member_id');
+    }
 }

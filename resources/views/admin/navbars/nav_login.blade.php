@@ -1,7 +1,7 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg position-absolute top-0 z-index-3 my-3 blur blur-rounded py-2 start-0 end-0 mx4">
   <div class="container-fluid container">
-    <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3" href="{{ route('admin.dashboard') }}">
+    <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3" href="{{ route('business') }}">
       <img class="img-fluid" src="{{ asset('images/logo-hoi-doanh-nghiep.png') }}" alt="Flowbite Logo" style= "width: 80px; height: 80px;" />
     </a>
     <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">

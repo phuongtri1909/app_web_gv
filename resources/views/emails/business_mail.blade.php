@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>{{ $businessMember->subject }}</title>
+    <title>{{ $business->subject }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
@@ -107,33 +107,34 @@
 <body>
     <div class="container">
         <div class="header">
-            <h2>Đăng ký tham gia app</h2>
+            <h2>Đăng ký kết nối giao thương</h2>
         </div>
         <div class="content">
 
-            <p class="">Có đăng ký tham gia app mới</p>
+            <p class="">Có đăng ký kết nối giao thương mới</p>
             <div class="info-list">
                 @php
                     $fields = [
                         'business_name' => 'Tên doanh nghiệp',
                         'business_code' => 'Mã số doanh nghiệp',
-                        'address' => 'Địa chỉ kinh doanh',
-                        'email' => 'Email',
-                        'phone_zalo' => 'Số điện thoại zalo',
-                        'business_field' => 'Ngành nghề kinh doanh',
-                        'representative_full_name' => 'Người đại diện',
-                        'representative_phone' => 'Số điện thoại liên hệ',
+                        'description' => 'Mô tả doanh nghiệp',
+                        'avt_businesses' => 'Ảnh doanh nghiệp',
                     ];
                 @endphp
-
+            
                 @foreach ($fields as $key => $label)
-                    @if (isset($businessMember->$key) && !empty($businessMember->$key))
+                    @if (isset($business->$key) && !empty($business->$key))
                         <div class="info-item">
-                            @if ($key == 'business_field')
-                                <strong>{{ $label }}:</strong> {{ $businessMember->businessField->name }}
+                            <strong>{{ $label }}:</strong>
+                            @if ($key == 'avt_businesses')
+                                <img src="{{ asset($business->$key) }}" alt="{{ $label }}" style="max-width: 100px; max-height: 100px;">
                             @else
-                                <strong>{{ $label }}:</strong> {{ $businessMember->$key }}
+                                {{ $business->$key }}
                             @endif
+                        </div>
+                    @elseif (isset($business->businessMember->$key) && !empty($business->businessMember->$key))
+                        <div class="info-item">
+                            <strong>{{ $label }}:</strong> {{ $business->businessMember->$key }}
                         </div>
                     @endif
                 @endforeach
