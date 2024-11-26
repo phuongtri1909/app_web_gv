@@ -91,9 +91,6 @@ Route::middleware(['language'])->group(function () {
         Route::get('/home-bank/{slug}', [FinancialSupportController::class, 'showFinancial'])->name('show.financical');
         Route::get('/home-bank', [BanksController::class, 'showHomeBank'])->name('show.home.bank');
 
-        Route::get('/form-legal-advice', [LegalAdviceController::class, 'showFormLegal'])->name('show.form.legal'); //form tư vấn pháp lý
-        Route::post('/form-legal-advice', [LegalAdviceController::class, 'storeForm'])->name('legal.advice.store');
-
         Route::get('/post-detail/{slug}', [BlogsController::class, 'showPostIndex'])->name('post-detail');
 
         //tạm gán như này cho kết nối việc làm
@@ -150,8 +147,8 @@ Route::middleware(['language'])->group(function () {
             Route::post('/form-business', [BusinessController::class, 'store'])->name('business.store'); //form đăng ký doanh nghiệp
             Route::get('/form-business', [BusinessController::class, 'index'])->name('business.index');
 
-            Route::get('/form-legal-advice', [LawsController::class, 'showFormLegal'])->name('show.form.legal'); //form tư vấn pháp lý
-            Route::post('/form-legal-advice', [LawsController::class, 'storeForm'])->name('legal.advice.store');
+            Route::get('/form-legal-advice', [LegalAdviceController::class, 'showFormLegal'])->name('show.form.legal'); //form tư vấn pháp lý
+            Route::post('/form-legal-advice', [LegalAdviceController::class, 'storeForm'])->name('legal.advice.store');
         });
     });
 
