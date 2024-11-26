@@ -35,6 +35,7 @@
         }
 
         @keyframes hoverAnimation {
+
             0%,
             100% {
                 transform: translateY(0);
@@ -71,41 +72,96 @@
             });
         });
     </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#load-more').click(function() {
+                var button = $(this);
+                var nextPageUrl = button.data('next-page-url');
+
+                if (nextPageUrl) {
+                    $.ajax({
+                        url: nextPageUrl,
+                        type: 'GET',
+                        beforeSend: function() {
+                            button.prop('disabled', true).text('Loading...');
+                        },
+                        success: function(response) {
+                            if (response.businesses.length > 0) {
+                                response.businesses.forEach(function(item) {
+                                    var businessHtml = `
+                                        <div class="col">
+                                            <a href="{{ url('/client/business') }}/${item.businessMember.business_code}" class="card h-100 border-custom">
+                                                <img src="{{ asset('') }}${item.avt_businesses}" class="card-img-top img-fluid p-1 logo-business" alt="...">
+                                                <div class="card-body d-flex flex-column">
+                                                    <h6 class="card-title text-uppercase text-dark">${item.businessMember.business_name}</h6>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    `;
+                                    $('#business-list').append(businessHtml);
+                                });
+
+                                button.data('next-page-url', response.next_page_url);
+                                button.prop('disabled', false).text('Load More');
+                            } else {
+                                button.prop('disabled', true).text('No More Businesses');
+                            }
+                        },
+                        error: function() {
+                            button.prop('disabled', false).text('Load More');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 @endpush
 
 @section('content')
     <section id="business" class="business mt-5rem mb-5">
         <div class="container">
-            @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký kết nối giao thương', 'buttonLink' => route('business.index')])
+            @include('pages.components.button-register', [
+                'buttonTitle' => 'Đăng ký kết nối giao thương',
+                'buttonLink' => route('business.index'),
+            ])
             @include('admin.pages.notification.success-error')
             <div class="category mt-3">
                 <a href="{{ route('business', ['category' => '']) }}"
-                    class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('category') == '' ? 'active' : '' }}">Tất cả</a>
+                    class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('category') == '' ? 'active' : '' }}">Tất
+                    cả</a>
                 @foreach ($category_product_business as $index => $category)
                     <a href="{{ route('business', ['category' => $category->slug]) }}"
                         class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('category') == $category->slug ? 'active' : '' }} {{ $index >= 8 && request('category') != $category->slug ? 'category-hidden' : '' }}">{{ $category->name }}</a>
                 @endforeach
                 @if ($category_product_business->count() > 8)
                     <div class="text-center mt-4">
-                        <a id="show-more" class="fst-italic">Xem tất cả</a>
+                        <a id="show-more" class="fst-italic text-app-gv">Xem tất cả</a>
                     </div>
                 @endif
             </div>
 
             <div class="list-business mt-5">
-                <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 g-2 g-md-3">
+                <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 g-2 g-md-3"
+                    id="business-list">
                     @foreach ($businesses as $item)
                         <div class="col">
-                            <a href="{{ route('business.detail', $item->businessMember->business_code) }}" class="card h-100 border-custom">
+                            <a href="{{ route('business.detail', $item->businessMember->business_code) }}"
+                                class="card h-100 border-custom">
                                 <img src="{{ asset($item->avt_businesses) }}"
                                     class="card-img-top img-fluid p-1 logo-business" alt="...">
                                 <div class="card-body d-flex flex-column">
-                                    <h6 class="card-title text-uppercase text-dark">{{ $item->businessMember->business_name }}</h6>
+                                    <h6 class="card-title text-uppercase text-dark">
+                                        {{ $item->businessMember->business_name }}</h6>
                                 </div>
                             </a>
                         </div>
                     @endforeach
                 </div>
+            </div>
+            <div class="text-center mt-4">
+                <button id="load-more" class="btn bg-app-gv rounded-pill text-white"
+                    data-next-page-url="{{ $businesses->nextPageUrl() }}">Xem thêm</button>
             </div>
         </div>
     </section>

@@ -69,7 +69,8 @@ class JobApplicationController extends Controller
         ]);
 
         DB::commit();
-
+        session()->forget('key_business_code');
+        session()->forget('business_code');
         return redirect()->back()->with('success', 'Gửi thành công!');
         } catch (\Exception $e) {
             DB::rollBack();

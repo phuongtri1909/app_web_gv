@@ -11,9 +11,32 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::latest()->paginate(20);
+        $search = $request->input('search');
+        $searchStatus = $request->input('search-status');
+        $searchRole = $request->input('search-role');
+
+        $users = User::query()
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($query) use ($search) {
+                    $query->where('username', 'like', "%{$search}%")
+                        ->orWhere('full_name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhereHas('businessMember', function ($query) use ($search) {
+                            $query->where('business_code', 'like', "%{$search}%");
+                        });
+                });
+            })
+            ->when($searchStatus, function ($query, $searchStatus) {
+                return $query->where('status', $searchStatus);
+            })
+            ->when($searchRole, function ($query, $searchRole) {
+                return $query->where('role', $searchRole);
+            })
+            ->latest()
+            ->paginate(20);
+
         return view('admin.pages.users.index', compact('users'));
     }
 

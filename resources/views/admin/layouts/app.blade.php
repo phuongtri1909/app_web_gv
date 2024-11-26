@@ -18,6 +18,7 @@
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
+    @include('pages.components.toast')
     @auth
         @include('admin.navbars.sidebar')
         <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg">
