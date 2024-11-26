@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BusinessMail;
 use App\Models\Business;
 use App\Models\Locations;
 use App\Models\WardGovap;
@@ -9,20 +10,23 @@ use Illuminate\Http\Request;
 use App\Models\BusinessField;
 use App\Models\LocationProduct;
 use App\Models\ProductBusiness;
+use App\Mail\BusinessRegistered;
 use App\Models\BusinessFeedback;
 use App\Models\CategoryBusiness;
 use Illuminate\Support\Facades\DB;
 use App\Models\BusinessCapitalNeed;
+use App\Models\BusinessMember;
 use App\Models\BusinessSupportNeed;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use Intervention\Image\Facades\Image;
 use App\Models\SupplyDemandConnection;
 use App\Models\CategoryProductBusiness;
+use Illuminate\Validation\ValidationException;
 use App\Models\BusinessPromotionalIntroduction;
-use Illuminate\Validation\ValidationException ;
 use App\Models\BusinessStartPromotionInvestment;
-use Illuminate\Support\Facades\Http;
-use App\Mail\BusinessRegistered;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Log;
 
 
 class BusinessController extends Controller
@@ -33,8 +37,8 @@ class BusinessController extends Controller
         $wards = WardGovap::all();
         $category_business = CategoryBusiness::all();
         $businesses = Business::all();
-        $business_fields = BusinessField::orderBy('created_at','desc')->get();
-        return view('pages.client.form-business', compact('businesses','wards','category_business','business_fields'));
+        $business_fields = BusinessField::orderBy('created_at', 'desc')->get();
+        return view('pages.client.form-business', compact('businesses', 'wards', 'category_business', 'business_fields'));
     }
 
     public function adminIndex(Request $request)
@@ -44,8 +48,8 @@ class BusinessController extends Controller
             ->when($search, function ($query, $search) {
                 return $query->where(function ($q) use ($search) {
                     $q->where('business_name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('business_code', 'like', "%{$search}%");
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('business_code', 'like', "%{$search}%");
                 });
             })
             ->paginate(15);
@@ -61,86 +65,26 @@ class BusinessController extends Controller
 
 
     public function create()
-    {   
+    {
         $wards = WardGovap::all();
         $business_fields = BusinessField::all();
-        
-        return view('pages.client.form-business', compact('wards','business_fields'));
+
+        return view('pages.client.form-business', compact('wards', 'business_fields'));
     }
 
     public function store(Request $request)
     {
-        DB::beginTransaction();
-
+        
         $request->validate([
-            'avt_businesses' => 'required|image|mimes:jpeg,png,jpg,gif',
-            'representative_name' => 'required|string|max:255',
-            'birth_year' => 'required|digits:4|integer|min:1500|max:' . date('Y'),
-            'gender' => 'required|string|in:male,female,other',
-            'phone_number' => 'required|string|max:10|regex:/^[0-9]+$/',
-            'address' => 'required|string|max:255',
-            'business_address' => 'required|string|max:255',
-            'ward_id' => 'required|integer|exists:ward_govap,id',
-            'business_name' => 'required|string|max:255',
-            'business_license' => 'nullable|mimes:pdf',
-            'business_code' => 'required|regex:/^\d{10}(-\d{3})?$/',
-            'email' => 'nullable|email|max:255|',
-            'social_channel' => 'nullable|url|max:255',
-            'description' => 'nullable|string|max:1000',
-            'business_fields' => 'required|exists:business_fields,id',
+            'avt_businesses' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            'description' => 'nullable|string|max:2000',
         ], [
             'avt_businesses.required' => 'Ảnh đại diện doanh nghiệp là bắt buộc.',
             'avt_businesses.image' => 'Ảnh đại diện phải là hình ảnh.',
-            'avt_businesses.mimes' => 'Hình ảnh đại diện phải là file dạng: jpg, jpeg, png.',
+            'avt_businesses.mimes' => 'Hình ảnh đại diện phải là file dạng: jpg, jpeg, png, gif, svg, webp.',
 
-            'representative_name.required' => 'Tên người đại diện pháp luật là bắt buộc.',
-            'representative_name.string' => 'Tên người đại diện phải là một chuỗi.',
-            'representative_name.max' => 'Tên người đại diện không được vượt quá 255 ký tự.',
+            'description.max' => 'Mô tả không được vượt quá 2000 ký tự.',
 
-            'birth_year.required' => 'Năm sinh là bắt buộc.',
-            'birth_year.digits' => 'Năm sinh phải có 4 chữ số.',
-            'birth_year.integer' => 'Năm sinh phải là số nguyên.',
-            'birth_year.min' => 'Năm sinh phải lớn hơn hoặc bằng 1500.',
-            'birth_year.max' => 'Năm sinh không được lớn hơn năm hiện tại.',
-
-            'gender.required' => 'Giới tính là bắt buộc.',
-            'gender.in' => 'Giới tính không hợp lệ.',
-
-            'phone_number.required' => 'Số điện thoại là bắt buộc.',
-            'phone_number.string' => 'Số điện thoại phải là một chuỗi.',
-            'phone_number.max' => 'Số điện thoại không được hơn 10 số.',
-            'phone_number.regex' => 'Số điện thoại chỉ chứa số.',
-
-            'address.required' => 'Địa chỉ là bắt buộc.',
-            'address.string' => 'Địa chỉ phải là một chuỗi.',
-            'address.max' => 'Địa chỉ không được vượt quá 255 ký tự.',
-
-            'business_address.required' => 'Địa chỉ doanh nghiệp là bắt buộc.',
-            'business_address.max' => 'Địa chỉ doanh nghiệp không được vượt quá 255 ký tự.',
-
-            'ward_id.required' => 'Vui lòng chọn phường.',
-            'ward_id.integer' => 'Phường không hợp lệ.',
-            'ward_id.exists' => 'Phường không tồn tại.',
-
-            'business_name.required' => 'Tên doanh nghiệp là bắt buộc.',
-            'business_name.string' => 'Tên doanh nghiệp phải là một chuỗi.',
-            'business_name.max' => 'Tên doanh nghiệp không được vượt quá 255 ký tự.',
-
-            'business_license.mimes' => 'Giấy phép kinh doanh phải là file dạng: pdf.',
-
-            'business_code.required' => 'Mã doanh nghiệp là bắt buộc.',
-            'business_code.regex' => 'Mã doanh nghiệp không được nhỏ hơn 10 hoặc vượt quá 13 số.',
-            // 'business_code.unique' => 'Mã doanh nghiệp này đã tồn tại.',
-
-            'email.email' => 'Email không hợp lệ.',
-            'email.max' => 'Email không được vượt quá 255 ký tự.',
-            'email.unique' => 'Email này đã được sử dụng.',
-
-            'social_channel.url' => 'Đường dẫn social không hợp lệ.',
-            'description.max' => 'Mô tả không được vượt quá 1000 ký tự.',
-
-            'business_fields.required' => 'Vui lòng chọn ít nhất một lĩnh vực kinh doanh.',
-            'business_fields.exists' => 'Lĩnh vực kinh doanh không hợp lệ.',
         ]);
 
         $recaptchaResponse = $request->input('g-recaptcha-response');
@@ -156,88 +100,86 @@ class BusinessController extends Controller
             return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
         }
 
+        $business_code = $request->session()->get('business_code');
+
+        if (!$business_code) {
+            return redirect()->back()->with('error', 'Thao tác sai, vui lòng thực hiện lại.')->withInput();
+        }
+
+        $business_member = BusinessMember::where('business_code', $business_code)->first();
+        if (!$business_member) {
+            return redirect()->back()->with('error', 'Thao tác sai, vui lòng thực hiện lại.');
+        }
+
+        $business_member_id = $business_member->id;
+
+        $existing_business = Business::where('business_member_id', $business_member_id)->first();
+
+        if ($existing_business) {
+            session()->forget('key_business_code');
+            session()->forget('business_code');
+            return redirect()->route('form.check.business')->with('error', 'DN/Hộ KD này đã được đăng ký, vui lòng đăng ký DN/Hộ KD khác.');
+        }
+    
+        $business = new Business();
+
+        DB::beginTransaction();
         try {
-            $data = $request->except(['business_license', 'avt_businesses']);
-
             if ($request->hasFile('avt_businesses')) {
-                $image = $request->file('avt_businesses');
-                $folderName = date('Y/m');
-                $originalFileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
-                $extension = $image->getClientOriginalExtension();
-                $fileName = $originalFileName . '_' . time() . '.' . $extension;
-                $image->move(public_path('/uploads/images/business/' . $folderName), $fileName);
-                $data['avt_businesses'] = 'uploads/images/business/' . $folderName . '/' . $fileName;
-            }
-
-
-            if ($request->hasFile('business_license')) {
-                $file = $request->file('business_license');
-                $folderName = date('Y/m');
-                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-                $extension = $file->getClientOriginalExtension();
-                $licenseName = $originalFileName . '_license_' . time() . '.' . $extension;
-                $file->move(public_path('/uploads/images/business/' . $folderName), $licenseName);
-                $data['business_license'] = 'uploads/images/business/' . $folderName . '/' . $licenseName;
-            }
-            $existingBusiness = Business::where('business_code', $request->business_code)
-                                    ->where('email', $request->email)
-                                    ->first();
-
-            if ($existingBusiness) {
-                if ($existingBusiness->status === 'other') {
-                    $existingBusiness->status = 'pending';
-                    $existingBusiness->fill($data);
-                    $existingBusiness->save();
-                    $businessData = Business::with(['categoryBusiness', 'field', 'ward'])->find($existingBusiness->id);
-                    $businessData['subject'] = 'Đăng ký doanh nghiệp';
-                    try {
-                        Mail::to('thanhvu08103@gmail.com')->send(new BusinessRegistered($businessData));
-                    } catch (\Exception $e) {
-                        Log::error('Email Sending Error:', [
-                            'message' => $e->getMessage(),
-                            'email' => $data['email'],
-                            'business_id' => $existingBusiness->id
-                        ]);
+                try {
+                    $image = $request->file('avt_businesses');
+                    $folderName = date('Y/m');
+                    $originalFileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                    $fileName = $originalFileName . '_' . time() . '.webp';
+                    $uploadPath = public_path('uploads/images/avatar/' . $folderName);
+        
+                    if (!File::exists($uploadPath)) {
+                        File::makeDirectory($uploadPath, 0755, true);
                     }
-                    
-                } else {
-                    return redirect()->back()->withInput()->withErrors(['business_code' => 'Mã số thuế đã đăng ký.']);
-                }
-            } else {
-                $business = Business::create($data);
-               
-                $businessData = Business::with(['categoryBusiness', 'field', 'ward'])->find($business->id);
-                $businessData['subject'] = 'Đăng ký doanh nghiệp';
-                    
-                 try {
-                    Mail::to('thinhdv1@ncb-bank.vn')->send(new BusinessRegistered($businessData));
+        
+                    $image = Image::make($image->getRealPath());
+                    $image->resize(200, 200)->encode('webp', 75);
+                    $image->save($uploadPath . '/' . $fileName);
+        
+                    $image_path = 'uploads/images/avatar/' . $folderName . '/' . $fileName;
+        
+                    $business->avt_businesses = $image_path;
                 } catch (\Exception $e) {
-                    Log::error('Email Sending Error:', [
-                        'message' => $e->getMessage(),
-                        'email' => $data['email'],
-                        'business_id' => $business->id
-                    ]);
+                    if (isset($image_path) && File::exists(public_path($image_path))) {
+                        File::delete(public_path($image_path));
+                    }
+        
+                    return redirect()->back()->with('error', 'Có lỗi xảy ra khi tải ảnh lên');
                 }
-                
             }
 
+            $business->description = $request->description;
+            $business->business_member_id = $business_member_id;
+            $business->save();
 
-            // Business::create($data);
+            $business->subject = 'Đăng ký kết nối giao thương';
+            try {
+                Mail::to('tri2003bt@gmail.com')->send(new BusinessMail($business));
+            } catch (\Exception $e) {
+                Log::error('Email Sending Error:', [
+                    'message' => $e->getMessage(),
+                ]);
+            }
 
             DB::commit();
-            return redirect()->route('business.index')->with('success', 'Gửi thành công!!');
+
+            session()->forget('key_business_code');
+            session()->forget('business_code');
+
+            return redirect()->route('business')->with('success', 'Đăng ký thành công, vui lòng chờ duyệt!');
         } catch (\Exception $e) {
             DB::rollBack();
 
-            if (isset($filename) && file_exists(public_path( $data['business_license']))) {
-                unlink(public_path( $data['business_license']));
+            if(isset($image_path) && File::exists(public_path($image_path))) {
+                File::delete(public_path($image_path));
             }
 
-            if (isset($licenseName) && file_exists(public_path( $data['avt_businesses']))) {
-                unlink(public_path( $data['avt_businesses']));
-            }
-
-            return redirect()->back()->with('error', 'Gửi thất bại: ' . $e->getMessage())->withInput();
+            return redirect()->back()->with('error', 'Đăng ký thất bại' . $e->getMessage())->withInput();
         }
     }
 
@@ -286,7 +228,7 @@ class BusinessController extends Controller
         return view('business.edit', compact('business'));
     }
 
-       public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -315,14 +257,11 @@ class BusinessController extends Controller
             $category_product_business = CategoryProductBusiness::where('slug', $category)->first();
 
             $businesses = Business::where('status', 'approved')
-                ->whereHas('products', function ($query) use ($category_product_business) {
-                    $query->where('category_product_id', $category_product_business->id);
-                })
                 ->orderBy('created_at', 'asc')
                 ->get();
         } else {
             $businesses = Business::where('status', 'approved')
-                ->orderBy('created_at', 'asc') 
+                ->orderBy('created_at', 'asc')
                 ->get();
         }
         $category_product_business = CategoryProductBusiness::get();
@@ -332,12 +271,13 @@ class BusinessController extends Controller
 
     public function businessDetail($business_code)
     {
-        $business = Business::where('business_code', $business_code)->first();
-
-        if (!$business) {
+        $businessMember = BusinessMember::where('business_code', $business_code)->first();
+      
+        if (!$businessMember) {
             return redirect()->route('business')->with('error', 'Không tìm thấy doanh nghiệp');
         }
-
+        
+        $business = $businessMember->business;
         return view('pages.client.detail-business', compact('business'));
     }
 
@@ -470,11 +410,24 @@ class BusinessController extends Controller
             }
             $connection = new SupplyDemandConnection();
             $connection->fill($request->only([
-                'owner_full_name', 'birth_year', 'gender', 'residential_address',
-                'business_address', 'phone', 'business_code', 'business_name',
-                'business_field', 'email', 'fanpage', 'product_info',
-                'product_standard', 'product_price', 'product_price_mini_app',
-                'product_price_member', 'start_date', 'end_date'
+                'owner_full_name',
+                'birth_year',
+                'gender',
+                'residential_address',
+                'business_address',
+                'phone',
+                'business_code',
+                'business_name',
+                'business_field',
+                'email',
+                'fanpage',
+                'product_info',
+                'product_standard',
+                'product_price',
+                'product_price_mini_app',
+                'product_price_member',
+                'start_date',
+                'end_date'
             ]));
 
             $this->handleFileUpload($request, 'product_avatar', $data, '_avatar_', 'supplydemand');
@@ -486,7 +439,6 @@ class BusinessController extends Controller
 
             DB::commit();
             return redirect()->back()->with('success', 'Đăng ký kết nối cung cầu thành công!');
-
         } catch (\Exception $e) {
             DB::rollBack();
             $this->cleanupUploadedFiles($data);
@@ -551,14 +503,16 @@ class BusinessController extends Controller
             }
         }
     }
-    
+
     private function validateExistingBusiness($existingBusiness, $validatedData)
     {
-        if ($existingBusiness->business_name !== $validatedData['business_name'] ||
+        if (
+            $existingBusiness->business_name !== $validatedData['business_name'] ||
             $existingBusiness->business_address !== $validatedData['business_address'] ||
             $existingBusiness->phone_number !== $validatedData['phone_number'] ||
             $existingBusiness->email !== $validatedData['email'] ||
-            $existingBusiness->representative_name !== $validatedData['representative_name']) {
+            $existingBusiness->representative_name !== $validatedData['representative_name']
+        ) {
 
             return redirect()->back()->with('error', 'Thông tin doanh nghiệp không khớp.')->withInput();
         }

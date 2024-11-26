@@ -86,40 +86,10 @@ Route::middleware(['language'])->group(function () {
         Route::get('business-products', [BusinessController::class, 'businessProducts'])->name('business.products');
         Route::get('product/{slug}', [BusinessController::class, 'productDetail'])->name('product.detail');
 
-        Route::get('/form-connect-supply-demand', [BusinessController::class, 'connectSupplyDemand'])->name('connect.supply.demand'); //form kết nối cung cầu
-        Route::post('/form-connect-supply-demand', [BusinessController::class, 'storeConnectSupplyDemand'])->name('connect.supply.demand.store');
-
-        Route::get('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'showFormStartPromotion'])->name('show.form.start.promotion'); // khởi nghiệp xúc tiến thương mại đầu tư
-        Route::post('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'storeFormStartPromotion'])->name('form.start.promotion.store');
-
-        Route::get('/form-registering-capital-needs/{slug?}', [BusinessCapitalNeedController::class, 'showFormCapitalNeeds'])->name('show.form.capital.need'); //ĐĂNG KÝ NHU CẦU VỀ VỐN
-        Route::post('/form-registering-capital-needs', [BusinessCapitalNeedController::class, 'storeFormCapitalNeeds'])->name('show.form.capital.need.store');
-
-        Route::get('/form-promotional-introduction', [LocationController::class, 'showFormPromotional'])->name('show.form.promotional'); //form đăng ký điểm đến
-        Route::post('/form-promotional-introduction', [LocationController::class, 'storeFormPromotional'])->name('form.promotional.store');
-
-        Route::get('/form-recruitment-registration', [BusinessRecruitmentController::class, 'recruitmentRegistration'])->name('recruitment.registration'); //form đăng ký tuyển dụng
-        Route::post('/form-recruitment-registration', [BusinessRecruitmentController::class, 'storeForm'])->name('recruitment.registration.store');
-
-        Route::get('/form-job-application', [JobApplicationController::class, 'jobApplication'])->name('job.application'); //form ứng tuyển
-        Route::post('/form-job-application', [JobApplicationController::class, 'storeForm'])->name('job.application.store');
-
-        Route::get('/form-business-opinion', [BusinessFeedBackController::class, 'businessOpinion'])->name('business.opinion'); //form ý kiến doanh nghiệp
-        Route::post('/form-business-opinion', [BusinessFeedBackController::class, 'storeBusinessOpinion'])->name('business.opinion.store');
-
-        Route::post('/form-business', [BusinessController::class, 'store'])->name('business.store'); //form đăng ký doanh nghiệp
-        Route::get('/form-business', [BusinessController::class, 'index'])->name('business.index');
-
         Route::get('/home-bank/{slug}', [FinancialSupportController::class, 'showFinancial'])->name('show.financical');
         Route::get('/home-bank', [BanksController::class, 'showHomeBank'])->name('show.home.bank');
 
-        Route::get('/form-legal-advice', [LawsController::class, 'showFormLegal'])->name('show.form.legal'); //form tư vấn pháp lý
-        Route::post('/form-legal-advice', [LawsController::class, 'storeForm'])->name('legal.advice.store');
-
         Route::get('/post-detail/{slug}', [BlogsController::class, 'showPostIndex'])->name('post-detail');
-
-        Route::get('/member-business', [MemberBusinessController::class, 'showFormMemberBusiness'])->name('show.form.member.business'); //form đk hội viên doanh nghiệp chuyển sang đk app
-        Route::post('/member-business', [MemberBusinessController::class, 'storFormMemberBusiness'])->name('form.member.business.store');
 
         //tạm gán như này cho kết nối việc làm
         Route::get('/job-connector', function () {
@@ -137,6 +107,47 @@ Route::middleware(['language'])->group(function () {
         Route::get('/intro-hdn', function () {
             return view('pages.client.introduction-hdn');
         })->name('introduction');
+
+        Route::get('form-check-business', function () {
+            return view('pages.client.gv.form-check-business');
+        })->name('form.check.business');
+
+        Route::get('/member-business', [MemberBusinessController::class, 'showFormMemberBusiness'])->name('show.form.member.business'); //form đk hội viên doanh nghiệp chuyển sang đk app
+        Route::post('/member-business', [MemberBusinessController::class, 'storFormMemberBusiness'])->name('form.member.business.store');
+
+        Route::middleware(['check.business.code'])->group(function () {
+
+            Route::post('form-check-business', function () {
+                
+            })->name('form.check.business');
+
+            Route::get('/form-connect-supply-demand', [BusinessController::class, 'connectSupplyDemand'])->name('connect.supply.demand'); //form kết nối cung cầu
+            Route::post('/form-connect-supply-demand', [BusinessController::class, 'storeConnectSupplyDemand'])->name('connect.supply.demand.store');
+
+            Route::get('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'showFormStartPromotion'])->name('show.form.start.promotion'); // khởi nghiệp xúc tiến thương mại đầu tư
+            Route::post('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'storeFormStartPromotion'])->name('form.start.promotion.store');
+
+            Route::get('/form-registering-capital-needs/{slug?}', [BusinessCapitalNeedController::class, 'showFormCapitalNeeds'])->name('show.form.capital.need'); //ĐĂNG KÝ NHU CẦU VỀ VỐN
+            Route::post('/form-registering-capital-needs', [BusinessCapitalNeedController::class, 'storeFormCapitalNeeds'])->name('show.form.capital.need.store');
+
+            Route::get('/form-promotional-introduction', [LocationController::class, 'showFormPromotional'])->name('show.form.promotional'); //form đăng ký điểm đến
+            Route::post('/form-promotional-introduction', [LocationController::class, 'storeFormPromotional'])->name('form.promotional.store');
+
+            Route::get('/form-recruitment-registration', [BusinessRecruitmentController::class, 'recruitmentRegistration'])->name('recruitment.registration'); //form đăng ký tuyển dụng
+            Route::post('/form-recruitment-registration', [BusinessRecruitmentController::class, 'storeForm'])->name('recruitment.registration.store');
+
+            Route::get('/form-job-application', [JobApplicationController::class, 'jobApplication'])->name('job.application'); //form ứng tuyển
+            Route::post('/form-job-application', [JobApplicationController::class, 'storeForm'])->name('job.application.store');
+
+            Route::get('/form-business-opinion', [BusinessFeedBackController::class, 'businessOpinion'])->name('business.opinion'); //form ý kiến doanh nghiệp
+            Route::post('/form-business-opinion', [BusinessFeedBackController::class, 'storeBusinessOpinion'])->name('business.opinion.store');
+
+            Route::post('/form-business', [BusinessController::class, 'store'])->name('business.store'); //form đăng ký doanh nghiệp
+            Route::get('/form-business', [BusinessController::class, 'index'])->name('business.index');
+
+            Route::get('/form-legal-advice', [LawsController::class, 'showFormLegal'])->name('show.form.legal'); //form tư vấn pháp lý
+            Route::post('/form-legal-advice', [LawsController::class, 'storeForm'])->name('legal.advice.store');
+        });
     });
 
     Route::get('switch-language/{locale}', [LanguageController::class, 'switchLanguage'])->name('language.switch');
@@ -207,8 +218,6 @@ Route::middleware(['language'])->group(function () {
                 Route::resource('users', UserController::class)->except('show');
 
                 Route::post('/user/status', [UserController::class, 'changeStatus'])->name('user.changeStatus');
-
-
             });
         });
 

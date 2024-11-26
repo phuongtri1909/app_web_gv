@@ -96,11 +96,11 @@
                 <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 g-2 g-md-3">
                     @foreach ($businesses as $item)
                         <div class="col">
-                            <a href="{{ route('business.detail', $item->business_code) }}" class="card h-100 border-custom">
+                            <a href="{{ route('business.detail', $item->businessMember->business_code) }}" class="card h-100 border-custom">
                                 <img src="{{ asset($item->avt_businesses) }}"
                                     class="card-img-top img-fluid p-1 logo-business" alt="...">
                                 <div class="card-body d-flex flex-column">
-                                    <h6 class="card-title text-uppercase text-dark">{{ $item->business_name }}</h6>
+                                    <h6 class="card-title text-uppercase text-dark">{{ $item->businessMember->business_name }}</h6>
                                 </div>
                             </a>
                         </div>

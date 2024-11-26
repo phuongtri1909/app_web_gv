@@ -15,7 +15,7 @@ class BusinessMember extends Model
         'address',
         'email',
         'phone_zalo',
-        'business_field',
+        'business_field_id',
         'representative_full_name',
         'representative_phone',
         'status',
@@ -23,11 +23,21 @@ class BusinessMember extends Model
 
     public function businessField()
     {
-        return $this->belongsTo(BusinessField::class, 'business_field');
+        return $this->belongsTo(BusinessField::class, 'business_field_id');
     }
 
     public function user()
     {
         return $this->hasOne(User::class, 'business_member_id');
+    }
+
+    public function businesses()
+    {
+        return $this->hasMany(Business::class, 'business_member_id');
+    }
+
+    public function business()
+    {
+        return $this->hasOne(Business::class, 'business_member_id');
     }
 }

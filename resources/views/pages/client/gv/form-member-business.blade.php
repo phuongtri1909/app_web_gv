@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Đăng ký đặc quyền hội viên')
+@section('title', 'Đăng ký doanh nghiệp/hộ kinh doanh')
 
 @push('styles')
     <style>

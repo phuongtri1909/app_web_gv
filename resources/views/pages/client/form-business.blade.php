@@ -1,7 +1,7 @@
 @extends('layouts.app')
-@section('title', 'Đăng ký doanh nghiệp')
-@section('description', 'Đăng ký doanh nghiệp')
-@section('keyword', 'Đăng ký doanh nghiệp')
+@section('title', 'Kết nối giao thương')
+@section('description', 'Kết nối giao thương')
+@section('keyword', 'Kết nối giao thương')
 @push('styles')
     <style>
         .upload-container {
@@ -107,61 +107,17 @@
             outline: 0;
         }
 
-        .ant-upload-list-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .ant-upload-list-item-thumbnail {
-            margin-right: 10px;
-        }
-
-        .ant-upload-list-item-name {
-            flex-grow: 1;
-        }
-
-        .ant-upload-list-item-actions {
-            margin-left: 10px;
-
-        }
-
-        .ant-upload-list-item-action {
-            border: none !important;
-            background-color: unset !important;
-        }
-
-        .error-message,.error-message1 {
+        .error-message,
+        .error-message1 {
             color: red;
             margin-top: 10px;
             font-size: 12px;
         }
-        .btn-success{
-            background-color: #0056b3;
-            transition: background-color 0.3s ease;
-        }
-        .btn-success:hover{
+        .btn:disabled {
             background-color: #004494;
         }
-        @media (max-width: 768px) {
 
-        .btn-success {
-            padding: 8px;
-            font-size: 14px;
-        }
-    }
-        @media (max-width: 480px) {
-
-
-        .btn-success {
-            padding: 6px;
-            font-size: 12px;
-        }
-    }
-    .btn:disabled{
-        background-color: #004494;
-    }
-    #form-business {
+        #form-business {
             position: relative;
             /* margin: 30px auto; */
             /* padding: 20px 0px 20px 0px; */
@@ -189,12 +145,12 @@
     <section id="form-business" class="form-business mt-5rem">
         <div class="container my-4">
             <div class="row">
-                
+
                 <form action="{{ route('business.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="col-md-12 mb-5">
                         <div class="avt-business text-center mb-2">
-                            <label for="">Hình ảnh đại diện doanh nghiệp</label>
+                            <label for="">Hình ảnh đại diện doanh nghiệp (200x200px) <span class="text-danger">*</span></label>
                         </div>
                         <div class="upload-container @error('avt_businesses') is-invalid @enderror">
                             <label for="file-upload" class="upload-label">
@@ -212,171 +168,23 @@
                                 value="{{ old('avt_businesses') }}" style="display: none;">
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4 mb-4">
-                            <label for="representative_name" class="form-label">Họ tên chủ doanh nghiệp <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm @error('representative_name') is-invalid @enderror"
-                                id="representative_name" name="representative_name" placeholder="Nhập họ tên chủ doanh nghiệp"
-                                value="{{ old('representative_name') }}" >
-                            <span class="error-message"></span>
-                            @error('representative_name')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="birth_year" class="form-label">Năm sinh:<span class="text-danger">*</span></label>
-                            <input type="text" id="birth_year" name="birth_year" class="form-control form-control-sm @error('birth_year') is-invalid @enderror"  placeholder="Nhập năm sinh" value="{{ old('birth_year') }}">
-                            <span class="error-message"></span>
-                            @error('birth_year')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label class="form-label">Giới tính:<span class="text-danger">*</span></label>
-                            <div class="d-flex align-items-center">
-                                <div class="form-check me-3">
-                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderMale" value="male" {{ old('gender') == 'male' ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="genderMale">
-                                        Nam
-                                    </label>
-                                </div>
-                                <div class="form-check me-3">
-                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderFemale" value="female" {{ old('gender') == 'female' ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="genderFemale">
-                                        Nữ
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio" name="gender" id="genderOther" value="other" {{ old('gender') == 'other' ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="genderOther">
-                                        Khác
-                                    </label>
-                                </div>
-                            </div>
-                            <span class="error-message gender-error"></span>
-                            @error('gender')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 mb-4">
-                            <label for="phone" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
-                            <input type="tel" class="form-control form-control-sm @error('phone_number') is-invalid @enderror"
-                                id="phone" placeholder="Nhập số điện thoại" name="phone_number"
-                                value="{{ old('phone_number') }}">
-                            <span class="error-message"></span>
-                            @error('phone_number')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="address" class="form-label">Địa chỉ cư trú <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm @error('address') is-invalid @enderror"
-                                id="address" placeholder="Nhập địa chỉ" name="address" value="{{ old('address') }}">
-                            <span class="error-message"></span>
-                            @error('address')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="business_address" class="form-label">Địa chỉ kinh doanh:<span class="text-danger">*</span></label>
-                            <input type="text" id="business_address" name="business_address" class="form-control form-control-sm @error('business_address') is-invalid @enderror" placeholder="Nhập địa chỉ kinh doanh" value="{{ old('business_address') }}">
-                            <span class="error-message"></span>
-                            @error('business_address')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 mb-4">
-                            <label for="ward" class="form-label">Phường:<span class="text-danger">*</span></label>
-                            <select class="form-select form-control form-select-sm @error('ward_id') is-invalid @enderror" id="ward" name="ward_id">
-                                @foreach ($wards as $ward)
-                                    <option value="{{ $ward->id }}" {{ old('ward_id') == $ward->id ? 'selected' : '' }}>{{ $ward->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('ward_id')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="businessName" class="form-label @error('business_name') is-invalid @enderror">Tên doanh nghiệp <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm @error('business_name') is-invalid @enderror" id="businessName" name="business_name"
-                                placeholder="Nhập tên doanh nghiệp" value="{{ old('business_name') }}">
-                            <span class="error-message"></span>
-                            @error('business_name')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="business_fields" class="form-label">Ngành nghề kinh doanh:<span class="text-danger">*</span></label>
-                            <select class="form-select form-control form-select-sm @error('business_fields') is-invalid @enderror" id="business_fields" name="business_fields">
-                                @foreach ($business_fields as $field)
-                                    <option value="{{ $field->id }}" {{ old('business_fields') == $field->id ? 'selected' : '' }}>{{ $field->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('business_fields')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="license" class="form-label @error('business_license') is-invalid @enderror">Giấy phép kinh doanh</label>
-                            <div class="input-group">
-                                <input type="file" id="file-uploads" name="business_license" accept="application/pdf"
-                                    value="{{ old('business_license') }}" style="display: none;" >
-                                <button type="button" class="btn btn-success @error('business_license') is-invalid @enderror" id="upload-button">
-                                    <i class="bi bi-upload"></i> Upload
-                                </button>
-                            </div>
-                            @error('business_license')
-                                <div class="invalid-feedback d-block text-center" role="alert">{{ $message }}</div>
-                            @enderror
-                            <div id="upload-list" class="mt-2"></div>
-                            <div id="error-message" class="error-message text-danger"></div>
-                        </div>
-                    </div>
-                    <div class="row ">
-                        <div class="col-md-4 mb-4">
-                            <label for="businessCode" class="form-label">Mã số thuế <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm @error('business_code') is-invalid @enderror"
-                                id="businessCode" name="business_code" placeholder="Nhập mã số thuế"
-                                value="{{ old('business_code') }}">
-                            <span class="error-message"></span>
-                            @error('business_code')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="email" class="form-label">Email doanh nghiệp</label>
-                            <input type="email" class="form-control form-control-sm @error('email') is-invalid @enderror"
-                                id="email" placeholder="Nhập email" name="email" value="{{ old('email') }}">
-                            @error('email')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="social" class="form-label">Fanpage</label>
-                            <input type="url" class="form-control form-control-sm @error('social_channel') is-invalid @enderror"
-                                id="social" placeholder="Nhập link fanpage" value="{{ old('social_channel') }}"
-                                name="social_channel">
-                            @error('social_channel')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
+                    
+                       
                     <div class="mb-4">
-                        <label for="description" class="form-label">Thông tin doanh nghiệp</label>
-                        <textarea class="form-control @error('description') is-invalid @enderror" id="description" rows="4" placeholder="Thông tin doanh nghiệp" name="description">{{ old('description') }}</textarea>
+                        <label for="description" class="form-label">Thông tin doanh nghiệp <span class="text-danger">*</span></label>
+                        <textarea class="form-control @error('description') is-invalid @enderror" id="description" rows="4"
+                            placeholder="Thông tin doanh nghiệp" name="description">{{ old('description') }}</textarea>
                         @error('description')
                             <div class="invalid-feedback" role="alert">{{ $message }}</div>
                         @enderror
                     </div>
+
                     <div class="d-flex justify-content-center">
                         <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
                     </div>
                     @if ($errors->has('error'))
-                        <div class="invalid-feedback d-block text-center" role="alert">{{ $errors->first('error') }}</div>
+                        <div class="invalid-feedback d-block text-center" role="alert">{{ $errors->first('error') }}
+                        </div>
                     @endif
                     <div id="recaptcha-error" class="text-danger text-center mt-2"></div>
                     <button type="submit" class="btn btn-primary">Lưu lại</button>
@@ -389,98 +197,6 @@
 
 @push('scripts')
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
-    <script>
-        document.getElementById('upload-button').addEventListener('click', function() {
-            const fileInput = document.getElementById('file-uploads');
-            fileInput.click();
-
-            fileInput.addEventListener('change', function() {
-                const uploadList = document.getElementById('upload-list');
-                const errorMessage = document.getElementById('error-message');
-                uploadList.innerHTML = '';
-                errorMessage.textContent = '';
-
-                const files = fileInput.files;
-
-                const uploadButton = document.getElementById('upload-button');
-                if (files.length > 0) {
-                    uploadButton.disabled = true;
-
-                    for (let i = 0; i < files.length; i++) {
-                        const file = files[i];
-                        const fileItem = document.createElement('div');
-                        fileItem.classList.add('uploaded-file');
-
-
-                        const removeIcon = document.createElement('i');
-                        removeIcon.classList.add('fa-solid', 'fa-trash');
-                        removeIcon.style.cursor = 'pointer';
-                        removeIcon.style.marginLeft = '10px';
-
-
-                        removeIcon.addEventListener('click', function() {
-
-                            uploadList.removeChild(fileItem);
-                            errorMessage.textContent = '';
-                            const newFiles = Array.from(fileInput.files).filter((_, index) =>
-                                index !== i);
-                            const dataTransfer = new DataTransfer();
-                            newFiles.forEach(file => dataTransfer.items.add(file));
-                            fileInput.files = dataTransfer.files;
-
-
-                            if (newFiles.length === 0) {
-                                uploadButton.disabled = false;
-                            }
-                        });
-
-                        if (file.type === 'application/pdf') {
-                            const fileIcon = document.createElement('i');
-                            fileIcon.classList.add('bi', 'bi-file-earmark-pdf');
-                            const fileName = document.createElement('span');
-                            fileName.textContent = file.name;
-                            fileItem.appendChild(fileIcon);
-                            fileItem.appendChild(fileName);
-                            fileItem.appendChild(removeIcon);
-                            uploadList.appendChild(fileItem);
-                        } else if (file.type.startsWith('image/')) {
-                            const img = document.createElement('img');
-                            img.src = URL.createObjectURL(file);
-                            img.alt = file.name;
-                            img.style.maxWidth = '100px';
-                            img.style.marginRight = '10px';
-                            img.style.width = '75px';
-                            img.style.height = '65px';
-                            const fileIcon = document.createElement('span');
-                            fileIcon.textContent = file.name;
-                            fileItem.appendChild(img);
-                            fileItem.appendChild(fileIcon);
-                            fileItem.appendChild(removeIcon);
-                            errorMessage.textContent = file.name +
-                                ' không hợp lệ: Vui lòng chỉ tải lên tệp PDF.';
-                            uploadList.appendChild(fileItem);
-                        } else {
-                            const fileIcon = document.createElement('span');
-                            fileIcon.textContent = file.name;
-                            fileIcon.style.marginRight = '10px';
-                            const fileTypeIcon = document.createElement('i');
-                            fileTypeIcon.classList.add('bi', 'bi-file-earmark');
-                            fileItem.appendChild(fileTypeIcon);
-                            fileItem.appendChild(fileIcon);
-                            fileItem.appendChild(removeIcon);
-
-                            errorMessage.textContent = file.name +
-                                ' không hợp lệ: Vui lòng chỉ tải lên tệp PDF.';
-                            uploadList.appendChild(fileItem);
-                        }
-                    }
-                } else {
-                    errorMessage.textContent = 'Vui lòng chọn tệp để tải lên.';
-                }
-            });
-        });
-    </script>
 
     <script>
         const fileInput = document.getElementById('file-upload');

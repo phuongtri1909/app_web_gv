@@ -12,59 +12,14 @@ class Business extends Model
     protected $table = 'businesses';
 
     protected $fillable = [
-        'business_code',
-        'business_name',
-        'representative_name',
-        'phone_number',
-        'fax_number',
-        'address',
-        'ward_id',
-        'email',
-        'category_business_id',
-        'business_license',
-        'social_channel',
+        'business_member_id',
         'description',
         'avt_businesses',
-        'birth_year',
-        'gender',
-        'business_address',
-        'business_fields',
         'status',
     ];
 
-    public function ward()
+    public function businessMember()
     {
-        return $this->belongsTo(WardGovap::class, 'ward_id');
-    }
-    public function categoryBusiness()
-    {
-        return $this->belongsTo(CategoryBusiness::class, 'category_business_id');
-    }
-
-    public function user()
-    {
-        return $this->hasOne(User::class, 'business_id');
-    }
-
-    public function products()
-    {
-        return $this->hasMany(ProductBusiness::class);
-    }
-
-    public function businessStartPromotionInvestment(){
-        return $this->hasMany(BusinessStartPromotionInvestment::class);
-    }
-    public function field()
-    {
-        return $this->belongsTo(BusinessField::class, 'business_fields');
-    }
-    public function businessCapitalNeed()
-    {
-        return $this->hasMany(BusinessCapitalNeed::class);
-    }
-
-    public function locations()
-    {
-        return $this->hasMany(Locations::class);
+        return $this->belongsTo(BusinessMember::class, 'business_member_id', 'id');
     }
 }

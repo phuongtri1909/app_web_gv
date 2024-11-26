@@ -1,6 +1,6 @@
 @include('layouts.partials.header')
 
-<div class="main-panel">
+<div class="main-panel min-vh-100">
     <svg class="waves random-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
         viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
         <defs>
@@ -13,7 +13,7 @@
             <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
         </g>
     </svg>
-    <div id="page" class="mt-5rem">
+    <div id="page" class="mt-5rem flex-grow-1">
         @yield('content')
     </div>
 
@@ -25,7 +25,6 @@
             <polyline points="7 23 12 18 17 23"></polyline>
         </svg>
     </button>
+
 </div>
-
-
 @include('layouts.partials.footer')
