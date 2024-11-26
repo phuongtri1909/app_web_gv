@@ -17,6 +17,7 @@ class LegalAdvice extends Model
         'address',
         'company_name',
         'advice_content',
+        'status',
     ];
 
 }

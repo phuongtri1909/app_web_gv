@@ -65,7 +65,7 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <div class="dropdown">
+                                            <div class="dropstart">
                                                 <button class="btn btn-sm p-0 border-0 mb-0" type="button"
                                                     data-bs-toggle="dropdown" aria-expanded="false"
                                                     title="Thay đổi trạng thái">

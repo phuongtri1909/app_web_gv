@@ -57,7 +57,7 @@
                                             <p class="text-xs font-weight-bold mb-0">{{ $detail->tab->name }}</p>
                                         </td>
                                         <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{ $detail->content }}</p>
+                                            <p class="text-xs font-weight-bold mb-0">{!! $detail->content !!}</p>
                                         </td>
                                         <td class="text-center">
                                             <a href="{{ route('news_contents.edit', $detail->id) }}" class="mx-3" title="{{ __('edit') }}">

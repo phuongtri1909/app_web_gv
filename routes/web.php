@@ -56,7 +56,8 @@ use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PersonalBusinessInterestController;
 use App\Http\Controllers\BusinessStartPromotionInvestmentController;
 use App\Http\Controllers\LocationController;
-
+use App\Http\Controllers\CustomUploadController;
+use UniSharp\LaravelFilemanager\Lfm;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -111,8 +112,8 @@ Route::middleware(['language'])->group(function () {
         Route::get('/home-bank/{slug}', [FinancialSupportController::class, 'showFinancial'])->name('show.financical');
         Route::get('/home-bank', [BanksController::class, 'showHomeBank'])->name('show.home.bank');
 
-        Route::get('/form-legal-advice', [LawsController::class, 'showFormLegal'])->name('show.form.legal'); //form tư vấn pháp lý
-        Route::post('/form-legal-advice', [LawsController::class, 'storeForm'])->name('legal.advice.store');
+        Route::get('/form-legal-advice', [LegalAdviceController::class, 'showFormLegal'])->name('show.form.legal'); //form tư vấn pháp lý
+        Route::post('/form-legal-advice', [LegalAdviceController::class, 'storeForm'])->name('legal.advice.store');
 
         Route::get('/post-detail/{slug}', [BlogsController::class, 'showPostIndex'])->name('post-detail');
 
@@ -167,9 +168,12 @@ Route::middleware(['language'])->group(function () {
                 Route::resource('categories-news', CategoryNewsController::class);
                 Route::resource('news', BlogsController::class);
 
-                Route::group(['prefix' => 'laravel-filemanager'], function () {
-                    \UniSharp\LaravelFilemanager\Lfm::routes();
+                Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
+                    Lfm::routes();
+                
+                    Route::post('/upload', [CustomUploadController::class, 'upload'])->name('lfm.upload');
                 });
+                
 
                 Route::resource('tabs_posts', TabDetailPostController::class);
                 Route::resource('news_contents', NewsTabContentDetailPostController::class);
@@ -197,10 +201,15 @@ Route::middleware(['language'])->group(function () {
                 Route::get('/form-business', [BusinessController::class, 'adminIndex'])->name('admin.business');
 
                 Route::post('/update-status', [StatusController::class, 'updateStatus'])->name('update.status');
+                Route::post('/update-status-1', [StatusController::class, 'updateStatus1'])->name('update.status.1');
 
                 Route::resource('members',  MemberBusinessController::class);
 
                 Route::resource('business-fields',  BusinessFieldController::class);
+
+                Route::resource('contact-consultations',  ContactConsultationController::class);
+
+                Route::resource('form-legal-advice',  LegalAdviceController::class);
 
 
             });

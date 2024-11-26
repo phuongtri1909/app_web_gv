@@ -46,8 +46,8 @@ return [
 
         'uploads' => [
             'driver' => 'local',
-            'root' => public_path('/uploads/images/news'),
-            'url' => env('APP_URL').'/uploads/images/news',
+            'root' => public_path('/uploads/images'),
+            'url' => env('APP_URL').'/uploads/images',
             'visibility' => 'public',
             'throw' => false,
         ],

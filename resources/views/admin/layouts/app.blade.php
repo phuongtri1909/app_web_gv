@@ -62,6 +62,8 @@
         {{-- <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script> --}}
         <script src="{{ asset('js/dashboard.min.js') }}"></script>
         <script src="{{ asset('js/app.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('ckeditor/ckeditor.js')}}"></script>
+        <script src="{{ asset('ckeditor/config.js')}}"></script>
         <script>
             $(document).ready(function() {
                 $('.language-switch').on('click', function(e) {

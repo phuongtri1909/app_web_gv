@@ -90,7 +90,7 @@
                                             {{-- <a href="{{ route('start-promotion-investment.edit', $promotion->id) }}" class="mx-3" title="{{ __('edit') }}">
                                             <i class="fa-solid fa-pencil"></i>
                                         </a> --}}
-                                            <div class="dropdown">
+                                            <div class="dropstart">
                                                 <button class="btn btn-sm p-0 border-0 mb-0" type="button"
                                                     data-bs-toggle="dropdown" aria-expanded="false"
                                                     title="Thay đổi trạng thái">

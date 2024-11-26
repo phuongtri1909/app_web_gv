@@ -27,7 +27,7 @@ class Controller extends BaseController
             }
 
             if (!empty($uploadedFiles)) {
-                $data[$inputName] = json_encode($uploadedFiles);
+                $data[$inputName] = count($uploadedFiles) > 1 ? json_encode($uploadedFiles) : $uploadedFiles[0];
             }
         }
     }
@@ -98,6 +98,8 @@ class Controller extends BaseController
             'CCCD' => 'uploads/images/cccd/',
             'product_location' => 'uploads/images/product_location/',
             'documents' => 'uploads/documents/',
+            'contact_consultations' => 'uploads/images/contact_consultations/',
+
         ];
 
         if (!array_key_exists($folderType, $basePaths)) {
