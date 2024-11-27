@@ -124,7 +124,7 @@
 @endpush
 @section('content')
     
-    @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký nhu cầu', 'buttonLink' => route('show.form.capital.need')])
+    @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký nhu cầu vốn', 'buttonLink' => route('show.form.capital.need')])
     <section id="home-post">
         <div class="banner">
             <img src="{{ asset('images/Vayvonkinhdoanh.jpg') }}" alt="Banner Image">

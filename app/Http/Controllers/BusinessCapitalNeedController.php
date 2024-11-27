@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BusinessCapitalNeedMail;
 use App\Models\BankServicesInterest;
 use App\Models\Business;
 use App\Models\BusinessCapitalNeed;
@@ -10,23 +11,25 @@ use App\Models\FinancialSupport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Validation\ValidationException ;
+use Illuminate\Validation\ValidationException;
 use App\Mail\BusinessRegistered;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+
 class BusinessCapitalNeedController extends Controller
 {
     //
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $capitalNeeds = BusinessCapitalNeed::with(['business', 'financialSupport', 'bankServicesInterest'])->when($search,function($query, $search) {
+        $capitalNeeds = BusinessCapitalNeed::with(['businessMember'])->when($search, function ($query, $search) {
             return $query->whereHas('business', function ($query) use ($search) {
                 $query->where('business_name', 'like', "%{$search}%")
                     ->orWhere('business_code', 'like', "%{$search}%");
             });
         })
-        ->paginate(15);
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
         return view('admin.pages.client.form-capital-needs.index', compact('capitalNeeds'));
     }
 
@@ -93,7 +96,6 @@ class BusinessCapitalNeedController extends Controller
                 'bank_service' => $capitalNeed->bankService,
                 'created_at' => $capitalNeed->created_at,
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch details'], 500);
         }
@@ -139,74 +141,61 @@ class BusinessCapitalNeedController extends Controller
         }
     }
 
-    public function showFormCapitalNeeds($slug = null){
+    public function showFormCapitalNeeds($slug = null)
+    {
         $category_business = CategoryBusiness::all();
         if ($slug) {
-            $financialSupport = FinancialSupport::where('slug',$slug);
+            $financialSupport = FinancialSupport::where('slug', $slug);
             if ($financialSupport) {
-                    return view('pages.client.gv.registering-capital-needs', compact(  'slug','category_business'));
-            }
-            else{
-                $bank_service = BankServicesInterest::where('slug',$slug);
+                return view('pages.client.gv.registering-capital-needs', compact('slug', 'category_business'));
+            } else {
+                $bank_service = BankServicesInterest::where('slug', $slug);
                 if ($bank_service) {
-                    return view('pages.client.gv.registering-capital-needs', compact(  'slug','category_business'));
+                    return view('pages.client.gv.registering-capital-needs', compact('slug', 'category_business'));
                 }
             }
             return redirect()->route('show.home.bank')->with('error', __('Dịch vụ không tồn tại!!.'));
         }
-          return view('pages.client.gv.registering-capital-needs',compact('category_business'));
+        return view('pages.client.gv.registering-capital-needs', compact('category_business'));
     }
     public function storeFormCapitalNeeds(Request $request)
     {
+
+        // Check business code 
+        $business_member_id = $this->getBusinessMemberId($request);
+        if ($business_member_id instanceof \Illuminate\Http\RedirectResponse) {
+            return $business_member_id;
+        }
+
         DB::beginTransaction();
-        try{
+        try {
             $validatedData = $request->validate([
-                'representative_name' => 'required|string|max:255',
-                'gender' => 'required|in:male,female,other',
-                'phone_number' => 'required|string|max:10|regex:/^[0-9]+$/',
-                'fax' => 'nullable|string|regex:/^(\+?\d{1,3})?[-.\s]?\(?\d{1,4}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/',
-                'business_address' => 'required|string|max:255',
-                'category_business_id' => 'required|exists:category_business,id',
-                'business_name' => 'required|string|max:255',
-                'business_code' => 'required|regex:/^\d{10}(-\d{3})?$/',
-                'email' => 'nullable|email|max:255',
-                'interest_rate' => 'required|numeric|min:0',
                 'finance' => 'required|numeric|min:0',
-                'mortgage_policy' => 'required|string|max:1000',
-                'unsecured_policy' => 'required|string|max:1000',
-                'purpose' => 'required|string|max:1000',
-                'bank_connection' => 'required|string',
-                'feedback' => 'nullable|string|max:1000',
+                'loan_cycle' => 'required|integer|min:0',
+                'interest_rate' => 'required|numeric|min:0',
+                'purpose' => 'required|string|max:2000',
+                'bank_connection' => 'required|string|max:255',
+                'support_policy' => 'required|string|max:2000',
+                'feedback' => 'required|string|max:2000',
             ], [
-                'business_name.required' => 'Vui lòng nhập tên doanh nghiệp.',
-                'business_code.required' => 'Mã số doanh nghiệp là bắt buộc.',
-                'business_code.regex' => 'Mã số doanh nghiệp không hợp lệ, ít nhất 10 hoặc không vượt quá 13 số',
-                'category_business_id.required' => 'Vui lòng chọn loại hình kinh doanh.',
-                'category_business_id.exists' => 'Loại hình kinh doanh không hợp lệ.',
-                'phone_number.required' => 'Số điện thoại là bắt buộc.',
-                'phone_number.max' => 'Số điện thoại không được vượt quá 10 chữ số.',
-                'phone_number.regex' => 'Số điện thoại chỉ được phép chứa các ký tự số.',
-                'fax.regex' => 'Định dạng số fax không hợp lệ.',
-                'email.email' => 'Định dạng email không đúng.',
-                'representative_name.required' => 'Vui lòng nhập tên người đại diện.',
-                'gender.required' => 'Vui lòng chọn giới tính.',
-                'gender.in' => 'Giới tính không hợp lệ.',
-                'interest_rate.required' => 'Vui lòng nhập lãi suất.',
-                'interest_rate.numeric' => 'Lãi suất phải là một số hợp lệ.',
+                'finance.required' => 'Vui lòng nhập số vốn.',
+                'finance.numeric' => 'Số vốn phải là một số hợp lệ.',
+                'finance.min' => 'Số vốn không được nhỏ hơn 0.',
+                'loan_cycle.required' => 'Vui lòng nhập chu kỳ vay.',
+                'loan_cycle.integer' => 'Chu kỳ vay phải là một số hợp lệ.',
+                'loan_cycle.min' => 'Chu kỳ vay không được nhỏ hơn 0.',
+                'interest_rate.required' => 'Vui lòng nhập đề xuất lãi suất.',
+                'interest_rate.numeric' => 'Lãi đề xuất suất phải là một số hợp lệ.',
                 'interest_rate.min' => 'Lãi suất không được nhỏ hơn 0.',
-                'finance.required' => 'Vui lòng nhập số tiền tài chính.',
-                'finance.numeric' => 'Số tiền tài chính phải là một số hợp lệ.',
-                'finance.min' => 'Số tiền tài chính không được nhỏ hơn 0.',
-                'feedback.max' => 'Phản hồi không được vượt quá 1000 ký tự.',
-                'purpose.required' => 'Vui lòng nhập mục đích của bạn.',
-                'purpose.max' => 'Mục đích không được vượt quá 1000 ký tự.',
+                'purpose.required' => 'Vui lòng nhập mục đích vay của bạn.',
+                'purpose.max' => 'Mục đích vay không được vượt quá 2000 ký tự.',
                 'bank_connection.required' => 'Vui lòng nhập thông tin kết nối ngân hàng.',
-                'mortgage_policy.required' => 'Vui lòng cung cấp chính sách thế chấp.',
-                'mortgage_policy.max' => 'Thế chấp không được vượt quá 1000 ký tự.',
-                'unsecured_policy.required' => 'Vui lòng cung cấp chính sách tín chấp.',
-                'unsecured_policy.max' => 'Tín chấp không được vượt quá 1000 ký tự.',
-                'business_address.required' => 'Vui lòng nhập địa chỉ doanh nghiệp.',
-                'business_address.max' => 'Địa chỉ doanh nghiệp không vượt quá 255 ký tự.',
+                'bank_connection.max' => 'Thông tin kết nối ngân hàng không được vượt quá 255 ký tự.',
+                'support_policy.required' => 'Vui lòng nhập đề xuất chính sách hỗ trợ.',
+                'support_policy.max' => 'Đề xuất chính sách hỗ trợ không được vượt quá 2000 ký tự.',
+                'feedback.required' => 'Vui lòng nhập ý kiến đối với ngân hàng.',
+                'feedback.max' => 'Ý kiến đối với ngân hàng không được vượt quá 2000 ký tự.',
+
             ]);
             $recaptchaResponse = $request->input('g-recaptcha-response');
             $secretKey = env('RECAPTCHA_SECRET_KEY');
@@ -220,132 +209,38 @@ class BusinessCapitalNeedController extends Controller
                 return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
             }
 
-            $existingBusiness = Business::where('business_code', $validatedData['business_code'])->first();
-            if ($existingBusiness) {
-                $response = $this->validateExistingBusiness($existingBusiness, $validatedData);
-                if ($response) return $response;
-                $existingInvestment = BusinessCapitalNeed::where('business_id', $existingBusiness->id)->first();
-                if ($existingInvestment) {
-                    return redirect()->back()->with('error', 'Doanh nghiệp này đã đăng ký trước đó.')->withInput();
-                }
-                $validatedData['financial_support_id'] = $request->has('slug') ? FinancialSupport::where('slug', $request->slug)->first() : null;
-                $validatedData['bank_services_interest_id']  = $request->has('slug') ? BankServicesInterest::where('slug', $request->slug)->first() : null;
-                BusinessCapitalNeed::create([
-                    'business_id' => $existingBusiness->id,
-                    'interest_rate' => $validatedData['interest_rate'],
-                    'finance' => $validatedData['finance'],
-                    'mortgage_policy' => $validatedData['mortgage_policy'],
-                    'unsecured_policy' => $validatedData['unsecured_policy'],
-                    'purpose' => $validatedData['purpose'],
-                    'bank_connection' => $validatedData['bank_connection'],
-                    'feedback' => $validatedData['feedback'],
-                    'financial_support_id' =>  $validatedData['financial_support_id'] ?  $validatedData['financial_support_id']->id : null,
-                    'bank_services_interest_id' => $validatedData['bank_services_interest_id'] ? $validatedData['bank_services_interest_id']->id : null,
-                ]);
-                DB::commit();
-                    $businessData = BusinessCapitalNeed::with(['financialSupport', 'bankServicesInterest'])
-                    ->where('business_id', $existingBusiness->id)
-                    ->first();
-                    $businessData['subject'] = 'Đăng ký nhu cầu về vốn';
-                
-                if ($businessData) {
-                    $businessData->business = Business::select('business_name', 'business_code', 'business_address', 'phone_number', 
-                                                               'representative_name', 'email', 'fax_number')
-                                                       ->find($existingBusiness->id);
-                }                
-                  
-                    try {
-                        Mail::to('thinhdv1@ncb-bank.vn')->send(new BusinessRegistered($businessData));
-                    } catch (\Exception $mailException) {
-                        Log::error('Email Sending Exception: ' . $mailException->getMessage(), [
-                            'email' => $validatedData['email'],
-                            'business_id' => $existingBusiness->id,
-                            'validated_data' => $validatedData,
-                        ]);
-                        
-                    }
-                return redirect()->back()->with('success', 'Đã thêm Đăng ký vốn cho doanh nghiệp hiện có.');
+
+
+
+            $businessCapitalNeed = BusinessCapitalNeed::create([
+                'business_member_id' => $business_member_id,
+                'finance' => $request->finance,
+                'loan_cycle' => $request->loan_cycle,
+                'interest_rate' => $request->interest_rate,
+                'purpose' => $request->purpose,
+                'bank_connection' => $request->bank_connection,
+                'support_policy' => $request->support_policy,
+                'feedback' => $request->feedback,
+            ]);
+
+           
+            $businessCapitalNeed->subject = "Đăng ký nhu cầu vốn";
+
+            try {
+                Mail::to('tri2003bt@gmail.com')->send(new BusinessCapitalNeedMail($businessCapitalNeed));
+            } catch (\Exception $mailException) {
+                Log::error('Email Sending Exception: ' . $mailException->getMessage());
             }
 
-            $response = $this->checkForExistingEmail($validatedData['email']);
-            if ($response) return $response;
 
-            $business = Business::create([
-                'business_name' => $validatedData['business_name'],
-                'business_code' => $validatedData['business_code'],
-                'business_address' => $validatedData['business_address'],
-                'representative_name' => $validatedData['representative_name'],
-                'category_business_id' => $validatedData['category_business_id'],
-                'fax_number' => $validatedData['fax'],
-                'gender' => $validatedData['gender'],
-                'phone_number' => $validatedData['phone_number'],
-                'email' => $validatedData['email'],
-                'status' => 'other'
-            ]);
-
-            $validatedData['financial_support_id'] = $request->has('slug') ? FinancialSupport::where('slug', $request->slug)->first() : null;
-            $validatedData['bank_services_interest_id']  = $request->has('slug') ? BankServicesInterest::where('slug', $request->slug)->first() : null;
-
-            BusinessCapitalNeed::create([
-                    'business_id' => $business->id,
-                    'interest_rate' => $validatedData['interest_rate'],
-                    'finance' => $validatedData['finance'],
-                    'mortgage_policy' => $validatedData['mortgage_policy'],
-                    'unsecured_policy' => $validatedData['unsecured_policy'],
-                    'purpose' => $validatedData['purpose'],
-                    'bank_connection' => $validatedData['bank_connection'],
-                    'feedback' => $validatedData['feedback'],
-                    'financial_support_id' =>   $validatedData['financial_support_id'] ?   $validatedData['financial_support_id']->id : null,
-                    'bank_services_interest_id' => $validatedData['bank_services_interest_id']  ? $validatedData['bank_services_interest_id']->id : null,
-            ]);
             DB::commit();
-                $businessData = BusinessCapitalNeed::with(['financialSupport', 'bankServicesInterest'])
-                ->where('business_id', $business->id)
-                ->first();
-                $businessData['subject'] = 'Đăng ký nhu cầu về vốn';
-            
-            if ($businessData) {
-                $businessData->business = Business::select('business_name', 'business_code', 'business_address', 'phone_number', 
-                                                           'representative_name', 'email', 'fax_number')
-                                                   ->find($business->id);
-            }
-                 try {
-                    Mail::to('thinhdv1@ncb-bank.vn')->send(new BusinessRegistered($businessData));
-                } catch (\Exception $mailException) {
-                    Log::error('Email Sending Exception: ' . $mailException->getMessage(), [
-                        'email' => $validatedData['email'],
-                        'business_id' => $business->id,
-                        'validated_data' => $validatedData,
-                    ]);
-                }
-                // Mail::to($validatedData['email'])->send(new BusinessRegistered($businessData));
-            return redirect()->back()->with('success', 'Đăng ký vốn thành công!');
-        }catch (ValidationException $e) {
-            DB::rollBack();
-            Log::error('Validation Exception: ', $e->errors());
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            session()->forget('key_business_code');
+            session()->forget('business_code');
+            return redirect()->route('show.home.bank')->with('success', 'Đăng ký kết nối ngân hàng thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('General Exception: ' . $e->getMessage(), [
-                'input' => $request->all(),
-                'validated_data' => $validatedData ?? null,
-            ]);
             return redirect()->back()->with('error', 'Đăng ký thất bại: ' . $e->getMessage())->withInput();
         }
     }
-    private function validateExistingBusiness($existingBusiness, $validatedData)
-    {
-        if ($existingBusiness->business_name !== $validatedData['business_name'] ||
-            $existingBusiness->email !== $validatedData['email']) {
-
-            return redirect()->back()->with('error', 'Thông tin doanh nghiệp không khớp.')->withInput();
-        }
-    }
-
-    private function checkForExistingEmail($email)
-    {
-        if (Business::where('email', $email)->exists()) {
-            return redirect()->back()->with('error', 'Email này đã được đăng ký trong hệ thống với một doanh nghiệp khác.')->withInput();
-        }
-    }
+   
 }

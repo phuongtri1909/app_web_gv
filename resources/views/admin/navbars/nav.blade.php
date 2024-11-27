@@ -30,6 +30,14 @@
                             <input type="hidden" name="search-role" value="{{ request('search-role') }}">
                         @endif
 
+                        @if (request('search-category'))
+                            <input type="hidden" name="search-category" value="{{ request('search-category') }}">
+                        @endif
+
+                        @if (request('search-member_id'))
+                            <input type="hidden" name="search-member-id" value="{{ request('search-member-id') }}">
+                        @endif
+
                         <button type="submit" class="input-group-text text-body">
                             <i class="fas fa-search" aria-hidden="true"></i>
                         </button>
