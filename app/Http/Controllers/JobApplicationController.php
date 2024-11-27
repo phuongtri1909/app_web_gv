@@ -100,15 +100,7 @@ class JobApplicationController extends Controller
         return view('admin.pages.client.form-job-applications.index', compact('jobApplications'));
     }
 
-    public function create()
-    {
-        return view('pages.client.form-job-application');
-    }
-
-    public function store(Request $request)
-    {
-    }
-
+   
     public function show($id)
     {
         $jobApplication = JobApplication::findOrFail($id);
@@ -123,17 +115,6 @@ class JobApplicationController extends Controller
             'status' => $jobApplication->status,
             'created_at' => $jobApplication->created_at
         ]);
-    }
-
-
-    public function edit(JobApplication $jobApplication)
-    {
-        return view('admin.pages.client.form-job-applications.edit', compact('jobApplication'));
-    }
-
-    public function update(Request $request, JobApplication $jobApplication)
-    {
-
     }
 
     public function destroy(JobApplication $jobApplication)

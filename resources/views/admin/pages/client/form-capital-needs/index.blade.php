@@ -1,30 +1,7 @@
 @extends('admin.layouts.app')
 
 @push('styles-admin')
-    <style>
-        .img-square {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-        }
 
-        .info-group label {
-            color: #8392AB;
-            margin-bottom: 4px;
-        }
-
-        .info-group p {
-            color: #344767;
-            font-weight: 500;
-        }
-
-        .avatar-preview {
-            border: 3px solid #5e72e4;
-            padding: 3px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-    </style>
 @endpush
 
 @section('content-auth')
@@ -36,10 +13,6 @@
                         <div>
                             <h5 class="mb-0">{{ __('Danh sách đăng ký nhu cầu vay vốn') }}</h5>
                         </div>
-                        {{-- <a href="{{ route('capital-needs.create') }}" class="btn bg-gradient-primary btn-sm mb-0 px-2"
-                            type="button">
-                            <i class="fa-solid fa-plus"></i> {{ __('Thêm mới') }}
-                        </a> --}}
                     </div>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
@@ -56,9 +29,19 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         {{ __('Mã số thuế') }}</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('Số tiền') }}</th>
+                                        {{ __('Số vốn') }}</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        {{ __('Chu kỳ vay') }}</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         {{ __('Lãi suất') }}</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        {{ __('Mục đích vay') }}</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        {{ __('Ngân hàng') }}</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        {{ __('Đề xuất chính sách') }}</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        {{ __('Ý kiến') }}</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         {{ __('Trạng thái') }}</th>
                                     <th
@@ -74,11 +57,11 @@
                                         </td>
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">
-                                                {{ $capitalNeed->business->business_name ?? '-' }}</p>
+                                                {{ $capitalNeed->businessMember->business_name ?? '-' }}</p>
                                         </td>
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">
-                                                {{ $capitalNeed->business->business_code ?? '-' }}</p>
+                                                {{ $capitalNeed->businessMember->business_code ?? '-' }}</p>
                                         </td>
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">
@@ -87,9 +70,35 @@
                                         </td>
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">
+                                                {{ $capitalNeed->loan_cycle }}
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">
                                                 {{ number_format($capitalNeed->interest_rate, 1, ',', '.') }}%
                                             </p>
                                         </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">
+                                                {{ $capitalNeed->purpose }}
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">
+                                                {{ $capitalNeed->bank_connection }}
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">
+                                                {{ $capitalNeed->support_policy }}
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">
+                                                {{ $capitalNeed->feedback }}
+                                            </p>
+                                        </td>
+
                                         <td>
                                             <span id="status-badge-{{ $capitalNeed->id }}"
                                                 class="badge badge-sm bg-{{ $capitalNeed->status == 'approved' ? 'success' : ($capitalNeed->status == 'rejected' ? 'danger' : 'warning') }}"  data-status="{{ $capitalNeed->status }}">
@@ -97,10 +106,7 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            {{-- <a href="{{ route('capital-needs.edit', $capitalNeed->id) }}" class="mx-3"
-                                                title="{{ __('edit') }}">
-                                                <i class="fa-solid fa-pencil"></i>
-                                            </a> --}}
+                                           
                                             <div class="dropstart">
                                                 <button class="btn btn-sm p-0 border-0 mb-0" type="button"
                                                     data-bs-toggle="dropdown" aria-expanded="false"

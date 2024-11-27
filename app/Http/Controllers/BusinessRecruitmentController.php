@@ -15,53 +15,36 @@ class BusinessRecruitmentController extends Controller
     {
         $search = $request->input('search');
         $businessRecruitments = BusinessRecruitment::with('categoryBusiness')->when($search, function ($query, $search) {
-                return $query->where(function ($q) use ($search) {
-                    $q->where('business_name', 'like', "%{$search}%")
+            return $query->where(function ($q) use ($search) {
+                $q->where('business_name', 'like', "%{$search}%")
                     ->orWhere('business_code', 'like', "%{$search}%")
                     ->orWhere('phone', 'like', "%{$search}%");
-                });
+            });
         })
-        ->paginate(15);
+            ->paginate(15);
         return view('admin.pages.client.form-recruitment.index', compact('businessRecruitments'));
     }
 
-    public function create()
+
+    public function show($id)
     {
-        
+        $businessRecruitment = BusinessRecruitment::with('categoryBusiness')->findOrFail($id);
+        return response()->json([
+            'business_name' => $businessRecruitment->business_name,
+            'business_code' => $businessRecruitment->business_code,
+            'category_business' => $businessRecruitment->categoryBusiness,
+            'head_office_address' => $businessRecruitment->head_office_address,
+            'phone' => $businessRecruitment->phone,
+            'fax' => $businessRecruitment->fax,
+            'email' => $businessRecruitment->email,
+            'representative_name' => $businessRecruitment->representative_name,
+            'gender' => $businessRecruitment->gender,
+            'recruitment_info' => $businessRecruitment->recruitment_info,
+            'status' => $businessRecruitment->status,
+        ]);
     }
 
-    public function store(Request $request)
-    {
-        
-    }
 
-public function show($id)
-{
-    $businessRecruitment = BusinessRecruitment::with('categoryBusiness')->findOrFail($id);
-    return response()->json([
-        'business_name' => $businessRecruitment->business_name,
-        'business_code' => $businessRecruitment->business_code,
-        'category_business' => $businessRecruitment->categoryBusiness,
-        'head_office_address' => $businessRecruitment->head_office_address,
-        'phone' => $businessRecruitment->phone,
-        'fax' => $businessRecruitment->fax,
-        'email' => $businessRecruitment->email,
-        'representative_name' => $businessRecruitment->representative_name,
-        'gender' => $businessRecruitment->gender,
-        'recruitment_info' => $businessRecruitment->recruitment_info,
-        'status' => $businessRecruitment->status,
-    ]);
-}
-
-    public function edit(BusinessRecruitment $businessRecruitment)
-    {
-       
-    }
-
-    public function update(Request $request, BusinessRecruitment $businessRecruitment)
-    {
-       
-    }
 
     public function destroy(BusinessRecruitment $businessRecruitment)
     {
@@ -113,9 +96,9 @@ public function show($id)
                 'secret' => $secretKey,
                 'response' => $recaptchaResponse,
             ]);
-        
+
             $responseBody = json_decode($response->body());
-        
+
             if (!$responseBody->success) {
                 return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
             }

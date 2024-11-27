@@ -184,4 +184,51 @@ class ProductBusinessController extends Controller
 
         return $slug;
     }
+
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
+        $category_product = $request->input('search-category');
+        $business_member_id = $request->input('search-member-id');
+
+        $products = ProductBusiness::query();
+
+        if ($search) {
+            $products = $products->where(function ($query) use ($search) {
+                $query->where('name_product', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%')
+                    ->orWhere('price', 'like', '%' . $search . '%')
+                    ->orWhere('price_member', 'like', '%' . $search . '%');
+            });
+        }
+
+        if ($category_product) {
+            $products = $products->where('category_product_id', $category_product);
+        }
+
+        if ($business_member_id) {
+            $products = $products->where('business_member_id', $business_member_id);
+        }
+
+        $category_products = CategoryProductBusiness::all();
+        $business_members = BusinessMember::all();
+
+        $products = $products->orderBy('created_at', 'desc')->paginate(15);
+
+        return view('admin.pages.client.form-business-product.index', compact('products', 'category_products', 'business_members'));
+    }
+
+    public function show($id)
+    {
+        $product = ProductBusiness::with(['businessMember', 'categoryProduct', 'productImages'])->findOrFail($id);
+
+        return view('admin.pages.client.form-business-product.show', compact('product'));
+    }
+
+    public function destroy($id)
+    {
+        $product = ProductBusiness::findOrFail($id);
+        $product->delete();
+        return redirect()->route('business.products.index')->with('success', 'Xoá sản phẩm thành công!');
+    }
 }
