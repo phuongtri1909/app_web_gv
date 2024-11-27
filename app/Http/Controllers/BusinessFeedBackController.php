@@ -114,15 +114,6 @@ class BusinessFeedBackController extends Controller
         return view('admin.pages.client.form-feed-back.index', compact('businessFeedbacks'));
     }
 
-    public function create()
-    {
-
-    }
-
-    public function store(Request $request)
-    {
-
-    }
 
     public function show($id)
     {
@@ -147,15 +138,6 @@ class BusinessFeedBackController extends Controller
         ]);
     }
 
-    public function edit(BusinessFeedback $businessFeedback)
-    {
-
-    }
-
-    public function update(Request $request, BusinessFeedback $businessFeedback)
-    {
-
-    }
 
     public function destroy(BusinessFeedback $businessFeedback)
     {

@@ -9,10 +9,6 @@ class BusinessField extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'slug','icon'];
 
-    public function businessApplications()
-    {
-        return $this->belongsToMany(BusinessPromotionalIntroduction::class, 'business_field_business'); 
-    }
 }

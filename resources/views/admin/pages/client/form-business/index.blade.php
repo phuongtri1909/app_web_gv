@@ -25,6 +25,14 @@
         .form-control:focus {
             box-shadow: none;
         }
+
+        .text-truncate-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     </style>
 @endpush
 
@@ -35,11 +43,8 @@
             <div class="card-header pb-0">
                 <div class="d-flex flex-row justify-content-between">
                     <div>
-                        <h5 class="mb-0">{{ __('Danh sách doanh nghiệp') }}</h5>
+                        <h5 class="mb-0">Kết nối giao thương</h5>
                     </div>
-                    <a href="{{ route('businesses.create') }}" class="btn bg-gradient-primary btn-sm mb-0 px-2" type="button">
-                        <i class="fa-solid fa-plus"></i> {{ __('Thêm mới') }}
-                    </a>
                 </div>
             </div>
             <div class="card-body px-0 pt-0 pb-2">
@@ -50,13 +55,12 @@
                         <thead>
                             <tr>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ __('STT') }}</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('Tên doanh nghiệp') }}</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('Mã số thuế') }}</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('Người đại diện') }}</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('Số điện thoại') }}</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('Email') }}</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('Trạng thái') }}</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Thao tác') }}</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Ảnh đại diện</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Thông tin giới thiệu</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Doanh nghiệp</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Mã số thuế</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Trạng thái</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -73,29 +77,56 @@
                                             <p class="text-xs font-weight-bold mb-0">{{ $key + 1 }}</p>
                                         </td>
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $business->business_name ?? '-' }}</p>
+                                            <img src="{{ asset($business->avt_businesses) }}" alt="" class="img-fluid" width="100" height="100">
                                         </td>
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $business->business_code ?? '-' }}</p>
+                                            <p class="text-xs font-weight-bold mb-0 text-truncate-2">{{ $business->description ?? '-' }}</p>
+                                        </td>
+                                       
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $business->businessMember->business_name ?? '-' }}</p>
                                         </td>
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $business->representative_name ?? '-' }}</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $business->businessMember->business_code ?? '-' }}</p>
                                         </td>
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $business->phone_number ?? '-' }}</p>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $business->email ?? '-' }}</p>
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-sm bg-{{ $business->status == 'approved' ? 'success' : ($business->status == 'rejected' ? 'danger' : 'warning') }}">
+                                            <span id="status-badge-{{ $business->id }}"
+                                                class="badge badge-sm bg-{{ $business->status == 'approved' ? 'success' : ($business->status == 'rejected' ? 'danger' : 'warning') }}"  data-status="{{ $business->status }}">
                                                 {{ $business->status == 'approved' ? 'Đã duyệt' : ($business->status == 'rejected' ? 'Đã từ chối' : 'Đang chờ') }}
                                             </span>
-                                        </td>
+                                        </td>     
                                         <td class="text-center">
-                                            {{-- <a href="{{ route('businesses.edit', $business->id) }}" class="mx-3" title="{{ __('edit') }}">
-                                                <i class="fa-solid fa-pencil"></i>
-                                            </a> --}}
+
+                                            <div class="menu">
+                                                <div class="dropstart d-block">
+                                                    <button class="btn btn-sm p-0 border-0 mb-0" type="button"
+                                                        data-bs-toggle="dropdown"  aria-expanded="false"
+                                                        title="Thay đổi trạng thái">
+                                                        <i class="fas fa-retweet"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a class="dropdown-item" href="#"
+                                                                onclick="updateStatus('Business', {{ $business->id }}, 'approved')">
+                                                                <i class="fas fa-check-circle text-success me-2"></i>Duyệt
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#"
+                                                                onclick="updateStatus('Business', {{ $business->id }}, 'rejected')">
+                                                                <i class="fas fa-times-circle text-danger me-2"></i>Từ chối
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#"
+                                                                onclick="updateStatus('Business', {{ $business->id }}, 'pending')">
+                                                                <i class="fa fa-hourglass-half text-warning me-2"></i>Đang chờ
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+
                                             @include('admin.pages.components.delete-form', [
                                                 'id' => $business->id,
                                                 'route' => route('businesses.destroy', $business->id),
@@ -114,7 +145,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="businessDetailModal" tabindex="-1" aria-labelledby="businessDetailModalLabel" aria-hidden="true">
+        <div class="modal fade" id="businessDetailModal" tabindex="-1" aria-labelledby="businessDetailModalLabel" aria-hidden="true" style="z-index:10001">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="card shadow-lg">
@@ -142,106 +173,13 @@
 
                                 <div class="col-md-8">
                                     <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-user me-2"></i>{{ __('Người đại diện') }}
-                                                </label>
-                                                <p id="modal-representative-name" class="text-sm mb-2"></p>
-                                            </div>
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-calendar me-2"></i>{{ __('Năm sinh') }}
-                                                </label>
-                                                <p id="modal-birth-year" class="text-sm mb-2"></p>
-                                            </div>
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-venus-mars me-2"></i>{{ __('Giới tính') }}
-                                                </label>
-                                                <p id="modal-gender" class="text-sm mb-2"></p>
-                                            </div>
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-phone me-2"></i>{{ __('Số điện thoại') }}
-                                                </label>
-                                                <p id="modal-phone" class="text-sm mb-2"></p>
-                                            </div>
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-fax me-2"></i>{{ __('Số Fax') }}
-                                                </label>
-                                                <p id="modal-fax" class="text-sm mb-2"></p>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-envelope me-2"></i>{{ __('Email') }}
-                                                </label>
-                                                <p id="modal-email" class="text-sm mb-2"></p>
-                                            </div>
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-share-alt me-2"></i>{{ __('Kênh social') }}
-                                                </label>
-                                                <p id="modal-social" class="text-sm mb-2"></p>
-                                            </div>
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-building me-2"></i>{{ __('Loại hình doanh nghiệp') }}
-                                                </label>
-                                                <p id="modal-category-business" class="text-sm mb-2"></p>
-                                            </div>
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-briefcase me-2"></i>{{ __('Lĩnh vực kinh doanh') }}
-                                                </label>
-                                                <p id="modal-business-field" class="text-sm mb-2"></p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-4">
                                         <div class="info-group">
                                             <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                <i class="fas fa-map-marker-alt me-2"></i>{{ __('Địa chỉ') }}
+                                                <i class="fas fa-align-left me-2"></i>{{ __('Mô tả') }}
                                             </label>
-                                            <p id="modal-address" class="text-sm mb-2"></p>
-                                        </div>
-                                        <div class="info-group">
-                                            <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                <i class="fas fa-building me-2"></i>{{ __('Địa chỉ kinh doanh') }}
-                                            </label>
-                                            <p id="modal-business-address" class="text-sm mb-2"></p>
-                                        </div>
-                                        <div class="info-group">
-                                            <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                <i class="fas fa-map me-2"></i>{{ __('Phường') }}
-                                            </label>
-                                            <p id="modal-ward" class="text-sm mb-2"></p>
+                                            <p id="modal-description" class="text-sm mb-2"></p>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <div class="row mt-4">
-                                <div class="col-12">
-                                    <div class="info-group">
-                                        <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                            <i class="fas fa-align-left me-2"></i>{{ __('Mô tả') }}
-                                        </label>
-                                        <p id="modal-description" class="text-sm mb-2"></p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row mt-4">
-                                <div class="col-12">
-                                    <a id="modal-license" href="" target="_blank" class="btn btn-primary">
-                                        <i class="fas fa-file-pdf me-2"></i>{{ __('Xem giấy phép kinh doanh') }}
-                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -255,6 +193,8 @@
 </div>
 @endsection
 @push('scripts-admin')
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function() {
         $('.view-business').click(function() {
@@ -266,27 +206,8 @@
                     $('#modal-business-name').text(response.business_name || '-');
                     $('#modal-business-code').text(response.business_code || '-');
                     $('#modal-representative-name').text(response.representative_name || '-');
-                    $('#modal-birth-year').text(response.birth_year || '-');
-                    const genderText = {
-                        'male': 'Nam',
-                        'female': 'Nữ',
-                        'other': 'Không xác định'
-                    }[response.gender] || '-';
-
-                    $('#modal-gender').text(genderText);
-
-                    $('#modal-email').text(response.email || '-');
-                    $('#modal-phone').text(response.phone_number || '-');
-                    $('#modal-fax').text(response.fax_number || '-');
-                    $('#modal-address').text(response.address || '-');
-                    $('#modal-business-address').text(response.business_address || '-');
-                    $('#modal-ward').text(response.ward?.name || '-');
-                    $('#modal-social').text(response.social_channel || '-');
-                    $('#modal-category-business').text(response.category_business?.name || '-');
-                    $('#modal-business-field').text(response.business_fields?.name || '-');
                     $('#modal-description').text(response.description || '-');
                     $('#modal-avatar').attr('src', response.avt_businesses ? '/' + response.avt_businesses : 'image.jpg');
-                    $('#modal-license').attr('href', response.business_license ? '/' + response.business_license : '#');
 
                     const statusBadgeClass = {
                         'approved': 'bg-success',
@@ -306,6 +227,9 @@
                         .text(statusText);
 
                     $('#businessDetailModal').modal('show');
+                },
+                error: function(error) {
+                    showToast('Có lỗi xảy ra. Vui lòng thử lại sau.','error');  
                 }
             });
         });

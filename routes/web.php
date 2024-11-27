@@ -201,34 +201,38 @@ Route::middleware(['language'])->group(function () {
 
                 Route::resource('banks', BanksController::class);
 
-                Route::resource('businesses', BusinessController::class);
+                Route::resource('businesses', BusinessController::class)->except('create', 'store', 'edit', 'update');
 
                 Route::resource('start-promotion-investment', BusinessStartPromotionInvestmentController::class);
 
                 Route::resource('capital-needs', BusinessCapitalNeedController::class);
 
-                Route::resource('job-applications', JobApplicationController::class);
+                Route::resource('job-applications', JobApplicationController::class)->except('create', 'store', 'edit', 'update');
 
-                Route::resource('feedback', BusinessFeedBackController::class);
+                Route::resource('feedback', BusinessFeedBackController::class)->except('create', 'store', 'edit', 'update');
 
-                Route::resource('recruitment',  BusinessRecruitmentController::class);
+                Route::resource('recruitment',  BusinessRecruitmentController::class)->except('create', 'store', 'edit', 'update');
 
                 Route::get('/form-business', [BusinessController::class, 'adminIndex'])->name('admin.business');
 
                 Route::post('/update-status', [StatusController::class, 'updateStatus'])->name('update.status');
                 Route::post('/update-status-1', [StatusController::class, 'updateStatus1'])->name('update.status.1');
 
-                Route::resource('members',  MemberBusinessController::class);
+                Route::resource('members',  MemberBusinessController::class)->except('create', 'store', 'edit', 'update');
 
                 Route::resource('business-fields',  BusinessFieldController::class);
 
                 Route::resource('contact-consultations',  ContactConsultationController::class);
 
-                Route::resource('form-legal-advice',  LegalAdviceController::class);
+                Route::resource('form-legal-advice',  LegalAdviceController::class)->except('create', 'store', 'edit', 'update');
 
                 Route::resource('users', UserController::class)->except('show');
 
                 Route::post('/user/status', [UserController::class, 'changeStatus'])->name('user.changeStatus');
+
+                Route::get('business-products', [ProductBusinessController::class, 'index'])->name('business.products.index');
+                Route::get('business-products/detail/{id}', [ProductBusinessController::class, 'show'])->name('business.products.show');
+                Route::delete('business-products/destroy/{id}', [ProductBusinessController::class, 'destroy'])->name('business.products.destroy');
             });
         });
 

@@ -11,34 +11,19 @@ class BusinessCapitalNeed extends Model
 
     protected $table = 'business_capital_needs';
     protected $fillable = [
-        'business_id',
-        'interest_rate',
+        'business_member_id',
         'finance',
-        'mortgage_policy',
-        'unsecured_policy',
+        'loan_cycle',
+        'interest_rate',
         'purpose',
         'bank_connection',
+        'support_policy',
         'feedback',
         'status',
-        'financial_support_id',
-        'bank_services_interest_id'
     ];
-    // public function categoryBusiness()
-    // {
-    //     return $this->belongsTo(CategoryBusiness::class, 'category_business_id');
-    // }
-    public function business()
+    
+    public function businessMember()
     {
-        return $this->belongsTo(Business::class);
+        return $this->belongsTo(BusinessMember::class, 'business_member_id');
     }
-    public function financialSupport()
-    {
-        return $this->belongsTo(FinancialSupport::class,'financial_support_id');
-    }
-
-    public function bankServicesInterest()
-    {
-        return $this->belongsTo(BankServicesInterest::class, 'bank_services_interest_id');
-    }
-
 }

@@ -34,42 +34,27 @@ class BusinessController extends Controller
 
     public function index()
     {
-        $wards = WardGovap::all();
-        $category_business = CategoryBusiness::all();
-        $businesses = Business::all();
-        $business_fields = BusinessField::orderBy('created_at', 'desc')->get();
-        return view('pages.client.form-business', compact('businesses', 'wards', 'category_business', 'business_fields'));
+        return view('pages.client.form-business');
     }
 
     public function adminIndex(Request $request)
     {
         $search = $request->input('search');
+
         $businesses = Business::whereNot('status', 'other')
             ->when($search, function ($query, $search) {
                 return $query->where(function ($q) use ($search) {
-                    $q->where('business_name', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%")
-                        ->orWhere('business_code', 'like', "%{$search}%");
+                    $q->where('description', 'like', "%{$search}%")
+                    ->orWhereHas('businessMember', function ($q) use ($search) {
+                        $q->where('business_name', 'like', "%{$search}%")
+                            ->orWhere('business_code', 'like', "%{$search}%");
+                    });
                 });
             })
+            ->orderBy('created_at', 'desc')
             ->paginate(15);
-        $wards = WardGovap::all();
-        $category_business = CategoryBusiness::all();
 
-        return view('admin.pages.client.form-business.index', compact(
-            'businesses',
-            'wards',
-            'category_business'
-        ));
-    }
-
-
-    public function create()
-    {
-        $wards = WardGovap::all();
-        $business_fields = BusinessField::all();
-
-        return view('pages.client.form-business', compact('wards', 'business_fields'));
+        return view('admin.pages.client.form-business.index', compact('businesses'));
     }
 
     public function store(Request $request)
@@ -175,63 +160,19 @@ class BusinessController extends Controller
         }
     }
 
-
-
-
     public function show($id)
     {
-        $business = Business::with(['ward', 'categoryBusiness', 'field'])
-            ->whereNot('status', 'other')
+        $business = Business::whereNot('status', 'other')
             ->findOrFail($id);
 
         return response()->json([
-            'business_name' => $business->business_name,
-            'business_code' => $business->business_code,
-            'representative_name' => $business->representative_name,
-            'birth_year' => $business->birth_year,
-            'gender' => $business->gender,
-            'email' => $business->email,
-            'phone_number' => $business->phone_number,
-            'fax_number' => $business->fax_number,
-            'address' => $business->address,
-            'business_address' => $business->business_address,
-            'ward' => [
-                'name' => $business->ward ? $business->ward->name : null
-            ],
-            'category_business' => [
-                'name' => $business->categoryBusiness ? $business->categoryBusiness->name : null
-            ],
-            'business_fields' => [
-                'name' => $business->field ? $business->field->name : null
-            ],
-            'social_channel' => $business->social_channel,
+            'business_name' => $business->businessMember->business_name,
+            'business_code' => $business->businessMember->business_code, 
             'description' => $business->description,
             'avt_businesses' => $business->avt_businesses,
-            'business_license' => $business->business_license,
             'status' => $business->status
         ]);
     }
-
-
-
-    public function edit($id)
-    {
-        $business = Business::findOrFail($id);
-        return view('business.edit', compact('business'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-
-        $business = Business::findOrFail($id);
-        $business->update($request->all());
-
-        return redirect()->route('business.index')->with('success', 'Business updated successfully.');
-    }
-
 
     public function destroy($id)
     {
