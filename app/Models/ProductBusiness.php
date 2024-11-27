@@ -9,19 +9,20 @@ class ProductBusiness extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'business_id',
+        'business_member_id',
         'category_product_id',
         'name_product',
         'slug',
         'description',
         'price',
-        'product_story',
+        'price_member',
         'product_avatar',
+        'related_confirmation_document'
     ];
 
-    public function business()
+    public function businessMember()
     {
-        return $this->belongsTo(Business::class);
+        return $this->belongsTo(BusinessMember::class, 'business_member_id');
     }
 
     public function categoryProduct()

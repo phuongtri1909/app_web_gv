@@ -196,8 +196,8 @@
 
                     </div>
 
-                    <div class="text-end my-3">
-                        <button type="submit" class="btn btn-primary">Đăng ký</button>
+                    <div class="text-center my-3">
+                        <button type="submit" class="btn bg-app-gv rounded-pill text-white">Đăng ký</button>
                     </div>
                 </form>
             </div>

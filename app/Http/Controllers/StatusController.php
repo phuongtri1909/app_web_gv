@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\BusinessMember;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class StatusController extends Controller
 {
@@ -19,7 +20,7 @@ class StatusController extends Controller
 
             $modelClass = "App\\Models\\" . $model;
             $record = $modelClass::findOrFail($id);
-            if ($record->status === 'approved' || $record->status === 'rejected') {
+            if (!$record instanceof BusinessMember && ($record->status === 'approved' || $record->status === 'rejected')) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Không thể thay đổi trạng thái khi đã duyệt hoặc từ chối.'

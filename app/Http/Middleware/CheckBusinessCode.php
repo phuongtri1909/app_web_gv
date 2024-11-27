@@ -32,7 +32,7 @@ class CheckBusinessCode
             $businessCode = $request->input('business_code');
             $businessMember = BusinessMember::where('business_code', $businessCode)->first();
 
-            if ($businessMember) {
+            if ($businessMember && $businessMember->status == 'approved') {
                 $request->session()->put('business_code', $businessMember->business_code);
     
                 $encryptedBusinessCode = $this->encrypt($businessMember->business_code, $key);
@@ -41,7 +41,12 @@ class CheckBusinessCode
                 $intendedRoute = session('intended_route', route('show.form.member.business'));
 
                 return redirect($intendedRoute);
-            } else {
+            }elseif($businessMember && $businessMember->status == 'pending'){
+                return redirect()->route('form.check.business')->with('error', 'Tài khoản của bạn đang chờ xác nhận, vui lòng chờ trong giây lát')->withInput();
+            }elseif($businessMember && $businessMember->status == 'rejected'){
+                return redirect()->route('form.check.business')->with('error', 'Tài khoản của bạn đã bị từ chối, vui lòng liên hệ với chúng tôi nếu có thắc mắc')->withInput();
+            }
+            else {
                 return redirect()->route('show.form.member.business')->with('error', 'Mã số thuế không tồn tại, hãy đăng ký doanh nghiệp/hộ kinh doanh')->withInput();
             }
         }
