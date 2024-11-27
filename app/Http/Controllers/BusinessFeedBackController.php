@@ -4,219 +4,273 @@ namespace App\Http\Controllers;
 
 use App\Models\Business;
 use App\Models\BusinessFeedback;
+use App\Models\CategoryNews;
+use App\Models\Language;
+use App\Models\News;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException ;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 class BusinessFeedBackController extends Controller
 {
-    public function businessOpinion()
+    public function businessOpinion(Request $request)
     {
-        return view('pages.client.form-business-opinion');
-    }
-    public function storeBusinessOpinion(Request $request)
-    {
-        DB::beginTransaction();
-        $data = [];
-        try {
-            $request->validate([
-                'opinion' => 'required|string|max:1000',
-                'attached_images' => 'required|array',
-                'attached_images.*' => 'required|image|mimes:jpg,png,jpeg,gif', 
-                'suggestions' => 'nullable|string|max:1000',
-                'owner_full_name' => 'required|string|max:255',
-                'birth_year' => 'required|digits:4|integer|min:1500|max:' . date('Y'),
-                'gender' => 'required|in:male,female,other',
-                'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
-                'residential_address' => 'required|string|max:255',
-                'business_name' => 'required|string|max:255',
-                'business_address' => 'required|string|max:255',
-                'email' => 'nullable|email|max:255',
-                'business_license' => 'required|file|mimes:pdf', 
-                'fanpage' => 'nullable|string|max:1000'
-            ], [
-                'opinion.required' => 'Vui lòng nhập ý kiến.',
-                'opinion.max' => 'Ý kiến không được vượt quá 1000 ký tự.',
-                'attached_images.required' => 'Vui lòng tải lên ít nhất một hình ảnh.',
-                'attached_images.array' => 'Tệp đính kèm phải là một mảng hình ảnh hợp lệ.',
-                'attached_images.*.required' => 'Mỗi hình ảnh tải lên là bắt buộc.',
-                'attached_images.*.image' => 'Mỗi tệp tải lên phải là một hình ảnh.',
-                'attached_images.*.mimes' => 'Hình ảnh phải có định dạng: jpg, png, jpeg hoặc gif.',
-                'suggestions.max' => 'Ghi chú không quá 1000 ký tự.',
-                'owner_full_name.required' => 'Vui lòng nhập họ tên chủ doanh nghiệp.',
-                'owner_full_name.max' => 'Họ tên chủ doanh nghiệp không được vượt quá 255 ký tự.',
-                'birth_year.required' => 'Năm sinh là bắt buộc.',
-                'birth_year.min' => 'Năm sinh phải lớn hơn hoặc bằng 1500.',
-                'birth_year.max' => 'Năm sinh không được lớn hơn năm hiện tại.',
-                'birth_year.digits' => 'Năm sinh phải có 4 chữ số.',
-                'gender.required' => 'Vui lòng chọn giới tính.',
-                'gender.in' => 'Giới tính không hợp lệ.',
-                'phone.required' => 'Vui lòng nhập số điện thoại.',
-                'phone.regex' => 'Số điện thoại không hợp lệ, phải có 10 số.',
-                'phone.max' => 'Số điện thoại không được vượt quá 10 ký tự.',
-                'residential_address.required' => 'Vui lòng nhập địa chỉ cư trú.',
-                'residential_address.max' => 'Địa chỉ cư trú không được vượt quá 255 ký tự.',
-                'business_name.required' => 'Vui lòng nhập tên doanh nghiệp/hộ kinh doanh.',
-                'business_name.max' => 'Tên doanh nghiệp/hộ kinh doanh không được vượt quá 255 ký tự.',
-                'business_address.required' => 'Vui lòng nhập địa chỉ kinh doanh.',
-                'business_address.max' => 'Địa chỉ kinh doanh không được vượt quá 255 ký tự.',
-                'email.email' => 'Email không hợp lệ.',
-                'business_license.required' => 'Vui lòng tải lên giấy phép kinh doanh.',
-                'business_license.mimes' => 'Giấy phép kinh doanh phải là file dạng pdf.',
-                'fanpage.max' => 'Fanpage không được vượt quá 1000 ký tự.',
-            ]);
-            $recaptchaResponse = $request->input('g-recaptcha-response');
-            $secretKey = env('RECAPTCHA_SECRET_KEY');
-            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-                'secret' => $secretKey,
-                'response' => $recaptchaResponse,
-            ]);
-        
-            $responseBody = json_decode($response->body());
-        
-            if (!$responseBody->success) {
-                return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
-            }
-            $businessOpinion = new BusinessFeedback();
-            $businessOpinion->fill($request->only([
-                'opinion', 'suggestions', 'owner_full_name', 'birth_year', 'gender', 'phone',
-                'residential_address', 'business_name', 'business_address', 'email','fanpage',
-            ]));
-            $this->handleFileUpload($request, 'attached_images', $data, '_attached_images_', 'feedback');
-            $this->handleFileUpload($request, 'business_license', $data, '_business_license_', 'business');
-            $businessOpinion->attached_images = $data['attached_images'];
-            $businessOpinion->business_license = $data['business_license'];
-            $businessOpinion->save();
-
-            DB::commit();
-            return redirect()->back()->with('success', 'Đăng ký thành công!');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            $this->cleanupUploadedFiles($data);
-
-            return redirect()->back()->withInput()->with('error', 'Gửi thất bại: ' . $e->getMessage());
-        }
-    }
-
-    public function index(Request $request)
-    {
-        $search = $request->input('search');
-        $businessFeedbacks = BusinessFeedback::when($search, function ($query) use ($search) {
-            return $query->where(function ($q) use ($search) {
-                $q->where('business_name', 'like', '%' . $search . '%')
-                ->orWhere('owner_full_name', 'like', '%' . $search . '%')
-                ->orWhere('phone', 'like', '%' . $search . '%');
-            });
+        $category = CategoryNews::where('slug', 'y-kien')->first();
+    
+        $businessOpinions = News::whereHas('categories', function ($query) use ($category) {
+            $query->where('id', $category->id);
+        })
+        ->where(function ($query) {
+            $query->orWhere('published_at', '<=', now());
+        })
+        ->where(function ($query) {
+            $query->orWhere('expired_at', '>=', now());
         })
         ->paginate(15);
-        return view('admin.pages.client.form-feed-back.index', compact('businessFeedbacks'));
+    
+        $noResults = $businessOpinions->isEmpty();
+    
+        foreach ($businessOpinions as $blog) {
+            $blog->shortContent = Str::limit(strip_tags($blog->content), 1000);
+        }
+    
+        return view('pages.client.feed-back.business-opinion', compact('businessOpinions', 'noResults', 'category'));
+    }
+    
+    public function index()
+    {
+        $category = CategoryNews::where('slug', 'y-kien')->first();
+        $blogs = [];
+        if ($category) {
+            $blogs = News::with('categories')
+                ->whereHas('categories', function ($query) use ($category) {
+                    $query->where('id', $category->id);
+                })
+                ->latest('published_at') 
+                ->paginate(15);
+        }
+    
+        return view('admin.pages.client.form-feed-back.index', compact('blogs'));
+    }
+    
+
+
+    public function create()
+    {
+        $category = CategoryNews::where('slug', 'y-kien')->first();
+        $languages = Language::all();
+        return view('admin.pages.client.form-feed-back.create', compact('category',  'languages'));
     }
 
+    public function store(Request $request)
+    {
+        $locales = Language::pluck('locale')->toArray();
+
+        $rules = [];
+        $messages = [];
+
+        $rules = [
+            'published_at' => 'required|date|before_or_equal:expired_at',
+            'expired_at' => 'required|date|after:published_at',
+        ];
+        $messages = [
+            'published_at.required' => __('Ngày bắt đầu là bắt buộc.'),
+            'published_at.date' => __('Ngày bắt đầu phải là ngày hợp lệ.'),
+            'published_at.before_or_equal' => __('Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày hết hạn.'),
+        
+            'expired_at.required' => __('Ngày hết hạn là bắt buộc.'),
+            'expired_at.date' => __('Ngày hết hạn phải là ngày hợp lệ.'),
+            'expired_at.after' => __('Ngày hết hạn phải lớn hơn ngày bắt đầu.'),
+        ];
+        
+        foreach ($locales as $locale) {
+            $rules["title_{$locale}"] = 'string|max:255';
+            $rules["content_{$locale}"] = 'string';
+
+            $messages["title_{$locale}.string"] = __('title_string');
+            $messages["title_{$locale}.max"] = __('title_max', ['max' => 255]);
+            $messages["content_{$locale}.string"] = __('content_string');
+        }
+        $validatedData = $request->validate($rules, $messages);
+
+        try {
+            $translateTitle = [];
+            $tranSlateContent = [];
+            $image_path = null;
+
+            foreach ($locales as $locale) {
+                $translateTitle[$locale] = $request->get("title_{$locale}");
+                $tranSlateContent[$locale] = $request->get("content_{$locale}");
+            }
+
+            $slug = Str::slug($translateTitle[config('app.locale')]);
+
+            if (News::where('slug', $slug)->exists()) {
+                return redirect()->back()->with('error', __('slug_exists'));
+            }
+
+            if ($request->hasFile('image')) {
+                try {
+                    $image = $request->file('image');
+                    $folderName = date('Y/m');
+                    $originalFileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                    $extension = $image->getClientOriginalExtension();
+                    $fileName = $originalFileName . '_' . time() . '.' . $extension;
+                    $image->move(public_path('/uploads/images/news/' . $folderName), $fileName);
+                    $image_path = 'uploads/images/news/' . $folderName . '/' . $fileName;
+                } catch (\Exception $e) {
+                    if (isset($image_path) && File::exists(public_path($image_path))) {
+                        File::delete(public_path($image_path));
+                    }
+                    return back()->withInput()->with('error', __('upload_image_error'));
+                }
+            }
+
+            $news = new News();
+            $news->user_id = Auth::id();
+            $news->setTranslations('title', $translateTitle);
+            $news->setTranslations('content', $tranSlateContent);
+            $news->image = $image_path;
+            $news->slug = $slug;
+            $news->published_at = $request->input('published_at');
+            $news->expired_at = $request->input('expired_at'); 
+            $news->save();
+
+            try {
+                if ($request->filled('category_id')) {
+                    $news->categories()->attach($request->input('category_id'));
+                }                
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', __('create_post_error'));
+            }
+            // dd($news);
+            return redirect()->route('feedback.index')->with('success', __('create_post_success'));
+        } catch (\Exception $e) {
+            if (isset($image_path) && File::exists(public_path($image_path))) {
+                File::delete(public_path($image_path));
+            }
+            return back()->with(['error' => __('create_post_error')])->withInput();
+        }
+    }
 
     public function show($id)
     {
-        $feedback = BusinessFeedback::findOrFail($id);
-        return response()->json([
-            'id' => $feedback->id,
-            'business_name' => $feedback->business_name,
-            'owner_full_name' => $feedback->owner_full_name,
-            'birth_year' => $feedback->birth_year,
-            'gender' => $feedback->gender,
-            'phone' => $feedback->phone,
-            'email' => $feedback->email,
-            'residential_address' => $feedback->residential_address,
-            'business_address' => $feedback->business_address,
-            'opinion' => $feedback->opinion,
-            'suggestions' => $feedback->suggestions,
-            'fanpage' => $feedback->fanpage,
-            'attached_images' => $feedback->attached_images,
-            'business_license' => $feedback->business_license,
-            'created_at' => $feedback->created_at,
-            'status' => $feedback->status,
-        ]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     *
+     */
+    public function edit($id)
+    {
+        $category = CategoryNews::where('slug', 'y-kien')->first();
+        $news = News::find($id);
+        if (!$news) {
+            return back()->with('error', __('no_find_data'));
+        }
+        $languages = Language::all();
+
+        return view('admin.pages.client.form-feed-back.edit', compact('news', 'languages', 'category'));
     }
 
 
-    public function destroy(BusinessFeedback $businessFeedback)
+    public function update(Request $request, $id)
     {
+        $locales = Language::pluck('locale')->toArray();
+
+        $rules = [];
+        $messages = [];
+        $rules = [
+            'published_at' => 'required|date|before_or_equal:expired_at',
+            'expired_at' => 'required|date|after:published_at',
+        ];
+        $messages = [
+            'published_at.required' => __('Ngày bắt đầu là bắt buộc.'),
+            'published_at.date' => __('Ngày bắt đầu phải là ngày hợp lệ.'),
+            'published_at.before_or_equal' => __('Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày hết hạn.'),
+        
+            'expired_at.required' => __('Ngày hết hạn là bắt buộc.'),
+            'expired_at.date' => __('Ngày hết hạn phải là ngày hợp lệ.'),
+            'expired_at.after' => __('Ngày hết hạn phải lớn hơn ngày bắt đầu.'),
+        ];
+        foreach ($locales as $locale) {
+            $rules["title_{$locale}"] = 'string|max:255';
+            $rules["content_{$locale}"] = 'string';
+
+            $messages["title_{$locale}.string"] = __('title_string');
+            $messages["title_{$locale}.max"] = __('title_max', ['max' => 255]);
+            $messages["content_{$locale}.string"] = __('content_string');
+        }
+
+        $validatedData = $request->validate($rules, $messages);
+
         try {
-            if ($businessFeedback->business_license && file_exists(public_path($businessFeedback->business_license))) {
-                unlink(public_path($businessFeedback->business_license));
+            $news = News::findOrFail($id);
+
+            $translateTitle = [];
+            $translateContent = [];
+            foreach ($locales as $locale) {
+                $translateTitle[$locale] = $request->get("title_{$locale}");
+                $translateContent[$locale] = $request->get("content_{$locale}");
             }
 
-            if ($businessFeedback->attached_images) {
-                $images = json_decode($businessFeedback->attached_images);
-                foreach ($images as $image) {
-                    if (file_exists(public_path($image))) {
-                        unlink(public_path($image));
+            if ($request->hasFile('image')) {
+                try {
+                    if ($news->image && File::exists(public_path($news->image))) {
+                        File::delete(public_path($news->image));
                     }
+
+                    $image = $request->file('image');
+                    $folderName = date('Y/m');
+                    $originalFileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                    $extension = $image->getClientOriginalExtension();
+                    $fileName = $originalFileName . '_' . time() . '.' . $extension;
+                    $image->move(public_path('/uploads/images/news/' . $folderName), $fileName);
+                    $news->image = 'uploads/images/news/' . $folderName . '/' . $fileName;
+                } catch (\Exception $e) {
+                    if (isset($news->image) && File::exists(public_path($news->image))) {
+                        File::delete(public_path($news->image));
+                    }
+                    return back()->withInput()->with('error', __('upload_image_error'));
                 }
             }
 
-            $businessFeedback->delete();
-            return redirect()->route('feedback.index')->with('success', 'Xóa thành công!');
+            $news->setTranslations('title', $translateTitle);
+            $news->setTranslations('content', $translateContent);
+            $news->published_at = $request->input('published_at');
+            $news->expired_at = $request->input('expired_at');
+            try {
+                if ($request->filled('category_id')) {
+                    $news->categories()->sync($request->input('category_id'));
+                }
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', __('update_error'). ' ' . $e->getMessage())->withInput();
+            }
+            $news->save();
+
+            return redirect()->route('feedback.index')->with('success', __('update_success'));
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Xóa thất bại: ' . $e->getMessage());
+            if (isset($news->image) && File::exists(public_path($news->image))) {
+                File::delete(public_path($news->image));
+            }
+            return back()->with('error' , __('update_error') . ' ' . $e->getMessage())->withInput();
         }
     }
 
-    private function handleFileUpload(Request $request, $inputName, &$data, $suffix = '', $folderType = 'business')
+    public function destroy($id)
     {
-        if ($request->hasFile($inputName)) {
-            $files = is_array($request->file($inputName)) ? $request->file($inputName) : [$request->file($inputName)];
-            $uploadedFiles = [];
-            $folderName = date('Y/m');
+        $news = News::find($id);
 
-            foreach ($files as $file) {
-                if ($file->isValid()) {
-                    $filePath = $this->moveFile($file, $folderName, $suffix, $folderType);
-                    $uploadedFiles[] = $filePath;
-                }
-            }
-            if (!empty($uploadedFiles)) {
-                $data[$inputName] = count($uploadedFiles) > 1 ? json_encode($uploadedFiles) : $uploadedFiles[0];
-            }
+        if (!$news) {
+            return redirect()->route('feedback.index')->with('error', __('Không tồn tại!!'));
         }
-    }
+        $news->delete();
 
-    private function moveFile($file, $folderName, $suffix, $folderType)
-    {
-        $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $extension = $file->getClientOriginalExtension();
-        $fileName = $originalFileName . $suffix . time() . '.' . $extension;
-
-        $basePath = '';
-        switch ($folderType) {
-            case 'feedback':
-                $basePath = 'uploads/images/feedback/';
-                break;
-            case 'business':
-                $basePath = 'uploads/images/business/';
-                break;
-            case 'other':
-                $basePath = 'uploads/images/other/';
-                break;
-            case 'supplydemand':
-                $basePath = 'uploads/images/supply_demand/';
-                break;
-            default:
-                throw new \Exception('Thư mục không hợp lệ.');
-        }
-
-        $file->move(public_path($basePath . $folderName), $fileName);
-        return $basePath . $folderName . '/' . $fileName;
-    }
-
-
-
-    private function cleanupUploadedFiles(array $data)
-    {
-        foreach ($data as $filePath) {
-            if (file_exists(public_path($filePath))) {
-                unlink(public_path($filePath));
-            }
-        }
+        return redirect()->route('feedback.index')->with('success', __('Xóa thành công!!'));
     }
 }

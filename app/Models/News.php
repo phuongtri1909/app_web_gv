@@ -16,7 +16,7 @@ class News extends Model
         'content',
     ];
 
-    protected $fillable = ['user_id', 'title', 'content', 'image', 'published_at'];
+    protected $fillable = ['user_id', 'title', 'content', 'image', 'published_at', 'expired_at'];
 
     public function user()
     {
