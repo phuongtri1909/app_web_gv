@@ -123,6 +123,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <x-pagination :paginator="$blogs" />
                     </div>
                 </div>
             </div>

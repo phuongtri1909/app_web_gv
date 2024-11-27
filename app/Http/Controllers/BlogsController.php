@@ -27,7 +27,9 @@ class BlogsController extends Controller
      */
     public function index()
     {
-        $blogs = News::all();
+        $blogs = News::whereHas('categories', function ($query) {
+            $query->where('slug', '!=', 'y-kien');
+        })->paginate(15);
         return view('admin.pages.blogs.index', compact('blogs'));
     }
 
@@ -38,7 +40,7 @@ class BlogsController extends Controller
      */
     public function create()
     {
-        $categories = CategoryNews::all();
+        $categories = CategoryNews::where('slug', '!=', 'y-kien')->get();
         $tags = TagNews::all();
         $languages = Language::all();
         return view('admin.pages.blogs.create', compact('categories', 'tags', 'languages'));
@@ -152,7 +154,7 @@ class BlogsController extends Controller
      */
     public function edit($id)
     {
-        $categories = CategoryNews::all();
+        $categories = CategoryNews::where('slug', '!=', 'y-kien')->get();
         $tags = TagNews::all();
         $news = News::find($id);
         if (!$news) {
