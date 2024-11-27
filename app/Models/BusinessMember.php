@@ -40,4 +40,9 @@ class BusinessMember extends Model
     {
         return $this->hasOne(Business::class, 'business_member_id');
     }
+
+    public function productBusinesses()
+    {
+        return $this->hasMany(ProductBusiness::class, 'business_member_id');
+    }
 }

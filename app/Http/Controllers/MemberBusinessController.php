@@ -106,14 +106,18 @@ class MemberBusinessController extends Controller
 
             $businessMember->save();
 
-            $user = new User();
-            $user->username = $businessMember->business_code;
-            $user->password = bcrypt($businessMember->business_code);
-            $user->full_name = $businessMember->business_name;
-            $user->email = $businessMember->email;
-            $user->role = 'business';
-            $user->business_member_id = $businessMember->id;
-            $user->save();
+            $user = User::updateOrCreate(
+                // Điều kiện kiểm tra user tồn tại
+                ['username' => $businessMember->business_code],
+                // Dữ liệu cần cập nhật hoặc tạo mới
+                [
+                    'password' => bcrypt($businessMember->business_code),
+                    'full_name' => $businessMember->business_name,
+                    'email' => $businessMember->email,
+                    'role' => 'business',
+                    'business_member_id' => $businessMember->id
+                ]
+            );
 
             DB::commit();
 

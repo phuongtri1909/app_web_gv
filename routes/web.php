@@ -3,6 +3,7 @@
 use App\Models\Tab;
 use App\Models\User;
 use App\Models\SlideProgram;
+use UniSharp\LaravelFilemanager\Lfm;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\AuthController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\TabsCustomController;
 use App\Http\Controllers\LegalAdviceController;
 use App\Http\Controllers\BankServicerController;
 use App\Http\Controllers\CategoryNewsController;
+use App\Http\Controllers\CustomUploadController;
 use App\Http\Controllers\ParentsChildController;
 use App\Http\Controllers\SlideProgramController;
 use App\Http\Controllers\TabAdmissionController;
@@ -45,6 +47,7 @@ use App\Http\Controllers\TabDetailPostController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\MemberBusinessController;
 use App\Http\Controllers\TabsForParentsController;
+use App\Http\Controllers\ProductBusinessController;
 use App\Http\Controllers\ProgramOverviewController;
 use App\Http\Controllers\AdmissionProcessController;
 use App\Http\Controllers\BusinessFeedBackController;
@@ -58,8 +61,6 @@ use App\Http\Controllers\AdmissionProcessDetailController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PersonalBusinessInterestController;
 use App\Http\Controllers\BusinessStartPromotionInvestmentController;
-use App\Http\Controllers\CustomUploadController;
-use UniSharp\LaravelFilemanager\Lfm;
 
 /*
 |--------------------------------------------------------------------------
@@ -123,8 +124,8 @@ Route::middleware(['language'])->group(function () {
                 
             })->name('form.check.business');
 
-            Route::get('/form-connect-supply-demand', [BusinessController::class, 'connectSupplyDemand'])->name('connect.supply.demand'); //form kết nối cung cầu
-            Route::post('/form-connect-supply-demand', [BusinessController::class, 'storeConnectSupplyDemand'])->name('connect.supply.demand.store');
+            Route::get('/form-connect-supply-demand', [ProductBusinessController::class, 'connectSupplyDemand'])->name('connect.supply.demand'); //form kết nối cung cầu
+            Route::post('/form-connect-supply-demand', [ProductBusinessController::class, 'storeConnectSupplyDemand'])->name('connect.supply.demand.store');
 
             Route::get('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'showFormStartPromotion'])->name('show.form.start.promotion'); // khởi nghiệp xúc tiến thương mại đầu tư
             Route::post('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'storeFormStartPromotion'])->name('form.start.promotion.store');

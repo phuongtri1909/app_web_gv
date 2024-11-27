@@ -22,4 +22,9 @@ class Business extends Model
     {
         return $this->belongsTo(BusinessMember::class, 'business_member_id', 'id');
     }
+
+    public function businessMembers()
+    {
+        return $this->hasMany(BusinessMember::class, 'business_id', 'id');
+    }
 }

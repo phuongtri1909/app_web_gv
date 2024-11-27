@@ -110,13 +110,19 @@
 @endpush
 
 @section('content')
-    @include('pages.components.button-register', ['buttonTitle' => 'Đăng ký SP', 'buttonLink' => route('connect.supply.demand')])
+    @include('pages.components.button-register', [
+        'buttonTitle' => 'Đăng ký SP',
+        'buttonLink' => route('connect.supply.demand'),
+    ])
     <section id="detail-product-business" class="detail-product-business mt-5rem">
         <div class="container">
             <div>
                 <div class="swiper mySwiper2" style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff">
                     <div class="swiper-wrapper">
-                        @foreach($product->productImages as $image)
+                        <div class="swiper-slide">
+                            <img src="{{ asset($product->product_avatar) }}" />
+                        </div>
+                        @foreach ($product->productImages as $image)
                             <div class="swiper-slide">
                                 <img src="{{ asset($image->image) }}" />
                             </div>
@@ -128,7 +134,10 @@
                 </div>
                 <div class="swiper mySwiper" thumbsSlider="">
                     <div class="swiper-wrapper">
-                        @foreach($product->productImages as $image)
+                        <div class="swiper-slide">
+                            <img src="{{ asset($product->product_avatar) }}" />
+                        </div>
+                        @foreach ($product->productImages as $image)
                             <div class="swiper-slide">
                                 <img src="{{ asset($image->image) }}" />
                             </div>
@@ -138,12 +147,13 @@
             </div>
 
             <div>
-                <p class="text-uppercase">{{ $product->business->business_name }}</p>
+                <p class="text-uppercase">{{ $product->businessMember->business_name }}</p>
                 <p class="fw-semibold">{{ $product->name_product }}</p>
 
                 <div class="d-flex justify-content-between">
                     <div>
-                        <p class="fw-semibold text-danger">Giá: {{ number_format($product->price, 0, ',', '.') }} ₫</p>
+                        <p class="fw-semibold text-danger">Giá: {{ number_format($product->price, 0, ',', '.') }} ₫ - Giá
+                            thành viên: {{ number_format($product->price_member, 0, ',', '.') }} ₫</p>
                     </div>
                 </div>
 
@@ -151,61 +161,75 @@
                     <div class="bg-business rounded-top py-2 px-3 mb-3">
                         <h5 class="mb-0 fw-bold text-dark">Giới thiệu sản phẩm</h5>
                     </div>
+
+
+
                     <div class="px-3">
-                        @if ($product->business->description)
-                            <p class="mb-0">{!! $product->business->description !!}</p>
+
+                        <div class="d-flex">
+                            <p class="fw-semibold me-2">Danh mục:</p>
+                            <p>{{ $product->categoryProduct->name }}</p>
+                        </div>
+
+                        @if ($product->related_confirmation_document)
+                            <p class="fw-semibold me-2">Giấy tờ xác nhận liên quan:</p>
+                            @php
+                                $relatedDocuments = json_decode($product->related_confirmation_document, true);
+                            @endphp
+                            <div class="row g-2">
+                                @if (!empty($relatedDocuments))
+                                    @foreach ($relatedDocuments as $item)
+                                    <div class="col-4 col-sm-3 col-md-2 ">
+                                        <a href="{{ asset($item) }}" target="_blank" class=" btn btn-outline-warning">Xem giấy tờ</a>
+                                    </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        @endif
+
+                        @if ($product->description)
+                            <p class="fw-semibold me-2">Mô tả:</p>
+                            <p class="mb-0">{!! $product->description !!}</p>
                         @else
                             <p class="mb-0">Chưa có thông tin</p>
                         @endif
                     </div>
                 </div>
 
-                @if($product->product_story)
-                    <div class="border border-custom rounded mb-3">
-                        <div class="bg-business rounded-top py-2 px-3 mb-3">
-                            <h5 class="mb-0 fw-bold text-dark">Câu chuyện sản phẩm</h5>
-                        </div>
-                        <div class="px-3">
-                            <p class="mb-0">{!! $product->product_story !!}</p>
-                        </div>
-                    </div>
-                @endif
-
-                <div class="border border-custom rounded mb-3  mt-3">
+                <div class="border border-custom rounded mb-3">
                     <div class="bg-business rounded-top py-2 px-3 mb-3">
                         <h5 class="mb-0 fw-bold text-dark">Thông tin doanh nghiệp</h5>
                     </div>
                     <div class="px-3">
                         <div class="d-flex">
+                            <p>{{ $product->businessMember->business_name }}</p>
+                        </div>
+
+                        <div class="d-flex">
+                            <p class="fw-semibold me-2">Mã số thuế:</p>
+                            <p>{{ $product->businessMember->business_code }}</p>
+                        </div>
+
+                        <div class="d-flex">
                             <p class="fw-semibold me-2">Địa chỉ:</p>
-                            <p>{{ $product->business->business_address }}</p>
+                            <p>{{ $product->businessMember->address }}</p>
                         </div>
                         <div class="d-flex">
-                            <p class="fw-semibold me-2">Số điện thoại:</p>
-                            <p>{{ $product->business->phone_number }}</p>
+                            <p class="fw-semibold me-2">SĐT liên hệ:</p>
+                            <p>{{ $product->businessMember->phone_zalo }}</p>
                         </div>
-                        <div class="d-flex">
-                            <p class="fw-semibold me-2">Email:</p>
-                            <p>{{ $product->business->email }}</p>
-                        </div>
-                        @if ($product->business->fax_number)
+
+                        @if ($product->businessMember->email)
                             <div class="d-flex">
-                                <p class="fw-semibold me-2">Fax:</p>
-                                <p>{{ $product->business->fax_number }}</p>
+                                <p class="fw-semibold me-2">Email:</p>
+                                <p>{{ $product->businessMember->email }}</p>
                             </div>
                         @endif
-                        @if ($product->business->business_license)
+
+                        @if ($product->businessMember->businessField)
                             <div class="d-flex">
-                                <p class="fw-semibold me-2">Giấy phép:</p>
-                                <a href="{{ asset($product->business->business_license) }}" target="_blank"
-                                    rel="noopener noreferrer">
-                                    Xem giấy phép
-                                </a>
-                            </div>
-                        @endif
-                        @if ($product->business->social_channel)
-                            <div class="d-flex">
-                                <p>{{ $product->business->social_channel }}</p>
+                                <p class="fw-semibold me-2">Ngành nghề kinh doanh:</p>
+                                <p>{{ $product->businessMember->businessField->name }}</p>
                             </div>
                         @endif
 
@@ -216,45 +240,18 @@
                     <div class="bg-business rounded-top py-2 px-3 mb-3">
                         <h5 class="mb-0 fw-bold text-dark">Thông tin Người đại diện</h5>
                     </div>
-                  
                     <div class="px-3">
                         <div class="d-flex">
                             <p class="fw-semibold me-2">Họ và tên:</p>
-                            <p>{{ Str::title(Str::lower($product->business->representative_name)) }}</p>
+                            <p>{{ Str::title(Str::lower($product->businessMember->representative_full_name)) }}</p>
                         </div>
 
                         <div class="d-flex">
-                            <p class="fw-semibold me-2">Năm sinh:</p>
-                            <p>{{ $product->business->birth_year }}</p>
+                            <p class="fw-semibold me-2">SĐT:</p>
+                            <p>{{ $product->businessMember->representative_phone }}</p>
                         </div>
-
-                        <div class="d-flex">
-                            <p class="fw-semibold me-2">Giới tính:</p>
-                            <p>
-                                @switch($product->business->gender)
-                                    @case('male')
-                                        Nam
-                                    @break
-                                    @case('female')
-                                        Nữ
-                                    @break
-                                    @default
-                                        Khác
-                                @endswitch
-                            </p>
-                        </div>
-
-                        <div class="d-flex">
-                            <p class="fw-semibold me-2">Địa chỉ:</p>
-                            <p>
-                                {{ $product->business->address }}
-                            </p>
-                        </div>
-
                     </div>
                 </div>
-
-                
             </div>
         </div>
     </section>
