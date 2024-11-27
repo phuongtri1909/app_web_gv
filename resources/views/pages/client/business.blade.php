@@ -125,7 +125,7 @@
                 'buttonTitle' => 'Đăng ký kết nối giao thương',
                 'buttonLink' => route('business.index'),
             ])
-            @include('admin.pages.notification.success-error')
+            
             <div class="category mt-3">
                 <a href="{{ route('business', ['category' => '']) }}"
                     class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('category') == '' ? 'active' : '' }}">Tất

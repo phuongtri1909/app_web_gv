@@ -4,7 +4,7 @@ function updateStatus (model, id, status) {
     let badge = $('#status-badge-' + id)
     let currentStatus = badge.data('status')
 
-    if (currentStatus === 'approved' || currentStatus === 'rejected') {
+    if (model !== 'BusinessMember' && (currentStatus === 'approved' || currentStatus === 'rejected')) {
         new Noty({
             type: 'error',
             text: 'Không thể thay đổi trạng thái khi đã duyệt hoặc từ chối.',

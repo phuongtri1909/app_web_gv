@@ -187,7 +187,10 @@
                         </div>
                     @endif
                     <div id="recaptcha-error" class="text-danger text-center mt-2"></div>
-                    <button type="submit" class="btn btn-primary">Lưu lại</button>
+                    <div class="text-center">
+
+                        <button type="submit" class="btn bg-app-gv rounded-pill text-white">Đăng ký</button>
+                    </div>
                 </form>
             </div>
         </div>

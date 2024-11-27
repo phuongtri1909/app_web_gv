@@ -8,7 +8,7 @@
             font-size: 0.7rem;
         }
 
-        
+
 
         .logo-business {
             object-fit: contain;
@@ -87,7 +87,7 @@
                 'buttonTitle' => 'Đăng ký SP',
                 'buttonLink' => route('connect.supply.demand'),
             ])
-            @include('admin.pages.notification.success-error')
+            
             <div class="category mt-3">
                 <a href="{{ route('business.products') }}"
                     class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('category') == '' ? 'active' : '' }}">Tất
@@ -97,8 +97,8 @@
                         class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('category') == $category->slug ? 'active' : '' }} {{ $index >= 8 && request('category') != $category->slug ? 'category-hidden' : '' }}">{{ $category->name }}</a>
                 @endforeach
                 @if ($category_product_business->count() > 8)
-                    <div class="text-center mt-4">
-                        <a id="show-more" class="fst-italic text-app-gv">Xem tất cả</a>
+                    <div class="text-center">
+                        <a id="show-more" class="fst-italic">Xem tất cả</a>
                     </div>
                 @endif
             </div>
@@ -106,27 +106,34 @@
             <div class="mt-3">
 
                 <div class="bg-business rounded-top py-2 px-3 mb-3">
-                    <h5 class="mb-0 fw-bold text-white">Sản phẩm</h5>
+                    <h5 class="mb-0 fw-bold text-dark">Sản phẩm</h5>
                 </div>
 
-                <div class="row row-cols-2 row-cols-sm-3 g-3 px-1  mb-3">
-                    @foreach ($products as $product)
-                        <div class="col">
-                            <a href="{{ route('product.detail', $product->slug) }}"
-                                class="card h-100 border-custom text-dark">
-                                <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
-                                    <img src="{{ asset($product->product_avatar) }}"
-                                        class="card-img-top img-fluid p-1 logo-business" alt="...">
-                                </div>
-                                <div class="px-1 d-flex flex-column">
-                                    <span class="fs-7">{{ $product->business->business_name }}</span>
-                                    <p class="fw-semibold mb-0 fs-7 lh-1">{{ $product->name_product }}</p>
-                                    <p class="mb-0">{{ number_format($product->price, 0, ',', '.') }} ₫</p>
-                                </div>
-                            </a>
-                        </div>
-                    @endforeach
-                </div>
+
+                @if ($products->isEmpty())
+                    <div class="col-12 text-center">
+                        <p class="text-muted fw-bold text-app-gv">Không có dữ liệu</p>
+                    </div>
+                @else
+                    <div class="row row-cols-2 row-cols-sm-3 g-3 px-1  mb-3">
+                        @foreach ($products as $product)
+                            <div class="col">
+                                <a href="{{ route('product.detail', $product->slug) }}"
+                                    class="card h-100 border-custom text-dark p-md-2">
+                                    <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                                        <img src="{{ asset($product->product_avatar) }}"
+                                            class="card-img-top img-fluid p-1 logo-business" alt="...">
+                                    </div>
+                                    <div class="px-1 d-flex flex-column">
+                                        <span class="fs-7">{{ $product->businessMember->business_name }}</span>
+                                        <p class="fw-semibold mb-0 fs-7 lh-1">{{ $product->name_product }}</p>
+                                        <p class="mb-0">{{ number_format($product->price, 0, ',', '.') }} ₫</p>
+                                    </div>
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
     </section>
