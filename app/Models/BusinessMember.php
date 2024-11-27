@@ -45,4 +45,12 @@ class BusinessMember extends Model
     {
         return $this->hasMany(ProductBusiness::class, 'business_member_id');
     }
+
+        /**
+     * Relationship with BusinessFairRegistration (hasMany).
+     */
+    public function fairRegistrations()
+    {
+        return $this->hasMany(BusinessFairRegistration::class, 'business_member_id');
+    }
 }

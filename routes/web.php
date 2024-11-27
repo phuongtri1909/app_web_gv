@@ -58,6 +58,7 @@ use App\Http\Controllers\BusinessCapitalNeedController;
 use App\Http\Controllers\BusinessRecruitmentController;
 use App\Http\Controllers\ContactConsultationController;
 use App\Http\Controllers\AdmissionProcessDetailController;
+use App\Http\Controllers\BusinessFairRegistrationController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PersonalBusinessInterestController;
 use App\Http\Controllers\BusinessStartPromotionInvestmentController;
@@ -142,7 +143,7 @@ Route::middleware(['language'])->group(function () {
             Route::get('/form-job-application', [JobApplicationController::class, 'jobApplication'])->name('job.application'); //form ứng tuyển
             Route::post('/form-job-application', [JobApplicationController::class, 'storeForm'])->name('job.application.store');
 
-            Route::get('/business-opinion', [BusinessFeedBackController::class, 'businessOpinion'])->name('business.opinion'); //form ý kiến doanh nghiệp
+            Route::get('/form-business-opinion', [BusinessFeedBackController::class, 'businessOpinion'])->name('business.opinion'); //form ý kiến doanh nghiệp
             // Route::post('/form-business-opinion', [BusinessFeedBackController::class, 'storeBusinessOpinion'])->name('business.opinion.store');
 
             Route::post('/form-business', [BusinessController::class, 'store'])->name('business.store'); //form đăng ký doanh nghiệp
@@ -150,6 +151,10 @@ Route::middleware(['language'])->group(function () {
 
             Route::get('/form-legal-advice', [LegalAdviceController::class, 'showFormLegal'])->name('show.form.legal'); //form tư vấn pháp lý
             Route::post('/form-legal-advice', [LegalAdviceController::class, 'storeForm'])->name('legal.advice.store');
+
+            Route::get('/business-fair-registrations/{news_id}', [BusinessFairRegistrationController::class, 'businessFairRegistration'])->name('business-fair-registrations');
+            Route::post('/business-fair-registrations', [BusinessFairRegistrationController::class, 'storeBusinessFairRegistration'])->name('business-fair-registrations.store');
+            Route::get('/fair-registrations', [BusinessFairRegistrationController::class, 'businessFairRegistrations'])->name('business.fair.registrations');
         });
     });
 
@@ -163,7 +168,6 @@ Route::middleware(['language'])->group(function () {
     Route::get('page-tab/{slug}', function ($slug) {
         return view('pages.tab-custom.index', compact('slug'));
     })->name('page.tab');
-
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
@@ -229,6 +233,8 @@ Route::middleware(['language'])->group(function () {
                 Route::resource('users', UserController::class)->except('show');
 
                 Route::post('/user/status', [UserController::class, 'changeStatus'])->name('user.changeStatus');
+
+                Route::resource('fair-registrations', BusinessFairRegistrationController::class);
             });
         });
 
