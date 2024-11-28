@@ -32,7 +32,7 @@
                     <div class="d-flex flex-row justify-content-between">
                         <div>
                             <h5 class="mb-0">
-                                {{ __('Danh sách đăng ký Khởi nghiệp, Xúc tiến thương mại – Kêu gọi đầu tư') }}</h5>
+                                {{ __('Danh sách đăng ký nhu cầu khởi nghiệp') }}</h5>
                         </div>
                         {{-- <a href="{{ route('start-promotion-investment.create') }}" class="btn bg-gradient-primary btn-sm mb-0 px-2" type="button">
                         <i class="fa-solid fa-plus"></i> {{ __('Thêm mới') }}
@@ -47,18 +47,26 @@
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        {{ __('STT') }}</th>
+                                        {{ __('STT') }}
+                                    </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('Tên doanh nghiệp') }}</th>
+                                        {{ __('Họ và tên') }}
+                                    </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('Mã số thuế') }}</th>
+                                        {{ __('Năm sinh') }}
+                                    </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('Nhu cầu hỗ trợ') }}</th>
+                                        {{ __('Giới tính') }}
+                                    </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('Trạng thái') }}</th>
-                                    <th
-                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        {{ __('Thao tác') }}</th>
+                                        {{ __('Số điện thoại') }}
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        {{ __('Trạng thái') }}
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        {{ __('Thao tác') }}
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -69,15 +77,23 @@
                                         </td>
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">
-                                                {{ $promotion->business->business_name ?? '-' }}</p>
+                                                {{ $promotion->name ?? '-' }}
+                                            </p>
                                         </td>
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">
-                                                {{ $promotion->business->business_code ?? '-' }}</p>
+                                                {{ $promotion->birth_year ?? '-' }}
+                                            </p>
                                         </td>
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">
-                                                {{ $promotion->supportNeeds->name ?? '-' }}</p>
+                                                {{ ucfirst($promotion->gender) ?? '-' }}
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">
+                                                {{ $promotion->phone ?? '-' }}
+                                            </p>
                                         </td>
                                         <td>
                                             <span id="status-badge-{{ $promotion->id }}"
@@ -87,13 +103,9 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            {{-- <a href="{{ route('start-promotion-investment.edit', $promotion->id) }}" class="mx-3" title="{{ __('edit') }}">
-                                            <i class="fa-solid fa-pencil"></i>
-                                        </a> --}}
                                             <div class="dropstart">
-                                                <button class="btn btn-sm p-0 border-0 mb-0" type="button"
-                                                    data-bs-toggle="dropdown" aria-expanded="false"
-                                                    title="Thay đổi trạng thái">
+                                                <button class="btn btn-sm p-0 border-0 mb-0" type="button" data-bs-toggle="dropdown"
+                                                    aria-expanded="false" title="Thay đổi trạng thái">
                                                     <i class="fas fa-retweet"></i>
                                                 </button>
                                                 <ul class="dropdown-menu">
@@ -117,16 +129,14 @@
                                                     </li>
                                                 </ul>
                                             </div>
-
+                    
                                             @include('admin.pages.components.delete-form', [
                                                 'id' => $promotion->id,
-                                                'route' => route(
-                                                    'start-promotion-investment.destroy',
-                                                    $promotion->id),
+                                                'route' => route('start-promotion-investment.destroy', $promotion->id),
                                                 'message' => __('delete_message'),
                                             ])
-                                            <a href="javascript:void(0)" class="mx-3 view-promotion"
-                                                data-id="{{ $promotion->id }}" title="{{ __('Xem chi tiết') }}">
+                                            <a href="javascript:void(0)" class="mx-3 view-promotion" data-id="{{ $promotion->id }}"
+                                                title="{{ __('Xem chi tiết') }}">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
                                         </td>
@@ -135,12 +145,11 @@
                             </tbody>
                         </table>
                         <x-pagination :paginator="$promotions" />
-                    </div>
+                    </div>                    
 
                 </div>
             </div>
-            <div class="modal fade" id="promotionDetailModal" tabindex="-1" aria-labelledby="promotionDetailModal"
-                aria-hidden="true">
+            <div class="modal fade" id="promotionDetailModal" tabindex="-1" aria-labelledby="promotionDetailModal" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="card shadow-lg">
@@ -148,7 +157,7 @@
                                 <div class="d-flex align-items-center justify-content-between">
                                     <h5 class="text-white mb-0">
                                         <i class="fas fa-building me-2"></i>
-                                        {{ __('Thông tin chi tiết doanh nghiệp') }}
+                                        {{ __('Thông tin chi tiết') }}
                                     </h5>
                                     <button type="button" class="btn btn-link text-white" data-bs-dismiss="modal">
                                         <i class="fas fa-times"></i>
@@ -158,24 +167,17 @@
                             <div class="card-body p-4">
                                 <div class="row g-4">
                                     <div class="col-md-4 text-center">
-                                        <div class="avatar-preview mb-3">
-                                            <img id="modal-avatar" src="" class="rounded-circle img-fluid shadow"
-                                                style="width: 150px; height: 150px; object-fit: cover;"
-                                                alt="Business Avatar">
-                                        </div>
-                                        <h6 id="modal-business-name" class="fw-bold text-primary"></h6>
-                                        <p class="text-muted small">MST: <span id="modal-business-code"></span></p>
                                         <span id="modal-status" class="badge badge-sm"></span>
                                     </div>
-
+            
                                     <div class="col-md-8">
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <div class="info-group">
                                                     <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-user me-2"></i>{{ __('Người đại diện') }}
+                                                        <i class="fas fa-user me-2"></i>{{ __('Họ và tên') }}
                                                     </label>
-                                                    <p id="modal-representative-name" class="text-sm mb-2"></p>
+                                                    <p id="modal-business-name" class="text-sm mb-2"></p>
                                                 </div>
                                                 <div class="info-group">
                                                     <label class="text-uppercase text-xs font-weight-bolder opacity-7">
@@ -195,71 +197,31 @@
                                                     </label>
                                                     <p id="modal-phone" class="text-sm mb-2"></p>
                                                 </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-fax me-2"></i>{{ __('Số Fax') }}
-                                                    </label>
-                                                    <p id="modal-fax" class="text-sm mb-2"></p>
-                                                </div>
                                             </div>
-
+            
                                             <div class="col-md-6">
                                                 <div class="info-group">
                                                     <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-envelope me-2"></i>{{ __('Email') }}
+                                                        <i class="fas fa-map-marker-alt me-2"></i>{{ __('Địa chỉ khởi nghiệp') }}
                                                     </label>
-                                                    <p id="modal-email" class="text-sm mb-2"></p>
+                                                    <p id="modal-startup-address" class="text-sm mb-2"></p>
                                                 </div>
                                                 <div class="info-group">
                                                     <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-share-alt me-2"></i>{{ __('Kênh social') }}
-                                                    </label>
-                                                    <p id="modal-social" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i
-                                                            class="fas fa-building me-2"></i>{{ __('Loại hình doanh nghiệp') }}
-                                                    </label>
-                                                    <p id="modal-category-business" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i
-                                                            class="fas fa-briefcase me-2"></i>{{ __('Lĩnh vực kinh doanh') }}
+                                                        <i class="fas fa-briefcase me-2"></i>{{ __('Ngành nghề kinh doanh') }}
                                                     </label>
                                                     <p id="modal-business-field" class="text-sm mb-2"></p>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
                                                 <div class="info-group">
                                                     <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-map-marker-alt me-2"></i>{{ __('Địa chỉ') }}
-                                                    </label>
-                                                    <p id="modal-address" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-building me-2"></i>{{ __('Địa chỉ kinh doanh') }}
-                                                    </label>
-                                                    <p id="modal-business-address" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-map me-2"></i>{{ __('Phường') }}
-                                                    </label>
-                                                    <p id="modal-ward" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i
-                                                            class="fas fa-hands-helping me-2"></i>{{ __('Nhu cầu hỗ trợ') }}
+                                                        <i class="fas fa-hands-helping me-2"></i>{{ __('Nhu cầu hỗ trợ') }}
                                                     </label>
                                                     <p id="modal-support-needs" class="text-sm mb-2"></p>
                                                 </div>
                                             </div>
+                                        </div>
+            
+                                        <div class="row g-3">
                                             <div class="col-md-6">
                                                 <div class="info-group">
                                                     <label class="text-uppercase text-xs font-weight-bolder opacity-7">
@@ -271,23 +233,15 @@
                                         </div>
                                     </div>
                                 </div>
-
+            
                                 <div class="row mt-4">
                                     <div class="col-12">
                                         <div class="info-group">
                                             <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                <i class="fas fa-align-left me-2"></i>{{ __('Mô tả') }}
+                                                <i class="fas fa-align-left me-2"></i>{{ __('Thông tin hoạt động khởi nghiệp') }}
                                             </label>
-                                            <p id="modal-description" class="text-sm mb-2"></p>
+                                            <p id="modal-startup-activity-info" class="text-sm mb-2"></p>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div class="row mt-4">
-                                    <div class="col-12">
-                                        <a id="modal-license" href="" target="_blank" class="btn btn-primary">
-                                            <i class="fas fa-file-pdf me-2"></i>{{ __('Xem giấy phép kinh doanh') }}
-                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -295,6 +249,7 @@
                     </div>
                 </div>
             </div>
+        
         </div>
     </div>
 @endsection
@@ -302,68 +257,58 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
-    <script>
-        $(document).ready(function() {
-            $('.view-promotion').click(function() {
-                var promotionId = $(this).data('id');
-                $.ajax({
-                    url: '/admin/start-promotion-investment/' + promotionId,
-                    type: 'GET',
-                    success: function(response) {
-                        var formattedDate = dayjs(response.created_at).format(
-                            'DD/MM/YYYY HH:mm');
-                        $('#modal-business-name').text(response.business_name || '-');
-                        $('#modal-business-code').text(response.business_code || '-');
-                        $('#modal-representative-name').text(response.representative_name ||
-                            '-');
-                        $('#modal-birth-year').text(response.birth_year || '-');
-                        const genderText = {
-                            'male': 'Nam',
-                            'female': 'Nữ',
-                            'other': 'Không xác định'
-                        } [response.gender] || '-';
+   <script>
+    $(document).ready(function() {
+        $('.view-promotion').click(function() {
+            var promotionId = $(this).data('id'); 
+            $.ajax({
+                url: '/admin/start-promotion-investment/' + promotionId,
+                type: 'GET',
+                success: function(response) {
+                    var formattedDate = dayjs(response.created_at).format('DD/MM/YYYY HH:mm');
+                    $('#modal-business-name').text(response.name || '-');
+                    $('#modal-birth-year').text(response.birth_year || '-');
 
-                        $('#modal-gender').text(genderText);
+                    const genderText = {
+                        'male': 'Nam',
+                        'female': 'Nữ',
+                        'other': 'Không xác định'
+                    }[response.gender] || '-';
 
-                        $('#modal-email').text(response.email || '-');
-                        $('#modal-phone').text(response.phone_number || '-');
-                        $('#modal-fax').text(response.fax_number || '-');
-                        $('#modal-address').text(response.address || '-');
-                        $('#modal-business-address').text(response.business_address || '-');
-                        $('#modal-ward').text(response.ward?.name || '-');
-                        $('#modal-social').text(response.social_channel || '-');
-                        $('#modal-category-business').text(response.category_business?.name ||
-                            '-');
-                        $('#modal-business-field').text(response.business_field?.name || '-');
-                        $('#modal-description').text(response.description || '-');
-                        $('#modal-support-needs').text(response.supportNeeds?.name || '-');
-                        $('#modal-created-at').text(formattedDate);
-                        $('#modal-avatar').attr('src', response.avt_businesses ? '/' + response
-                            .avt_businesses : '');
-                        $('#modal-license').attr('href', response.business_license ? '/' +
-                            response.business_license : '#');
+                    $('#modal-gender').text(genderText);
+                    $('#modal-phone').text(response.phone || '-');
+                    $('#modal-startup-address').text(response.startup_address || '-');
+                    $('#modal-business-field').text(response.business_field|| '-');
+                    $('#modal-startup-activity-info').text(response.startup_activity_info || '-');
 
-                        const statusBadgeClass = {
-                            'approved': 'bg-success',
-                            'rejected': 'bg-danger',
-                            'pending': 'bg-warning'
-                        } [response.status] || 'bg-secondary';
+                    const supportNeedsText = response.business_support_needs ? response.business_support_needs.join(', ') : '-';
+                    $('#modal-support-needs').text(supportNeedsText);
 
-                        const statusText = {
-                            'approved': 'Đã duyệt',
-                            'rejected': 'Đã từ chối',
-                            'pending': 'Đang chờ'
-                        } [response.status] || '-';
+                    $('#modal-created-at').text(formattedDate);
+                    const statusBadgeClass = {
+                        'approved': 'bg-success',
+                        'rejected': 'bg-danger',
+                        'pending': 'bg-warning'
+                    }[response.status] || 'bg-secondary';
 
-                        $('#modal-status')
-                            .removeClass('bg-success bg-danger bg-warning bg-secondary')
-                            .addClass(statusBadgeClass)
-                            .text(statusText);
-                        $('#promotionDetailModal').modal('show');
-                        // console.log(response);
-                    }
-                });
+                    const statusText = {
+                        'approved': 'Đã duyệt',
+                        'rejected': 'Đã từ chối',
+                        'pending': 'Đang chờ'
+                    }[response.status] || '-';
+
+                    $('#modal-status')
+                        .removeClass('bg-success bg-danger bg-warning bg-secondary')
+                        .addClass(statusBadgeClass)
+                        .text(statusText);
+                    $('#promotionDetailModal').modal('show');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching promotion data:', error);
+                }
             });
         });
-    </script>
+    });
+</script>
+
 @endpush

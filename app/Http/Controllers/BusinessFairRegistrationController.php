@@ -139,10 +139,11 @@ class BusinessFairRegistrationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        
     }
+    
 
     /**
      * Show the form for editing the specified resource.
@@ -447,5 +448,56 @@ class BusinessFairRegistrationController extends Controller
     
         return view('pages.client.form-fair-registration.fair-registration', compact('businessFairRegistrations', 'noResults', 'category'));
     }
-     
+    public function indexJoin()
+    {
+        $registrations = BusinessFairRegistration::with('businessMember') 
+            ->paginate(10); 
+        return view('admin.pages.client.form-fair-registration.list.index', compact('registrations'));
+    }
+    public function showIndexJoin($id){
+        if (!is_numeric($id)) {
+            return response()->json(['error' => 'Invalid ID format'], 400);
+        }
+    
+        try {
+            $registration = BusinessFairRegistration::with([
+                'businessMember', 
+                'news'         
+            ])->findOrFail($id);
+            $productImages = json_decode($registration->product_images, true);
+            return response()->json([
+                'id' => $registration->id,
+                'business_member_id' => $registration->businessMember->business_name,
+                'business_license' => $registration->business_license,
+                'representative_full_name' => $registration->representative_full_name,
+                'birth_year' => $registration->birth_year,
+                'gender' => $registration->gender,
+                'phone_zalo' => $registration->phone_zalo,
+                'products' => $registration->products,
+                'product_images' => $productImages,
+                'booth_count' => $registration->booth_count,
+                'discount_percentage' => $registration->discount_percentage,
+                'is_join_stage_promotion' => $registration->is_join_stage_promotion,
+                'is_join_charity' => $registration->is_join_charity,
+                'status' => $registration->status,
+                'news_id' => $registration->news_id,
+                'created_at' => $registration->created_at,
+                'updated_at' => $registration->updated_at,
+                'news' => $registration->news, 
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch details'], 500);
+        }
+    }
+    public function destroyindexJoin($id)
+    {
+        $news = BusinessFairRegistration::find($id);
+
+        if (!$news) {
+            return redirect()->route('business-fair-registrations.indexJoin')->with('error', __('Không tồn tại!!'));
+        }
+        $news->delete();
+
+        return redirect()->route('business-fair-registrations.indexJoin')->with('success', __('Xóa thành công!!'));
+    }
 }
