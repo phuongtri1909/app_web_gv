@@ -20,198 +20,142 @@ class BusinessStartPromotionInvestmentController extends Controller
     }
     public function storeFormStartPromotion(Request $request)
     {
+
         DB::beginTransaction();
-        // dd($request->all());
+    
         try {
             $validatedData = $request->validate([
-                'representative_name' => 'required|string|max:255',
-                'birth_year' => 'required|digits:4|integer|min:1500|max:' . date('Y'),
+                'name' => 'required|string|max:255',
+                'birth_year' => [
+                    'required',
+                    'digits:4',
+                    'integer',
+                    'min:1500',
+                    'max:' . date('Y'),
+                    function ($attribute, $value, $fail) {
+                        if ((date('Y') - $value) < 18) {
+                            $fail('Năm sinh không hợp lệ, bạn phải trên 18 tuổi.');
+                        }
+                    },
+                ],
                 'gender' => 'required|in:male,female,other',
-                'phone_number' => 'required|string|max:10|regex:/^[0-9]+$/',
-                'address' => 'required|string|max:255',
-                'business_address' => 'required|string|max:255',
-                'business_name' => 'required|string|max:255',
-                'business_code' => 'required|regex:/^\d{10}(-\d{3})?$/',
-                'email' => 'required|email|max:255',
-                'social_channel' => 'nullable|url|max:255',
-                'support_need' => 'required|exists:business_support_needs,id',
+                'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
+                'startup_address' => 'required|string|max:255',
                 'business_fields' => 'required|exists:business_fields,id',
+                'startup_activity_info' => 'nullable|string|max:500',
+                'support_need' => 'required|array|min:1',
+                'support_need.*' => 'required|exists:business_support_needs,id',
+                // 'g-recaptcha-response' => 'required',
             ], [
-                'business_code.required' => 'Mã doanh nghiệp là bắt buộc.',
-                'business_code.unique' => 'Mã doanh nghiệp này đã đăng ký trong hệ thống.',
-                'business_code.regex' => 'Mã số thuế phải gồm 10 chữ số hoặc 13 chữ số với định dạng 10-3.',
-                'business_name.required' => 'Tên doanh nghiệp là bắt buộc.',
-                'representative_name.required' => 'Tên người đại diện là bắt buộc.',
-                'birth_year.required' => 'Năm sinh là bắt buộc.',
-                'birth_year.min' => 'Năm sinh phải lớn hơn hoặc bằng 1500.',
-                'birth_year.max' => 'Năm sinh không được lớn hơn năm hiện tại.',
-                'birth_year.digits' => 'Năm sinh phải có 4 chữ số.',
-                'gender.required' => 'Giới tính là bắt buộc.',
-                'phone_number.required' => 'Số điện thoại là bắt buộc.',
-                'phone_number.regex' => 'Số điện thoại không hợp lệ.',
-                'phone_number.max' => 'Số điện thoại không được vượt quá 10 số.',
-                'address.required' => 'Địa chỉ là bắt buộc.',
-                'business_address.required' => 'Địa chỉ doanh nghiệp là bắt buộc.',
-                'email.required' => 'Email là bắt buộc.',
-                'email.email' => 'Email không hợp lệ.',
-                'email.unique' => 'Email này đã được đăng ký trong hệ thống.',
-                'social_channel.url' => 'Đường dẫn social không hợp lệ.',
-                'support_need.required' => 'Vui lòng chọn nhu cầu hỗ trợ.',
-                'support_need.exists' => 'Nhu cầu hỗ trợ không hợp lệ.',
+                // 'g-recaptcha-response.required' => 'Vui lòng xác nhận bạn không phải là robot.',
+                'support_need.required' => 'Vui lòng chọn ít nhất một nhu cầu hỗ trợ.',
+                'support_need.*.exists' => 'Nhu cầu hỗ trợ bạn chọn không tồn tại.',
                 'business_fields.required' => 'Vui lòng chọn ngành nghề.',
                 'business_fields.exists' => 'Ngành nghề không hợp lệ.',
-            ]);
-            $recaptchaResponse = $request->input('g-recaptcha-response');
-            $secretKey = env('RECAPTCHA_SECRET_KEY');
-            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-                'secret' => $secretKey,
-                'response' => $recaptchaResponse,
-            ]);
-
-            $responseBody = json_decode($response->body());
-
-            if (!$responseBody->success) {
-                return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
-            }
-            $existingBusiness = Business::where('business_code', $validatedData['business_code'])->first();
-            if ($existingBusiness) {
-                $response = $this->validateExistingBusiness($existingBusiness, $validatedData);
-                if ($response) return $response;
-                $existingInvestment = BusinessStartPromotionInvestment::where('business_id', $existingBusiness->id)->first();
-                if ($existingInvestment) {
-                    return redirect()->back()->with('error', 'Doanh nghiệp này đã đăng ký trước đó.')->withInput();
-                }
-                BusinessStartPromotionInvestment::create([
-                    'business_support_needs_id' => $validatedData['support_need'],
-                    'business_id' => $existingBusiness->id,
-                ]);
-
-                DB::commit();
-                return redirect()->back()->with('success', 'Đã thêm Khởi nghiệp-Xúc tiến thương mại-Kêu gọi đầu tư cho doanh nghiệp.');
-            }
-            $response = $this->checkForExistingEmail($validatedData['email']);
-            if ($response) return $response;
-            $business = Business::create([
-                'business_name' => $validatedData['business_name'],
-                'business_code' => $validatedData['business_code'],
-                'business_address' => $validatedData['business_address'],
-                'business_fields' => $validatedData['business_fields'] ?? null,
-                'representative_name' => $validatedData['representative_name'],
+                'name.required' => 'Họ tên là bắt buộc.',
+                'birth_year.required' => 'Năm sinh là bắt buộc.',
+                'birth_year.min' => 'Năm sinh không hợp lệ, bạn không thể sinh trước năm 1500.',
+                'birth_year.max' => 'Năm sinh không hợp lệ, bạn không thể sinh sau năm hiện tại.',
+                'gender.required' => 'Giới tính là bắt buộc.',
+                'gender.in' => 'Giới tính không hợp lệ, vui lòng chọn đúng giá trị.',
+                'phone.required' => 'Số điện thoại là bắt buộc.',
+                'phone.regex' => 'Số điện thoại không hợp lệ, chỉ được phép chứa từ 10 chữ số.',
+                'startup_address.required' => 'Địa chỉ cư trú là bắt buộc.',
+            ]);            
+            // $recaptchaResponse = $request->input('g-recaptcha-response');
+            // $secretKey = env('RECAPTCHA_SECRET_KEY');
+            // $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            //     'secret' => $secretKey,
+            //     'response' => $recaptchaResponse,
+            // ]);
+            // $responseBody = json_decode($response->body());
+    
+            // if (!$responseBody->success) {
+            //     return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
+            // }
+             BusinessStartPromotionInvestment::create([
+                'name' => $validatedData['name'],
                 'birth_year' => $validatedData['birth_year'],
                 'gender' => $validatedData['gender'],
-                'phone_number' => $validatedData['phone_number'],
-                'address' => $validatedData['address'],
-                'email' => $validatedData['email'],
-                'social_channel' => $validatedData['social_channel'] ?? null,
-                'status' => 'other'
+                'phone' => $validatedData['phone'],
+                'startup_address' => $validatedData['startup_address'],
+                'business_field' => $validatedData['business_fields'],
+                'startup_activity_info' => $validatedData['startup_activity_info'] ?? null,
+                'business_support_needs_id' => json_encode($validatedData['support_need']),
             ]);
-
-            BusinessStartPromotionInvestment::create([
-                'business_support_needs_id' => $validatedData['support_need'],
-                'business_id' => $business->id,
-            ]);
-
             DB::commit();
-            return redirect()->back()->with('success', 'Đăng ký Khởi nghiệp-Xúc tiến thương mại-Kêu gọi đầu tư thành công!');
-
+    
+            return redirect()->back()->with('success', 'Đăng ký nhu cầu khởi nghiệp thành công!');
         } catch (ValidationException $e) {
             DB::rollBack();
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
+            \Log::error($e);
             DB::rollBack();
             return redirect()->back()->with('error', 'Đăng ký thất bại: ' . $e->getMessage())->withInput();
         }
     }
+    
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $promotions = BusinessStartPromotionInvestment::with(['business', 'supportNeeds'])
-            ->when($search, function ($query, $search) {
-                $query->whereHas('business', function ($query) use ($search) {
-                    $query->where('business_name', 'like', '%' . $search . '%')
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('business_code', 'like', "%{$search}%");
-                });
+        
+        $promotions = BusinessStartPromotionInvestment::when($search, function ($query, $search) {
+            $query->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('phone', 'like', '%' . $search . '%');
         })
-            ->paginate(15);
+        ->paginate(15);
         return view('admin.pages.client.form-start-promotion-invertment.index', compact('promotions'));
     }
+    
 
     public function create()
     {
-        return view('admin.pages.client.form-start-promotion-invertment.create');
+       
     }
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'business_id' => 'required|exists:businesses,id',
-            'business_support_needs_id' => 'required|exists:business_support_needs,id'
-        ]);
-
-        BusinessStartPromotionInvestment::create($validatedData);
-        return redirect()->route('client.form-start-promotion-invertment.index')->with('success', 'Thêm mới thành công');
+        
     }
 
     public function show($id)
     {
-        $promotion = BusinessStartPromotionInvestment::with([
-            'business.categoryBusiness',
-            'business.field',
-            'business.ward',
-            'supportNeeds'
-        ])->findOrFail($id);
-
+        $promotion = BusinessStartPromotionInvestment::findOrFail($id);
+        $supportNeedIds = json_decode($promotion->business_support_needs_id);
+        $supportNeeds = BusinessSupportNeed::whereIn('id', $supportNeedIds)->pluck('name')->toArray();
+        $businessField = BusinessField::find($promotion->business_field);
         return response()->json([
             'id' => $promotion->id,
-            'business_name' => $promotion->business->business_name,
-            'business_code' => $promotion->business->business_code,
-            'representative_name' => $promotion->business->representative_name,
-            'birth_year' => $promotion->business->birth_year,
-            'gender' => $promotion->business->gender,
-            'phone_number' => $promotion->business->phone_number,
-            'fax_number' => $promotion->business->fax_number,
-            'email' => $promotion->business->email,
-            'social_channel' => $promotion->business->social_channel,
-            'address' => $promotion->business->address,
-            'business_address' => $promotion->business->business_address,
-            'ward' => $promotion->business->ward,
-            'category_business' => $promotion->business->categoryBusiness,
-            'business_field' => $promotion->business->field,
-            'description' => $promotion->business->description,
-            'avt_businesses' => $promotion->business->avt_businesses,
-            'business_license' => $promotion->business->business_license,
-            'supportNeeds' => $promotion->supportNeeds,
+            'name' => $promotion->name, 
+            'birth_year' => $promotion->birth_year,
+            'gender' => $promotion->gender,
+            'phone' => $promotion->phone, 
+            'startup_address' => $promotion->startup_address,
+            'business_field' => $businessField->name ?? $promotion->business_field, 
+            'startup_activity_info' => $promotion->startup_activity_info,
+            'business_support_needs' => $supportNeeds,  
             'status' => $promotion->status,
-            'created_at' => $promotion->created_at
+            'created_at' => $promotion->created_at,
+            'updated_at' => $promotion->updated_at,
         ]);
     }
-
-
-
+    
     public function edit($id)
     {
-        $promotion = BusinessStartPromotionInvestment::findOrFail($id);
-        return view('admin.pages.client.form-start-promotion-invertment.edit', compact('promotion'));
+       
     }
 
     public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'business_id' => 'required|exists:businesses,id',
-            'business_support_needs_id' => 'required|exists:business_support_needs,id'
-        ]);
-
-        $promotion = BusinessStartPromotionInvestment::findOrFail($id);
-        $promotion->update($validatedData);
-        return redirect()->route('client.form-start-promotion-invertment.index')->with('success', 'Cập nhật thành công');
+        
     }
 
     public function destroy($id)
     {
         $promotion = BusinessStartPromotionInvestment::findOrFail($id);
         $promotion->delete();
-        return redirect()->route('client.form-start-promotion-invertment.index')->with('success', 'Xóa thành công');
+        return redirect()->route('start-promotion-investment.index')->with('success', 'Xóa thành công');
     }
     private function validateExistingBusiness($existingBusiness, $validatedData)
     {
