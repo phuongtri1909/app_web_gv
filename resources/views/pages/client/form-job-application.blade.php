@@ -121,7 +121,7 @@
                         <div class="input-group">
                             <input type="file" id="file-uploads" name="cv" class=" @error('cv') is-invalid @enderror" accept="application/pdf"
                                 value="{{ old('cv') }}" style="display: none;">
-                            <button type="button" class="btn btn-success" id="upload-button">
+                            <button type="button" class="btn bg-app-gv rounded-pill text-white" id="upload-button">
                                 <i class="bi bi-upload"></i> Upload
                             </button>
                         </div>
@@ -138,8 +138,8 @@
                         <div class="invalid-feedback d-block text-center" role="alert">{{ $errors->first('error') }}</div>
                     @endif
                     <div id="recaptcha-error" class="text-danger text-center mt-2"></div>
-                    <div class="text-end my-3">
-                        <button type="submit" class="btn btn-success">Lưu xác nhận</button>
+                    <div class="text-center my-3">
+                        <button type="submit" class="btn bg-app-gv rounded-pill text-white">Tìm việc</button>
                     </div>
                 </form>
 

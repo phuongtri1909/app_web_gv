@@ -11,21 +11,21 @@ class BusinessRecruitment extends Model
 
     protected $table = 'business_recruitment';
     protected $fillable = [
-        'business_name',
-        'business_code',
-        'category_business_id',
-        'head_office_address',
-        'phone',
-        'fax',
-        'email',
-        'representative_name',
-        'gender',
-        'recruitment_info',
-        'status'
+        'business_member_id',
+        'recruitment_images',
+        'recruitment_title',
+        'recruitment_content',
+        'status',
+
     ];
 
-    public function categoryBusiness()
+    public function businessMember()
     {
-        return $this->belongsTo(CategoryBusiness::class, 'category_business_id');
+        return $this->belongsTo(BusinessMember::class, 'business_member_id');
+    }
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class, 'business_id');
     }
 }

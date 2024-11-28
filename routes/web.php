@@ -96,9 +96,7 @@ Route::middleware(['language'])->group(function () {
         Route::get('/post-detail/{slug}', [BlogsController::class, 'showPostIndex'])->name('post-detail');
 
         //tạm gán như này cho kết nối việc làm
-        Route::get('/job-connector', function () {
-            return view('pages.client.job-connector');
-        })->name('job-connector');
+        Route::get('/job-connector', [BusinessRecruitmentController::class, 'jobConnector'])->name('job-connector');
 
         Route::get('/legal-advice', [ContactConsultationController::class, 'legalAdvice'])->name('legal-advice');
 
@@ -106,6 +104,9 @@ Route::middleware(['language'])->group(function () {
         Route::get('/locations', [LocationController::class, 'clientIndex'])->name('locations');
         Route::get('/search-locations', [LocationController::class, 'searchLocations'])->name('search.locations');
         Route::get('/get-locations', [LocationController::class, 'getAllLocations'])->name('get.locations');
+
+        //cho phường 17
+        Route::get('/locations-17', [LocationController::class, 'clientIndex'])->name('locations');
 
         //tam gán trang intro HDN
         Route::get('/intro-hdn', function () {
@@ -118,6 +119,9 @@ Route::middleware(['language'])->group(function () {
 
         Route::get('/member-business', [MemberBusinessController::class, 'showFormMemberBusiness'])->name('show.form.member.business'); //form đk hội viên doanh nghiệp chuyển sang đk app
         Route::post('/member-business', [MemberBusinessController::class, 'storFormMemberBusiness'])->name('form.member.business.store');
+
+        Route::get('/form-job-application', [JobApplicationController::class, 'jobApplication'])->name('job.application'); //form ứng tuyển
+        Route::post('/form-job-application', [JobApplicationController::class, 'storeForm'])->name('job.application.store');
 
         Route::middleware(['check.business.code'])->group(function () {
 
@@ -139,9 +143,6 @@ Route::middleware(['language'])->group(function () {
 
             Route::get('/form-recruitment-registration', [BusinessRecruitmentController::class, 'recruitmentRegistration'])->name('recruitment.registration'); //form đăng ký tuyển dụng
             Route::post('/form-recruitment-registration', [BusinessRecruitmentController::class, 'storeForm'])->name('recruitment.registration.store');
-
-            Route::get('/form-job-application', [JobApplicationController::class, 'jobApplication'])->name('job.application'); //form ứng tuyển
-            Route::post('/form-job-application', [JobApplicationController::class, 'storeForm'])->name('job.application.store');
 
             Route::get('/form-business-opinion', [BusinessFeedBackController::class, 'businessOpinion'])->name('business.opinion'); //form ý kiến doanh nghiệp
             // Route::post('/form-business-opinion', [BusinessFeedBackController::class, 'storeBusinessOpinion'])->name('business.opinion.store');
@@ -215,7 +216,7 @@ Route::middleware(['language'])->group(function () {
 
                 Route::resource('feedback', BusinessFeedBackController::class)->except('show');
 
-                Route::resource('recruitment',  BusinessRecruitmentController::class)->except('create', 'store', 'edit', 'update');
+                Route::resource('recruitment',  BusinessRecruitmentController::class)->except('create', 'store', 'edit', 'update','show');
 
                 Route::get('/form-business', [BusinessController::class, 'adminIndex'])->name('admin.business');
 
