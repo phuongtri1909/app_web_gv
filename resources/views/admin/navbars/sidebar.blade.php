@@ -96,7 +96,44 @@
                 </a>
             </li>
 
-            
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('recruitment.*','job-applications.*') ? 'active' : '' }}"
+                    href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"
+                    data-bs-target="#job-connect" aria-expanded="false">
+                    <div
+                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-people-arrows text-dark icon-sidebar"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Kết nối việc làm</span>
+                </a>
+                <div class="collapse mt-1" id="job-connect" style="margin-left: 30px">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li>
+                            <a class="nav-link {{ Route::currentRouteNamed('recruitment.*') ? 'active' : '' }}"
+                                href="{{ route('recruitment.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-city text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Tuyển dụng') }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-link {{ Route::currentRouteNamed('job-applications.*') ? 'active' : '' }}"
+                                href="{{ route('job-applications.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-handshake text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Tìm việc làm') }}</span>
+                            </a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </li>
+
+
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteNamed('start-promotion-investment.index') ? 'active' : '' }}"
                     href="{{ route('start-promotion-investment.index') }}">
@@ -108,26 +145,8 @@
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteNamed('job-applications.*') ? 'active' : '' }}"
-                    href="{{ route('job-applications.index') }}">
-                    <div
-                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">{{ __('Tìm việc làm') }}</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteNamed('recruitment.*') ? 'active' : '' }}"
-                    href="{{ route('recruitment.index') }}">
-                    <div
-                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">{{ __('Tuyển dụng') }}</span>
-                </a>
-            </li>
+          
+            
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteNamed('feedback.*') ? 'active' : '' }}"
                     href="{{ route('feedback.index') }}">
@@ -151,7 +170,7 @@
                 </a>
             </li>
 
-            
+
 
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteNamed('banks.*') ? 'active' : '' }}"
@@ -207,7 +226,7 @@
                     <span class="nav-link-text ms-1">{{ __('Kênh tư vấn PL') }}</span>
                 </a>
             </li>
-            
+
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteNamed('form-legal-advice.*') ? 'active' : '' }}"
                     href="{{ route('form-legal-advice.index') }}">
@@ -220,7 +239,7 @@
             </li>
 
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('news.*,categories-news.*,tags-news.*,news_contents.*,tabs_posts.*') ? 'active' : '' }}"
+                <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('news.*','categories-news.*','tags-news.*','news_contents.*','tabs_posts.*') ? 'active' : '' }}"
                     href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"
                     data-bs-target="#news" aria-expanded="false">
                     <div

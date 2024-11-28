@@ -10,6 +10,23 @@
                             <h5 class="mb-0">{{ __('Danh sách đăng ký tuyển dụng') }}</h5>
                         </div>
                     </div>
+                    <div class="mt-2">
+                        <form method="GET" class="d-md-flex">
+                            @if (request('search'))
+                                <input type="hidden" name="search" value="{{ request('search') }}">  
+                            @endif
+                            
+                            <select name="search-member-id" class="form-control-sm me-2">
+                                <option value="">Tất cả doanh nghiệp</option>
+                                @foreach ($business_members as $item)
+                                    <option value="{{ $item->id }}" {{ request('search-member-id') == $item->id ? 'selected' : '' }}>
+                                        {{ $item->business_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm mb-0 mt-2 mt-md-0">Tìm kiếm</button>
+                        </form>
+                    </div>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
                     @include('admin.pages.notification.success-error')
@@ -20,15 +37,13 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         {{ __('STT') }}</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('Người đại diện') }}</th>
+                                        Tiêu đề</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('Tên doanh nghiệp') }}</th>
+                                        Thông tin</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('Mã doanh nghiệp') }}</th>
+                                        Doanh nghiệp</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('Số điện thoại') }}</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('Email') }}</th>
+                                        Mã số thuế</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         {{ __('Trạng thái') }}</th>
                                     <th
@@ -42,27 +57,36 @@
                                         <td class="ps-4">
                                             <p class="text-xs font-weight-bold mb-0">{{ $key + 1 }}</p>
                                         </td>
+                            
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">
-                                                {{ $recruitment->representative_name }}</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $recruitment->recruitment_title ?? '-'}}</p>
                                         </td>
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $recruitment->business_name }}</p>
+                                            <p class="text-xs font-weight-bold mb-0">{!! $recruitment->recruitment_content ?? '-' !!}</p>
                                         </td>
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $recruitment->business_code }}</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $recruitment->businessMember->business_name ?? '-' }}</p>
                                         </td>
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $recruitment->phone }}</p>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $recruitment->email ?? '-' }}</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $recruitment->businessMember->business_code ?? '-' }}</p>
                                         </td>
                                         <td>
                                             <span id="status-badge-{{ $recruitment->id }}" data-status="{{ $recruitment->status }}"
                                                 class="badge badge-sm bg-{{ $recruitment->status == 'approved' ? 'success' : ($recruitment->status == 'rejected' ? 'danger' : 'warning') }}">
                                                 {{ $recruitment->status == 'approved' ? 'Đã duyệt' : ($recruitment->status == 'rejected' ? 'Đã từ chối' : 'Đang chờ') }}
                                             </span>
+                                        </td>
+                                        <td>
+                                            @php
+                                                $images = json_decode($recruitment->recruitment_images, true);
+                                            @endphp
+                                            @if ($images)
+                                                @foreach ($images as $image)
+                                                    <a href="{{ asset($image) }}" data-fancybox="gallery-{{ $recruitment->id }}">
+                                                        <img src="{{ asset($image) }}" alt="Recruitment Image" style="width: 50px; height: 50px; object-fit: cover;">
+                                                    </a>
+                                                @endforeach
+                                            @endif
                                         </td>
                                         <td class="text-center">
                                             <div class="dropstart">
@@ -92,10 +116,7 @@
                                                     </li>
                                                 </ul>
                                             </div>
-                                            <a href="javascript:void(0)" class="mx-3 view-recruitment"
-                                                data-id="{{ $recruitment->id }}" title="{{ __('Xem chi tiết') }}">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
+                                           
                                             @include('admin.pages.components.delete-form', [
                                                 'id' => $recruitment->id,
                                                 'route' => route('recruitment.destroy', $recruitment->id),
@@ -209,6 +230,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
 </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
 <script>
     $(document).ready(function() {
         $('.view-recruitment').click(function() {

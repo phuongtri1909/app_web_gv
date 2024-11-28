@@ -8,8 +8,6 @@
             font-size: 0.7rem;
         }
 
-
-
         .logo-business {
             object-fit: contain;
             height: 200px;
@@ -41,7 +39,6 @@
         }
 
         @keyframes hoverAnimation {
-
             0%,
             100% {
                 transform: translateY(0);
@@ -76,6 +73,46 @@
                 });
                 showMoreButton.style.display = 'none';
             });
+
+            let nextPageUrl = "{{ $products->nextPageUrl() }}";
+            const loadMoreButton = document.getElementById('load-more');
+
+            loadMoreButton.addEventListener('click', function() {
+                if (nextPageUrl) {
+                    fetch(nextPageUrl, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        nextPageUrl = data.next_page_url;
+                        const productContainer = document.querySelector('.row.row-cols-2.row-cols-sm-3.g-3.px-1.mb-3');
+                        data.products.forEach(product => {
+                            const productHtml = `
+                                <div class="col">
+                                    <a href="/product/${product.slug}" class="card h-100 border-custom text-dark p-md-2">
+                                        <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                                            <img src="/${product.product_avatar}" class="card-img-top img-fluid p-1 logo-business" alt="...">
+                                        </div>
+                                        <div class="px-1 d-flex flex-column">
+                                            <span class="fs-7">${product.business_member.business_name}</span>
+                                            <p class="fw-semibold mb-0 fs-7 lh-1">${product.name_product}</p>
+                                            <p class="mb-0">${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            `;
+                            productContainer.insertAdjacentHTML('beforeend', productHtml);
+                        });
+
+                        if (!nextPageUrl) {
+                            loadMoreButton.style.display = 'none';
+                        }
+                    })
+                    .catch(error => console.error('Error loading more products:', error));
+                }
+            });
         });
     </script>
 @endpush
@@ -84,7 +121,7 @@
     <section id="business" class="business mt-5rem mb-5">
         <div class="container">
             @include('pages.components.button-register', [
-                'buttonTitle' => 'Đăng ký SP',
+                'buttonTitle' => 'Kết nối cung cầu',
                 'buttonLink' => route('connect.supply.demand'),
             ])
             
@@ -98,24 +135,22 @@
                 @endforeach
                 @if ($category_product_business->count() > 8)
                     <div class="text-center">
-                        <a id="show-more" class="fst-italic">Xem tất cả</a>
+                        <a id="show-more" class="fst-italic text-app-gv">Xem tất cả</a>
                     </div>
                 @endif
             </div>
 
             <div class="mt-3">
-
                 <div class="bg-business rounded-top py-2 px-3 mb-3">
                     <h5 class="mb-0 fw-bold text-dark">Sản phẩm</h5>
                 </div>
-
 
                 @if ($products->isEmpty())
                     <div class="col-12 text-center">
                         <p class="text-muted fw-bold text-app-gv">Không có dữ liệu</p>
                     </div>
                 @else
-                    <div class="row row-cols-2 row-cols-sm-3 g-3 px-1  mb-3">
+                    <div class="row row-cols-2 row-cols-sm-3 g-3 px-1 mb-3">
                         @foreach ($products as $product)
                             <div class="col">
                                 <a href="{{ route('product.detail', $product->slug) }}"
@@ -132,6 +167,9 @@
                                 </a>
                             </div>
                         @endforeach
+                    </div>
+                    <div class="text-center">
+                        <button id="load-more" class="btn bg-app-gv rounded-pill text-white">Xem thêm</button>
                     </div>
                 @endif
             </div>
