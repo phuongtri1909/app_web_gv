@@ -163,7 +163,7 @@
                 @foreach ($recruitments as $item)
                     <div class="job-listing">
                         <div class="d-flex mb-2">
-                            <img src="{{ asset($item->businessMember->business->avt_businesses) }}" alt="" class=""
+                            <img src="{{ asset($item->businessMember->business->avt_businesses ?? 'images/business/avatar_default.jpg') }}" alt="" class=""
                                 style="width: 100px ;height: 100px;    object-fit: scale-down;">
                             <h5 class="ms-2">{{ $item->businessMember->business_name }}</h5>
                         </div>
