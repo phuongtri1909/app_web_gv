@@ -12,10 +12,17 @@ class BusinessStartPromotionInvestment extends Model
     protected $table = 'business_start_promotion_investment';
 
     protected $fillable = [
-        'business_id',
+        'name',
+        'birth_year',
+        'gender',
+        'phone',
+        'startup_address',
+        'business_field',
+        'startup_activity_info',
         'business_support_needs_id',
         'status',
     ];
+    
 
     public function business()
     {

@@ -128,9 +128,6 @@ Route::middleware(['language'])->group(function () {
             Route::get('/form-connect-supply-demand', [ProductBusinessController::class, 'connectSupplyDemand'])->name('connect.supply.demand'); //form kết nối cung cầu
             Route::post('/form-connect-supply-demand', [ProductBusinessController::class, 'storeConnectSupplyDemand'])->name('connect.supply.demand.store');
 
-            Route::get('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'showFormStartPromotion'])->name('show.form.start.promotion'); // khởi nghiệp xúc tiến thương mại đầu tư
-            Route::post('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'storeFormStartPromotion'])->name('form.start.promotion.store');
-
             Route::get('/form-registering-capital-needs/{slug?}', [BusinessCapitalNeedController::class, 'showFormCapitalNeeds'])->name('show.form.capital.need'); //ĐĂNG KÝ NHU CẦU VỀ VỐN
             Route::post('/form-registering-capital-needs', [BusinessCapitalNeedController::class, 'storeFormCapitalNeeds'])->name('show.form.capital.need.store');
 
@@ -156,6 +153,8 @@ Route::middleware(['language'])->group(function () {
             Route::post('/business-fair-registrations', [BusinessFairRegistrationController::class, 'storeBusinessFairRegistration'])->name('business-fair-registrations.store');
             Route::get('/fair-registrations', [BusinessFairRegistrationController::class, 'businessFairRegistrations'])->name('business.fair.registrations');
         });
+        Route::get('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'showFormStartPromotion'])->name('show.form.start.promotion'); // khởi nghiệp xúc tiến thương mại đầu tư
+        Route::post('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'storeFormStartPromotion'])->name('form.start.promotion.store');
     });
 
     Route::get('switch-language/{locale}', [LanguageController::class, 'switchLanguage'])->name('language.switch');
@@ -235,6 +234,9 @@ Route::middleware(['language'])->group(function () {
                 Route::post('/user/status', [UserController::class, 'changeStatus'])->name('user.changeStatus');
 
                 Route::resource('fair-registrations', BusinessFairRegistrationController::class)->except('show');
+                Route::get('/fair-registrations/join', [BusinessFairRegistrationController::class, 'indexJoin'])->name('business-fair-registrations.indexJoin');
+                Route::get('/fair-registrations/join/{id}', [BusinessFairRegistrationController::class, 'showIndexJoin'])->name('business-fair-registrations.showIndexJoin');
+                Route::delete('/fair-registrations/destroy/{id}', [BusinessFairRegistrationController::class, 'destroyindexJoin'])->name('business-fair-registrations.destroyindexJoin');
                 Route::get('business-products', [ProductBusinessController::class, 'index'])->name('business.products.index');
                 Route::get('business-products/detail/{id}', [ProductBusinessController::class, 'show'])->name('business.products.show');
                 Route::delete('business-products/destroy/{id}', [ProductBusinessController::class, 'destroy'])->name('business.products.destroy');
