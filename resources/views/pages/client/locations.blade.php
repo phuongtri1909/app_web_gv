@@ -50,10 +50,12 @@
 
 
 @section('content')
-    @include('pages.components.button-register', [
-        'buttonTitle' => 'ĐK Điểm đến',
-        'buttonLink' => route('show.form.promotional'),
-    ])
+    @if (Route::currentRouteName() == 'locations')
+        @include('pages.components.button-register', [
+            'buttonTitle' => 'Đăng ký điểm đến',
+            'buttonLink' => route('show.form.promotional'),
+        ])
+    @endif
 
     <div class="mt-5rem">
         <div class="row mb-3 g-0">
@@ -95,7 +97,7 @@
                                             <span>Thông tin vị trí</span>
                                             <div class="d-flex align-items-center my-2 ">
                                                 <img class="img-location rounded-circle me-3"
-                                                    src="{{ asset($location->image) }}" alt="{{ $location->name }}"
+                                                    src="{{ asset($location->businessMember->business->avt_businesses) }}" alt="{{ $location->name }}"
                                                     loading="lazy">
                                                 <div class="d-flex flex-column">
                                                     <h5>{{ $location->name }}</h5>
@@ -232,8 +234,9 @@
             map.setCenter(location);
             placeMarker(location, fullIconUrl);
             getGeocode(location);
+           
             console.log(isLocation);
-
+            
 
             const locationDetails = `
                 <div class="info-location">
@@ -275,23 +278,23 @@
                                     <p>${isLocation.description}</p>
                                 </div>
                                 ${isLocation.location_products && isLocation.location_products.length > 0 ? `
-                                               
-                                    <div class="mt-3">
-                                        ${isLocation.location_products.map(product => `
+                                                   
+                                        <div class="mt-3">
+                                            ${isLocation.location_products.map(product => `
                                             <div class="d-flex">
                                                 ${product.media_type === 'image' ? `
-                                                    <img src="${domain}/${product.file_path}" alt="${product.id}" class="img-fluid mb-2">
-                                                    ` : `
-                                                    <video controls class="img-fluid">
-                                                            <source src="${domain}/${product.file_path}" type="video/mp4">
-                                                        Your browser does not support the video tag.
-                                                    </video>
-                                                `}
+                                                        <img src="${domain}/${product.file_path}" alt="${product.id}" class="img-fluid mb-2">
+                                                        ` : `
+                                                        <video controls class="img-fluid">
+                                                                <source src="${domain}/${product.file_path}" type="video/mp4">
+                                                            Your browser does not support the video tag.
+                                                        </video>
+                                                    `}
                                             </div>
                                         `).join('')}
-                                    </div>
-                                            
-                                    ` : ''}
+                                        </div>
+                                                
+                                        ` : ''}
                             </div>
                         </div>
                         <div class="text-end info-location-button">

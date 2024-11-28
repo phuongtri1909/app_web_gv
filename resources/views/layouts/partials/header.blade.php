@@ -47,6 +47,7 @@
 <body>
     @include('pages.components.toast')
     <header class="header">
-        <img src="{{ asset('images/logo-hoi-doanh-nghiep.png') }}" alt="Flowbite Logo"
-            style="width: 45px; height: 45px;" />
+        @if (!preg_match('/^locations-\d+$/', Route::currentRouteName()))
+            <img src="{{ asset('images/logo-hoi-doanh-nghiep.png') }}" alt="Flowbite Logo" style="width: 45px; height: 45px;" />
+        @endif
     </header>

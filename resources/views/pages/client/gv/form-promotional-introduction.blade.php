@@ -197,215 +197,8 @@
             <div class="row">
                 <form action="{{ route('form.promotional.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
+            
                     <div class="row">
-                        <div class="col-md-4 mb-4">
-                            <label for="representative_name" class="form-label">Họ tên chủ doanh nghiệp <span
-                                    class="text-danger">*</span></label>
-                            <input  type="text"
-                                class="form-control form-control-sm @error('representative_name') is-invalid @enderror"
-                                id="representative_name" name="representative_name" placeholder="Nhập họ tên"
-                                value="{{ old('representative_name') }}">
-                            <span class="error-message"></span>
-                            @error('representative_name')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="birth_year" class="form-label">Năm sinh:<span class="text-danger">*</span></label>
-                            <input type="text" id="birth_year" name="birth_year"
-                                class="form-control form-control-sm @error('birth_year') is-invalid @enderror" 
-                                placeholder="Nhập năm sinh" value="{{ old('birth_year') }}">
-                            <span class="error-message"></span>
-                            @error('birth_year')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label class="form-label">Giới tính:<span class="text-danger">*</span></label>
-                            <div class="d-flex align-items-center">
-                                <div class="form-check me-3">
-                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio"
-                                        name="gender" id="genderMale" value="male"
-                                        {{ old('gender') == 'male' ? 'checked' : '' }} >
-                                    <label class="form-check-label" for="genderMale">
-                                        Nam
-                                    </label>
-                                </div>
-                                <div class="form-check me-3">
-                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio"
-                                        name="gender" id="genderFemale" value="female"
-                                        {{ old('gender') == 'female' ? 'checked' : '' }} >
-                                    <label class="form-check-label" for="genderFemale">
-                                        Nữ
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input @error('gender') is-invalid @enderror" type="radio"
-                                        name="gender" id="genderOther" value="other"
-                                        {{ old('gender') == 'other' ? 'checked' : '' }} >
-                                    <label class="form-check-label" for="genderOther">
-                                        Khác
-                                    </label>
-                                </div>
-                            </div>
-                            <span class="error-message gender-error"></span>
-                            @error('gender')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 mb-4">
-                            <label for="phone" class="form-label">Số điện thoại <span
-                                    class="text-danger">*</span></label>
-                            <input  type="number"
-                                class="form-control form-control-sm @error('phone_number') is-invalid @enderror"
-                                id="phone" placeholder="Nhập số điện thoại" name="phone_number"
-                                value="{{ old('phone_number') }}">
-                            <span class="error-message"></span>
-                            @error('phone_number')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="address" class="form-label">Địa chỉ cư trú <span
-                                    class="text-danger">*</span></label>
-                            <input  type="address"
-                                class="form-control form-control-sm @error('address') is-invalid @enderror" id="address"
-                                placeholder="Nhập địa chỉ" name="address" value="{{ old('address') }}">
-                            <span class="error-message"></span>
-                            @error('address')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="business_address" class="form-label">Địa chỉ kinh doanh:<span
-                                    class="text-danger">*</span></label>
-                            <input  type="address" id="business_address" name="business_address"
-                                class="form-control form-control-sm" placeholder="Nhập địa chỉ kinh doanh"
-                                value="{{ old('business_address') }}">
-                            <span class="error-message"></span>
-                            @error('business_address')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 mb-4">
-                            <label for="businessName" class="form-label @error('business_name') is-invalid @enderror">Tên
-                                doanh nghiệp/hộ kinh doanh: <span class="text-danger">*</span></label>
-                            <input  type="text" class="form-control form-control-sm" id="businessName"
-                                name="business_name" placeholder="Nhập tên doanh nghiệp"
-                                value="{{ old('business_name') }}">
-                            <span class="error-message"></span>
-                            @error('business_name')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="license" class="form-label">Giấy phép kinh doanh: <= 10MB<span
-                                    class="text-danger">*</span></label>
-                            <input  type="file" class="form-control form-control-sm" id="license"
-                                accept="application/pdf" name="license">
-                            <span class="error-message"></span>
-                            @error('license')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="business_field" class="form-label">Ngành nghề kinh doanh <span
-                                    class="text-danger">*</span></label>
-                            <select  id="business_field" name="business_field"
-                                class="form-control form-control-sm @error('business_field') is-invalid @enderror">
-                                <option value="" disabled selected>Chọn ngành nghề kinh doanh</option>
-                                @foreach ($business_fields as $field)
-                                    <option value="{{ $field->id }}"
-                                        {{ old('business_field') == $field->id ? 'selected' : '' }}>{{ $field->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('business_field')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 mb-4">
-                            <label for="businessCode" class="form-label">Mã số thuế <span
-                                    class="text-danger">*</span></label>
-                            <input  type="text"
-                                class="form-control form-control-sm @error('business_code') is-invalid @enderror"
-                                id="businessCode" name="business_code" placeholder="Nhập mã số thuế"
-                                value="{{ old('business_code') }}">
-                            <span class="error-message"></span>
-                            @error('business_code')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email"
-                                class="form-control form-control-sm @error('email') is-invalid @enderror" id="email"
-                                placeholder="Nhập email" name="email" value="{{ old('email') }}">
-                            @error('email')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="social" class="form-label">Fanpage</label>
-                            <input type="url"
-                                class="form-control form-control-sm @error('social_channel') is-invalid @enderror"
-                                id="social" placeholder="Nhập link fanpage" value="{{ old('social_channel') }}"
-                                name="social_channel">
-                            @error('social_channel')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label class="mb-2">Thông tin về doanh nghiệp, sản phẩm: <span
-                            class="text-danger">*</span></label>
-                        <div class="col-12 mb-4">
-                            <textarea  class="form-control @error('description') is-invalid @enderror"
-                                name="description" id="description" rows="5"
-                                placeholder="Nhập thông tin về doanh nghiệp, sản phẩm">{{ old('description') }}</textarea>
-                            <span class="error-message"></span>
-                            @error('description')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="logo" class="form-label">Logo/ Hình ảnh đại diện doanh nghiệp: <span
-                                class="text-danger">*</span></label>
-                            <input   type="file" accept="image/*" id="logo" name="logo"
-                                class="form-control form-control-sm  @error('logo') is-invalid @enderror">
-                            <span class="error-message"></span>
-                            @error('logo')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                            <div id="logo_preview_container" class="mt-3"></div>
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="product_image" class="form-label">Hình ảnh doanh nghiệp, sản phẩm:</label>
-                            <input type="file" accept="image/*" id="product_image" name="product_image[]"
-                                class="form-control form-control-sm @error('product_image') is-invalid @enderror"
-                                multiple>
-                            <span class="error-message"></span>
-                            @error('product_image')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                            <div id="product_image_preview_container" class="mt-3"></div>
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <label for="product_image" class="form-label">Video doanh nghiệp, sản phẩm:</label>
-                            <input type="file" accept="video/*" id="product_video" name="product_video"
-                                class="form-control form-control-sm @error('product_video') is-invalid @enderror">
-                            <span class="error-message"></span>
-                            @error('product_video')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                            <div id="product_video_preview_container" class="mt-3"></div>
-                        </div>
 
                         <div class="mb-3">
                             <div class="col-12 mb-3">
@@ -439,6 +232,61 @@
                             <input required type="hidden" id="address_longitude" name="address_longitude" value="{{ old('address_longitude') }}">
                             <div id="map" style="height: 500px;"></div>
                         </div>
+
+                        <label class="mb-2">Thông tin điểm đến: <span
+                            class="text-danger">*</span></label>
+                        <div class="col-12 mb-4">
+                            <textarea  class="form-control @error('description') is-invalid @enderror"
+                                name="description" id="description" rows="5"
+                                placeholder="Nhập thông tin điểm đến">{{ old('description') }}</textarea>
+                            <span class="error-message"></span>
+                            @error('description')
+                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="business_field_id" class="form-label">Ngành nghề kinh doanh <span
+                                    class="text-danger">*</span></label>
+                            <select id="business_field_id" name="business_field_id"
+                                class="form-select form-select-sm @error('business_field_id') is-invalid @enderror" required>
+                                <option value="" disabled selected>Chọn ngành nghề kinh doanh</option>
+                                @foreach ($business_fields as $field)
+                                    <option value="{{ $field->id }}"
+                                        {{ old('business_field_id') == $field->id ? 'selected' : '' }}>{{ $field->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('business_field_id')
+                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <label for="product_image" class="form-label">Hình ảnh điểm đến: <span
+                                class="text-danger">*</span></label>
+                            <input type="file" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp" id="product_image" name="product_image[]"
+                                class="form-control form-control-sm @error('product_image') is-invalid @enderror"
+                                multiple>
+                            <span class="error-message"></span>
+                            @error('product_image')
+                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
+                            @enderror
+                            <div id="product_image_preview_container" class="mt-3"></div>
+                        </div>
+                       
+                        <div class="col-md-4 mb-4">
+                            <label for="link_video" class="form-label">Video điểm đến (YouTube URL):</label>
+                            <input type="url" id="link_video" name="link_video"
+                                class="form-control form-control-sm @error('link_video') is-invalid @enderror"
+                                placeholder="Nhập URL video YouTube">
+                            <span class="error-message"></span>
+                            @error('link_video')
+                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
+                            @enderror
+                            <div id="link_video_preview_container" class="mt-3"></div>
+                        </div>
+
                     </div>
 
                     <div class="d-flex justify-content-center">
@@ -448,7 +296,10 @@
                         <div class="invalid-feedback d-block text-center" role="alert">{{ $errors->first('error') }}</div>
                     @endif
                     <div id="recaptcha-error" class="text-danger text-center mt-2"></div>
-                    <button type="submit" class="btn btn-primary mt-3">Gửi thông tin</button>
+                    <div class="text-center">
+
+                        <button type="submit" class="btn bg-app-gv rounded-pill text-white mt-3">Đăng ký địa điểm</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -521,16 +372,28 @@
             input.files = dataTransfer.files;
         }
 
-        document.getElementById('logo').addEventListener('change', function() {
-            previewFiles(this, 'logo_preview_container');
-        });
-
         document.getElementById('product_image').addEventListener('change', function() {
             previewFiles(this, 'product_image_preview_container', false, 5);
         });
+    </script>
 
-        document.getElementById('product_video').addEventListener('change', function() {
-            previewFiles(this, 'product_video_preview_container', true);
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const videoInput = document.getElementById('link_video');
+            const videoPreviewContainer = document.getElementById('link_video_preview_container');
+
+            videoInput.addEventListener('input', function() {
+                const url = videoInput.value;
+                const youtubeRegex = /^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$/;
+
+                if (youtubeRegex.test(url)) {
+                    const videoId = url.split('v=')[1].split('&')[0];
+                    const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                    videoPreviewContainer.innerHTML = `<iframe width="100%" height="315" src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
+                } else {
+                    videoPreviewContainer.innerHTML = '<p class="text-danger">Vui lòng nhập URL video YouTube hợp lệ.</p>';
+                }
+            });
         });
     </script>
 
