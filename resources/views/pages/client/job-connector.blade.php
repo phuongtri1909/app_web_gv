@@ -160,7 +160,7 @@
             <h3 class="text-center">Danh Sách Tuyển Dụng</h3>
             <div class="text-start">
 
-                @if (count($recruitments) != 0)
+                @if ($recruitments->count() != 0)
                     
                     @foreach ($recruitments as $item)
                         <div class="job-listing">
@@ -173,6 +173,10 @@
                             <p><strong>Mô tả công việc:</strong> {!! $item->recruitment_content !!}</p>
                         </div>
                     @endforeach 
+                @else
+                    <div class="col-12">
+                        <p>Không có công việc nào</p>
+                    </div>
                 @endif
             </div>
         </div>
