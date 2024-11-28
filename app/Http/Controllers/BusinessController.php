@@ -253,18 +253,31 @@ class BusinessController extends Controller
     public function businessProducts(Request $request)
     {
         $category = $request->category ?? '';
+        $page = $request->page ?? 1;
+
+        $query = ProductBusiness::query();
 
         if ($category) {
             $category_product_business = CategoryProductBusiness::where('slug', $category)->first();
 
-            $products = ProductBusiness::where('category_product_id', $category_product_business->id)
-                ->whereHas('businessMember', function ($query) {
-                    $query->where('status', 'approved');
-                })->get();
-        } else {
-            $products = ProductBusiness::whereHas('businessMember', function ($query) {
-                $query->where('status', 'approved');
-            })->get();
+            if ($category_product_business) {
+                $query->where('category_product_id', $category_product_business->id);
+            }
+        }
+
+        $products = $query->whereHas('businessMember', function ($query) {
+            $query->where('status', 'approved');
+        })->orderBy('created_at')->paginate(6, ['*'], 'page', $page);
+
+        foreach ($products as $product) {
+            $product->businessMember = $product->businessMember;
+        }
+
+        if ($request->ajax()) {
+            return response()->json([
+                'products' => $products->items(),
+                'next_page_url' => $products->nextPageUrl()
+            ]);
         }
 
         $category_product_business = CategoryProductBusiness::get();

@@ -2,49 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BusinessRecruitment;
-use App\Models\CategoryBusiness;
 use Illuminate\Http\Request;
+use App\Models\BusinessMember;
+use App\Models\JobApplication;
+use App\Models\CategoryBusiness;
 use Illuminate\Support\Facades\DB;
+use App\Models\BusinessRecruitment;
+use Illuminate\Contracts\Queue\Job;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use Intervention\Image\Facades\Image;
 
 class BusinessRecruitmentController extends Controller
 {
+
+    public function jobConnector()
+    {
+        $recruitments = BusinessRecruitment::with('businessMember')->orderBy('created_at', 'desc')->paginate(15);
+        $jobApplications = JobApplication::orderBy('created_at', 'desc')->paginate(15);
+        return view('pages.client.job-connector', compact('recruitments', 'jobApplications'));
+    }
     //
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $businessRecruitments = BusinessRecruitment::with('categoryBusiness')->when($search, function ($query, $search) {
-            return $query->where(function ($q) use ($search) {
-                $q->where('business_name', 'like', "%{$search}%")
-                    ->orWhere('business_code', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%");
-            });
-        })
+        $search_member_id = $request->input('search-member-id');
+        $businessRecruitments = BusinessRecruitment::with('businessMember')
+            ->when($search, function ($query, $search) {
+                return $query->where('recruitment_title', 'like', '%' . $search . '%')
+                            ->orWhere('recruitment_content', 'like', '%' . $search . '%');
+
+            })
+
+            ->when($search_member_id, function ($query, $search_member_id) {
+                return $query->where('business_member_id', $search_member_id);
+            })
+
+            ->orderBy('created_at', 'desc')
             ->paginate(15);
-        return view('admin.pages.client.form-recruitment.index', compact('businessRecruitments'));
+
+        $business_members = BusinessMember::all();
+        return view('admin.pages.client.form-recruitment.index', compact('businessRecruitments', 'business_members'));
     }
-
-
-    public function show($id)
-    {
-        $businessRecruitment = BusinessRecruitment::with('categoryBusiness')->findOrFail($id);
-        return response()->json([
-            'business_name' => $businessRecruitment->business_name,
-            'business_code' => $businessRecruitment->business_code,
-            'category_business' => $businessRecruitment->categoryBusiness,
-            'head_office_address' => $businessRecruitment->head_office_address,
-            'phone' => $businessRecruitment->phone,
-            'fax' => $businessRecruitment->fax,
-            'email' => $businessRecruitment->email,
-            'representative_name' => $businessRecruitment->representative_name,
-            'gender' => $businessRecruitment->gender,
-            'recruitment_info' => $businessRecruitment->recruitment_info,
-            'status' => $businessRecruitment->status,
-        ]);
-    }
-
-
 
     public function destroy(BusinessRecruitment $businessRecruitment)
     {
@@ -54,41 +53,31 @@ class BusinessRecruitmentController extends Controller
 
     public function storeForm(Request $request)
     {
+        // Check business code 
+        $business_member_id = $this->getBusinessMemberId($request);
+        if ($business_member_id instanceof \Illuminate\Http\RedirectResponse) {
+            return $business_member_id;
+        }
         try {
+            $avatar_paths = [];
             DB::beginTransaction();
 
             $validated = $request->validate([
-                'business_name' => 'required|string|max:255',
-                'business_code' => 'required|regex:/^\d{10}(-\d{3})?$/',
-                'category_business_id' => 'required|exists:category_business,id',
-                'head_office_address' => 'required|string|max:255',
-                'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
-                'fax' => 'nullable|string|regex:/^(\+?\d{1,3})?[-.\s]?\(?\d{1,4}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/',
-                'email' => 'nullable|email|max:255',
-                'representative_name' => 'required|string|max:255',
-                'gender' => 'required|in:male,female,other',
-                'recruitment_info' => 'required|string|max:2000',
+                'recruitment_title' => 'required|string|max:255',
+                'recruitment_content' => 'required|string|max:2000',
+                'recruitment_images' => 'required|array|max:4',
+                'recruitment_images.*' => 'required|image|mimes:jpeg,png,jpg,gif,webp',
             ], [
-                'business_name.required' => 'Tên doanh nghiệp là bắt buộc.',
-                'business_code.required' => 'Mã số doanh nghiệp/Mã số thuế là bắt buộc.',
-                'business_code.regex' => 'Mã số thuế phải gồm 10 chữ số hoặc 13 chữ số với định dạng 10-3.',
-                'category_business_id.required' => 'Loại hình doanh nghiệp là bắt buộc.',
-                'category_business_id.exists' => 'Loại hình doanh nghiệp không hợp lệ.',
-                'head_office_address.required' => 'Địa chỉ trụ sở chính là bắt buộc.',
-                'head_office_address.max' => 'Địa chỉ trụ sở chính không được hơn 255 ký tự.',
-                'phone.required' => 'Số điện thoại là bắt buộc.',
-                'phone.regex' => 'Số điện thoại không hợp lệ.',
-                'phone.max' => 'Số điện thoại phải có 10 số.',
-                'fax.regex' => 'Số điện thoại không hợp lệ.',
-                'email.email' => 'Email không hợp lệ.',
-                'email.max' => 'Email không được hơn 255 ký tự.',
-                'representative_name.required' => 'Tên người đại diện pháp luật là bắt buộc.',
-                'representative_name.max' => 'Tên người đại diện pháp luật không được hơn 255 ký tự.',
-                'gender.required' => 'Giới tính là bắt buộc.',
-                'gender.in' => 'Giới tính không hợp lệ.',
-                'recruitment_info.required' => 'Thông tin đăng ký tuyển dụng nhân sự là bắt buộc.',
-                'recruitment_info.max' => 'Thông tin đăng ký tuyển dụng nhân sự không được hơn 2000 ký tự.',
-                'business_name.max' => 'Tên doanh nghiệp không được hơn 255 ký tự.',
+                'recruitment_title.required' => 'Vui lòng nhập tiêu đề tuyển dụng.',
+                'recruitment_title.max' => 'Tiêu đề tuyển dụng không được vượt quá 255 ký tự.',
+                'recruitment_content.required' => 'Vui lòng nhập nội dung tuyển dụng.',
+                'recruitment_content.max' => 'Nội dung tuyển dụng không được vượt quá 2000 ký tự.',
+                'recruitment_images.required' => 'Vui lòng chọn ảnh tuyển dụng.',
+                'recruitment_images.array' => 'Ảnh tuyển dụng phải là một mảng.',
+                'recruitment_images.max' => 'Ảnh tuyển dụng không được vượt quá 4 ảnh.',
+                'recruitment_images.*.required' => 'Vui lòng chọn ảnh tuyển dụng.',
+                'recruitment_images.*.image' => 'Ảnh tuyển dụng không đúng định dạng.',
+                'recruitment_images.*.mimes' => 'Ảnh tuyển dụng phải là định dạng jpeg, png, jpg, gif hoặc webp.',
             ]);
             $recaptchaResponse = $request->input('g-recaptcha-response');
             $secretKey = env('RECAPTCHA_SECRET_KEY');
@@ -103,22 +92,49 @@ class BusinessRecruitmentController extends Controller
                 return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
             }
 
+
+            if ($request->hasFile('recruitment_images')) {
+                foreach ($request->file('recruitment_images') as $recruitment_image) {
+
+                    $folderName = date('Y/m');
+                    $originalFileName = pathinfo($recruitment_image->getClientOriginalName(), PATHINFO_FILENAME);
+                    $fileName = $originalFileName . '_' . time() . '.webp';
+                    $uploadPath = public_path('uploads/images/recruitment_images/' . $folderName);
+
+                    if (!File::exists($uploadPath)) {
+                        File::makeDirectory($uploadPath, 0755, true);
+                    }
+
+                    $image = Image::make($recruitment_image->getRealPath());
+                    $image->encode('webp', 75);
+                    $image->save($uploadPath . '/' . $fileName);
+
+                    $avatar_path = 'uploads/images/recruitment_images/' . $folderName . '/' . $fileName;
+                    $avatar_paths[] = $avatar_path;
+                }
+            }
+
+
             BusinessRecruitment::create([
-                'business_name' => $validated['business_name'],
-                'business_code' => $validated['business_code'],
-                'category_business_id' => $validated['category_business_id'],
-                'head_office_address' => $validated['head_office_address'],
-                'phone' => $validated['phone'],
-                'fax' => $validated['fax'],
-                'email' => $validated['email'],
-                'representative_name' => $validated['representative_name'],
-                'gender' => $validated['gender'],
-                'recruitment_info' => $validated['recruitment_info'],
+                'business_member_id' => $business_member_id,
+                'recruitment_title' => $validated['recruitment_title'],
+                'recruitment_content' => $validated['recruitment_content'],
+                'recruitment_images' => json_encode($avatar_paths),
             ]);
+
             DB::commit();
-            return redirect()->back()->with('success', 'Đăng ký tuyển dụng thành công!');
+            session()->forget('key_business_code');
+            session()->forget('business_code');
+            return redirect()->route('job-connector')->with('success', 'Đăng ký tuyển dụng thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
+
+            foreach ($avatar_paths as $avatar_path) {
+                if (File::exists(public_path($avatar_path))) {
+                    File::delete(public_path($avatar_path));
+                }
+            }
+
             return redirect()->back()
                 ->with('error', 'Đăng ký tuyển dụng thất bại: ' . $e->getMessage())
                 ->withInput();

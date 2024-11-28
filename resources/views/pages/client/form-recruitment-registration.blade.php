@@ -10,19 +10,23 @@
             box-shadow: 0 0 5px rgba(128, 189, 255, 0.5);
             outline: 0;
         }
-        .btn-success{
+
+        .btn-success {
             background-color: #0056b3;
             transition: background-color 0.3s ease;
         }
-        .btn-success:hover{
+
+        .btn-success:hover {
             background-color: #004494;
         }
+
         .error-message,
         .error-message1 {
             color: red;
             margin-top: 10px;
             font-size: 12px;
         }
+
         #form-business {
             position: relative;
             margin: 30px auto;
@@ -51,114 +55,49 @@
     <section id="form-business" class="form-business mt-5rem">
         <div class="container">
             <div class="row">
-                
-                <form action="{{route('recruitment.registration.store')}}" method="POST" enctype="multipart/form-data">
+
+                <form action="{{ route('recruitment.registration.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
-                        <div class="col-md-4 mb-4">
-                            <label for="business_name" class="form-label">Tên doanh nghiệp <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm @error('business_name') is-invalid @enderror" id="business_name" name="business_name" placeholder="Nhập tên doanh nghiệp" value="{{ old('business_name') }}" >
-                            <span class="error-message"></span>
-                            @error('business_name')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
 
-                        <div class="col-md-4 mb-4">
-                            <label for="business_code" class="form-label">Mã số doanh nghiệp/Mã số thuế <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm @error('business_code') is-invalid @enderror" id="business_code" name="business_code" placeholder="Nhập mã số doanh nghiệp/Mã số thuế" value="{{ old('business_code') }}" >
-                            <span class="error-message"></span>
-                            @error('business_code')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-4 mb-4">
-                            <label for="category_business_id" class="form-label">Loại hình doanh nghiệp <span
+                        <div class="col-md-12 mb-4">
+                            <label for="recruitment_title" class="form-label ">Tiêu đề tuyển dụng <span
                                     class="text-danger">*</span></label>
-                            <select class="form-select form-control form-select-sm" id="category_business_id" name="category_business_id">
-                                @foreach ($category_business as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('category_business_id')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-4 mb-4">
-                            <label for="head_office_address" class="form-label">Địa chỉ trụ sở chính <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm @error('head_office_address') is-invalid @enderror" id="head_office_address" name="head_office_address" placeholder="Nhập địa chỉ trụ sở chính" value="{{ old('head_office_address') }}" >
+                            <input type="text"
+                                class="form-control form-control-sm @error('recruitment_title') is-invalid @enderror"
+                                id="recruitment_title" name="recruitment_title" value="{{ old('recruitment_title') }}"
+                                placeholder="Nhập tiêu đề tuyển dụng" required>
                             <span class="error-message"></span>
-                            @error('head_office_address')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-4 mb-4">
-                            <label for="phone" class="form-label">Điện thoại <span class="text-danger">*</span></label>
-                            <input type="tel" class="form-control form-control-sm @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="Nhập số điện thoại" value="{{ old('phone') }}" >
-                            <span class="error-message"></span>
-                            @error('phone')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-4 mb-4">
-                            <label for="fax" class="form-label">Fax</label>
-                            <input type="text" class="form-control form-control-sm @error('fax') is-invalid @enderror" id="fax" name="fax" placeholder="Nhập số fax" value="{{ old('fax') }}">
-                            @error('fax')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-4 mb-4">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control form-control-sm @error('email') is-invalid @enderror" id="email" name="email" placeholder="Nhập email" value="{{ old('email') }}">
-                            @error('email')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-4 mb-4">
-                            <label for="representative_name" class="form-label">Người đại diện pháp luật <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm @error('representative_name') is-invalid @enderror" id="representative_name" name="representative_name" placeholder="Nhập tên người đại diện pháp luật" value="{{ old('representative_name') }}" >
-                            <span class="error-message"></span>
-                            @error('representative_name')
-                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-4 mb-4">
-                            <label class="form-label">Giới tính <span class="text-danger">*</span></label>
-                            <div class="d-flex justify-content-around">
-                                <div class="form-check me-1 ps-0">
-                                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" {{ old('gender') == 'male' ? 'checked' : '' }} >
-                                    <label class="form-check-label" for="male">Nam</label>
-                                </div>
-                                <div class="form-check me-1">
-                                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" {{ old('gender') == 'female' ? 'checked' : '' }} >
-                                    <label class="form-check-label" for="female">Nữ</label>
-                                </div>
-                                <div class="form-check me-1">
-                                    <input class="form-check-input" type="radio" name="gender" id="other" value="other" {{ old('gender') == 'other' ? 'checked' : '' }} >
-                                    <label class="form-check-label" for="other">Khác</label>
-                                </div>
-                            </div>
-                            <span class="error-message gender-error"></span>
-                            @error('gender')
+                            @error('recruitment_title')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="col-md-12 mb-4">
-                            <label for="recruitment_info" class="form-label">Thông tin đăng ký tuyển dụng nhân sự <span class="text-danger">*</span></label>
-                            <textarea class="form-control form-control-sm @error('recruitment_info') is-invalid @enderror" id="recruitment_info" name="recruitment_info" placeholder="Nhập thông tin đăng ký tuyển dụng nhân sự" > {{ old('recruitment_info') }}</textarea>
+                            <label for="recruitment_content" class="form-label">Thông tin công việc tuyển dụng <span
+                                    class="text-danger">*</span></label>
+                            <textarea required class="form-control form-control-sm @error('recruitment_content') is-invalid @enderror"
+                                id="recruitment_content" name="recruitment_content"> {{ old('recruitment_content') }}</textarea>
                             <span class="error-message"></span>
-                            @error('recruitment_info')
+                            @error('recruitment_content')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
+
+                        <div class="col-12 col-md-6 mb-4">
+                            <label for="recruitment_images" class="form-label">Hình ảnh công việc (Tối đa 4 ảnh) <span
+                                    class="text-danger">*</span></label>
+                            <input type="file"
+                                class="form-control form-control-sm @error('recruitment_images') is-invalid @enderror"
+                                id="recruitment_images" name="recruitment_images[]" multiple
+                                accept="image/jpeg,image/png,image/jpg,image/gif,image/webp">
+                            @error('recruitment_images')
+                                <div class="invalid-feedback" role="alert">{{ $message }}</div>
+                            @enderror
+                            <div id="image_preview_container" class="mt-3"></div>
+                        </div>
+
+
                     </div>
                     <div class="d-flex justify-content-center">
                         <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
@@ -167,8 +106,8 @@
                         <div class="invalid-feedback d-block text-center" role="alert">{{ $errors->first('error') }}</div>
                     @endif
                     <div id="recaptcha-error" class="text-danger text-center mt-2"></div>
-                    <div class="text-end my-3">
-                        <button type="submit" class="btn btn-success">Lưu xác nhận</button>
+                    <div class="text-center my-3">
+                        <button type="submit" class="btn bg-app-gv rounded-pill text-white">Tuyển dụng</button>
                     </div>
                 </form>
             </div>
@@ -177,6 +116,37 @@
 @endsection
 
 @push('scripts')
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        document.getElementById('recruitment_images').addEventListener('change', function(event) {
+            const files = event.target.files;
+            if (files.length > 4) {
+                showToast('Chỉ được chọn tối đa 4 ảnh sản phẩm', 'error');
+                event.target.value = ''; // Clear the input
+            } else {
+                // Optionally, you can add code here to preview the selected images
+                const previewContainer = document.getElementById('image_preview_container');
+                previewContainer.innerHTML = ''; // Clear previous previews
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('img-thumbnail', 'me-2', 'mb-2');
+                        img.style.maxWidth = '100px';
+                        img.style.maxHeight = '100px';
+                        previewContainer.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+    </script>
 
+    <script type="text/javascript" src="{{ asset('ckeditor/ckeditor.js')}}"></script>
+    <script src="{{ asset('ckeditor/config.js')}}"></script>
+    <script>
+        CKEDITOR.replace("recruitment_content", {
+        });
+    </script>
 @endpush

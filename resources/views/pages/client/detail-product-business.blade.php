@@ -111,7 +111,7 @@
 
 @section('content')
     @include('pages.components.button-register', [
-        'buttonTitle' => 'Đăng ký SP',
+        'buttonTitle' => 'Kết nối cung cầu',
         'buttonLink' => route('connect.supply.demand'),
     ])
     <section id="detail-product-business" class="detail-product-business mt-5rem">

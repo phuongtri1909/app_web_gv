@@ -71,14 +71,14 @@ class JobApplicationController extends Controller
         DB::commit();
         session()->forget('key_business_code');
         session()->forget('business_code');
-        return redirect()->back()->with('success', 'Gửi thành công!');
+        return redirect()->route('job-connector')->with('success', 'Đăng ký tìm việc thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
             if (isset($filename) && file_exists(public_path($data['cv']))) {
                 unlink(public_path($data['cv']));
             }
 
-            return redirect()->back()->with('error', 'Gửi thất bại: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Đăng ký tìm việc thất bại');
         }
     }
 
