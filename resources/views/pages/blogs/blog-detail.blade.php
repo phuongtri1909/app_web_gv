@@ -155,6 +155,15 @@
 @endpush
 
 @section('content')
+    @switch($isHoiCho)
+        @case('hoi-cho')
+            @include('pages.components.button-register', [
+                'buttonTitle' => 'ĐK tham gia hội chợ',
+                'buttonLink' => route('business-fair-registrations', ['news_id' => $news_id]),
+            ])
+            @break
+        @default
+    @endswitch
     <section id="blog-detail">
         <div class="container">
             <div class="row">

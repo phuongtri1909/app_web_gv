@@ -29,6 +29,7 @@ class BlogsController extends Controller
     {
         $blogs = News::whereHas('categories', function ($query) {
             $query->where('slug', '!=', 'y-kien');
+                $query->where('slug', '!=', 'hoi-cho');
         })->paginate(15);
         return view('admin.pages.blogs.index', compact('blogs'));
     }
@@ -40,7 +41,7 @@ class BlogsController extends Controller
      */
     public function create()
     {
-        $categories = CategoryNews::where('slug', '!=', 'y-kien')->get();
+        $categories = CategoryNews::where('slug', '!=', 'y-kien')->where('slug', '!=', 'hoi-cho')->get();
         $tags = TagNews::all();
         $languages = Language::all();
         return view('admin.pages.blogs.create', compact('categories', 'tags', 'languages'));
@@ -154,7 +155,7 @@ class BlogsController extends Controller
      */
     public function edit($id)
     {
-        $categories = CategoryNews::where('slug', '!=', 'y-kien')->get();
+        $categories = CategoryNews::where('slug', '!=', 'y-kien')->where('slug', '!=', 'hoi-cho')->get();
         $tags = TagNews::all();
         $news = News::find($id);
         if (!$news) {
@@ -313,15 +314,21 @@ class BlogsController extends Controller
         $blog = News::where('slug', $slug)->firstOrFail();
 
         $blog->formatted_published_at = $this->formatDate($blog->published_at);
-
+        $isHoiCho = $blog->categories->contains('slug', 'hoi-cho') ? 'hoi-cho' : null;
         $relatedPosts = News::whereHas('categories', function ($query) use ($blog) {
             $query->whereIn('id', $blog->categories->pluck('id'));
         })->where('id', '!=', $blog->id)
             ->limit(5)
             ->get();
-
-        return view('pages.blogs.blog-detail', compact('blog', 'relatedPosts'));
+    
+        return view('pages.blogs.blog-detail', [
+            'blog' => $blog,
+            'relatedPosts' => $relatedPosts,
+            'isHoiCho' => $isHoiCho,
+            'news_id' => $blog->id, 
+        ]);
     }
+    
 
     public function showPostIndex($slug)
     {
