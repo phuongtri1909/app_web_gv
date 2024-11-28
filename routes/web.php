@@ -58,6 +58,7 @@ use App\Http\Controllers\BusinessCapitalNeedController;
 use App\Http\Controllers\BusinessRecruitmentController;
 use App\Http\Controllers\ContactConsultationController;
 use App\Http\Controllers\AdmissionProcessDetailController;
+use App\Http\Controllers\BusinessFairRegistrationController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PersonalBusinessInterestController;
 use App\Http\Controllers\BusinessStartPromotionInvestmentController;
@@ -150,6 +151,10 @@ Route::middleware(['language'])->group(function () {
 
             Route::get('/form-legal-advice', [LegalAdviceController::class, 'showFormLegal'])->name('show.form.legal'); //form tư vấn pháp lý
             Route::post('/form-legal-advice', [LegalAdviceController::class, 'storeForm'])->name('legal.advice.store');
+
+            Route::get('/business-fair-registrations/{news_id}', [BusinessFairRegistrationController::class, 'businessFairRegistration'])->name('business-fair-registrations');
+            Route::post('/business-fair-registrations', [BusinessFairRegistrationController::class, 'storeBusinessFairRegistration'])->name('business-fair-registrations.store');
+            Route::get('/fair-registrations', [BusinessFairRegistrationController::class, 'businessFairRegistrations'])->name('business.fair.registrations');
         });
     });
 
@@ -163,7 +168,6 @@ Route::middleware(['language'])->group(function () {
     Route::get('page-tab/{slug}', function ($slug) {
         return view('pages.tab-custom.index', compact('slug'));
     })->name('page.tab');
-
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
@@ -230,6 +234,7 @@ Route::middleware(['language'])->group(function () {
 
                 Route::post('/user/status', [UserController::class, 'changeStatus'])->name('user.changeStatus');
 
+                Route::resource('fair-registrations', BusinessFairRegistrationController::class)->except('show');
                 Route::get('business-products', [ProductBusinessController::class, 'index'])->name('business.products.index');
                 Route::get('business-products/detail/{id}', [ProductBusinessController::class, 'show'])->name('business.products.show');
                 Route::delete('business-products/destroy/{id}', [ProductBusinessController::class, 'destroy'])->name('business.products.destroy');

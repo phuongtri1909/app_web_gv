@@ -39,4 +39,12 @@ class News extends Model
         $this->attributes['title'] = $value;
         $this->attributes['slug'] = Str::slug($value);
     }
+
+    /**
+     * Relationship with BusinessFairRegistration (hasMany).
+     */
+    public function fairRegistrations()
+    {
+        return $this->hasMany(BusinessFairRegistration::class, 'news_id');
+    }
 }
