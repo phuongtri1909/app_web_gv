@@ -167,7 +167,7 @@
                             <div class="d-flex mb-2">
                                 <img src="{{ asset($item->businessMember->business->avt_businesses ?? 'images/business/avatar_default.jpg') }}" alt="" class=""
                                     style="width: 100px ;height: 100px;    object-fit: scale-down;">
-                                <h5 class="ms-2">{{ $item->businessMember->business_name }}</h5>
+                                <h5 class="ms-2">{{ $item->businessMember->business_name ?? '' }}</h5>
                             </div>
                             <h5>{{ $item->recruitment_title }}</h5>
                             <p><strong>Mô tả công việc:</strong> {!! $item->recruitment_content !!}</p>
