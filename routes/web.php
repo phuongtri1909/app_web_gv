@@ -106,7 +106,7 @@ Route::middleware(['language'])->group(function () {
         Route::get('/get-locations', [LocationController::class, 'getAllLocations'])->name('get.locations');
 
         //cho phường 17
-        Route::get('/locations-17', [LocationController::class, 'clientIndex'])->name('locations');
+        Route::get('/locations-17', [LocationController::class, 'clientIndex'])->name('locations-17');
 
         //tam gán trang intro HDN
         Route::get('/intro-hdn', function () {
@@ -241,6 +241,10 @@ Route::middleware(['language'])->group(function () {
                 Route::get('business-products', [ProductBusinessController::class, 'index'])->name('business.products.index');
                 Route::get('business-products/detail/{id}', [ProductBusinessController::class, 'show'])->name('business.products.show');
                 Route::delete('business-products/destroy/{id}', [ProductBusinessController::class, 'destroy'])->name('business.products.destroy');
+            
+                Route::get('locations', [LocationController::class, 'index'])->name('locations.index');
+                Route::delete('locations/destroy/{id}', [LocationController::class, 'destroy'])->name('locations.destroy');
+                Route::get('locations/detail/{id}', [LocationController::class, 'show'])->name('locations.show');
             });
         });
 

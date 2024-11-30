@@ -160,17 +160,24 @@
             <h3 class="text-center">Danh Sách Tuyển Dụng</h3>
             <div class="text-start">
 
-                @foreach ($recruitments as $item)
-                    <div class="job-listing">
-                        <div class="d-flex mb-2">
-                            <img src="{{ asset($item->businessMember->business->avt_businesses) }}" alt="" class=""
-                                style="width: 100px ;height: 100px;    object-fit: scale-down;">
-                            <h5 class="ms-2">{{ $item->businessMember->business_name }}</h5>
+                @if ($recruitments->count() != 0)
+                    
+                    @foreach ($recruitments as $item)
+                        <div class="job-listing">
+                            <div class="d-flex mb-2">
+                                <img src="{{ asset($item->businessMember->business->avt_businesses ?? 'images/business/avatar_default.jpg') }}" alt="" class=""
+                                    style="width: 100px ;height: 100px;    object-fit: scale-down;">
+                                <h5 class="ms-2">{{ $item->businessMember->business_name ?? '' }}</h5>
+                            </div>
+                            <h5>{{ $item->recruitment_title }}</h5>
+                            <p><strong>Mô tả công việc:</strong> {!! $item->recruitment_content !!}</p>
                         </div>
-                        <h5>{{ $item->recruitment_title }}</h5>
-                        <p><strong>Mô tả công việc:</strong> {!! $item->recruitment_content !!}</p>
+                    @endforeach 
+                @else
+                    <div class="col-12">
+                        <p>Không có công việc nào</p>
                     </div>
-                @endforeach 
+                @endif
             </div>
         </div>
 
@@ -181,27 +188,33 @@
                 <!-- Ứng viên 1 -->
                 <div class="row g-3">
 
-                    @foreach ($jobApplications as $item)
-                        <div class="applicant-listing col-12 col-md-6">
-                            <h5>Họ và tên: {{ $item->full_name }}</h5>
-                            <div class="d-flex">
-                                <p class="me-3"><strong>Năm sinh:</strong> {{ $item->birth_year }}</p>
-                                <p><strong>Giới tính:</strong> 
-                                    @if ($item->gender == "male")
-                                        Nam
-                                    @elseif($item->gender == "female")
-                                        Nữ
-                                    @else
-                                        Khác
-                                    @endif
+                    @if ($jobApplications->count() == 0)
+                        <div class="col-12">
+                            <p>Không có ứng viên nào</p>
+                        </div>
+                    @else
+                        @foreach ($jobApplications as $item)
+                            <div class="applicant-listing col-12 col-md-6">
+                                <h5>Họ và tên: {{ $item->full_name }}</h5>
+                                <div class="d-flex">
+                                    <p class="me-3"><strong>Năm sinh:</strong> {{ $item->birth_year }}</p>
+                                    <p><strong>Giới tính:</strong> 
+                                        @if ($item->gender == "male")
+                                            Nam
+                                        @elseif($item->gender == "female")
+                                            Nữ
+                                        @else
+                                            Khác
+                                        @endif
+                                    </p>
+                                </div>
+                                <p><strong>Điện thoại:</strong> {{ $item->phone }}</p>
+                                <p><strong>Thông tin giới thiệu:</strong> {{ $item->job_registration }}</p>
+                                <p><strong>CV:</strong> <a href="{{ asset($item->cv) }}">Tải về</a>
                                 </p>
                             </div>
-                            <p><strong>Điện thoại:</strong> {{ $item->phone }}</p>
-                            <p><strong>Thông tin giới thiệu:</strong> {{ $item->job_registration }}</p>
-                            <p><strong>CV:</strong> <a href="{{ asset($item->cv) }}">Tải về</a>
-                            </p>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    @endif
                 </div>
             </div>
         </div>
