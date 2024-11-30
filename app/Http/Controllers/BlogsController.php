@@ -25,13 +25,23 @@ class BlogsController extends Controller
      *
      *
      */
-    public function index()
+    public function index(Request $request)
     {
-        $blogs = News::whereHas('categories', function ($query) {
-            $query->where('slug', '!=', 'y-kien');
-                $query->where('slug', '!=', 'hoi-cho');
-        })->paginate(15);
-        return view('admin.pages.blogs.index', compact('blogs'));
+        $search = $request->input('search');
+        $searchCategory = $request->input('search-category');
+        $blogs = News::query();
+        if ($search) {
+            $blogs = $blogs->where('title', 'like', '%' . $search . '%');
+        }
+        if ($searchCategory) {
+            $blogs = $blogs->whereHas('categories', function ($query) use ($searchCategory) {
+                $query->where('name', 'like', '%'.$searchCategory.'%')->orWhere('slug', $searchCategory)
+                        ->orWhere('slug', $searchCategory);
+            });
+        }
+        $categories = CategoryNews::where('slug', '!=', 'y-kien')->where('slug', '!=', 'hoi-cho')->get();
+        $blogs = $blogs->orderBy('published_at', 'desc')->whereHas('categories', function ($query) { $query->whereNotIn('slug', ['y-kien', 'hoi-cho']);})->paginate(15);
+        return view('admin.pages.blogs.index', compact('blogs', 'categories'));
     }
 
     /**
@@ -219,17 +229,17 @@ class BlogsController extends Controller
             $news->setTranslations('title', $translateTitle);
             $news->setTranslations('content', $translateContent);
             $news->published_at = $request->input('published_at');
-            try {
-                if ($request->filled('category_id')) {
-                    $news->categories()->sync($request->input('category_id'));
-                }
+            // try {
+            //     if ($request->filled('category_id')) {
+            //         $news->categories()->sync($request->input('category_id'));
+            //     }
 
-                if ($request->filled('tag_id')) {
-                    $news->tags()->sync($request->input('tag_id'));
-                }
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', __('update_error'));
-            }
+            //     if ($request->filled('tag_id')) {
+            //         $news->tags()->sync($request->input('tag_id'));
+            //     }
+            // } catch (\Exception $e) {
+            //     return redirect()->back()->with('error', __('update_error'));
+            // }
             // dd($request->input('categories'), $request->input('tags'));
             // dd($news);
 
@@ -320,15 +330,15 @@ class BlogsController extends Controller
         })->where('id', '!=', $blog->id)
             ->limit(5)
             ->get();
-    
+
         return view('pages.blogs.blog-detail', [
             'blog' => $blog,
             'relatedPosts' => $relatedPosts,
             'isHoiCho' => $isHoiCho,
-            'news_id' => $blog->id, 
+            'news_id' => $blog->id,
         ]);
     }
-    
+
 
     public function showPostIndex($slug)
     {
