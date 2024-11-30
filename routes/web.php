@@ -74,6 +74,11 @@ use App\Http\Controllers\BusinessStartPromotionInvestmentController;
 |
 */
 
+Route::get('gd', function () {
+    $gd_info = gd_info();
+    print_r($gd_info);
+})->name('gd');
+
 Route::middleware(['language'])->group(function () {
 
     Route::get('/clear-cache', function () {
