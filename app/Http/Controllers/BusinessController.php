@@ -45,10 +45,10 @@ class BusinessController extends Controller
             ->when($search, function ($query, $search) {
                 return $query->where(function ($q) use ($search) {
                     $q->where('description', 'like', "%{$search}%")
-                    ->orWhereHas('businessMember', function ($q) use ($search) {
-                        $q->where('business_name', 'like', "%{$search}%")
-                            ->orWhere('business_code', 'like', "%{$search}%");
-                    });
+                        ->orWhereHas('businessMember', function ($q) use ($search) {
+                            $q->where('business_name', 'like', "%{$search}%")
+                                ->orWhere('business_code', 'like', "%{$search}%");
+                        });
                 });
             })
             ->orderBy('created_at', 'desc')
@@ -126,7 +126,7 @@ class BusinessController extends Controller
                         File::delete(public_path($image_path));
                     }
 
-                    return redirect()->back()->with('error', 'Có lỗi xảy ra khi tải ảnh lên');
+                    return redirect()->back()->with('error', 'Có lỗi xảy ra khi tải ảnh lên' . $e->getMessage())->withInput();
                 }
             }
 
@@ -167,7 +167,7 @@ class BusinessController extends Controller
 
         return response()->json([
             'business_name' => $business->businessMember->business_name,
-            'business_code' => $business->businessMember->business_code, 
+            'business_code' => $business->businessMember->business_code,
             'description' => $business->description,
             'avt_businesses' => $business->avt_businesses,
             'status' => $business->status
@@ -179,26 +179,26 @@ class BusinessController extends Controller
         $business = Business::findOrFail($id);
         $business->delete();
 
-        return redirect()->route('business.index')->with('success', 'Business deleted successfully.');
+        return redirect()->route('admin.business')->with('success', 'Xóa thành công thông tin kết nối giao thương của doanh nghiệp');
     }
 
     public function business(Request $request)
     {
-        $category = $request->category ?? '';
+        $businessField = $request->business_field ?? '';
         $page = $request->page ?? 1;
 
-        if ($category) {
-            $category_product_business = CategoryProductBusiness::where('slug', $category)->first();
+        if ($businessField) {
+            $business_field = BusinessField::where('slug', $businessField)->first();
 
-            if ($category_product_business) {
-                $productBusinesses = ProductBusiness::where('category_product_id', $category_product_business->id)
-                    ->where('status', 'approved')
-                    ->pluck('business_member_id');
+            if ($business_field) {
+                $businessMembers = BusinessMember::where('business_field_id', $business_field->id)
+                    ->pluck('id');
 
-                $businesses = Business::whereIn('business_member_id', $productBusinesses)
+                $businesses = Business::whereIn('business_member_id', $businessMembers)
                     ->where('status', 'approved')
                     ->orderBy('created_at', 'asc')
                     ->paginate(10, ['*'], 'page', $page);
+
             } else {
                 $businesses = collect();
             }
@@ -219,20 +219,29 @@ class BusinessController extends Controller
             ]);
         }
 
-        $category_product_business = CategoryProductBusiness::get();
+        $business_fields = BusinessField::get();
 
-        return view('pages.client.business', compact('businesses', 'category_product_business'));
+        return view('pages.client.business', compact('businesses', 'business_fields'));
     }
 
     public function businessDetail($business_code)
     {
-        $businessMember = BusinessMember::where('business_code', $business_code)->first();
+        $businessMember = BusinessMember::where('business_code', $business_code)->where('status', 'approved')->first();
 
         if (!$businessMember) {
             return redirect()->route('business')->with('error', 'Không tìm thấy doanh nghiệp');
         }
 
+        if(!$businessMember->business) {
+            return redirect()->route('business')->with('error', 'Doanh nghiệp chưa đăng ký kết nối giao thương');
+        }
+
+        if(!$businessMember->business || $businessMember->business->status != 'approved') {
+            return redirect()->route('business')->with('error', 'Doanh nghiệp chưa được duyệt');
+        }
+
         $business = $businessMember->business;
+
         return view('pages.client.detail-business', compact('business'));
     }
 

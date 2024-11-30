@@ -16,7 +16,7 @@
                     Download
                 </a>
             </div> --}}
-            <div class="ms-md-3 pe-md-3 d-flex align-items-center" style="z-index: 10000">
+            <div class="ms-md-3 pe-md-3 d-flex align-items-center" style="z-index: 989">
                 <form method="GET" id="search-form">
                     <div class="input-group">
                         <input type="text" class="form-control" name="search" placeholder="Tìm kiếm"

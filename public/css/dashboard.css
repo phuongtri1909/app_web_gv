@@ -6432,7 +6432,7 @@ fieldset:disabled .btn {
 }
 
 .toast:not(.showing):not(.show) {
-    opacity: 0
+    display: none
 }
 
 .toast.hide {

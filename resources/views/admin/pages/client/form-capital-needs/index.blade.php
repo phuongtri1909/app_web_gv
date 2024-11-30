@@ -162,7 +162,7 @@
                                 <div class="d-flex align-items-center justify-content-between">
                                     <h5 class="text-white mb-0">
                                         <i class="fas fa-building me-2"></i>
-                                        {{ __('Thông tin chi tiết doanh nghiệp') }}
+                                        Thông tin chi tiết nhu cầu vốn
                                     </h5>
                                     <button type="button" class="btn btn-link text-white" data-bs-dismiss="modal">
                                         <i class="fas fa-times"></i>
@@ -185,164 +185,72 @@
                                     <div class="col-md-8">
                                         <div class="row g-3">
                                             <div class="col-md-6">
+
                                                 <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-user me-2"></i>{{ __('Người đại diện') }}
+                                                    <label class="text-uppercase text-xs font-weight-bolder">
+                                                        <i class="fas fa-money-bill me-2"></i>Số vốn đăng ký
                                                     </label>
-                                                    <p id="modal-representative-name" class="text-sm mb-2"></p>
+                                                    <p id="modal-finance" class="text-sm mb-2"></p>
                                                 </div>
+
                                                 <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-calendar me-2"></i>{{ __('Năm sinh') }}
+                                                    <label class="text-uppercase text-xs font-weight-bolder">
+                                                        <i class="fas fa-rotate-right me-2"></i>Chu kỳ vay
                                                     </label>
-                                                    <p id="modal-birth-year" class="text-sm mb-2"></p>
+                                                    <p id="model-loan-cycle" class="text-sm mb-2"></p>
                                                 </div>
+
                                                 <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-venus-mars me-2"></i>{{ __('Giới tính') }}
+                                                    <label class="text-uppercase text-xs font-weight-bolder">
+                                                        <i class="fas fa-percentage me-2"></i>Đề xuất lãi xuất
                                                     </label>
-                                                    <p id="modal-gender" class="text-sm mb-2"></p>
+                                                    <p id="modal-interest-rate" class="text-sm mb-2"></p>
                                                 </div>
+
                                                 <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-phone me-2"></i>{{ __('Số điện thoại') }}
-                                                    </label>
-                                                    <p id="modal-phone" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-fax me-2"></i>{{ __('Số Fax') }}
-                                                    </label>
-                                                    <p id="modal-fax" class="text-sm mb-2"></p>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-envelope me-2"></i>{{ __('Email') }}
-                                                    </label>
-                                                    <p id="modal-email" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-share-alt me-2"></i>{{ __('Kênh social') }}
-                                                    </label>
-                                                    <p id="modal-social" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i
-                                                            class="fas fa-building me-2"></i>{{ __('Loại hình doanh nghiệp') }}
-                                                    </label>
-                                                    <p id="modal-category-business" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i
-                                                            class="fas fa-briefcase me-2"></i>{{ __('Lĩnh vực kinh doanh') }}
-                                                    </label>
-                                                    <p id="modal-business-field" class="text-sm mb-2"></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-map-marker-alt me-2"></i>{{ __('Địa chỉ') }}
-                                                    </label>
-                                                    <p id="modal-address" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-building me-2"></i>{{ __('Địa chỉ kinh doanh') }}
-                                                    </label>
-                                                    <p id="modal-business-address" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-map me-2"></i>{{ __('Phường') }}
-                                                    </label>
-                                                    <p id="modal-ward" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                    <label class="text-uppercase text-xs font-weight-bolder">
                                                         <i class="fas fa-bullseye me-2"></i>{{ __('Mục đích vay') }}
                                                     </label>
                                                     <p id="modal-purpose" class="text-sm mb-2"></p>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
+
                                                 <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-money-bill me-2"></i>{{ __('Số tiền vay') }}
-                                                    </label>
-                                                    <p id="modal-finance" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-percentage me-2"></i>{{ __('Lãi suất') }}
-                                                    </label>
-                                                    <p id="modal-interest-rate" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i
-                                                            class="fas fa-shield-alt me-2"></i>{{ __('Chính sách thế chấp') }}
-                                                    </label>
-                                                    <p id="modal-mortgage-policy" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i
-                                                            class="fas fa-handshake me-2"></i>{{ __('Chính sách tín chấp') }}
-                                                    </label>
-                                                    <p id="modal-unsecured-policy" class="text-sm mb-2"></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i
-                                                            class="fas fa-university me-2"></i>{{ __('Kết nối ngân hàng') }}
-                                                    </label>
-                                                    <p id="modal-bank-connection" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                        <i class="fas fa-comments me-2"></i>{{ __('Phản hồi') }}
-                                                    </label>
-                                                    <p id="modal-feedback" class="text-sm mb-2"></p>
-                                                </div>
-                                                <div class="info-group">
-                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                    <label class="text-uppercase text-xs font-weight-bolder">
                                                         <i class="fas fa-clock me-2"></i>{{ __('Ngày đăng ký') }}
                                                     </label>
                                                     <p id="modal-created-at" class="text-sm mb-2"></p>
                                                 </div>
+                                               
+                                               
+                                            </div>
+                                            <div class="col-md-6">
+
+                                                <div class="info-group">
+                                                    <label class="text-uppercase text-xs font-weight-bolder">
+                                                        <i
+                                                            class="fas fa-university me-2"></i>Đề xuất kết nối ngân hàng
+                                                    </label>
+                                                    <p id="modal-bank-connection" class="text-sm mb-2"></p>
+                                                </div>
+
+                                                <div class="info-group">
+                                                    <label class="text-uppercase text-xs font-weight-bolder">
+                                                        <i
+                                                            class="fas fa-handshake me-2"></i>Đề xuất chính sách hỗ trợ
+                                                    </label>
+                                                    <p id="modal-support-policy" class="text-sm mb-2"></p>
+                                                </div>
+
+                                                <div class="info-group">
+                                                    <label class="text-uppercase text-xs font-weight-bolder">
+                                                        <i class="fas fa-comments me-2"></i>ý kiến đối với ngân hàng
+                                                    </label>
+                                                    <p id="modal-feedback" class="text-sm mb-2"></p>
+                                                </div>
+                                            
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div class="row mt-4">
-                                    <div class="col-12">
-                                        <div class="info-group">
-                                            <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                <i class="fas fa-align-left me-2"></i>{{ __('Mô tả') }}
-                                            </label>
-                                            <p id="modal-description" class="text-sm mb-2"></p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row mt-4">
-                                    <div class="col-12">
-                                        <a id="modal-license" href="" target="_blank" class="btn btn-primary">
-                                            <i class="fas fa-file-pdf me-2"></i>{{ __('Xem giấy phép kinh doanh') }}
-                                        </a>
+                                      
                                     </div>
                                 </div>
                             </div>
@@ -371,32 +279,12 @@
                             'DD/MM/YYYY HH:mm');
                         $('#modal-business-name').text(response.business_name || '-');
                         $('#modal-business-code').text(response.business_code || '-');
-                        $('#modal-representative-name').text(response.representative_name ||
-                            '-');
-                        $('#modal-birth-year').text(response.birth_year || '-');
-                        const genderText = {
-                            'male': 'Nam',
-                            'female': 'Nữ',
-                            'other': 'Không xác định'
-                        } [response.gender] || '-';
-
-                        $('#modal-gender').text(genderText);
-
-                        $('#modal-email').text(response.email || '-');
-                        $('#modal-phone').text(response.phone_number || '-');
-                        $('#modal-fax').text(response.fax_number || '-');
-                        $('#modal-address').text(response.address || '-');
-                        $('#modal-business-address').text(response.business_address || '-');
-                        $('#modal-ward').text(response.ward?.name || '-');
-                        $('#modal-social').text(response.social_channel || '-');
-                        $('#modal-category-business').text(response.category_business?.name ||
-                            '-');
-                        $('#modal-business-field').text(response.business_field?.name || '-');
-                        $('#modal-description').text(response.description || '-');
+                 
                         $('#modal-finance').text(new Intl.NumberFormat('vi-VN', {
                             style: 'currency',
                             currency: 'VND'
                         }).format(response.finance));
+
                         $('#modal-interest-rate').text(
                             new Intl.NumberFormat('vi-VN', {
                                 style: 'percent',
@@ -404,17 +292,13 @@
                                 maximumFractionDigits: 1
                             }).format(response.interest_rate / 100)
                         );
-                        $('#modal-mortgage-policy').text(response.mortgage_policy || '-');
-                        $('#modal-unsecured-policy').text(response.unsecured_policy || '-');
+                       
                         $('#modal-purpose').text(response.purpose || '-');
                         $('#modal-bank-connection').text(response.bank_connection || '-');
                         $('#modal-feedback').text(response.feedback || '-');
                         $('#modal-created-at').text(formattedDate);
-                        $('#modal-avatar').attr('src', response.avt_businesses ? '/' + response
-                            .avt_businesses : '');
-                        $('#modal-license').attr('href', response.business_license ? '/' +
-                            response.business_license : '#');
-
+                        $('#modal-avatar').attr('src', response.avt_businesses ? '/' + response.avt_businesses : '');
+                       
                         const statusBadgeClass = {
                             'approved': 'bg-success',
                             'rejected': 'bg-danger',
@@ -431,10 +315,14 @@
                             .removeClass('bg-success bg-danger bg-warning bg-secondary')
                             .addClass(statusBadgeClass)
                             .text(statusText);
+                        
+                        $('#model-loan-cycle').text(response.loan_cycle || '-');
+                        $('#modal-support-policy').text(response.support_policy || '-');
 
                         $('#capitalNeedDetailModal').modal('show');
-                        // console.log(response);
-
+                    },
+                    error: function(error) {
+                        showToast(error.responseJSON.error, 'error');
                     }
                 });
             });

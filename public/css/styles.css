@@ -1810,7 +1810,7 @@ table.form-table td {
 .wrap-button {
     position: fixed;
     top: 10px;
-    z-index: 100000000;
+    z-index: 9998;
 }
 
 .button-register {

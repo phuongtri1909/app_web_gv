@@ -130,11 +130,11 @@
                 <a href="{{ route('business', ['category' => '']) }}"
                     class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('category') == '' ? 'active' : '' }}">Tất
                     cả</a>
-                @foreach ($category_product_business as $index => $category)
-                    <a href="{{ route('business', ['category' => $category->slug]) }}"
+                @foreach ($business_fields as $index => $category)
+                    <a href="{{ route('business', ['business_field' => $category->slug]) }}"
                         class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('category') == $category->slug ? 'active' : '' }} {{ $index >= 8 && request('category') != $category->slug ? 'category-hidden' : '' }}">{{ $category->name }}</a>
                 @endforeach
-                @if ($category_product_business->count() > 8)
+                @if ($business_fields->count() > 8)
                     <div class="text-center mt-4">
                         <a id="show-more" class="fst-italic text-app-gv">Xem tất cả</a>
                     </div>

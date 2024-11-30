@@ -27,7 +27,7 @@
             <div class="card-body px-4 pb-2">
                 <div class="row">
                     <div class="col-md-6">
-                        <img class="rounded-circle" width="200" height="200" src="{{ asset($location->businessMember->business->avt_businesses) }}" alt="avatar">
+                        <img class="rounded-circle" width="200" height="200" src="{{ isset($location->businessMember->business) ? asset($location->businessMember->business->avt_businesses) : asset('images/business/business_default.webp') }}" alt="avatar">
                         <p><strong>Doanh nghiệp:</strong> {{ $location->businessMember->business_name }}</p>
                         <p><strong>Mã số thuế:</strong> {{ $location->businessMember->business_code }}</p>
                         <p><strong>Tên địa điểm:</strong> {{ $location->name }}</p>

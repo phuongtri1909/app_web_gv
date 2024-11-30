@@ -97,7 +97,7 @@
                                             <span>Thông tin vị trí</span>
                                             <div class="d-flex align-items-center my-2 ">
                                                 <img class="img-location rounded-circle me-3"
-                                                    src="{{ asset($location->businessMember->business->avt_businesses) }}" alt="{{ $location->name }}"
+                                                    src="{{ isset($location->businessMember->business) ? asset($location->businessMember->business->avt_businesses) : asset('images/business/business_default.webp') }}" alt="{{ $location->name }}"
                                                     loading="lazy">
                                                 <div class="d-flex flex-column">
                                                     <h5>{{ $location->name }}</h5>

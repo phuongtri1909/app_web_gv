@@ -28,7 +28,7 @@
             <div class="card-header pb-0">
                 <div class="d-flex flex-row justify-content-between">
                     <div>
-                        <h5 class="mb-0">{{ __('Danh sách đăng ký hội viên') }}</h5>
+                        <h5 class="mb-0">{{ __('Danh sách đăng ký thành viên app') }}</h5>
                     </div>
                     <div>
                         <form method="GET" class="d-flex">

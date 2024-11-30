@@ -52,7 +52,7 @@
         <div class="bg-business ">
             <div class="container py-4 d-md-flex text-center">
                 <div class="rounded ">
-                    <img class="bg-white rounded logo-business" src="{{ asset($business->avt_businesses) }}" alt="">
+                    <img class="bg-white rounded logo-business" src="{{ isset($business->avt_businesses) ? asset($business->avt_businesses) : asset('images/business/business_default.webp') }}" alt="">
                 </div>
                 <div class="ms-3 text-white mt-3 md-md-0">
                     <h2 class="responsive-h2">{{ $business->businessMember->business_name }}</h2>
@@ -114,7 +114,7 @@
                         <div class="px-3">
                             <div class="d-flex">
                                 <p class="fw-semibold me-2">Họ và tên:</p>
-                                <p>{{ Str::title(Str::lower($business->businessMember->representative_name)) }}</p>
+                                <p>{{ Str::title(Str::lower($business->businessMember->representative_full_name)) }}</p>
                             </div>
                         
                             <div class="d-flex">

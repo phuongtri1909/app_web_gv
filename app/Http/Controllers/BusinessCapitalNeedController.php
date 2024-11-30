@@ -57,47 +57,26 @@ class BusinessCapitalNeedController extends Controller
         }
 
         try {
-            $capitalNeed = BusinessCapitalNeed::with([
-                'business.categoryBusiness',
-                'business.field',
-                'business.ward',
-                'financialSupport',
-                'bankServicesInterest'
-            ])->findOrFail($id);
+            $capitalNeed = BusinessCapitalNeed::findOrFail($id);
 
             return response()->json([
                 'id' => $capitalNeed->id,
-                'business_name' => $capitalNeed->business->business_name,
-                'business_code' => $capitalNeed->business->business_code,
-                'representative_name' => $capitalNeed->business->representative_name,
-                'birth_year' => $capitalNeed->business->birth_year,
-                'gender' => $capitalNeed->business->gender,
-                'phone_number' => $capitalNeed->business->phone_number,
-                'fax_number' => $capitalNeed->business->fax_number,
-                'email' => $capitalNeed->business->email,
-                'social_channel' => $capitalNeed->business->social_channel,
-                'address' => $capitalNeed->business->address,
-                'business_address' => $capitalNeed->business->business_address,
-                'ward' => $capitalNeed->business->ward,
-                'category_business' => $capitalNeed->business->categoryBusiness,
-                'business_field' => $capitalNeed->business->field,
-                'description' => $capitalNeed->business->description,
-                'avt_businesses' => $capitalNeed->business->avt_businesses,
-                'business_license' => $capitalNeed->business->business_license,
+                'business_name' => $capitalNeed->businessMember->business_name,
+                'avt_businesses' => isset($capitalNeed->businessMember->business) ? $capitalNeed->businessMember->business->avt_businesses : 'images/business/business_default.webp',
+                'business_code' => $capitalNeed->businessMember->business_code,
+                
                 'finance' => $capitalNeed->finance,
                 'interest_rate' => $capitalNeed->interest_rate,
-                'mortgage_policy' => $capitalNeed->mortgage_policy,
-                'unsecured_policy' => $capitalNeed->unsecured_policy,
                 'purpose' => $capitalNeed->purpose,
                 'bank_connection' => $capitalNeed->bank_connection,
                 'feedback' => $capitalNeed->feedback,
                 'status' => $capitalNeed->status,
-                'financial_support' => $capitalNeed->financialSupport,
-                'bank_service' => $capitalNeed->bankService,
+                'loan_cycle' => $capitalNeed->loan_cycle,
+                'support_policy' => $capitalNeed->support_policy,
                 'created_at' => $capitalNeed->created_at,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to fetch details'], 500);
+            return response()->json(['error' => 'Lỗi không tìm thấy được chi tiết cho nhu cầu vay vốn này' . $e->getMessage()], 500);
         }
     }
 
