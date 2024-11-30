@@ -67,7 +67,7 @@
                             @enderror
                         </div>
 
-                        <div class="form-group mb-3 col-md-6">
+                        {{-- <div class="form-group mb-3 col-md-6">
                             <label for="categories">{{ __('categories_news') }}</label>
                             <select class="form-control @error('category_id') is-invalid @enderror" id="categories" name="category_id">
                                 @foreach ($categories as $category)
@@ -79,9 +79,9 @@
                             @error('category_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div> --}}
 
-                        <div class="form-group mb-3 col-md-6">
+                        {{-- <div class="form-group mb-3 col-md-6">
                             <label for="tags">{{ __('tags') }}</label>
                             <select class="form-control @error('tag_id') is-invalid @enderror" id="tags" name="tag_id">
                                 @foreach ($tags as $tag)
@@ -93,7 +93,7 @@
                             @error('tag_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div> --}}
 
 
                         <button type="submit" class="btn btn-primary">{{ __('update') }}</button>
