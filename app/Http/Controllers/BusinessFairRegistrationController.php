@@ -341,17 +341,26 @@ class BusinessFairRegistrationController extends Controller
         if ($business_member_id instanceof \Illuminate\Http\RedirectResponse) {
             return $business_member_id;
         }
-        $existingRegistration = BusinessFairRegistration::where('business_member_id', $business_member_id)->first();
+        // $existingRegistration = BusinessFairRegistration::where('business_member_id', $business_member_id)->first();
+        // if ($existingRegistration) {
+        //     session()->forget('key_business_code');
+        //     session()->forget('business_code');
+        //     return back()->with('error', 'Doanh nghiệp này đã đăng ký tham gia hội chợ. Không thể đăng ký lại.')->withInput();
+        // }
+        $news_id = $request->input('news_id');
+        $existingRegistration = BusinessFairRegistration::where('business_member_id', $business_member_id)
+            ->where('news_id', $news_id)
+            ->first();
+
         if ($existingRegistration) {
             session()->forget('key_business_code');
             session()->forget('business_code');
-            return back()->with('error', 'Doanh nghiệp này đã đăng ký tham gia hội chợ. Không thể đăng ký lại.')->withInput();
+            return back()->with('error', 'Doanh nghiệp này đã đăng ký tham gia hội chợ này. Không thể đăng ký lại.')->withInput();
         }
-        $news_id = $request->input('news_id');
         $businessLicensePath = null;
+        $folderName = date('Y/m');
         if ($request->hasFile('business_license')) {
             $avatar = $request->file('business_license');
-            $folderName = date('Y/m');
             $originalFileName = pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME);
             $fileName = $originalFileName . '_' . time() . '.webp';
             $uploadPath = public_path('uploads/images/fair-registration/licenses/' . $folderName);
