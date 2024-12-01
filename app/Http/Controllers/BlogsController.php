@@ -285,8 +285,14 @@ class BlogsController extends Controller
         $query = News::query();
         if ($request->has('category') && $request->input('category') !== 'all') {
             $categorySlug = $request->input('category');
+            $subCategory = $request->input('subCategory', 'all');
             if ($categorySlug === 'hoat-dong-xuc-tien') {
                 $categories = ['hoat-dong-xuc-tien', 'tin-tuc', 'hoi-cho'];
+                if ($subCategory !== 'all') {
+                    $query->whereHas('categories', fn($q) => $q->where('slug', $subCategory));
+                } else {
+                    $query->whereHas('categories', fn($q) => $q->whereIn('slug', $categories));
+                }
             } else {
                 $categories = [$categorySlug];
             }
@@ -317,7 +323,7 @@ class BlogsController extends Controller
             ->get();
 
 
-        return view('pages.blogs.blogs', compact( 'blogs', 'categories', 'tags', 'recentPosts', 'noResults', 'category'));
+        return view('pages.blogs.blogs', compact( 'blogs', 'categories', 'tags', 'recentPosts', 'noResults', 'category', 'subCategory','categorySlug'));
 
     }
 

@@ -289,6 +289,27 @@
     <section id="blogs">
         <div class="container">
             <div class="row">
+                <div class="col-md-12 mb-4">
+                    @if($category != null && is_iterable($category) ? $category->pluck('slug')->contains('hoat-dong-xuc-tien') : ($category?->slug ?? ""))
+                        <form method="GET" action="{{ route('list-blogs') }}">
+                            <input type="hidden" name="category" value="hoat-dong-xuc-tien">
+                            <div class="form-group">
+                                <select id="subCategory" name="subCategory" class="form-control" onchange="this.form.submit()">
+                                    <option value="all" {{ request('subCategory') === 'all' ? 'selected' : '' }}>{{ __('Tất cả') }}</option>
+                                    <option value="hoat-dong-xuc-tien" {{ request('subCategory') === 'hoat-dong-xuc-tien' ? 'selected' : '' }}>
+                                        Hoạt động xúc tiến
+                                    </option>
+                                    <option value="tin-tuc" {{ request('subCategory') === 'tin-tuc' ? 'selected' : '' }}>
+                                        Tin tức
+                                    </option>
+                                    <option value="hoi-cho" {{ request('subCategory') === 'hoi-cho' ? 'selected' : '' }}>
+                                        Hội chợ
+                                    </option>
+                                </select>
+                            </div>
+                        </form>
+                    @endif
+                </div>
                 {{-- @if($categories->isNotEmpty())
                     <div class="category-new mb-5">
                         <div class="col-md-12">
