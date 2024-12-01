@@ -39,7 +39,7 @@ class CheckBusinessCode
                 $request->session()->put('key_business_code', $encryptedBusinessCode);
 
                 $intendedRoute = session('intended_route', route('show.form.member.business'));
-
+                
                 return redirect($intendedRoute);
             }elseif($businessMember && $businessMember->status == 'pending'){
                 return redirect()->route('form.check.business')->with('error', 'Tài khoản của bạn đang chờ xác nhận, vui lòng chờ trong giây lát')->withInput();
