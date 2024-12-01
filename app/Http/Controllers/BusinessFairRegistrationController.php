@@ -349,9 +349,9 @@ class BusinessFairRegistrationController extends Controller
         }
         $news_id = $request->input('news_id');
         $businessLicensePath = null;
+        $folderName = date('Y/m');
         if ($request->hasFile('business_license')) {
             $avatar = $request->file('business_license');
-            $folderName = date('Y/m');
             $originalFileName = pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME);
             $fileName = $originalFileName . '_' . time() . '.webp';
             $uploadPath = public_path('uploads/images/fair-registration/licenses/' . $folderName);
