@@ -2,275 +2,207 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BusinessRegistered;
 use App\Models\Business;
 use App\Models\BusinessFeedback;
+use App\Models\BusinessMember;
 use App\Models\CategoryNews;
-use App\Models\Language;
 use App\Models\News;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException ;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Auth;
 class BusinessFeedBackController extends Controller
 {
     public function businessOpinion(Request $request)
     {
-        $category = CategoryNews::where('slug', 'y-kien')->first();
-    
-        $businessOpinions = News::whereHas('categories', function ($query) use ($category) {
-            $query->where('id', $category->id);
-        })
-        ->where(function ($query) {
-            $query->orWhere('published_at', '<=', now());
-        })
-        ->where(function ($query) {
-            $query->orWhere('expired_at', '>=', now());
-        })
-        ->paginate(15);
-    
-        $noResults = $businessOpinions->isEmpty();
-    
-        foreach ($businessOpinions as $blog) {
-            $blog->shortContent = Str::limit(strip_tags($blog->content), 1000);
+        $isKhaoSat = CategoryNews::where('slug', 'khao-sat')->first();
+        if (!$isKhaoSat) {
+            return redirect()->back()->with('error', 'Không tìm thấy danh mục');
         }
-    
-        return view('pages.client.feed-back.business-opinion', compact('businessOpinions', 'noResults', 'category'));
+        $business_member_id = $this->getBusinessMemberId($request);
+        if ($business_member_id instanceof \Illuminate\Http\RedirectResponse) {
+            return $business_member_id;
+        }
+        return view('pages.client.feed-back.form-business-opinion',compact('business_member_id','isKhaoSat'));
     }
-    
-    public function index()
+    public function storeBusinessOpinion(Request $request)
     {
-        $category = CategoryNews::where('slug', 'y-kien')->first();
-        $blogs = [];
-        if ($category) {
-            $blogs = News::with('categories')
-                ->whereHas('categories', function ($query) use ($category) {
-                    $query->where('id', $category->id);
-                })
-                ->latest('published_at') 
-                ->paginate(15);
+        DB::beginTransaction();
+        try {
+            $data = [];
+            $business_member_id = $this->getBusinessMemberId($request);
+            if ($business_member_id instanceof \Illuminate\Http\RedirectResponse) {
+                return $business_member_id;
+            }
+            $request->validate([
+                'opinion' => 'required|string|max:1000',
+                'attached_images' => 'required|array',
+                'attached_images.*' => 'required|image|mimes:jpg,png,jpeg,gif',
+            ], [
+                'opinion.required' => 'Vui lòng nhập ý kiến.',
+                'opinion.max' => 'Ý kiến không được vượt quá 1000 ký tự.',
+                'attached_images.required' => 'Vui lòng tải lên ít nhất một hình ảnh.',
+                'attached_images.array' => 'Tệp đính kèm phải là một mảng hình ảnh hợp lệ.',
+                'attached_images.*.required' => 'Mỗi hình ảnh tải lên là bắt buộc.',
+                'attached_images.*.image' => 'Mỗi tệp tải lên phải là một hình ảnh.',
+                'attached_images.*.mimes' => 'Hình ảnh phải có định dạng: jpg, png, jpeg hoặc gif.',
+            ]);
+            $recaptchaResponse = $request->input('g-recaptcha-response');
+            $secretKey = env('RECAPTCHA_SECRET_KEY');
+            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => $secretKey,
+                'response' => $recaptchaResponse,
+            ]);
+
+            $responseBody = json_decode($response->body());
+
+            if (!$responseBody->success) {
+                return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
+            }
+            $businessFeedback = new BusinessFeedback();
+            $businessFeedback->fill($request->only(['opinion']));
+            $businessFeedback->business_member_id = $business_member_id;
+            $this->handleFileUpload($request, 'attached_images', $data, '_attached_images_', 'feedback');
+            $businessFeedback->attached_images = $data['attached_images'];
+            $businessFeedback->save();
+            DB::commit();
+            session()->forget('key_business_code');
+            session()->forget('business_code');
+            return redirect()->route('business.opinion')->with('success', 'Gửi thành công!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->cleanupUploadedFiles($data);
+            return redirect()->back()->withInput()->with('error', 'Gửi thất bại: ' . $e->getMessage());
         }
-    
-        return view('admin.pages.client.form-feed-back.index', compact('blogs'));
     }
-    
+
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
+        $businessFeedbacks = BusinessFeedback::with('businessMember')
+            ->when($search, function ($query) use ($search) {
+                return $query->where('opinion', 'like', '%' . $search . '%');
+            })
+            ->paginate(15);
+
+        return view('admin.pages.client.form-feed-back.index', compact('businessFeedbacks'));
+    }
 
 
     public function create()
     {
-        $category = CategoryNews::where('slug', 'y-kien')->first();
-        $languages = Language::all();
-        return view('admin.pages.client.form-feed-back.create', compact('category',  'languages'));
+
     }
 
     public function store(Request $request)
     {
-        $locales = Language::pluck('locale')->toArray();
 
-        $rules = [];
-        $messages = [];
-
-        $rules = [
-            'published_at' => 'required|date|before_or_equal:expired_at',
-            'expired_at' => 'required|date|after:published_at',
-        ];
-        $messages = [
-            'published_at.required' => __('Ngày bắt đầu là bắt buộc.'),
-            'published_at.date' => __('Ngày bắt đầu phải là ngày hợp lệ.'),
-            'published_at.before_or_equal' => __('Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày hết hạn.'),
-        
-            'expired_at.required' => __('Ngày hết hạn là bắt buộc.'),
-            'expired_at.date' => __('Ngày hết hạn phải là ngày hợp lệ.'),
-            'expired_at.after' => __('Ngày hết hạn phải lớn hơn ngày bắt đầu.'),
-        ];
-        
-        foreach ($locales as $locale) {
-            $rules["title_{$locale}"] = 'string|max:255';
-            $rules["content_{$locale}"] = 'string';
-
-            $messages["title_{$locale}.string"] = __('title_string');
-            $messages["title_{$locale}.max"] = __('title_max', ['max' => 255]);
-            $messages["content_{$locale}.string"] = __('content_string');
-        }
-        $validatedData = $request->validate($rules, $messages);
-
-        try {
-            $translateTitle = [];
-            $tranSlateContent = [];
-            $image_path = null;
-
-            foreach ($locales as $locale) {
-                $translateTitle[$locale] = $request->get("title_{$locale}");
-                $tranSlateContent[$locale] = $request->get("content_{$locale}");
-            }
-
-            $slug = Str::slug($translateTitle[config('app.locale')]);
-
-            if (News::where('slug', $slug)->exists()) {
-                return redirect()->back()->with('error', __('slug_exists'));
-            }
-
-            if ($request->hasFile('image')) {
-                try {
-                    $image = $request->file('image');
-                    $folderName = date('Y/m');
-                    $originalFileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
-                    $extension = $image->getClientOriginalExtension();
-                    $fileName = $originalFileName . '_' . time() . '.' . $extension;
-                    $image->move(public_path('/uploads/images/news/' . $folderName), $fileName);
-                    $image_path = 'uploads/images/news/' . $folderName . '/' . $fileName;
-                } catch (\Exception $e) {
-                    if (isset($image_path) && File::exists(public_path($image_path))) {
-                        File::delete(public_path($image_path));
-                    }
-                    return back()->withInput()->with('error', __('upload_image_error'));
-                }
-            }
-
-            $news = new News();
-            $news->user_id = Auth::id();
-            $news->setTranslations('title', $translateTitle);
-            $news->setTranslations('content', $tranSlateContent);
-            $news->image = $image_path;
-            $news->slug = $slug;
-            $news->published_at = $request->input('published_at');
-            $news->expired_at = $request->input('expired_at'); 
-            $news->save();
-
-            try {
-                if ($request->filled('category_id')) {
-                    $news->categories()->attach($request->input('category_id'));
-                }                
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', __('create_post_error'));
-            }
-            // dd($news);
-            return redirect()->route('feedback.index')->with('success', __('create_post_success'));
-        } catch (\Exception $e) {
-            if (isset($image_path) && File::exists(public_path($image_path))) {
-                File::delete(public_path($image_path));
-            }
-            return back()->with(['error' => __('create_post_error')])->withInput();
-        }
     }
 
     public function show($id)
     {
+        $feedback = BusinessFeedback::findOrFail($id);
+        $businessMember = $feedback->businessMember;
+        return response()->json([
+            'id' => $feedback->id,
+            'business_code' => $businessMember->business_code,
+            'business_name' => $businessMember->business_name,
+            'representative_full_name' => $businessMember->representative_full_name,
+            'representative_phone' => $businessMember->representative_phone,
+            'email' => $businessMember->email,
+            'address' => $businessMember->address,
+            'opinion' => $feedback->opinion,
+            'attached_images' => $feedback->attached_images,
+            'created_at' => $feedback->created_at,
+            'status' => $feedback->status,
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     *
-     */
-    public function edit($id)
+    public function edit(BusinessFeedback $businessFeedback)
     {
-        $category = CategoryNews::where('slug', 'y-kien')->first();
-        $news = News::find($id);
-        if (!$news) {
-            return back()->with('error', __('no_find_data'));
-        }
-        $languages = Language::all();
 
-        return view('admin.pages.client.form-feed-back.edit', compact('news', 'languages', 'category'));
     }
 
-
-    public function update(Request $request, $id)
+    public function update(Request $request, BusinessFeedback $businessFeedback)
     {
-        $locales = Language::pluck('locale')->toArray();
 
-        $rules = [];
-        $messages = [];
-        $rules = [
-            'published_at' => 'required|date|before_or_equal:expired_at',
-            'expired_at' => 'required|date|after:published_at',
-        ];
-        $messages = [
-            'published_at.required' => __('Ngày bắt đầu là bắt buộc.'),
-            'published_at.date' => __('Ngày bắt đầu phải là ngày hợp lệ.'),
-            'published_at.before_or_equal' => __('Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày hết hạn.'),
-        
-            'expired_at.required' => __('Ngày hết hạn là bắt buộc.'),
-            'expired_at.date' => __('Ngày hết hạn phải là ngày hợp lệ.'),
-            'expired_at.after' => __('Ngày hết hạn phải lớn hơn ngày bắt đầu.'),
-        ];
-        foreach ($locales as $locale) {
-            $rules["title_{$locale}"] = 'string|max:255';
-            $rules["content_{$locale}"] = 'string';
-
-            $messages["title_{$locale}.string"] = __('title_string');
-            $messages["title_{$locale}.max"] = __('title_max', ['max' => 255]);
-            $messages["content_{$locale}.string"] = __('content_string');
-        }
-
-        $validatedData = $request->validate($rules, $messages);
-
-        try {
-            $news = News::findOrFail($id);
-
-            $translateTitle = [];
-            $translateContent = [];
-            foreach ($locales as $locale) {
-                $translateTitle[$locale] = $request->get("title_{$locale}");
-                $translateContent[$locale] = $request->get("content_{$locale}");
-            }
-
-            if ($request->hasFile('image')) {
-                try {
-                    if ($news->image && File::exists(public_path($news->image))) {
-                        File::delete(public_path($news->image));
-                    }
-
-                    $image = $request->file('image');
-                    $folderName = date('Y/m');
-                    $originalFileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
-                    $extension = $image->getClientOriginalExtension();
-                    $fileName = $originalFileName . '_' . time() . '.' . $extension;
-                    $image->move(public_path('/uploads/images/news/' . $folderName), $fileName);
-                    $news->image = 'uploads/images/news/' . $folderName . '/' . $fileName;
-                } catch (\Exception $e) {
-                    if (isset($news->image) && File::exists(public_path($news->image))) {
-                        File::delete(public_path($news->image));
-                    }
-                    return back()->withInput()->with('error', __('upload_image_error'));
-                }
-            }
-
-            $news->setTranslations('title', $translateTitle);
-            $news->setTranslations('content', $translateContent);
-            $news->published_at = $request->input('published_at');
-            $news->expired_at = $request->input('expired_at');
-            try {
-                if ($request->filled('category_id')) {
-                    $news->categories()->sync($request->input('category_id'));
-                }
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', __('update_error'). ' ' . $e->getMessage())->withInput();
-            }
-            $news->save();
-
-            return redirect()->route('feedback.index')->with('success', __('update_success'));
-        } catch (\Exception $e) {
-            if (isset($news->image) && File::exists(public_path($news->image))) {
-                File::delete(public_path($news->image));
-            }
-            return back()->with('error' , __('update_error') . ' ' . $e->getMessage())->withInput();
-        }
     }
 
     public function destroy($id)
     {
-        $news = News::find($id);
-
-        if (!$news) {
-            return redirect()->route('feedback.index')->with('error', __('Không tồn tại!!'));
+        try {
+            $businessFeedback = BusinessFeedback::findOrFail($id);
+            if ($businessFeedback->attached_images) {
+                $images = json_decode($businessFeedback->attached_images);
+                foreach ($images as $image) {
+                    if (file_exists(public_path($image))) {
+                        unlink(public_path($image));
+                    }
+                }
+            }
+            $businessFeedback->delete();
+            return redirect()->route('feedback.index')->with('success', 'Xóa thành công!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Xóa thất bại: ' . $e->getMessage());
         }
-        $news->delete();
+    }
 
-        return redirect()->route('feedback.index')->with('success', __('Xóa thành công!!'));
+    private function handleFileUpload(Request $request, $inputName, &$data, $suffix = '', $folderType = 'business')
+    {
+        if ($request->hasFile($inputName)) {
+            $files = is_array($request->file($inputName)) ? $request->file($inputName) : [$request->file($inputName)];
+            $uploadedFiles = [];
+            $folderName = date('Y/m');
+
+            foreach ($files as $file) {
+                if ($file->isValid()) {
+                    $filePath = $this->moveFile($file, $folderName, $suffix, $folderType);
+                    $uploadedFiles[] = $filePath;
+                }
+            }
+            if (!empty($uploadedFiles)) {
+                $data[$inputName] = count($uploadedFiles) > 1 ? json_encode($uploadedFiles) : $uploadedFiles[0];
+            }
+        }
+    }
+
+    private function moveFile($file, $folderName, $suffix, $folderType)
+    {
+        $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $extension = $file->getClientOriginalExtension();
+        $fileName = $originalFileName . $suffix . time() . '.' . $extension;
+
+        $basePath = '';
+        switch ($folderType) {
+            case 'feedback':
+                $basePath = 'uploads/images/feedback/';
+                break;
+            case 'business':
+                $basePath = 'uploads/images/business/';
+                break;
+            case 'other':
+                $basePath = 'uploads/images/other/';
+                break;
+            case 'supplydemand':
+                $basePath = 'uploads/images/supply_demand/';
+                break;
+            default:
+                throw new \Exception('Thư mục không hợp lệ.');
+        }
+
+        $file->move(public_path($basePath . $folderName), $fileName);
+        return $basePath . $folderName . '/' . $fileName;
+    }
+
+
+
+    private function cleanupUploadedFiles(array $data)
+    {
+        foreach ($data as $filePath) {
+            if (file_exists(public_path($filePath))) {
+                unlink(public_path($filePath));
+            }
+        }
     }
 }

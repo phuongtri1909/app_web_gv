@@ -128,7 +128,7 @@
                                 <span class="nav-link-text ms-1">{{ __('Tìm việc làm') }}</span>
                             </a>
                         </li>
-                        
+
                     </ul>
                 </div>
             </li>
@@ -155,8 +155,8 @@
                 </a>
             </li>
 
-          
-            
+
+
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteNamed('feedback.*') ? 'active' : '' }}"
                     href="{{ route('feedback.index') }}">
@@ -167,8 +167,16 @@
                     <span class="nav-link-text ms-1">{{ __('Ý kiến doanh nghiệp') }}</span>
                 </a>
             </li>
-
-
+            <li class="nav-item">
+                <a class="nav-link {{ Route::currentRouteNamed('survey.*') ? 'active' : '' }}"
+                    href="{{ route('survey.index') }}">
+                    <div
+                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-chart-pie text-dark icon-sidebar"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">{{ __('Khảo sát doanh nghiệp') }}</span>
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteNamed('personal-business-interests.*') ? 'active' : '' }}"
                     href="{{ route('personal-business-interests.index') }}">
@@ -324,7 +332,7 @@
                     data-bs-target="#hoicho" aria-expanded="false">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-solid fa-store text-dark icon-sidebar"></i> 
+                        <i class="fa-solid fa-store text-dark icon-sidebar"></i>
                     </div>
                     <span class="nav-link-text ms-1">{{ __('Hội chợ') }}</span>
                 </a>
@@ -346,7 +354,7 @@
                                 href="{{ route('fair-registrations.index') }}">
                                 <div
                                     class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i class="fa-solid fa-store text-dark icon-sidebar"></i> 
+                                    <i class="fa-solid fa-store text-dark icon-sidebar"></i>
                                 </div>
                                 <span class="nav-link-text ms-1">{{ __('Hội chợ') }}</span>
                             </a>

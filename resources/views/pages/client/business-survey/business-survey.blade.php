@@ -258,7 +258,7 @@
                         </div>
                     </div>
                 @else
-                    @foreach ($businessOpinions as $blog)
+                    @foreach ($businessSurvey as $blog)
                         <div class="col-md-6 posts mb-4">
                             <div class="post-content">
                                 <div class="image-content">
@@ -280,7 +280,7 @@
                         </div>
                     @endforeach
                 @endif
-                <x-pagination :paginator="$businessOpinions" />
+                <x-pagination :paginator="$businessSurvey" />
             </div>
         </div>
     </section>

@@ -37,10 +37,10 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         {{ __('name_category') }}
                                     </th>
-                                    <th
+                                    {{-- <th
                                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         {{ __('action') }}
-                                    </th>
+                                    </th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -52,7 +52,7 @@
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">{{ $post->name }}</p>
                                         </td>
-                                        <td class="text-center">
+                                        {{-- <td class="text-center">
                                             <a href="{{ route('categories-news.edit', $post->id) }}" class="mx-3"
                                                 title="{{ __('edit') }}">
                                                 <i class="fa-solid fa-pencil"></i>
@@ -62,7 +62,7 @@
                                                 'route' => route('categories-news.destroy', $post->id),
                                                 'message' => __('delete_message'),
                                             ])
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                 @endforeach
                             </tbody>
