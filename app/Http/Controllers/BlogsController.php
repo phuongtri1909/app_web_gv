@@ -284,11 +284,13 @@ class BlogsController extends Controller
 
         $query = News::query();
         if ($request->has('category') && $request->input('category') !== 'all') {
-            $categories = explode(',', $request->input('category'));
-            $query->whereHas('categories', function ($q) use ($categories) {
-                $q->whereIn('slug', $categories);
-            });
-
+            $categorySlug = $request->input('category');
+            if ($categorySlug === 'hoat-dong-xuc-tien') {
+                $categories = ['hoat-dong-xuc-tien', 'tin-tuc', 'hoi-cho'];
+            } else {
+                $categories = [$categorySlug];
+            }
+            $query->whereHas('categories', fn($q) => $q->whereIn('slug', $categories));
             $category = CategoryNews::whereIn('slug', $categories)->get();
         } else {
             $category = null;
