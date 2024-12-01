@@ -198,7 +198,6 @@ class BusinessController extends Controller
                     ->where('status', 'approved')
                     ->orderBy('created_at', 'asc')
                     ->paginate(10, ['*'], 'page', $page);
-
             } else {
                 $businesses = collect();
             }
@@ -232,11 +231,11 @@ class BusinessController extends Controller
             return redirect()->route('business')->with('error', 'Không tìm thấy doanh nghiệp');
         }
 
-        if(!$businessMember->business) {
+        if (!$businessMember->business) {
             return redirect()->route('business')->with('error', 'Doanh nghiệp chưa đăng ký kết nối giao thương');
         }
 
-        if(!$businessMember->business || $businessMember->business->status != 'approved') {
+        if (!$businessMember->business || $businessMember->business->status != 'approved') {
             return redirect()->route('business')->with('error', 'Doanh nghiệp chưa được duyệt');
         }
 
@@ -266,6 +265,8 @@ class BusinessController extends Controller
 
         $query = ProductBusiness::query();
 
+        $query->where('status', 'approved');
+
         if ($category) {
             $category_product_business = CategoryProductBusiness::where('slug', $category)->first();
 
@@ -275,7 +276,7 @@ class BusinessController extends Controller
         }
 
         $products = $query->whereHas('businessMember', function ($query) {
-            $query->where('status', 'approved');
+            $query->where('status','approved');
         })->orderBy('created_at')->paginate(6, ['*'], 'page', $page);
 
         foreach ($products as $product) {

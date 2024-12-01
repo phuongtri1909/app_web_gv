@@ -144,7 +144,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-3 col-md-6">
                             <label for="business_field_id" class="form-label">Ngành nghề kinh doanh <span
                                     class="text-danger">*</span></label>
                             <select id="business_field_id" name="business_field_id"
@@ -160,6 +160,16 @@
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
+
+                        <div class="mb-3 col-md-6">
+                            <label for="link" class="form-label">Liên kết:</label>
+                            <input type="tel" class="form-control form-control-sm" id="link" name="link"
+                                value="{{ old('link') }}" placeholder="website hoặc fanpage ..." required>
+                            @error('link')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
 
                         <h5>(*)Người đại diện Pháp luật:</h5>
 

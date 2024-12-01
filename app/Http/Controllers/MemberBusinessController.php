@@ -57,6 +57,7 @@ class MemberBusinessController extends Controller
             'business_field_id' => 'required|exists:business_fields,id',
             'representative_full_name' => 'required|string|max:255',
             'representative_phone' => 'required|string|max:10|regex:/^[0-9]+$/',
+            'link' => 'nullable|url',
         ], [
             'business_name.required' => 'Vui lòng nhập tên doanh nghiệp',
             'business_code.required' => 'Vui lòng nhập mã số thuế',
@@ -71,6 +72,7 @@ class MemberBusinessController extends Controller
             'representative_full_name.required' => 'Vui lòng nhập tên người đại diện',
             'representative_phone.required' => 'Vui lòng nhập số điện thoại người đại diện',
             'representative_phone.regex' => 'Số điện thoại người đại diện không hợp lệ',
+            'link.url' => 'Link không hợp lệ',
         ]);
 
 
@@ -98,6 +100,7 @@ class MemberBusinessController extends Controller
             'business_field_id',
             'representative_full_name',
             'representative_phone',
+            'link',
         ]));
 
         $businessMember->status = "approved";
@@ -129,11 +132,35 @@ class MemberBusinessController extends Controller
                     'message' => $e->getMessage()
                 ]);
             }
-            return redirect()->back()->with('success', 'Đăng ký thành công!');
+
+            $request->session()->put('business_code', $businessMember->business_code);
+    
+            $encryptedBusinessCode = $this->encrypt($businessMember->business_code, "E-Business@$^$%^");
+            $request->session()->put('key_business_code', $encryptedBusinessCode);
+
+            $intendedRoute = session('intended_route', route('show.form.member.business'));
+
+            if($intendedRoute){
+                return redirect($intendedRoute)->with('success', 'Đăng ký thành viên thành công!');
+            }
+            return redirect()->back()->with('success', 'Đăng ký thành viên thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Đăng ký thất bại!' . $e->getMessage())->withInput();
+            return redirect()->back()->with('error', 'Đăng ký thành viên thất bại!' . $e->getMessage())->withInput();
         }
+    }
+
+    function encrypt($data, $key) {
+        $cipher = "aes-256-cbc";
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($cipher));
+        $encrypted = openssl_encrypt($data, $cipher, $key, 0, $iv);
+        return base64_encode($encrypted . '::' . $iv);
+    }
+    
+    function decrypt($data, $key) {
+        $cipher = "aes-256-cbc";
+        list($encrypted_data, $iv) = explode('::', base64_decode($data), 2);
+        return openssl_decrypt($encrypted_data, $cipher, $key, 0, $iv);
     }
 
 

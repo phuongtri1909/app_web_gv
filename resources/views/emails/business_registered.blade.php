@@ -123,6 +123,7 @@
                         'business_field' => 'Ngành nghề kinh doanh',
                         'representative_full_name' => 'Người đại diện',
                         'representative_phone' => 'Số điện thoại liên hệ',
+                        'link' => 'liên kết'
                     ];
                 @endphp
 

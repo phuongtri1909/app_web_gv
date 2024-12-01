@@ -18,6 +18,7 @@ class BusinessMember extends Model
         'business_field_id',
         'representative_full_name',
         'representative_phone',
+        'link',
         'status',
     ];
 

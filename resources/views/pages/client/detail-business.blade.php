@@ -55,7 +55,17 @@
                     <img class="bg-white rounded logo-business" src="{{ isset($business->avt_businesses) ? asset($business->avt_businesses) : asset('images/business/business_default.webp') }}" alt="">
                 </div>
                 <div class="ms-3 text-white mt-3 md-md-0">
+                   
+
+                    @if ($business->businessMember->link)
+                        <a href="{{ $business->businessMember->link }}" class="text-white text-decoration-none" target="_blank">
+                            <h2 class="responsive-h2">{{ $business->businessMember->business_name }} <i class="fa-solid fa-up-right-from-square ms-2"></i></h2>
+                        </a>
+
+                    @else
                     <h2 class="responsive-h2">{{ $business->businessMember->business_name }}</h2>
+                        
+                    @endif
                     <div class="d-flex align-items-baseline business-location">
                         <i class="fa-solid fa-location-dot"></i>
                         <p class="ms-2">{{ $business->businessMember->address }}</p>

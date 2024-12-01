@@ -147,7 +147,15 @@
             </div>
 
             <div>
-                <p class="text-uppercase">{{ $product->businessMember->business_name }}</p>
+                @if ($product->businessMember->link)
+                    <a href="{{ $product->businessMember->link }}" class="text-decoration-none text-dark" target="_blank">
+                        <p class="text-uppercase">{{ $product->businessMember->business_name }}<i class="fa-solid fa-up-right-from-square ms-2"></i></p>
+                    </a>
+                @else
+                    <p class="text-uppercase">{{ $product->businessMember->business_name }}</p>
+                    
+                @endif
+                
                 <p class="fw-semibold">{{ $product->name_product }}</p>
 
                 <div class="d-flex justify-content-between">
