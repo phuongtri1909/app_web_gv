@@ -54,4 +54,8 @@ class BusinessMember extends Model
     {
         return $this->hasMany(BusinessFairRegistration::class, 'business_member_id');
     }
+    public function businessFeedback()
+    {
+        return $this->hasMany(BusinessFeedback::class, 'business_member_id');
+    }
 }

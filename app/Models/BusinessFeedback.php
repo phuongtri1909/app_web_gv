@@ -11,17 +11,12 @@ class BusinessFeedback extends Model
 
     protected $fillable = [
         'opinion',
-        'suggestions',
-        'owner_full_name',
-        'birth_year',
-        'gender',
-        'phone',
-        'residential_address',
-        'business_name',
-        'business_address',
-        'email',
-        'fanpage',
-        'business_license',
         'attached_images',
+        'business_member_id',
+        'status',
     ];
+    public function businessMember()
+    {
+        return $this->belongsTo(BusinessMember::class, 'business_member_id');
+    }
 }

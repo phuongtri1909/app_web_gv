@@ -62,6 +62,7 @@ use App\Http\Controllers\BusinessFairRegistrationController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PersonalBusinessInterestController;
 use App\Http\Controllers\BusinessStartPromotionInvestmentController;
+use App\Http\Controllers\BusinessSurveyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -126,7 +127,7 @@ Route::middleware(['language'])->group(function () {
         Route::middleware(['check.business.code'])->group(function () {
 
             Route::post('form-check-business', function () {
-                
+
             })->name('form.check.business');
 
             Route::get('/form-connect-supply-demand', [ProductBusinessController::class, 'connectSupplyDemand'])->name('connect.supply.demand'); //form kết nối cung cầu
@@ -142,7 +143,10 @@ Route::middleware(['language'])->group(function () {
             Route::post('/form-recruitment-registration', [BusinessRecruitmentController::class, 'storeForm'])->name('recruitment.registration.store');
 
             Route::get('/form-business-opinion', [BusinessFeedBackController::class, 'businessOpinion'])->name('business.opinion'); //form ý kiến doanh nghiệp
-            // Route::post('/form-business-opinion', [BusinessFeedBackController::class, 'storeBusinessOpinion'])->name('business.opinion.store');
+            Route::post('/form-business-opinion', [BusinessFeedBackController::class, 'storeBusinessOpinion'])->name('business.opinion.store');
+
+            Route::get('/business-survey', [BusinessSurveyController::class, 'businessSurvey'])->name('business.survey'); // khảo sát doanh nghiệp
+
 
             Route::post('/form-business', [BusinessController::class, 'store'])->name('business.store'); //form đăng ký doanh nghiệp
             Route::get('/form-business', [BusinessController::class, 'index'])->name('business.index');
@@ -184,15 +188,15 @@ Route::middleware(['language'])->group(function () {
 
 
                 Route::resource('tags-news', TagNewsController::class);
-                Route::resource('categories-news', CategoryNewsController::class);
+                Route::resource('categories-news', CategoryNewsController::class)->except( 'edit', 'update','show', 'destroy');
                 Route::resource('news', BlogsController::class);
 
                 Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
                     Lfm::routes();
-                
+
                     Route::post('/upload', [CustomUploadController::class, 'upload'])->name('lfm.upload');
                 });
-                
+
 
                 Route::resource('tabs_posts', TabDetailPostController::class);
                 Route::resource('news_contents', NewsTabContentDetailPostController::class);
@@ -213,7 +217,9 @@ Route::middleware(['language'])->group(function () {
 
                 Route::resource('job-applications', JobApplicationController::class)->except('create', 'store', 'edit', 'update');
 
-                Route::resource('feedback', BusinessFeedBackController::class)->except('show');
+                Route::resource('feedback', BusinessFeedBackController::class)->except('create', 'store', 'edit', 'update');
+
+                Route::resource('survey', BusinessSurveyController::class)->except('show');
 
                 Route::resource('recruitment',  BusinessRecruitmentController::class)->except('create', 'store', 'edit', 'update','show');
 
@@ -241,7 +247,7 @@ Route::middleware(['language'])->group(function () {
                 Route::get('business-products', [ProductBusinessController::class, 'index'])->name('business.products.index');
                 Route::get('business-products/detail/{id}', [ProductBusinessController::class, 'show'])->name('business.products.show');
                 Route::delete('business-products/destroy/{id}', [ProductBusinessController::class, 'destroy'])->name('business.products.destroy');
-            
+
                 Route::get('locations', [LocationController::class, 'index'])->name('locations.index');
                 Route::delete('locations/destroy/{id}', [LocationController::class, 'destroy'])->name('locations.destroy');
                 Route::get('locations/detail/{id}', [LocationController::class, 'show'])->name('locations.show');

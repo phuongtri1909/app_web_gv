@@ -24,7 +24,7 @@ class ProductBusinessController extends Controller
     public function storeConnectSupplyDemand(Request $request)
     {
         DB::beginTransaction();
-      
+
 
         try {
 
@@ -68,7 +68,7 @@ class ProductBusinessController extends Controller
                 'description.string' => 'Mô tả sản phẩm phải là chuỗi',
             ]);
 
-            
+
             $recaptchaResponse = $request->input('g-recaptcha-response');
             $secretKey = env('RECAPTCHA_SECRET_KEY');
             $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
@@ -81,7 +81,7 @@ class ProductBusinessController extends Controller
             if (!$responseBody->success) {
                 return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
             }
-           
+
 
             // Handle product avatar
             if ($request->hasFile('product_avatar')) {
@@ -91,15 +91,15 @@ class ProductBusinessController extends Controller
                 $originalFileName = pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME);
                 $fileName = $originalFileName . '_' . time() . '.webp';
                 $uploadPath = public_path('uploads/images/avatar/' . $folderName);
-    
+
                 if (!File::exists($uploadPath)) {
                     File::makeDirectory($uploadPath, 0755, true);
                 }
-    
+
                 $image = Image::make($avatar->getRealPath());
                 $image->resize(500, 500)->encode('webp', 75);
                 $image->save($uploadPath . '/' . $fileName);
-    
+
                 $avatar_path = 'uploads/images/avatar/' . $folderName . '/' . $fileName;
             }
 
@@ -121,7 +121,7 @@ class ProductBusinessController extends Controller
                     $relatedDocuments[] = 'uploads/documents/' . $folderName . '/' . $fileName;
                 }
             }
-            
+
             $slug = $this->generateUniqueSlug($request->name_product);
 
             $productBusiness = ProductBusiness::create([
@@ -160,7 +160,7 @@ class ProductBusinessController extends Controller
                     ]);
                 }
             }
-            
+
             DB::commit();
             session()->forget('key_business_code');
             session()->forget('business_code');

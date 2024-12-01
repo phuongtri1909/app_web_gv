@@ -155,11 +155,17 @@
 @endpush
 
 @section('content')
-    @switch($isHoiCho)
-        @case('hoi-cho')
+    @switch(true)
+        @case($isHoiCho)
             @include('pages.components.button-register', [
                 'buttonTitle' => 'ĐK tham gia hội chợ',
                 'buttonLink' => route('business-fair-registrations', ['news_id' => $news_id]),
+            ])
+            @break
+        @case($isHoatDongXucTien)
+            @include('pages.components.button-register', [
+                'buttonTitle' => 'ĐK hỗ trợ',
+                'buttonLink' => route('show.form.start.promotion')
             ])
             @break
         @default

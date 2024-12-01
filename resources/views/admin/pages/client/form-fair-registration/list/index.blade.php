@@ -71,7 +71,7 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                           
+
                                             <div class="dropstart">
                                                 <button class="btn btn-sm p-0 border-0 mb-0" type="button"
                                                     data-bs-toggle="dropdown" aria-expanded="false"
@@ -138,7 +138,7 @@
                                         <h6 id="modal-business-name" class="fw-bold text-primary"></h6>
                                         <span id="modal-status" class="badge badge-sm"></span>
                                     </div>
-            
+
                                     <div class="col-md-8">
                                         <div class="row g-3">
                                             <div class="col-md-6">
@@ -224,9 +224,19 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <div class="info-group">
+                                                    <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                        <i class="fas fa-users me-2"></i>{{ __('Hội chợ tham gia') }}
+                                                    </label>
+                                                    <p id="modal-join-fair" class="text-sm mb-2"></p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-            
+
                                 <div class="row mt-4">
                                     <div class="col-12">
                                         <label class="text-uppercase text-xs font-weight-bolder opacity-7">
@@ -240,7 +250,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="modal fade" id="viewImageModal" tabindex="-1" aria-labelledby="viewImageModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -266,9 +276,9 @@ integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIe
 <script>
     $(document).ready(function() {
         $('.view-registration').click(function() {
-            var businessFairId = $(this).data('id');  
+            var businessFairId = $(this).data('id');
             $.ajax({
-                url: '/admin/fair-registrations/join/' + businessFairId, 
+                url: '/admin/fair-registrations/join/' + businessFairId,
                 type: 'GET',
                 success: function(response) {
                     var formattedDate = dayjs(response.created_at).format(
@@ -278,7 +288,7 @@ integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIe
                     $('#modal-business-name').text(response.business_member_id || '-');
                     $('#modal-representative-full-name').text(response.representative_full_name || '-');
                     if (response.business_license) {
-                        var licenseImagePath = '/' + response.business_license;  
+                        var licenseImagePath = '/' + response.business_license;
                         var licenseImage = '<img src="' + licenseImagePath + '" alt="Business License" class="img-fluid product-thumbnail1" style="max-width: 100px; margin: 5px;">';
                         var img = new Image();
                         img.onload = function() {
@@ -287,7 +297,7 @@ integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIe
                         img.onerror = function() {
                             $('#modal-business-license').html('<p>Không thể tải hình ảnh giấy phép.</p>');
                         };
-                        img.src = licenseImagePath; 
+                        img.src = licenseImagePath;
                     } else {
                         $('#modal-business-license').html('<p>Không có giấy phép kinh doanh.</p>');
                     }
@@ -312,44 +322,45 @@ integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIe
                     $('#modal-news-id').text(response.news_id || '-');
                     $('#modal-created-at').text(formattedDate || '-');
                     $('#modal-updated-at').text(formattedDate1 || '-');
+                    $('#modal-join-fair').text(response.news || '-');
                     const statusBadgeClass = {
                         'approved': 'bg-success',
                         'rejected': 'bg-danger',
                         'pending': 'bg-warning'
                     }[response.status] || 'bg-secondary';
-    
+
                     const statusText = {
                         'approved': 'Đã duyệt',
                         'rejected': 'Đã từ chối',
                         'pending': 'Đang chờ'
                     }[response.status] || '-';
-    
+
                     $('#modal-status')
                         .removeClass('bg-success bg-danger bg-warning bg-secondary')
                         .addClass(statusBadgeClass)
                         .text(statusText);
-    
-                    
+
+
                     $('#fairRegistrationDetailModal').modal('show');
                 },
                 error: function(error) {
                     console.log(error);
-                    
+
                     showToast('Có lỗi xảy ra. Vui lòng thử lại sau.', 'error');
                 }
             });
         });
         $(document).on('click', '.product-thumbnail', function() {
-            var imageUrl = $(this).attr('src');  
-            $('#modal-large-image').attr('src', imageUrl);  
-            $('#viewImageModal').modal('show');  
+            var imageUrl = $(this).attr('src');
+            $('#modal-large-image').attr('src', imageUrl);
+            $('#viewImageModal').modal('show');
         });
         $(document).on('click', '.product-thumbnail1', function() {
-            var imageUrl = $(this).attr('src');  
-            $('#modal-large-image').attr('src', imageUrl);  
-            $('#viewImageModal').modal('show');  
+            var imageUrl = $(this).attr('src');
+            $('#modal-large-image').attr('src', imageUrl);
+            $('#viewImageModal').modal('show');
         });
     });
 </script>
-    
+
 @endpush

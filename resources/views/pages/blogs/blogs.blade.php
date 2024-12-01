@@ -1,7 +1,8 @@
 @extends('layouts.app')
-@section('title', $category != null ? $category->name : "Tất cả")
-@section('description', $category != null ? $category->name : "Tất cả")
-@section('keyword', $category != null ? $category->name : "Tất cả")
+@section('title', $category != null ? $category->pluck('name')->implode(', ') : "Tất cả")
+@section('description', $category != null ? $category->pluck('name')->implode(', ') : "Tất cả")
+@section('keyword', $category != null ? $category->pluck('name')->implode(', ') : "Tất cả")
+
 
 @push('styles')
     <style>
@@ -244,19 +245,39 @@
             border: 1px solid #fff;
             width: 100px;
         }
+        .image-content {
+            position: relative;
+        }
+
+        .categories-content {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(233, 212, 101, 0.8);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .categories-content a {
+            color: #fff;
+            text-decoration: none;
+            margin-right: 5px;
+        }
+
+        .categories-content a:hover {
+            text-decoration: underline;
+            color: #e0f0ff;
+        }
+
     </style>
 @endpush
 
 @section('content')
 
 
-@switch($category != null ? $category->slug : "")
-    @case('hoat-dong-xuc-tien')
-        @include('pages.components.button-register', [
-            'buttonTitle' => 'ĐK hỗ trợ',
-            'buttonLink' => route('show.form.start.promotion')
-        ])
-        @break
+@switch($category != null && is_iterable($category) ? $category->pluck('slug')->contains('hoat-dong-hoi') : ($category?->slug ?? ""))
     @case('hoat-dong-hoi')
         @include('pages.components.button-register', [
             'buttonTitle' => 'ĐK Thành viên',
@@ -265,7 +286,6 @@
         @break
     @default
 @endswitch
-   
     <section id="blogs">
         <div class="container">
             <div class="row">
@@ -296,9 +316,13 @@
                     @foreach ($blogs as $blog)
                         <div class="col-md-6 posts mb-4">
                             <div class="post-content">
-                                <div class="image-content">
-                                    <img src="{{ asset($blog->image) }}" alt="{{ $blog->title }}" width="1280"
-                                        height="527" decoding="async" class="img-fluid">
+                                <div class="image-content position-relative">
+                                    <div class="categories-content position-absolute">
+                                        @foreach ($blog->categories as $category)
+                                            <a href="#">{{ $category->name }}</a>
+                                        @endforeach
+                                    </div>
+                                        <img src="{{ asset($blog->image) }}" alt="{{ $blog->title }}" width="1280" height="527" decoding="async" class="img-fluid">
                                 </div>
                                 <div class="main-content">
                                     <div class="title-content">

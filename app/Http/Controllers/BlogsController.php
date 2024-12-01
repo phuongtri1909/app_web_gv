@@ -39,8 +39,8 @@ class BlogsController extends Controller
                         ->orWhere('slug', $searchCategory);
             });
         }
-        $categories = CategoryNews::where('slug', '!=', 'y-kien')->where('slug', '!=', 'hoi-cho')->get();
-        $blogs = $blogs->orderBy('published_at', 'desc')->whereHas('categories', function ($query) { $query->whereNotIn('slug', ['y-kien', 'hoi-cho']);})->paginate(15);
+        $categories = CategoryNews::where('slug', '!=', 'khao-sat')->where('slug', '!=', 'hoi-cho')->get();
+        $blogs = $blogs->orderBy('published_at', 'desc')->whereHas('categories', function ($query) { $query->whereNotIn('slug', ['khao-sat', 'hoi-cho']);})->paginate(15);
         return view('admin.pages.blogs.index', compact('blogs', 'categories'));
     }
 
@@ -51,7 +51,7 @@ class BlogsController extends Controller
      */
     public function create()
     {
-        $categories = CategoryNews::where('slug', '!=', 'y-kien')->where('slug', '!=', 'hoi-cho')->get();
+        $categories = CategoryNews::where('slug', '!=', 'khao-sat')->get();
         $tags = TagNews::all();
         $languages = Language::all();
         return view('admin.pages.blogs.create', compact('categories', 'tags', 'languages'));
@@ -165,7 +165,7 @@ class BlogsController extends Controller
      */
     public function edit($id)
     {
-        $categories = CategoryNews::where('slug', '!=', 'y-kien')->where('slug', '!=', 'hoi-cho')->get();
+        $categories = CategoryNews::where('slug', '!=', 'khao-sat')->where('slug', '!=', 'hoi-cho')->get();
         $tags = TagNews::all();
         $news = News::find($id);
         if (!$news) {
@@ -284,15 +284,18 @@ class BlogsController extends Controller
 
         $query = News::query();
         if ($request->has('category') && $request->input('category') !== 'all') {
-            $categoryId = $request->input('category');
-            $query->whereHas('categories', function ($q) use ($categoryId) {
-                $q->where('slug', $categoryId);
-            });
-
-            $category = CategoryNews::where('slug', $categoryId)->first();
+            $categorySlug = $request->input('category');
+            if ($categorySlug === 'hoat-dong-xuc-tien') {
+                $categories = ['hoat-dong-xuc-tien', 'tin-tuc', 'hoi-cho'];
+            } else {
+                $categories = [$categorySlug];
+            }
+            $query->whereHas('categories', fn($q) => $q->whereIn('slug', $categories));
+            $category = CategoryNews::whereIn('slug', $categories)->get();
         } else {
             $category = null;
         }
+
 
         if ($request->has('tag')) {
             $tagId = $request->input('tag');
@@ -325,6 +328,7 @@ class BlogsController extends Controller
 
         $blog->formatted_published_at = $this->formatDate($blog->published_at);
         $isHoiCho = $blog->categories->contains('slug', 'hoi-cho') ? 'hoi-cho' : null;
+        $isHoatDongXucTien = $blog->categories->contains('slug', 'hoat-dong-xuc-tien') ? 'hoat-dong-xuc-tien' : null;
         $relatedPosts = News::whereHas('categories', function ($query) use ($blog) {
             $query->whereIn('id', $blog->categories->pluck('id'));
         })->where('id', '!=', $blog->id)
@@ -336,6 +340,7 @@ class BlogsController extends Controller
             'relatedPosts' => $relatedPosts,
             'isHoiCho' => $isHoiCho,
             'news_id' => $blog->id,
+            'isHoatDongXucTien' => $isHoatDongXucTien,
         ]);
     }
 
