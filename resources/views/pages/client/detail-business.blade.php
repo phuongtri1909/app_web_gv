@@ -126,6 +126,27 @@
                                 <p class="fw-semibold me-2">Họ và tên:</p>
                                 <p>{{ Str::title(Str::lower($business->businessMember->representative_full_name)) }}</p>
                             </div>
+
+                            @if ($business->businessMember->business_code == "1700169765")
+                                <p class="fw-bold">Giám đốc chi nhánh</p>   
+                                
+                                @if ($business->businessMember->email) 
+                                    <div class="d-flex">
+                                        <p class="fw-semibold me-2">Email:</p>
+                                        <p>{{ $business->businessMember->email }}</p>
+                                    </div>
+                                @endif
+
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2">Năm sinh:</p>
+                                    <p>1983</p>
+                                </div>
+
+                                <div class="d-flex">
+                                    <p class="fw-semibold me-2">Giới tính:</p>
+                                    <p>Nam</p>
+                                </div>
+                            @endif
                         
                             <div class="d-flex">
                                 <p class="fw-semibold me-2">SĐT:</p>
