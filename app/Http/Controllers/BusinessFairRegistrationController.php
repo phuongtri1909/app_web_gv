@@ -28,10 +28,10 @@ class BusinessFairRegistrationController extends Controller
                 ->whereHas('categories', function ($query) use ($category) {
                     $query->where('id', $category->id);
                 })
-                ->latest('published_at') 
+                ->latest('published_at')
                 ->paginate(15);
         }
-    
+
         return view('admin.pages.client.form-fair-registration.index', compact('blogs'));
     }
 
@@ -60,12 +60,12 @@ class BusinessFairRegistrationController extends Controller
             'published_at.required' => __('Ngày bắt đầu là bắt buộc.'),
             'published_at.date' => __('Ngày bắt đầu phải là ngày hợp lệ.'),
             'published_at.before_or_equal' => __('Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày hết hạn.'),
-        
+
             'expired_at.required' => __('Ngày hết hạn là bắt buộc.'),
             'expired_at.date' => __('Ngày hết hạn phải là ngày hợp lệ.'),
             'expired_at.after' => __('Ngày hết hạn phải lớn hơn ngày bắt đầu.'),
         ];
-        
+
         foreach ($locales as $locale) {
             $rules["title_{$locale}"] = 'string|max:255';
             $rules["content_{$locale}"] = 'string';
@@ -116,13 +116,13 @@ class BusinessFairRegistrationController extends Controller
             $news->image = $image_path;
             $news->slug = $slug;
             $news->published_at = $request->input('published_at');
-            $news->expired_at = $request->input('expired_at'); 
+            $news->expired_at = $request->input('expired_at');
             $news->save();
 
             try {
                 if ($request->filled('category_id')) {
                     $news->categories()->attach($request->input('category_id'));
-                }                
+                }
             } catch (\Exception $e) {
                 return redirect()->back()->with('error', __('create_post_error'));
             }
@@ -141,9 +141,9 @@ class BusinessFairRegistrationController extends Controller
      */
     public function show($id)
     {
-        
+
     }
-    
+
 
     /**
      * Show the form for editing the specified resource.
@@ -175,7 +175,7 @@ class BusinessFairRegistrationController extends Controller
             'published_at.required' => __('Ngày bắt đầu là bắt buộc.'),
             'published_at.date' => __('Ngày bắt đầu phải là ngày hợp lệ.'),
             'published_at.before_or_equal' => __('Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày hết hạn.'),
-        
+
             'expired_at.required' => __('Ngày hết hạn là bắt buộc.'),
             'expired_at.date' => __('Ngày hết hạn phải là ngày hợp lệ.'),
             'expired_at.after' => __('Ngày hết hạn phải lớn hơn ngày bắt đầu.'),
@@ -258,14 +258,14 @@ class BusinessFairRegistrationController extends Controller
 
         return redirect()->route('fair-registrations.index')->with('success', __('Xóa thành công!!'));
     }
-    
+
     public function businessFairRegistration(Request $request, $news_id)
     {
         // dd($news_id);
         $businessCode = session('business_code');
         if ($businessCode) {
             $business = BusinessMember::where('business_code', $businessCode)->first();
-            
+
             if ($business) {
                 return view('pages.client.gv.form-fair-registration', [
                     'businessName' => $business->business_name,
@@ -323,7 +323,7 @@ class BusinessFairRegistrationController extends Controller
             'is_join_stage_promotion.boolean' => 'Lựa chọn tham gia khuyến mãi sân khấu không hợp lệ. Vui lòng chọn đúng kiểu giá trị (true/false).',
             'is_join_charity.boolean' => 'Lựa chọn tham gia từ thiện không hợp lệ. Vui lòng chọn đúng kiểu giá trị (true/false).',
         ]);
-        
+
         // $recaptchaResponse = $request->input('g-recaptcha-response');
         // $secretKey = env('RECAPTCHA_SECRET_KEY');
         // $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
@@ -336,7 +336,7 @@ class BusinessFairRegistrationController extends Controller
         // if (!$responseBody->success) {
         //     return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
         // }
-    
+
         $business_member_id = $this->getBusinessMemberId($request);
         if ($business_member_id instanceof \Illuminate\Http\RedirectResponse) {
             return $business_member_id;
@@ -346,7 +346,7 @@ class BusinessFairRegistrationController extends Controller
             session()->forget('key_business_code');
             session()->forget('business_code');
             return back()->with('error', 'Doanh nghiệp này đã đăng ký tham gia hội chợ. Không thể đăng ký lại.')->withInput();
-        }    
+        }
         $news_id = $request->input('news_id');
         $businessLicensePath = null;
         if ($request->hasFile('business_license')) {
@@ -355,15 +355,15 @@ class BusinessFairRegistrationController extends Controller
             $originalFileName = pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME);
             $fileName = $originalFileName . '_' . time() . '.webp';
             $uploadPath = public_path('uploads/images/fair-registration/licenses/' . $folderName);
-    
+
             if (!File::exists($uploadPath)) {
                 File::makeDirectory($uploadPath, 0755, true);
             }
-    
+
             $image = Image::make($avatar->getRealPath());
             $image->encode('webp', 75);
             $image->save($uploadPath . '/' . $fileName);
-    
+
             $businessLicensePath = 'uploads/images/fair-registration/licenses/' . $folderName . '/' . $fileName;
         }
         $productImages = [];
@@ -372,20 +372,20 @@ class BusinessFairRegistrationController extends Controller
             $originalFileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
             $fileName = $originalFileName . '_' . uniqid() . '.webp';
             $uploadPath = public_path('uploads/images/fair-registration/products/' . $folderName);
-        
+
             if (!File::exists($uploadPath)) {
                 File::makeDirectory($uploadPath, 0755, true);
             }
-        
+
             $imageInstance = Image::make($image->getRealPath());
             $imageInstance->encode('webp', 75);
             $imageInstance->save($uploadPath . '/' . $fileName);
-        
+
             return 'uploads/images/fair-registration/products/' . $folderName . '/' . $fileName;
         })->toArray();
-        
+
         $data['product_images'] = json_encode($productImages);
-        
+
         $registration = new BusinessFairRegistration();
         $registration->business_member_id = $business_member_id;
         $registration->business_license = $businessLicensePath;
@@ -399,12 +399,12 @@ class BusinessFairRegistrationController extends Controller
         $registration->discount_percentage = $validatedData['discount_percentage'];
         $registration->is_join_stage_promotion = $request->has('is_join_stage_promotion') ? 1 : 0;
         $registration->is_join_charity = $request->has('is_join_charity') ? 1 : 0;
-        $registration->news_id = $news_id; 
-    
+        $registration->news_id = $news_id;
+
         try {
             // dd($registration);
             $registration->save();
-            
+
             DB::commit();
             session()->forget('key_business_code');
             session()->forget('business_code');
@@ -428,7 +428,7 @@ class BusinessFairRegistrationController extends Controller
     public function businessFairRegistrations(Request $request)
     {
         $category = CategoryNews::where('slug', 'hoi-cho')->first();
-    
+
         $businessFairRegistrations = News::whereHas('categories', function ($query) use ($category) {
             $query->where('id', $category->id);
         })
@@ -439,30 +439,30 @@ class BusinessFairRegistrationController extends Controller
             $query->orWhere('expired_at', '>=', now());
         })
         ->paginate(15);
-    
+
         $noResults = $businessFairRegistrations->isEmpty();
-    
+
         foreach ($businessFairRegistrations as $blog) {
             $blog->shortContent = Str::limit(strip_tags($blog->content), 1000);
         }
-    
+
         return view('pages.client.form-fair-registration.fair-registration', compact('businessFairRegistrations', 'noResults', 'category'));
     }
     public function indexJoin()
     {
-        $registrations = BusinessFairRegistration::with('businessMember') 
-            ->paginate(10); 
+        $registrations = BusinessFairRegistration::with('businessMember')
+            ->paginate(10);
         return view('admin.pages.client.form-fair-registration.list.index', compact('registrations'));
     }
     public function showIndexJoin($id){
         if (!is_numeric($id)) {
             return response()->json(['error' => 'Invalid ID format'], 400);
         }
-    
+
         try {
             $registration = BusinessFairRegistration::with([
-                'businessMember', 
-                'news'         
+                'businessMember',
+                'news'
             ])->findOrFail($id);
             $productImages = json_decode($registration->product_images, true);
             return response()->json([
@@ -483,7 +483,7 @@ class BusinessFairRegistrationController extends Controller
                 'news_id' => $registration->news_id,
                 'created_at' => $registration->created_at,
                 'updated_at' => $registration->updated_at,
-                'news' => $registration->news, 
+                'news' => $registration->news ? $registration->news->title : null,
             ], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch details'], 500);
