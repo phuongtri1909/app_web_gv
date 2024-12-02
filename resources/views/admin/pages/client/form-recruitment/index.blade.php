@@ -198,7 +198,7 @@ integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIe
         $('.view-recruitment').click(function() {
             var recruitmentId = $(this).data('id');
             $.ajax({
-                url: '/admin/recruitment/' + recruitmentId,
+                url: '/recruitment/' + recruitmentId,
                 type: 'GET',
                 success: function(response) {
                     console.log(response);
@@ -214,7 +214,7 @@ integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIe
                         $('#modal-recruitment-images').empty();
                         response.recruitment_images.forEach(function(image) {
                             $('#modal-recruitment-images').append(
-                                '<a href="/' + image + '" data-fancybox="gallery"><img src="/' + image + '" alt="Recruitment Image" style="width: 50px; height: 50px; object-fit: cover;"></a>'
+                                '<a href="' + image + '" data-fancybox="gallery"><img src="' + image + '" alt="Recruitment Image" style="width: 50px; height: 50px; object-fit: cover;"></a>'
                             );
                         });
                     }
@@ -239,6 +239,7 @@ integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIe
                     $('#recruitmentDetailModal').modal('show');
                 },
                 error: function(error) {
+                   
                     showToast(error.responseJSON.message, 'error');
                 }
             });

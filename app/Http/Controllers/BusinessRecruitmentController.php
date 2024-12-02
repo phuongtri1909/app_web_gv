@@ -18,8 +18,8 @@ class BusinessRecruitmentController extends Controller
 
     public function jobConnector()
     {
-        $recruitments = BusinessRecruitment::with('businessMember')->where('status','approved')->orderBy('created_at', 'desc')->paginate(15);
-        $jobApplications = JobApplication::where('status','approved')->orderBy('created_at', 'desc')->paginate(15);
+        $recruitments = BusinessRecruitment::with('businessMember')->where('status', 'approved')->orderBy('created_at', 'desc')->paginate(15);
+        $jobApplications = JobApplication::where('status', 'approved')->orderBy('created_at', 'desc')->paginate(15);
         return view('pages.client.job-connector', compact('recruitments', 'jobApplications'));
     }
 
@@ -38,8 +38,7 @@ class BusinessRecruitmentController extends Controller
         $businessRecruitments = BusinessRecruitment::with('businessMember')
             ->when($search, function ($query, $search) {
                 return $query->where('recruitment_title', 'like', '%' . $search . '%')
-                            ->orWhere('recruitment_content', 'like', '%' . $search . '%');
-
+                    ->orWhere('recruitment_content', 'like', '%' . $search . '%');
             })
 
             ->when($search_member_id, function ($query, $search_member_id) {
@@ -64,21 +63,35 @@ class BusinessRecruitmentController extends Controller
         $businessRecruitment = BusinessRecruitment::findOrFail($id);
 
         $images = json_decode($businessRecruitment->recruitment_images);
-
-        foreach ($images as $image) {
+        foreach ($images as &$image) {
             $image = asset($image);
         }
 
-        return response()->json([
-            'avt_businesses' => isset($businessRecruitment->businessMember->business) ? asset($businessRecruitment->businessMember->business->avt_businesses) : asset('images/business/business_default.webp'),
+        // Cấu hình thông tin doanh nghiệp
+        $avtBusiness = isset($businessRecruitment->businessMember->business)
+            ? asset($businessRecruitment->businessMember->business->avt_businesses)
+            : asset('images/business/business_default.webp');
+
+        $response = [
+            'avt_businesses' => $avtBusiness,
             'business_name' => $businessRecruitment->businessMember->business_name,
             'business_code' => $businessRecruitment->businessMember->business_code,
             'recruitment_title' => $businessRecruitment->recruitment_title,
             'recruitment_content' => $businessRecruitment->recruitment_content,
             'recruitment_images' => $images,
             'status' => $businessRecruitment->status,
-        ]);
+        ];
+
+        if (auth()->check() && auth()->user()->role === 'admin') {
+            return response()->json($response);
+        } else {
+            if ($businessRecruitment->status !== 'approved') {
+                return response()->json(['message' => 'Bài tuyển dụng này không tồn tại'], 403);
+            }
+            return response()->json($response);
+        }
     }
+
 
     public function storeForm(Request $request)
     {

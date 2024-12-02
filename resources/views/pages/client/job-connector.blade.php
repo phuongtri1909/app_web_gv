@@ -282,7 +282,7 @@
             $('.view-recruitment').click(function() {
                 var recruitmentId = $(this).data('id');
                 $.ajax({
-                    url: '/admin/recruitment/' + recruitmentId,
+                    url: '/recruitment/' + recruitmentId,
                     type: 'GET',
                     success: function(response) {
 
@@ -298,8 +298,8 @@
                             $('#modal-recruitment-images').empty();
                             response.recruitment_images.forEach(function(image) {
                                 $('#modal-recruitment-images').append(
-                                    '<a href="/' + image +
-                                    '" data-fancybox="gallery"><img src="/' +
+                                    '<a href="' + image +
+                                    '" data-fancybox="gallery"><img src="' +
                                     image +
                                     '" alt="Recruitment Image" style="width: 50px; height: 50px; object-fit: cover;"></a>'
                                 );
@@ -326,6 +326,8 @@
                         $('#recruitmentDetailModal').modal('show');
                     },
                     error: function(error) {
+                        console.log(error);
+                    
                         showToast(error.responseJSON.message, 'error');
                     }
                 });

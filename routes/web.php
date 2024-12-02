@@ -174,6 +174,8 @@ Route::middleware(['language'])->group(function () {
         return view('pages.tab-custom.index', compact('slug'));
     })->name('page.tab');
 
+    Route::get('recruitment/{id}', [BusinessRecruitmentController::class, 'show'])->name('recruitment.show');
+
     Route::middleware(['auth'])->group(function () {
         Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
         Route::middleware(['role.admin'])->group(function () {
@@ -222,7 +224,7 @@ Route::middleware(['language'])->group(function () {
 
                 Route::resource('survey', BusinessSurveyController::class)->except('show');
 
-                Route::resource('recruitment',  BusinessRecruitmentController::class)->except('create', 'store', 'edit', 'update');
+                Route::resource('recruitment',  BusinessRecruitmentController::class)->except('create', 'store', 'edit', 'update','show');
 
                 Route::get('/form-business', [BusinessController::class, 'adminIndex'])->name('admin.business');
 
