@@ -12,48 +12,60 @@ function updateStatus (model, id, status) {
         }).show()
         return
     }
+    Swal.fire({
+        title: 'Xác nhận cập nhật',
+        text: `Bạn có chắc chắn muốn thay đổi trạng thái không?`,
+        icon: 'warning',
+        showCancelButton: true,
+        focusConfirm: false,
+        confirmButtonText: 'Cập nhật',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/admin/update-status',
+                type: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    model: model,
+                    id: id,
+                    status: status
+                },
+                success: function (response) {
+                    if (response.success) {
+                        badge
+                            .removeClass('bg-success bg-danger bg-warning')
+                            .data('status', status);
 
-    $.ajax({
-        url: '/admin/update-status',
-        type: 'POST',
-        data: {
-            _token: $('meta[name="csrf-token"]').attr('content'),
-            model: model,
-            id: id,
-            status: status
-        },
-        success: function (response) {
-            if (response.success) {
-                badge
-                    .removeClass('bg-success bg-danger bg-warning')
-                    .data('status', status)
+                        if (status === 'approved') {
+                            badge.addClass('bg-success').text('Đã duyệt');
+                        } else if (status === 'rejected') {
+                            badge.addClass('bg-danger').text('Đã từ chối');
+                        } else {
+                            badge.addClass('bg-warning').text('Đang chờ');
+                        }
 
-                if (status === 'approved') {
-                    badge.addClass('bg-success').text('Đã duyệt')
-                } else if (status === 'rejected') {
-                    badge.addClass('bg-danger').text('Đã từ chối')
-                } else {
-                    badge.addClass('bg-warning').text('Đang chờ')
+                        new Noty({
+                            type: 'success',
+                            text: response.message,
+                            timeout: 1500
+                        }).show();
+                    }
+                },
+                error: function (xhr) {
+                    new Noty({
+                        type: 'error',
+                        text:
+                            'Cập nhật trạng thái thất bại: ' +
+                            (xhr.responseJSON.message || 'Không rõ lý do'),
+                        timeout: 1500
+                    }).show();
                 }
-
-                new Noty({
-                    type: 'success',
-                    text: response.message,
-                    timeout: 1500
-                }).show()
-            }
-        },
-        error: function (xhr) {
-            new Noty({
-                type: 'error',
-                text:
-                    'Cập nhật trạng thái thất bại: ' +
-                    (xhr.responseJSON.message || 'Không rõ lý do'),
-                timeout: 1500
-            }).show()
+            });
         }
-    })
+    });
 }
+
 function updateStatus1(model, id, status) {
     const badge = $('#status-badge-' + id);
     const currentStatus = badge.data('status');
@@ -82,54 +94,65 @@ function updateStatus1(model, id, status) {
             timeout: 1500
         }).show();
         return;
-    }    
-    $.ajax({
-        url: '/admin/update-status-1',
-        type: 'POST',
-        data: {
-            _token: $('meta[name="csrf-token"]').attr('content'),
-            model: model,
-            id: id,
-            status: status
-        },
-        success: function (response) {
-            if (response.success) {
-                const { status, statusLabel, statusClass } = response;
+    }
 
-                
-                badge
-                    .removeClass('bg-success bg-info bg-warning')
-                    .addClass('bg-' + statusClass)
-                    .text(statusLabel)
-                    .data('status', status);
+    Swal.fire({
+        title: 'Xác nhận cập nhật',
+        text: `Bạn có chắc chắn muốn thay đổi trạng thái không?`,
+        icon: 'warning',
+        showCancelButton: true,
+        focusConfirm: false,
+        confirmButtonText: 'Cập nhật',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/admin/update-status-1',
+                type: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    model: model,
+                    id: id,
+                    status: status
+                },
+                success: function (response) {
+                    if (response.success) {
+                        const { status, statusLabel, statusClass } = response;
+                        badge
+                            .removeClass('bg-success bg-info bg-warning')
+                            .addClass('bg-' + statusClass)
+                            .text(statusLabel)
+                            .data('status', status);
 
-               
-                new Noty({
-                    type: 'success',
-                    text: response.message,
-                    timeout: 1500
-                }).show();
-            } else {
-                
-                new Noty({
-                    type: 'error',
-                    text: response.message,
-                    timeout: 1500
-                }).show();
-            }
-        },
-        error: function (xhr) {
-            const errorMessage =
-                xhr.responseJSON?.message || 'Cập nhật trạng thái thất bại: Không rõ lý do';
+                        new Noty({
+                            type: 'success',
+                            text: response.message,
+                            timeout: 1500
+                        }).show();
+                    } else {
+                        new Noty({
+                            type: 'error',
+                            text: response.message,
+                            timeout: 1500
+                        }).show();
+                    }
+                },
+                error: function (xhr) {
+                    const errorMessage =
+                        xhr.responseJSON?.message || 'Cập nhật trạng thái thất bại: Không rõ lý do';
 
-            new Noty({
-                type: 'error',
-                text: errorMessage,
-                timeout: 1500
-            }).show();
+                    new Noty({
+                        type: 'error',
+                        text: errorMessage,
+                        timeout: 1500
+                    }).show();
+                }
+            });
         }
     });
 }
+
+
 
 // thong bao loi form ngoai client
 
