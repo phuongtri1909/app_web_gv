@@ -106,14 +106,14 @@ class BusinessRecruitmentController extends Controller
 
             $validated = $request->validate([
                 'recruitment_title' => 'required|string|max:255',
-                'recruitment_content' => 'required|string|max:5000',
+                'recruitment_content' => 'required|string|max:4000',
                 'recruitment_images' => 'required|array|max:4',
                 'recruitment_images.*' => 'required|image|mimes:jpeg,png,jpg,gif,webp',
             ], [
                 'recruitment_title.required' => 'Vui lòng nhập tiêu đề tuyển dụng.',
                 'recruitment_title.max' => 'Tiêu đề tuyển dụng không được vượt quá 255 ký tự.',
                 'recruitment_content.required' => 'Vui lòng nhập nội dung tuyển dụng.',
-                'recruitment_content.max' => 'Nội dung tuyển dụng không được vượt quá 5000 ký tự.',
+                'recruitment_content.max' => 'Nội dung tuyển dụng không được vượt quá 4000 ký tự.',
                 'recruitment_images.required' => 'Vui lòng chọn ảnh tuyển dụng.',
                 'recruitment_images.array' => 'Ảnh tuyển dụng phải là một mảng.',
                 'recruitment_images.max' => 'Ảnh tuyển dụng không được vượt quá 4 ảnh.',
