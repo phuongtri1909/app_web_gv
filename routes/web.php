@@ -98,6 +98,7 @@ Route::middleware(['language'])->group(function () {
 
         //tạm gán như này cho kết nối việc làm
         Route::get('/job-connector', [BusinessRecruitmentController::class, 'jobConnector'])->name('job-connector');
+        Route::get('/job-connector/{id}', [BusinessRecruitmentController::class, 'jobConnectorDetail'])->name('job-connector.detail');
 
         Route::get('/legal-advice', [ContactConsultationController::class, 'legalAdvice'])->name('legal-advice');
 
@@ -221,7 +222,7 @@ Route::middleware(['language'])->group(function () {
 
                 Route::resource('survey', BusinessSurveyController::class)->except('show');
 
-                Route::resource('recruitment',  BusinessRecruitmentController::class)->except('create', 'store', 'edit', 'update','show');
+                Route::resource('recruitment',  BusinessRecruitmentController::class)->except('create', 'store', 'edit', 'update');
 
                 Route::get('/form-business', [BusinessController::class, 'adminIndex'])->name('admin.business');
 

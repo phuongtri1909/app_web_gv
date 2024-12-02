@@ -16,7 +16,7 @@
                                 <input type="hidden" name="search" value="{{ request('search') }}">  
                             @endif
                             
-                            <select name="search-member-id" class="form-control-sm me-2">
+                            <select name="search-member-id" class="form-control-sm me-2 w-100 w-md-auto">
                                 <option value="">Tất cả doanh nghiệp</option>
                                 @foreach ($business_members as $item)
                                     <option value="{{ $item->id }}" {{ request('search-member-id') == $item->id ? 'selected' : '' }}>
@@ -62,7 +62,9 @@
                                             <p class="text-xs font-weight-bold mb-0">{{ $recruitment->recruitment_title ?? '-'}}</p>
                                         </td>
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">{!! $recruitment->recruitment_content ?? '-' !!}</p>
+                                            <p class="text-xs font-weight-bold mb-0">
+                                                {!! Str::limit(strip_tags($recruitment->recruitment_content), 200) !!}
+                                            </p>
                                         </td>
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">{{ $recruitment->businessMember->business_name ?? '-' }}</p>
@@ -89,6 +91,12 @@
                                             @endif
                                         </td>
                                         <td class="text-center">
+
+                                            <button class="btn btn-sm p-0 border-0 mb-0 view-recruitment"
+                                                data-id="{{ $recruitment->id }}" title="Xem chi tiết">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+
                                             <div class="dropstart">
                                                 <button class="btn btn-sm p-0 border-0 mb-0" type="button"
                                                     data-bs-toggle="dropdown" aria-expanded="false"
@@ -138,7 +146,7 @@
                                     <div class="d-flex align-items-center justify-content-between">
                                         <h5 class="text-white mb-0">
                                             <i class="fas fa-building me-2"></i>
-                                            {{ __('Thông tin chi tiết doanh nghiệp') }}
+                                            {{ __('Thông tin chi tiết tuyển dụng') }}
                                         </h5>
                                         <button type="button" class="btn btn-link text-white" data-bs-dismiss="modal">
                                             <i class="fas fa-times"></i>
@@ -147,72 +155,25 @@
                                 </div>
                                 <div class="card-body p-4">
                                     <div class="row g-4">
-                                        <div class="col-md-6">
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-building me-2"></i>{{ __('Tên doanh nghiệp') }}
-                                                </label>
-                                                <p id="modal-business-name" class="text-sm mb-2"></p>
+                                        <div class="col-md-4 text-center">
+                                            <div class="avatar-preview mb-3">
+                                                <img id="modal-avatar" src="" class="rounded-circle img-fluid shadow"
+                                                    style="width: 150px; height: 150px; object-fit: scale-down;"
+                                                    alt="Business Avatar">
                                             </div>
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-id-card me-2"></i>{{ __('MST') }}
-                                                </label>
-                                                <p id="modal-business-code" class="text-sm mb-2"></p>
-                                            </div>
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-th-list me-2"></i>{{ __('Loại doanh nghiệp') }}
-                                                </label>
-                                                <p id="modal-category-business" class="text-sm mb-2"></p>
-                                            </div>
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-map-marker-alt me-2"></i>{{ __('Địa chỉ') }}
-                                                </label>
-                                                <p id="modal-address" class="text-sm mb-2"></p>
-                                            </div>
+                                            <h6 id="modal-business-name" class="fw-bold text-primary"></h6>
+                                            <p class="text-muted small">MST: <span id="modal-business-code"></span></p>
+                                            
                                         </div>
                                         <div class="col-md-6">
                                             <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-phone me-2"></i>{{ __('Số điện thoại') }}
-                                                </label>
-                                                <p id="modal-phone" class="text-sm mb-2"></p>
+                                                <h6 id="modal-recruitment-title" class="fw-bold text-primary"></h6>
+                                                <p id="modal-recruitment-content" class="text-sm mb-2"></p>
                                             </div>
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-fax me-2"></i>{{ __('Số Fax') }}
-                                                </label>
-                                                <p id="modal-fax" class="text-sm mb-2"></p>
-                                            </div>
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-envelope me-2"></i>{{ __('Email') }}
-                                                </label>
-                                                <p id="modal-email" class="text-sm mb-2"></p>
-                                            </div>
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-user me-2"></i>{{ __('Người đại diện') }}
-                                                </label>
-                                                <p id="modal-representative" class="text-sm mb-2"></p>
-                                            </div>
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-venus-mars me-2"></i>{{ __('Giới tính') }}
-                                                </label>
-                                                <p id="modal-gender" class="text-sm mb-2"></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-4">
-                                        <div class="col-12">
-                                            <div class="info-group">
-                                                <label class="text-uppercase text-xs font-weight-bolder opacity-7">
-                                                    <i class="fas fa-info-circle me-2"></i>{{ __('Thông tin tuyển dụng') }}
-                                                </label>
-                                                <p id="modal-recruitment-info" class="text-sm mb-2"></p>
+                                            <div id="modal-recruitment-images">
+                                                <a href="" data-fancybox="gallery">
+                                                    <img src="" alt="Recruitment Image" style="width: 50px; height: 50px; object-fit: cover;">
+                                                </a>
                                             </div>
                                             <span id="modal-status" class="badge badge-sm"></span>
                                         </div>
@@ -240,23 +201,24 @@ integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIe
                 url: '/admin/recruitment/' + recruitmentId,
                 type: 'GET',
                 success: function(response) {
+                    console.log(response);
+                    
+                    $('#modal-avatar').attr('src', response.avt_businesses || '');
                     $('#modal-business-name').text(response.business_name || '-');
                     $('#modal-business-code').text(response.business_code || '-');
-                    $('#modal-category-business').text(response.category_business?.name || '-');
-                    $('#modal-address').text(response.head_office_address || '-');
-                    $('#modal-phone').text(response.phone || '-');
-                    $('#modal-fax').text(response.fax || '-');
-                    $('#modal-email').text(response.email || '-');
-                    $('#modal-representative').text(response.representative_name || '-');
-                    $('#modal-recruitment-info').text(response.recruitment_info || '-');
+                    
+                    $('#modal-recruitment-title').text(response.recruitment_title|| '-');
+                    $('#modal-recruitment-content').html(response.recruitment_content || '-');
 
-                    const genderText = {
-                        'male': 'Nam',
-                        'female': 'Nữ',
-                        'other': 'Khác'
-                    }[response.gender] || '-';
-                    $('#modal-gender').text(genderText);
-
+                    if (response.recruitment_images) {
+                        $('#modal-recruitment-images').empty();
+                        response.recruitment_images.forEach(function(image) {
+                            $('#modal-recruitment-images').append(
+                                '<a href="/' + image + '" data-fancybox="gallery"><img src="/' + image + '" alt="Recruitment Image" style="width: 50px; height: 50px; object-fit: cover;"></a>'
+                            );
+                        });
+                    }
+                  
                     const statusBadgeClass = {
                         'approved': 'bg-success',
                         'rejected': 'bg-danger',
@@ -275,6 +237,9 @@ integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIe
                         .text(statusText);
 
                     $('#recruitmentDetailModal').modal('show');
+                },
+                error: function(error) {
+                    showToast(error.responseJSON.message, 'error');
                 }
             });
         });

@@ -18,10 +18,18 @@ class BusinessRecruitmentController extends Controller
 
     public function jobConnector()
     {
-        $recruitments = BusinessRecruitment::with('businessMember')->orderBy('created_at', 'desc')->paginate(15);
-        $jobApplications = JobApplication::orderBy('created_at', 'desc')->paginate(15);
+        $recruitments = BusinessRecruitment::with('businessMember')->where('status','approved')->orderBy('created_at', 'desc')->paginate(15);
+        $jobApplications = JobApplication::where('status','approved')->orderBy('created_at', 'desc')->paginate(15);
         return view('pages.client.job-connector', compact('recruitments', 'jobApplications'));
     }
+
+    public function jobConnectorDetail($id)
+    {
+        $recruitment = BusinessRecruitment::with('businessMember')->find($id);
+        return view('pages.client.job-connector-detail', compact('recruitment'));
+    }
+
+
     //
     public function index(Request $request)
     {
@@ -51,6 +59,27 @@ class BusinessRecruitmentController extends Controller
         return redirect()->route('business-recruitments.index')->with('success', 'Recruitment deleted successfully');
     }
 
+    public function show($id)
+    {
+        $businessRecruitment = BusinessRecruitment::findOrFail($id);
+
+        $images = json_decode($businessRecruitment->recruitment_images);
+
+        foreach ($images as $image) {
+            $image = asset($image);
+        }
+
+        return response()->json([
+            'avt_businesses' => isset($businessRecruitment->businessMember->business) ? asset($businessRecruitment->businessMember->business->avt_businesses) : asset('images/business/business_default.webp'),
+            'business_name' => $businessRecruitment->businessMember->business_name,
+            'business_code' => $businessRecruitment->businessMember->business_code,
+            'recruitment_title' => $businessRecruitment->recruitment_title,
+            'recruitment_content' => $businessRecruitment->recruitment_content,
+            'recruitment_images' => $images,
+            'status' => $businessRecruitment->status,
+        ]);
+    }
+
     public function storeForm(Request $request)
     {
         // Check business code 
@@ -64,14 +93,14 @@ class BusinessRecruitmentController extends Controller
 
             $validated = $request->validate([
                 'recruitment_title' => 'required|string|max:255',
-                'recruitment_content' => 'required|string|max:2000',
+                'recruitment_content' => 'required|string|max:4000',
                 'recruitment_images' => 'required|array|max:4',
                 'recruitment_images.*' => 'required|image|mimes:jpeg,png,jpg,gif,webp',
             ], [
                 'recruitment_title.required' => 'Vui lòng nhập tiêu đề tuyển dụng.',
                 'recruitment_title.max' => 'Tiêu đề tuyển dụng không được vượt quá 255 ký tự.',
                 'recruitment_content.required' => 'Vui lòng nhập nội dung tuyển dụng.',
-                'recruitment_content.max' => 'Nội dung tuyển dụng không được vượt quá 2000 ký tự.',
+                'recruitment_content.max' => 'Nội dung tuyển dụng không được vượt quá 4000 ký tự.',
                 'recruitment_images.required' => 'Vui lòng chọn ảnh tuyển dụng.',
                 'recruitment_images.array' => 'Ảnh tuyển dụng phải là một mảng.',
                 'recruitment_images.max' => 'Ảnh tuyển dụng không được vượt quá 4 ảnh.',

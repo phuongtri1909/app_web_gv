@@ -152,10 +152,10 @@ class BusinessCapitalNeedController extends Controller
                 'finance' => 'required|numeric|min:0',
                 'loan_cycle' => 'required|integer|min:0',
                 'interest_rate' => 'required|numeric|min:0',
-                'purpose' => 'required|string|max:2000',
+                'purpose' => 'required|string|max:4000',
                 'bank_connection' => 'required|string|max:255',
-                'support_policy' => 'required|string|max:2000',
-                'feedback' => 'required|string|max:2000',
+                'support_policy' => 'required|string|max:4000',
+                'feedback' => 'required|string|max:4000',
             ], [
                 'finance.required' => 'Vui lòng nhập số vốn.',
                 'finance.numeric' => 'Số vốn phải là một số hợp lệ.',
@@ -167,13 +167,13 @@ class BusinessCapitalNeedController extends Controller
                 'interest_rate.numeric' => 'Lãi đề xuất suất phải là một số hợp lệ.',
                 'interest_rate.min' => 'Lãi suất không được nhỏ hơn 0.',
                 'purpose.required' => 'Vui lòng nhập mục đích vay của bạn.',
-                'purpose.max' => 'Mục đích vay không được vượt quá 2000 ký tự.',
+                'purpose.max' => 'Mục đích vay không được vượt quá 4000 ký tự.',
                 'bank_connection.required' => 'Vui lòng nhập thông tin kết nối ngân hàng.',
                 'bank_connection.max' => 'Thông tin kết nối ngân hàng không được vượt quá 255 ký tự.',
                 'support_policy.required' => 'Vui lòng nhập đề xuất chính sách hỗ trợ.',
-                'support_policy.max' => 'Đề xuất chính sách hỗ trợ không được vượt quá 2000 ký tự.',
+                'support_policy.max' => 'Đề xuất chính sách hỗ trợ không được vượt quá 4000 ký tự.',
                 'feedback.required' => 'Vui lòng nhập ý kiến đối với ngân hàng.',
-                'feedback.max' => 'Ý kiến đối với ngân hàng không được vượt quá 2000 ký tự.',
+                'feedback.max' => 'Ý kiến đối với ngân hàng không được vượt quá 4000 ký tự.',
 
             ]);
             $recaptchaResponse = $request->input('g-recaptcha-response');

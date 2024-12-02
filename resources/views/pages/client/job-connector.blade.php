@@ -104,7 +104,7 @@
         .btn-style702.active::after {
             width: 100%;
             border-color: transparent;
-            background: linear-gradient(45deg, rgba(255, 182, 108, 0.3), rgba(255, 255, 0, 0.3)); 
+            background: linear-gradient(45deg, rgba(255, 182, 108, 0.3), rgba(255, 255, 0, 0.3));
             transition-delay: 0.2s;
         }
     </style>
@@ -152,7 +152,8 @@
             <button class=" btn-custom click-btn btn-style702 active text-dark fw-bold" id="btn-tuyen-dung"
                 onclick="showInfo('tuyen_dung', this)">Tuyển
                 dụng</button>
-            <button class=" btn-custom click-btn btn-style702 text-dark fw-bold" id="btn-tim-viec" onclick="showInfo('tim_viec', this)">Tìm
+            <button class=" btn-custom click-btn btn-style702 text-dark fw-bold" id="btn-tim-viec"
+                onclick="showInfo('tim_viec', this)">Tìm
                 việc</button>
         </div>
 
@@ -161,18 +162,23 @@
             <div class="text-start">
 
                 @if ($recruitments->count() != 0)
-                    
+
                     @foreach ($recruitments as $item)
                         <div class="job-listing">
                             <div class="d-flex mb-2">
-                                <img src="{{ isset($item->businessMember->business) ? asset($item->businessMember->business->avt_businesses) : asset('images/business/business_default.webp')  }}" alt="" class=""
-                                    style="width: 100px ;height: 100px;    object-fit: scale-down;">
+                                <img src="{{ isset($item->businessMember->business) ? asset($item->businessMember->business->avt_businesses) : asset('images/business/business_default.webp') }}"
+                                    alt="" class=""
+                                    style="width: 100px ;height: 100px; object-fit: scale-down;">
                                 <h5 class="ms-2">{{ $item->businessMember->business_name ?? '' }}</h5>
                             </div>
                             <h5>{{ $item->recruitment_title }}</h5>
-                            <p><strong>Mô tả công việc:</strong> {!! $item->recruitment_content !!}</p>
+                            <p><strong>Mô tả công việc:</strong>
+                                {!! Str::limit(strip_tags($item->recruitment_content), 300) !!}
+
+                            </p>
+                            <a href="javascript:void(0)" class="view-recruitment" data-id="{{ $item->id }}">Xem thêm</a>
                         </div>
-                    @endforeach 
+                    @endforeach
                 @else
                     <div class="col-12">
                         <p>Không có công việc nào</p>
@@ -198,10 +204,10 @@
                                 <h5>Họ và tên: {{ $item->full_name }}</h5>
                                 <div class="d-flex">
                                     <p class="me-3"><strong>Năm sinh:</strong> {{ $item->birth_year }}</p>
-                                    <p><strong>Giới tính:</strong> 
-                                        @if ($item->gender == "male")
+                                    <p><strong>Giới tính:</strong>
+                                        @if ($item->gender == 'male')
                                             Nam
-                                        @elseif($item->gender == "female")
+                                        @elseif($item->gender == 'female')
                                             Nữ
                                         @else
                                             Khác
@@ -219,4 +225,111 @@
             </div>
         </div>
     </div>
+
+
+    <div class="modal fade" id="recruitmentDetailModal" tabindex="-1" aria-labelledby="recruitmentDetailModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-app-gv p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-building me-2"></i>
+                                {{ __('Thông tin chi tiết tuyển dụng') }}
+                            </h5>
+                            <button type="button" class="btn btn-link text-white" data-bs-dismiss="modal">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-4">
+                            <div class="col-md-4 text-center">
+                                <div class="avatar-preview mb-3">
+                                    <img id="modal-avatar" src="" class="rounded-circle img-fluid shadow"
+                                        style="width: 150px; height: 150px; object-fit: scale-down;" alt="Business Avatar">
+                                </div>
+                                <h6 id="modal-business-name" class="fw-bold text-primary"></h6>
+                                <p class="text-muted small">MST: <span id="modal-business-code"></span></p>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-group">
+                                    <h6 id="modal-recruitment-title" class="fw-bold text-primary"></h6>
+                                    <p id="modal-recruitment-content" class="text-sm mb-2"></p>
+                                </div>
+                                <div id="modal-recruitment-images">
+                                    <a href="" data-fancybox="gallery">
+                                        <img src="" alt="Recruitment Image"
+                                            style="width: 50px; height: 50px; object-fit: cover;">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('scripts')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.view-recruitment').click(function() {
+                var recruitmentId = $(this).data('id');
+                $.ajax({
+                    url: '/admin/recruitment/' + recruitmentId,
+                    type: 'GET',
+                    success: function(response) {
+
+                        $('#modal-avatar').attr('src', response.avt_businesses || '');
+                        $('#modal-business-name').text(response.business_name || '-');
+                        $('#modal-business-code').text(response.business_code || '-');
+
+                        $('#modal-recruitment-title').text(response.recruitment_title || '-');
+                        $('#modal-recruitment-content').html(response.recruitment_content ||
+                            '-');
+
+                        if (response.recruitment_images) {
+                            $('#modal-recruitment-images').empty();
+                            response.recruitment_images.forEach(function(image) {
+                                $('#modal-recruitment-images').append(
+                                    '<a href="/' + image +
+                                    '" data-fancybox="gallery"><img src="/' +
+                                    image +
+                                    '" alt="Recruitment Image" style="width: 50px; height: 50px; object-fit: cover;"></a>'
+                                );
+                            });
+                        }
+
+                        const statusBadgeClass = {
+                            'approved': 'bg-success',
+                            'rejected': 'bg-danger',
+                            'pending': 'bg-warning'
+                        } [response.status] || 'bg-secondary';
+
+                        const statusText = {
+                            'approved': 'Đã duyệt',
+                            'rejected': 'Đã từ chối',
+                            'pending': 'Đang chờ'
+                        } [response.status] || '-';
+
+                        $('#modal-status')
+                            .removeClass('bg-success bg-danger bg-warning bg-secondary')
+                            .addClass(statusBadgeClass)
+                            .text(statusText);
+
+                        $('#recruitmentDetailModal').modal('show');
+                    },
+                    error: function(error) {
+                        showToast(error.responseJSON.message, 'error');
+                    }
+                });
+            });
+        });
+    </script>
+@endpush
