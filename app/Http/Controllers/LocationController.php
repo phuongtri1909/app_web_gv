@@ -146,6 +146,13 @@ class LocationController extends Controller
             $results = $locations->get();
         }
 
+        $results->each(function ($result) {
+            if ($result->businessMember) {
+                $result->businessMember->business = $result->businessMember->business ?? null;
+            }
+        });
+
+
         return response()->json($results);
     }
 

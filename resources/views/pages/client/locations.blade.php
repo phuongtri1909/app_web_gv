@@ -274,6 +274,9 @@
 
         function selectLocation(isLocation, lat, lng, iconUrl) {
 
+            console.log(isLocation);
+            
+
             const location = new google.maps.LatLng(lat, lng);
             const fullIconUrl = iconUrl ?
                 `${domain}/${iconUrl}` :
@@ -392,7 +395,7 @@
                     const address = results[0].formatted_address;
                     infowindow.setContent(address);
                     infowindow.open(map, marker);
-                    $('#place-name').val(address);
+                    //$('#place-name').val(address);
 
                     service.getDetails({
                         placeId: results[0].place_id
@@ -466,26 +469,59 @@
         }
 
         function displaySearchResults(results) {
-            const searchResults = $('#search-results').empty();
+            
+            const searchResultsContainer = $('.scrollable-list').empty();
 
             results.forEach(result => {
-                $('<div>', {
-                    class: 'list-group-item list-group-item-action',
-                    text: `${result.name} - ${result.address_address}`,
-                    click: () => {
-                        const location = new google.maps.LatLng(parseFloat(result.address_latitude),
-                            parseFloat(result.address_longitude));
-                        const iconUrl = result.business_field.icon ?
-                            `${domain}/${result.business_field.icon}` :
-                            `${domain}/images/icon/icon_location.png`;
+                const businessImage = result.business_member && result.business_member.business ? 
+                    `${domain}/${result.business_member.business.avt_businesses}` : 
+                    `${domain}/images/business/business_default.webp`;
 
-                        map.setCenter(location);
-                        placeMarker(location, iconUrl);
-                        getGeocode(location);
-                        searchResults.empty();
-                        $('#place-name').val(result.name);
-                    }
-                }).appendTo(searchResults);
+                const iconUrl = result.business_field.icon ? 
+                    `${domain}/${result.business_field.icon}` : 
+                    `${domain}/images/icon/icon_location.png`;
+
+            
+                const resultHtml = `
+                    <div class="col-12 col-sm-6 col-lg-12">
+                        <div class="border rounded-4 p-3 h-100 info-location-container"
+                            onclick='selectLocation(${JSON.stringify(result)}, ${result.address_latitude}, ${result.address_longitude}, "${iconUrl}")'>
+                            <div class="info-location-content">
+                                <div class="info-location">
+                                    <span>Thông tin vị trí</span>
+                                    <div class="d-flex align-items-center my-2">
+                                        <img class="img-location rounded-circle me-3"
+                                            src="${businessImage}" alt="${result.name}" loading="lazy">
+                                        <div class="d-flex flex-column">
+                                            <h5>${result.name}</h5>
+                                            <div class="d-flex align-items-center">
+                                                <img class="icon-business-field" src="${iconUrl}" alt="${result.business_field.name}" loading="lazy">
+                                                <span>${result.business_field.name}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="d-flex">
+                                        <strong>Địa chỉ: </strong>
+                                        <p>${result.address_address}</p>
+                                    </div>
+                                    <div class="d-flex">
+                                        <strong>Tọa độ: </strong>
+                                        <p class="mb-0">${result.address_latitude} - ${result.address_longitude}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-end info-location-button">
+                                <button title="Chỉ đường" class="btn btn-info text-white" onclick="openDirections(${result.address_latitude}, ${result.address_longitude})">
+                                    <i class="fa-solid fa-location-arrow"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                searchResultsContainer.append(resultHtml);
             });
         }
     </script>
