@@ -125,7 +125,7 @@
                         @foreach ($locations as $location)
                             <div class="col-12 col-sm-6 col-lg-12">
                                 <div class="border rounded-4 p-3 h-100 info-location-container"
-                                    onclick="selectLocation({{ $location }},{{ $location->address_latitude }},{{ $location->address_longitude }},'{{ $location->businessField->icon }}')">
+                                    onclick="selectLocation({{ $location }},{{ $location->address_latitude }},{{ $location->address_longitude }},'{{ $location->businessField->icon ?? '' }}')">
                                     <div class="info-location-content">
                                         <div class="info-location">
                                             <span>Thông tin vị trí</span>
