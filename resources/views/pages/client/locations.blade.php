@@ -1,8 +1,17 @@
 @extends('layouts.app')
-@section('title', 'Chỉ dẫn điểm đến')
-@section('description', 'Chỉ dẫn điểm đến')
-@section('keyword', 'Chỉ dẫn điểm đến')
+
+@if (Route::currentRouteName() == 'locations')
+    @section('title', 'Chỉ dẫn điểm đến')
+    @section('description', 'Chỉ dẫn điểm đến')
+    @section('keyword', 'Chỉ dẫn điểm đến')
+@elseif(Route::currentRouteName() == 'locations-17')
+    @section('title', 'Quản lý tiểu thương')
+    @section('description', 'Quản lý tiểu thương')
+    @section('keyword', 'Quản lý tiểu thương')
+@endif
+
 @push('styles')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
     <style>
         .form-filter {
             width: calc(100% - 70px) !important;
@@ -39,10 +48,32 @@
             object-fit: scale-down;
         }
 
+        .img-locations{
+            object-fit: scale-down;
+        }
+
         .icon-business-field {
             width: 30px;
             height: 30px;
             object-fit: cover;
+        }
+
+        #search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        #map {
+            height: 450px;
+        }
+
+        @media (min-width: 768px) {
+            #map {
+                height: 700px;
+            }
         }
     </style>
 @endpush
@@ -59,46 +90,54 @@
 
     <div class="mt-5rem">
         <div class="row mb-3 g-0">
-            <div class="col-12 col-lg-8">
-                <div class="position-relative">
-                    <div id="map" style="height: 700px;"></div>
-                    <div class="position-absolute w-100 form-filter">
+            <div class="col-12 col-lg-4 px-3">
+                <div class="mt-3 mt-lg-0">
+                    <h4 class="text-center">
+                        @if (Route::currentRouteName() == 'locations')
+                            Danh sách địa điểm
+                        @elseif(Route::currentRouteName() == 'locations-17')
+                            Quản lý tiểu thương
+                        @endif
+                    </h4>
+                    <p class="text-center">Hiển thị {{ $locations->count() }} trên tổng số {{ $locations->total() }}
+                        @if (Route::currentRouteName() == 'locations')
+                            địa điểm
+                        @elseif(Route::currentRouteName() == 'locations-17')
+                            tiểu thương
+                        @endif
+                    </p>
+
+                    <div class=" w-100 mb-3">
                         <div class="row">
-                            <div class="col-12 col-sm-3">
-                                <select class="form-select" name="business_field" id="business-field">
+                            <div class="col-12 ">
+                                <select class="form-select w-100" name="business_field" id="business-field">
                                     <option value="" selected>Tất cả</option>
                                     @foreach ($business_fields as $businessField)
                                         <option value="{{ $businessField->id }}">{{ $businessField->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-12 col-sm-9 mt-2 mt-sm-0">
+                            <div class="col-12 mt-2 w-100 position-relative">
                                 <input name="search" type="text" id="place-name" class="form-control w-100"
                                     placeholder="Nhập tên địa điểm">
-                                <div id="search-results" class="list-group position-absolute w-auto"></div>
+                                <div id="search-results" class="list-group w-100"></div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-lg-4 px-3">
-                <div class="mt-3 mt-lg-0">
-                    <h4 class="text-center">Danh sách địa điểm</h4>
-                    <p class="text-center">Hiển thị {{ $locations->count() }} trên tổng số {{ $locations->total() }} địa
-                        điểm</p>
+
                     <x-pagination :paginator="$locations" />
                     <div class="row g-2 scrollable-list">
                         @foreach ($locations as $location)
                             <div class="col-12 col-sm-6 col-lg-12">
                                 <div class="border rounded-4 p-3 h-100 info-location-container"
-                                    onclick="selectLocation({{ $location }},{{ $location->address_latitude }},{{ $location->address_longitude }},'{{ $location->businessField->icon }}')">
+                                    onclick="selectLocation({{ $location }},{{ $location->address_latitude }},{{ $location->address_longitude }},'{{ $location->businessField->icon ?? '' }}')">
                                     <div class="info-location-content">
                                         <div class="info-location">
                                             <span>Thông tin vị trí</span>
                                             <div class="d-flex align-items-center my-2 ">
                                                 <img class="img-location rounded-circle me-3"
-                                                    src="{{ isset($location->businessMember->business) ? asset($location->businessMember->business->avt_businesses) : asset('images/business/business_default.webp') }}" alt="{{ $location->name }}"
-                                                    loading="lazy">
+                                                    src="{{ isset($location->businessMember->business) ? asset($location->businessMember->business->avt_businesses) : asset('images/business/business_default.webp') }}"
+                                                    alt="{{ $location->name }}" loading="lazy">
                                                 <div class="d-flex flex-column">
                                                     <h5>{{ $location->name }}</h5>
                                                     <div class="d-flex align-items-center">
@@ -135,6 +174,12 @@
                     </div>
                 </div>
             </div>
+            <div class="col-12 col-lg-8 mt-3">
+                <div class="position-relative">
+                    <div id="map"></div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -153,6 +198,7 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
     <script
         src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&callback=initMap&libraries=places&v=weekly"
         async></script>
@@ -160,6 +206,7 @@
         let map, infowindow, service, marker;
         const markers = [];
         const domain = window.location.origin;
+        const currentRouteName = "{{ Route::currentRouteName() }}";
 
         function initMap() {
             map = new google.maps.Map($("#map")[0], {
@@ -178,11 +225,13 @@
             infowindow = new google.maps.InfoWindow();
             service = new google.maps.places.PlacesService(map);
 
-            loadLocations();
+            loadLocations(currentRouteName);
         }
 
-        function loadLocations() {
-            $.getJSON('/client/get-locations', (locations) => {
+        function loadLocations(routeName) {
+            $.getJSON('/client/get-locations', {
+                route_name: routeName
+            }, (locations) => {
                 locations.forEach(location => {
                     const iconUrl = location.business_field.icon ?
                         `${domain}/${location.business_field.icon}` :
@@ -230,13 +279,15 @@
                 `${domain}/${iconUrl}` :
                 `${domain}/images/icon/icon_location.png`;
 
+            const defaultImage = `${domain}/images/business/business_default.webp`;
+            const businessImage = isLocation.business_member && isLocation.business_member.business ?
+                `${domain}/${isLocation.business_member.business.avt_businesses}` : defaultImage;
+
+
 
             map.setCenter(location);
             placeMarker(location, fullIconUrl);
             getGeocode(location);
-           
-            console.log(isLocation);
-            
 
             const locationDetails = `
                 <div class="info-location">
@@ -245,7 +296,7 @@
                             <div class="info-location">
                                 <strong>Thông tin vị trí:</strong>
                                 <div class="d-flex align-items-center my-2">
-                                    <img class="img-location rounded-circle me-3" src="${domain}/${isLocation.image}" alt="${isLocation.name}" loading="lazy">
+                                    <img class="img-location rounded-circle me-3" src="${businessImage}" alt="${businessImage}" loading="lazy">
                                     <div class="d-flex flex-column">
                                         <h5>${isLocation.name}</h5>
                                         <div class="d-flex align-items-center">
@@ -270,31 +321,42 @@
                 </div>
 
                 <div class="info-location-container mt-3">
-                        <div class="info-location-content">
-                            <strong>Thông tin mô tả:</strong>
-                            <div class="mt-3">
-                                <div class="d-flex">
-                                    <strong>Mô tả: </strong>
-                                    <p>${isLocation.description}</p>
-                                </div>
-                                ${isLocation.location_products && isLocation.location_products.length > 0 ? `
-                                                   
-                                        <div class="mt-3">
-                                            ${isLocation.location_products.map(product => `
-                                            <div class="d-flex">
-                                                ${product.media_type === 'image' ? `
-                                                        <img src="${domain}/${product.file_path}" alt="${product.id}" class="img-fluid mb-2">
-                                                        ` : `
-                                                        <video controls class="img-fluid">
-                                                                <source src="${domain}/${product.file_path}" type="video/mp4">
-                                                            Your browser does not support the video tag.
-                                                        </video>
-                                                    `}
-                                            </div>
-                                        `).join('')}
+                    <div class="info-location-content">
+                        <strong>Thông tin mô tả:</strong>
+                        <div class="mt-3">
+                            <div class="d-flex">
+                                <strong>Mô tả: </strong>
+                                <p>${isLocation.description}</p>
+                             </div>
+                             ${isLocation.location_products && isLocation.location_products.length > 0 ? `             
+                                <div class="row mt-3">
+                                    ${isLocation.location_products.map(product => `
+                                        <div class="col-6">
+                                            ${product.media_type === 'image' ? `
+                                                <a href="${domain}/${product.file_path}" data-fancybox="gallery">
+                                                    <img src="${domain}/${product.file_path}" alt="${product.id}" class="img-fluid mb-2 img-locations">
+                                                </a>
+                                            ` : `
+                                                <a href="${domain}/${product.file_path}" data-fancybox="gallery" data-caption="Video">
+                                                    <video controls class="img-fluid">
+                                                        <source src="${domain}/${product.file_path}" type="video/mp4">
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                </a>
+                                            `}
                                         </div>
-                                                
-                                        ` : ''}
+                                    `).join('')}
+                                </div>                      
+                                ` : ''}
+
+                                ${isLocation.link_video ? `
+                                    <div class="mt-3">
+                                        <strong>Video giới thiệu:</strong>
+                                        <div class="embed-responsive embed-responsive-16by9">
+                                            <iframe class="embed-responsive-item w-100" src="${getYouTubeEmbedUrl(isLocation.link_video)}" allowfullscreen></iframe>
+                                        </div>
+                                    </div>
+                                ` : ''}
                             </div>
                         </div>
                         <div class="text-end info-location-button">
@@ -312,6 +374,15 @@
             offcanvas.show();
         }
 
+        function getYouTubeEmbedUrl(url) {
+            const videoId = url.split('v=')[1];
+            const ampersandPosition = videoId.indexOf('&');
+            if (ampersandPosition !== -1) {
+                return `https://www.youtube.com/embed/${videoId.substring(0, ampersandPosition)}`;
+            }
+            return `https://www.youtube.com/embed/${videoId}`;
+        }
+
         function getGeocode(latLng) {
             const geocoder = new google.maps.Geocoder();
             geocoder.geocode({
@@ -321,7 +392,7 @@
                     const address = results[0].formatted_address;
                     infowindow.setContent(address);
                     infowindow.open(map, marker);
-                    $('#place-name').val(address);
+                    //$('#place-name').val(address);
 
                     service.getDetails({
                         placeId: results[0].place_id
@@ -384,7 +455,8 @@
 
             $.getJSON(`/client/search-locations`, {
                 query: placeName,
-                business_field: businessField
+                business_field: businessField,
+                route_name: currentRouteName
             }, function(results) {
                 displaySearchResults(results);
             }).fail(function() {
@@ -394,26 +466,58 @@
         }
 
         function displaySearchResults(results) {
-            const searchResults = $('#search-results').empty();
+            
+            const searchResultsContainer = $('.scrollable-list').empty();
 
             results.forEach(result => {
-                $('<div>', {
-                    class: 'list-group-item list-group-item-action',
-                    text: `${result.name} - ${result.address_address}`,
-                    click: () => {
-                        const location = new google.maps.LatLng(parseFloat(result.address_latitude),
-                            parseFloat(result.address_longitude));
-                        const iconUrl = result.business_field.icon ?
-                            `${domain}/${result.business_field.icon}` :
-                            `${domain}/images/icon/icon_location.png`;
+                const businessImage = result.business_member && result.business_member.business ? 
+                    `${domain}/${result.business_member.business.avt_businesses}` : 
+                    `${domain}/images/business/business_default.webp`;
 
-                        map.setCenter(location);
-                        placeMarker(location, iconUrl);
-                        getGeocode(location);
-                        searchResults.empty();
-                        $('#place-name').val(result.name);
-                    }
-                }).appendTo(searchResults);
+                const iconUrl = result.business_field.icon ? 
+                    `/${result.business_field.icon}` : 
+                    `/images/icon/icon_location.png`;
+            
+                const resultHtml = `
+                    <div class="col-12 col-sm-6 col-lg-12">
+                        <div class="border rounded-4 p-3 h-100 info-location-container"
+                            onclick='selectLocation(${JSON.stringify(result)}, ${result.address_latitude}, ${result.address_longitude}, "${iconUrl}")'>
+                            <div class="info-location-content">
+                                <div class="info-location">
+                                    <span>Thông tin vị trí</span>
+                                    <div class="d-flex align-items-center my-2">
+                                        <img class="img-location rounded-circle me-3"
+                                            src="${businessImage}" alt="${result.name}" loading="lazy">
+                                        <div class="d-flex flex-column">
+                                            <h5>${result.name}</h5>
+                                            <div class="d-flex align-items-center">
+                                                <img class="icon-business-field" src="${iconUrl}" alt="${result.business_field.name}" loading="lazy">
+                                                <span>${result.business_field.name}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="d-flex">
+                                        <strong>Địa chỉ: </strong>
+                                        <p>${result.address_address}</p>
+                                    </div>
+                                    <div class="d-flex">
+                                        <strong>Tọa độ: </strong>
+                                        <p class="mb-0">${result.address_latitude} - ${result.address_longitude}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-end info-location-button">
+                                <button title="Chỉ đường" class="btn btn-info text-white" onclick="openDirections(${result.address_latitude}, ${result.address_longitude})">
+                                    <i class="fa-solid fa-location-arrow"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                searchResultsContainer.append(resultHtml);
             });
         }
     </script>

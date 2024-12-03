@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Unit;
 use App\Models\Business;
 use App\Models\Locations;
 use Illuminate\Http\Request;
@@ -34,7 +35,10 @@ class LocationController extends Controller
             $locations->where('business_member_id', $searchBusinessMember);
         }
 
-        $locations = $locations->orderBy('created_at','desc')->paginate(15);
+        $unit_id = auth()->user()->unit_id;
+       
+
+        $locations = $locations->where('unit_id',$unit_id)->orderBy('created_at','desc')->paginate(15);
 
         $business_fields = BusinessField::all();
         $business_members = BusinessMember::all();
@@ -72,14 +76,41 @@ class LocationController extends Controller
 
     public function clientIndex()
     {
-        $locations = Locations::where('status', 'approved')->with('businessField')->with('locationProducts')->with('businessField')->paginate(15);
+        if (request()->routeIs('locations')) {
+            $unit_id = Unit::where('unit_code','QGV')->first()->id;
+        }
+        elseif(request()->routeIs('locations-17')){
+            $unit_id = Unit::where('unit_code','P17')->first()->id;
+        }
+        
+        $locations = Locations::where('status', 'approved')->where('unit_id',$unit_id)->with('businessField')->with('locationProducts')->paginate(15);
+        
+        $locations->each(function ($location) {
+            if ($location->businessMember) {
+                $location->businessMember->business = $location->businessMember->business ?? null;
+            }
+        });
+        
         $business_fields = BusinessField::all();
         return view('pages.client.locations', compact('locations', 'business_fields'));
     }
 
-    public function getAllLocations()
+    public function getAllLocations(Request $request)
     {
-        $locations = Locations::with('businessField')->where('status', 'approved')->get();
+        $routeName = $request->input('route_name');
+
+        if ($routeName === 'locations') {
+            $unit_id = Unit::where('unit_code', 'QGV')->first()->id;
+        } elseif ($routeName === 'locations-17') {
+            $unit_id = Unit::where('unit_code', 'P17')->first()->id;   
+        }
+
+        if ($unit_id) {
+            $locations = Locations::with('businessField')->where('status', 'approved')->where('unit_id', $unit_id)->get();
+        }else{
+            $locations = Locations::with('businessField')->where('status', 'approved')->get();
+        }
+
         return response()->json($locations);
     }
 
@@ -87,8 +118,16 @@ class LocationController extends Controller
     {
         $query = $request->input('query');
         $businessField = $request->input('business_field');
+        $routeName = $request->input('route_name');
 
-        $locations = Locations::where('status', 'approved');
+        if ($routeName === 'locations') {
+            $unit_id = Unit::where('unit_code', 'QGV')->first()->id;
+        } elseif ($routeName === 'locations-17') {
+            $unit_id = Unit::where('unit_code', 'P17')->first()->id;   
+        }
+
+
+        $locations = Locations::where('status', 'approved')->with('businessField')->with('locationProducts');
 
         if ($query) {
             $locations->where('name', 'like', '%' . $query . '%')
@@ -101,7 +140,18 @@ class LocationController extends Controller
 
         $locations->with('businessField');
 
-        $results = $locations->get();
+        if ($unit_id) {
+            $results = $locations->where('unit_id',$unit_id)->get();
+        }else{
+            $results = $locations->get();
+        }
+
+        $results->each(function ($result) {
+            if ($result->businessMember) {
+                $result->businessMember->business = $result->businessMember->business ?? null;
+            }
+        });
+
 
         return response()->json($results);
     }
@@ -175,6 +225,11 @@ class LocationController extends Controller
             $location->business_field_id = $request->business_field_id;
             $location->description = $request->description;
             $location->link_video = $request->link_video;
+
+            if (request()->routeIs('form.promotional.store')) {
+                $location->unit_id = Unit::where('unit_code','QGV')->first()->id;
+            }
+
             $location->save();
 
 
@@ -201,11 +256,13 @@ class LocationController extends Controller
             }
 
             DB::commit();
+            session()->forget('key_business_code');
+            session()->forget('business_code');
             return redirect()->route('locations')->with('success', 'Đăng ký địa điểm thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
             $this->cleanupUploadedFiles1($data);
-            return redirect()->back()->withInput()->with('error', 'Đăng ký địa điểm thất bại');
+            return redirect()->back()->with('error', 'Đăng ký địa điểm thất bại' . $e->getMessage())->withInput();
         }
     }
 }

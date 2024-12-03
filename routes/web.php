@@ -75,6 +75,10 @@ use App\Http\Controllers\BusinessSurveyController;
 |
 */
 
+Route::get('test', function () {
+    return view('pages.client.test');
+});
+
 Route::middleware(['language'])->group(function () {
 
     Route::get('/clear-cache', function () {

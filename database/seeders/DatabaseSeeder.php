@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Unit;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Bus;
 
@@ -21,6 +23,7 @@ class DatabaseSeeder extends Seeder
             BusinessSeeder::class,
             ContactConsultationsSeeder::class,
             BusinessSupportNeedsSeeder::class,
+            UnitSeeder::class,
         ]);
     }
 }
