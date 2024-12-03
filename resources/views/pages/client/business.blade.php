@@ -60,16 +60,17 @@
 
 @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const showMoreButton = document.getElementById('show-more');
-            const hiddenCategories = document.querySelectorAll('.category-hidden');
-
-            showMoreButton.addEventListener('click', function() {
-                hiddenCategories.forEach(category => {
-                    category.style.display = 'inline-block';
+            if (showMoreButton) {
+                showMoreButton.addEventListener('click', function () {
+                    document.querySelectorAll('.category-hidden').forEach(category => {
+                        category.classList.remove('category-hidden');
+                        category.style.display = 'inline-block';
+                    });
+                    showMoreButton.style.display = 'none';
                 });
-                showMoreButton.style.display = 'none';
-            });
+            }
         });
     </script>
 
@@ -91,10 +92,10 @@
                                 response.businesses.forEach(function(item) {
                                     var businessHtml = `
                                         <div class="col">
-                                            <a href="{{ url('/client/business') }}/${item.businessMember.business_code}" class="card h-100 border-custom">
+                                            <a href="{{ url('/client/business') }}/${item.business_member.business_code}" class="card h-100 border-custom">
                                                 <img src="{{ asset('') }}${item.avt_businesses}" class="card-img-top img-fluid p-1 logo-business" alt="...">
                                                 <div class="card-body d-flex flex-column">
-                                                    <h6 class="card-title text-uppercase text-dark">${item.businessMember.business_name}</h6>
+                                                    <h6 class="card-title text-uppercase text-dark">${item.business_member.business_name}</h6>
                                                 </div>
                                             </a>
                                         </div>
@@ -127,12 +128,15 @@
             ])
             
             <div class="category mt-3">
-                <a href="{{ route('business', ['category' => '']) }}"
-                    class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('category') == '' ? 'active' : '' }}">Tất
-                    cả</a>
+                <a href="{{ route('business', ['business_field' => '']) }}"
+                    class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('business_field') == '' ? 'active' : '' }}">
+                    Tất cả
+                </a>
                 @foreach ($business_fields as $index => $category)
                     <a href="{{ route('business', ['business_field' => $category->slug]) }}"
-                        class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('category') == $category->slug ? 'active' : '' }} {{ $index >= 8 && request('category') != $category->slug ? 'category-hidden' : '' }}">{{ $category->name }}</a>
+                        class="badge badge-custom rounded-pill p-2 me-2 mb-2 text-dark {{ request('business_field') == $category->slug ? 'active' : '' }} {{ $index >= 8 ? 'category-hidden' : '' }}">
+                        {{ $category->name }}
+                    </a>
                 @endforeach
                 @if ($business_fields->count() > 8)
                     <div class="text-center mt-4">
@@ -144,7 +148,7 @@
             <div class="list-business mt-5">
                 <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 g-2 g-md-3"
                     id="business-list">
-                    @foreach ($businesses as $item)
+                    @forelse ($businesses as $item)
                         <div class="col">
                             <a href="{{ route('business.detail', $item->businessMember->business_code) }}"
                                 class="card h-100 border-custom">
@@ -156,12 +160,18 @@
                                 </div>
                             </a>
                         </div>
-                    @endforeach
+                    @empty
+                        <div class="col-12 text-center">
+                            <p>Không có doanh nghiệp nào phù hợp.</p>
+                        </div>
+                    @endforelse
                 </div>
             </div>
             <div class="text-center mt-4">
-                <button id="load-more" class="btn bg-app-gv rounded-pill text-white"
-                    data-next-page-url="{{ $businesses->nextPageUrl() }}">Xem thêm</button>
+                @if ($businesses->count() > 0 && $businesses->hasMorePages())
+                    <button id="load-more" class="btn bg-app-gv rounded-pill text-white"
+                        data-next-page-url="{{ $businesses->nextPageUrl() }}">Xem thêm</button>
+                @endif
             </div>
         </div>
     </section>
