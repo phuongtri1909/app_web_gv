@@ -98,6 +98,7 @@ Route::middleware(['language'])->group(function () {
 
         //tạm gán như này cho kết nối việc làm
         Route::get('/job-connector', [BusinessRecruitmentController::class, 'jobConnector'])->name('job-connector');
+        Route::get('/job-connector/{id}', [BusinessRecruitmentController::class, 'jobConnectorDetail'])->name('job-connector.detail');
 
         Route::get('/legal-advice', [ContactConsultationController::class, 'legalAdvice'])->name('legal-advice');
 
@@ -172,6 +173,8 @@ Route::middleware(['language'])->group(function () {
     Route::get('page-tab/{slug}', function ($slug) {
         return view('pages.tab-custom.index', compact('slug'));
     })->name('page.tab');
+
+    Route::get('recruitment/{id}', [BusinessRecruitmentController::class, 'show'])->name('recruitment.show');
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');

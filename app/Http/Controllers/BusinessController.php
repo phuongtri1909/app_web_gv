@@ -67,13 +67,13 @@ class BusinessController extends Controller
 
         $request->validate([
             'avt_businesses' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
-            'description' => 'nullable|string|max:2000',
+            'description' => 'nullable|string|max:4000',
         ], [
             'avt_businesses.required' => 'Ảnh đại diện doanh nghiệp là bắt buộc.',
             'avt_businesses.image' => 'Ảnh đại diện phải là hình ảnh.',
             'avt_businesses.mimes' => 'Hình ảnh đại diện phải là file dạng: jpg, jpeg, png, gif, svg, webp.',
 
-            'description.max' => 'Mô tả không được vượt quá 2000 ký tự.',
+            'description.max' => 'Mô tả không được vượt quá 4000 ký tự.',
 
         ]);
 
