@@ -225,8 +225,14 @@ class BusinessController extends Controller
 
     public function businessDetail($business_code)
     {
-        $businessMember = BusinessMember::where('business_code', $business_code)->where('status', 'approved')->first();
-
+        $businessMember = BusinessMember::with('businessField')->where('business_code', $business_code)->where('status', 'approved')->first();
+        $businessFieldIds = json_decode($businessMember->business_field_id, true);
+        $businessFields = [];
+        if (!empty($businessFieldIds)) {
+            $businessFields = BusinessField::whereIn('id', $businessFieldIds)->get();
+        }
+        $businessMember->business_field_id = (count($businessFields) > 0) ? $businessFields->pluck('name')->toArray() : [];
+        
         if (!$businessMember) {
             return redirect()->route('business')->with('error', 'Không tìm thấy doanh nghiệp');
         }
@@ -240,8 +246,8 @@ class BusinessController extends Controller
         }
 
         $business = $businessMember->business;
-
-        return view('pages.client.detail-business', compact('business'));
+        $businessField =  $businessMember->business_field_id;
+        return view('pages.client.detail-business', compact('business','businessField'));
     }
 
     public function productDetail($slug)
@@ -254,7 +260,12 @@ class BusinessController extends Controller
         if (!$product) {
             return redirect()->route('business.products')->with('error', 'Không tìm thấy sản phẩm');
         }
-
+        $businessFieldIds = json_decode($product->businessMember->business_field_id, true);
+        $businessFields = [];
+        if (!empty($businessFieldIds)) {
+            $businessFields = BusinessField::whereIn('id', $businessFieldIds)->get();
+        }
+        $product->business_field_id = (count($businessFields) > 0) ? $businessFields->pluck('name')->toArray() : [];
         return view('pages.client.detail-product-business', compact('product'));
     }
 
