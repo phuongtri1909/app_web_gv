@@ -184,49 +184,44 @@ class BusinessController extends Controller
 
     public function business(Request $request)
     {
-        $businessField = $request->business_field ?? '';
-        $page = $request->page ?? 1;
-
-        if ($businessField) {
-            $business_field = BusinessField::where('slug', $businessField)->first();
-
-            if ($business_field) {
-                $businessMembers = BusinessMember::where('business_field_id', $business_field->id)
-                    ->pluck('id');
-
-                $businesses = Business::whereIn('business_member_id', $businessMembers)
-                    ->where('status', 'approved')
-                    ->orderBy('created_at', 'asc')
-                    ->paginate(10, ['*'], 'page', $page);
+        $businessFieldSlug = $request->get('business_field', ''); 
+        $page = $request->get('page', 1); 
+    
+        $query = Business::with('businessMember')->where('status', 'approved')->orderBy('created_at', 'asc');
+    
+        if ($businessFieldSlug) {
+            $businessField = BusinessField::where('slug', $businessFieldSlug)->first();
+    
+            if ($businessField) {
+                $businessMembers = BusinessMember::whereJsonContains('business_field_id', (string)$businessField->id)
+                ->pluck('id');
+                $query->whereIn('business_member_id', $businessMembers);
             } else {
-                $businesses = collect();
+                $query->whereRaw('0=1'); 
             }
-        } else {
-            $businesses = Business::where('status', 'approved')
-                ->orderBy('created_at', 'asc')
-                ->paginate(10, ['*'], 'page', $page);
         }
-
-        foreach ($businesses as $business) {
-            $business->businessMember = $business->businessMember;
-        }
-
+        $businesses = $query->paginate(10, ['*'], 'page', $page);
         if ($request->ajax()) {
             return response()->json([
                 'businesses' => $businesses->items(),
-                'next_page_url' => $businesses->nextPageUrl()
+                'next_page_url' => $businesses->nextPageUrl(),
             ]);
         }
-
-        $business_fields = BusinessField::get();
-
+        $business_fields = BusinessField::all();
+    
         return view('pages.client.business', compact('businesses', 'business_fields'));
     }
 
     public function businessDetail($business_code)
     {
-        $businessMember = BusinessMember::where('business_code', $business_code)->where('status', 'approved')->first();
-
+        $businessMember = BusinessMember::with('businessField')->where('business_code', $business_code)->where('status', 'approved')->first();
+        $businessFieldIds = json_decode($businessMember->business_field_id, true);
+        $businessFields = [];
+        if (!empty($businessFieldIds)) {
+            $businessFields = BusinessField::whereIn('id', $businessFieldIds)->get();
+        }
+        $businessMember->business_field_id = (count($businessFields) > 0) ? $businessFields->pluck('name')->toArray() : [];
+        
         if (!$businessMember) {
             return redirect()->route('business')->with('error', 'Không tìm thấy doanh nghiệp');
         }
@@ -240,8 +235,8 @@ class BusinessController extends Controller
         }
 
         $business = $businessMember->business;
-
-        return view('pages.client.detail-business', compact('business'));
+        $businessField =  $businessMember->business_field_id;
+        return view('pages.client.detail-business', compact('business','businessField'));
     }
 
     public function productDetail($slug)
@@ -254,7 +249,12 @@ class BusinessController extends Controller
         if (!$product) {
             return redirect()->route('business.products')->with('error', 'Không tìm thấy sản phẩm');
         }
-
+        $businessFieldIds = json_decode($product->businessMember->business_field_id, true);
+        $businessFields = [];
+        if (!empty($businessFieldIds)) {
+            $businessFields = BusinessField::whereIn('id', $businessFieldIds)->get();
+        }
+        $product->business_field_id = (count($businessFields) > 0) ? $businessFields->pluck('name')->toArray() : [];
         return view('pages.client.detail-product-business', compact('product'));
     }
 

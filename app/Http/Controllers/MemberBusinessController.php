@@ -54,7 +54,8 @@ class MemberBusinessController extends Controller
             'address' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'phone_zalo' => 'required|string|max:10|regex:/^[0-9]+$/',
-            'business_field_id' => 'required|exists:business_fields,id',
+            'business_field_id' => 'nullable|array',
+            'business_field_id.*' => 'nullable|exists:business_fields,id',
             'representative_full_name' => 'required|string|max:255',
             'representative_phone' => 'required|string|max:10|regex:/^[0-9]+$/',
             'link' => 'nullable|url',
@@ -67,8 +68,10 @@ class MemberBusinessController extends Controller
             'email.email' => 'Email không hợp lệ',
             'phone_zalo.required' => 'Vui lòng nhập số điện thoại zalo',
             'phone_zalo.regex' => 'Số điện thoại zalo không hợp lệ',
-            'business_field_id.required' => 'Vui lòng chọn lĩnh vực kinh doanh',
-            'business_field_id.exists' => 'Lĩnh vực kinh doanh không hợp lệ',
+            'business_field_id.required' => 'Vui lòng chọn ít nhất một ngành nghề.',
+            'business_field_id.*.required' => 'Mỗi ngành nghề được chọn là bắt buộc.',
+            'business_field_id.*.exists' => 'Ngành nghề :input không tồn tại.',
+            'business_field_id.array' => 'Dữ liệu ngành nghề không hợp lệ.',
             'representative_full_name.required' => 'Vui lòng nhập tên người đại diện',
             'representative_phone.required' => 'Vui lòng nhập số điện thoại người đại diện',
             'representative_phone.regex' => 'Số điện thoại người đại diện không hợp lệ',
@@ -97,12 +100,11 @@ class MemberBusinessController extends Controller
             'address',
             'email',
             'phone_zalo',
-            'business_field_id',
             'representative_full_name',
             'representative_phone',
             'link',
         ]));
-
+        $businessMember->business_field_id = json_encode($request->input('business_field_id'));
         $businessMember->status = "approved";
 
         try {
@@ -123,7 +125,13 @@ class MemberBusinessController extends Controller
             );
 
             DB::commit();
-
+            $businessMember = BusinessMember::with('businessField')->findOrFail($businessMember->id);
+            $businessFieldIds = json_decode($businessMember->business_field_id, true);
+            $businessFields = [];
+            if (!empty($businessFieldIds)) {
+                $businessFields = BusinessField::whereIn('id', $businessFieldIds)->get();
+            }
+            $businessMember->business_field_id = (count($businessFields) > 0) ? $businessFields->pluck('name')->toArray() : [];
             $businessMember->subject = 'Đăng ký tham gia app';
             try {
                 Mail::to('tri2003bt@gmail.com')->send(new BusinessRegistered($businessMember));
@@ -171,15 +179,20 @@ class MemberBusinessController extends Controller
         }
 
         try {
-            $member = BusinessMember::findOrFail($id);
-
+            $member = BusinessMember::with('businessField')->findOrFail($id);
+            $businessFieldIds = json_decode($member->business_field_id, true);
+            $businessFields = [];
+            if (!empty($businessFieldIds)) {
+                $businessFields = BusinessField::whereIn('id', $businessFieldIds)->get();
+            }
+            $member->business_field_id = (count($businessFields) > 0) ? $businessFields->pluck('name')->toArray() : [];
             return response()->json([
                 'id' => $member->id,
                 'business_name' => $member->business_name,
                 'business_code' => $member->business_code,
                 'phone_zalo' => $member->phone_zalo,
                 'email' => $member->email,
-                'business_field' => $member->business_field,
+                'business_field' => $member->business_field_id,
                 'address' => $member->address,
                 'representative_full_name' => $member->representative_full_name,
                 'representative_phone' => $member->representative_phone,

@@ -13,6 +13,7 @@
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
     <link id="pagestyle" href="{{ asset('css/dashboard.css') }}" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     @stack('styles-admin')
     <title>{{ __('dashboard') }}</title>
 </head>
@@ -57,6 +58,7 @@
 
     <footer>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.4/dayjs.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>

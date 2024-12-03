@@ -85,6 +85,30 @@
                 font-size: 18px;
             }
         }
+        .choices__input--cloned--placeholder--hidden {
+            min-width: 19ch !important;
+            &::-webkit-input-placeholder {
+                /* WebKit browsers */
+               color: #6b7280;
+                opacity: 0;
+            }
+            &:-moz-placeholder {
+                /* Mozilla Firefox 4 to 18 */
+               color: #6b7280;
+                opacity: 0;
+            }
+            &::-moz-placeholder {
+                /* Mozilla Firefox 19+ */
+               color: #6b7280;
+                opacity: 0;
+            }
+            &:-ms-input-placeholder {
+                /* Internet Explorer 10+ */
+               color: #6b7280;
+                opacity: 0;
+            }
+        }
+
     </style>
 @endpush
 
@@ -147,12 +171,12 @@
                         <div class="mb-3 col-md-6">
                             <label for="business_field_id" class="form-label">Ngành nghề kinh doanh <span
                                     class="text-danger">*</span></label>
-                            <select id="business_field_id" name="business_field_id"
-                                class="form-select form-select-sm @error('business_field_id') is-invalid @enderror" required>
-                                <option value="" disabled selected>Chọn ngành nghề kinh doanh</option>
+                            <select id="business_field_id" name="business_field_id[]"
+                                class="form-select form-select-sm @error('business_field_id') is-invalid @enderror" multiple>
                                 @foreach ($business_fields as $field)
                                     <option value="{{ $field->id }}"
-                                        {{ old('business_field_id') == $field->id ? 'selected' : '' }}>{{ $field->name }}
+                                        {{ in_array($field->id, old('business_field_id', json_decode($registration->business_field_id ?? '[]', true))) ? 'selected' : '' }}>
+                                        {{ $field->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -217,4 +241,35 @@
 
 @push('scripts')
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        const element = document.querySelector('#business_field_id');
+        const businessFieldSelect = new Choices(element, {
+            removeItemButton: true,
+            placeholder: true,
+            placeholderValue: 'Chọn ngành nghề kinh doanh',
+            searchPlaceholderValue: 'Tìm kiếm...',
+            noResultsText: 'Không tìm thấy ngành nghề phù hợp',
+            noChoicesText: 'Không có ngành nghề nào',
+            itemSelectText: 'Nhấn để chọn',
+        });
+
+        const inputElement = document.querySelector(".choices__input.choices__input--cloned");
+        element.addEventListener("addItem", function () {
+            if (inputElement) {
+            inputElement.classList.add("choices__input--cloned--placeholder--hidden");
+            }
+        });
+        element.addEventListener("removeItem", function () {
+            if (businessFieldSelect.getValue(true).length < 1) {
+            if (inputElement) {
+                inputElement.classList.remove("choices__input--cloned--placeholder--hidden");
+            }
+            }
+        });
+        if (businessFieldSelect.getValue(true).length > 0) {
+            inputElement.classList.add("choices__input--cloned--placeholder--hidden");
+        }
+        });
+    </script>
 @endpush

@@ -107,10 +107,10 @@
                                 </div>
                             @endif
 
-                            @if ($business->businessMember->businessField)
+                            @if ($businessField)
                                 <div class="d-flex">
                                     <p class="fw-semibold me-2">Ngành nghề kinh doanh:</p>
-                                    <p>{{ $business->businessMember->businessField->name }}</p>
+                                    <p>{{ implode(', ',  $businessField ) }}</p>
                                 </div>
                             @endif
 
