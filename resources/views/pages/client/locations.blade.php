@@ -1,7 +1,15 @@
 @extends('layouts.app')
-@section('title', 'Chỉ dẫn điểm đến')
-@section('description', 'Chỉ dẫn điểm đến')
-@section('keyword', 'Chỉ dẫn điểm đến')
+
+@if (Route::currentRouteName() == 'locations')
+    @section('title', 'Chỉ dẫn điểm đến')
+    @section('description', 'Chỉ dẫn điểm đến')
+    @section('keyword', 'Chỉ dẫn điểm đến')
+@elseif(Route::currentRouteName() == 'locations-17')
+    @section('title', 'Quản lý tiểu thương')
+    @section('description', 'Quản lý tiểu thương')
+    @section('keyword', 'Quản lý tiểu thương') 
+@endif
+
 @push('styles')
     <style>
         .form-filter {
@@ -44,6 +52,14 @@
             height: 30px;
             object-fit: cover;
         }
+
+        #search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
     </style>
 @endpush
 
@@ -59,33 +75,41 @@
 
     <div class="mt-5rem">
         <div class="row mb-3 g-0">
-            <div class="col-12 col-lg-8">
-                <div class="position-relative">
-                    <div id="map" style="height: 700px;"></div>
-                    <div class="position-absolute w-100 form-filter">
+            <div class="col-12 col-lg-4 px-3">
+                <div class="mt-3 mt-lg-0">
+                    <h4 class="text-center">
+                        @if (Route::currentRouteName() == 'locations')
+                            Danh sách địa điểm
+                        @elseif(Route::currentRouteName() == 'locations-17')
+                            Quản lý tiểu thương
+                        @endif
+                    </h4>
+                    <p class="text-center">Hiển thị {{ $locations->count() }} trên tổng số {{ $locations->total() }}
+                        @if (Route::currentRouteName() == 'locations')
+                            địa điểm
+                        @elseif(Route::currentRouteName() == 'locations-17')
+                            tiểu thương
+                        @endif
+                    </p>
+
+                    <div class=" w-100 mb-3">
                         <div class="row">
-                            <div class="col-12 col-sm-3">
-                                <select class="form-select" name="business_field" id="business-field">
+                            <div class="col-12 ">
+                                <select class="form-select w-100" name="business_field" id="business-field">
                                     <option value="" selected>Tất cả</option>
                                     @foreach ($business_fields as $businessField)
                                         <option value="{{ $businessField->id }}">{{ $businessField->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-12 col-sm-9 mt-2 mt-sm-0">
+                            <div class="col-12 mt-2 w-100 position-relative">
                                 <input name="search" type="text" id="place-name" class="form-control w-100"
                                     placeholder="Nhập tên địa điểm">
-                                <div id="search-results" class="list-group position-absolute w-auto"></div>
+                                <div id="search-results" class="list-group w-100"></div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-lg-4 px-3">
-                <div class="mt-3 mt-lg-0">
-                    <h4 class="text-center">Danh sách địa điểm</h4>
-                    <p class="text-center">Hiển thị {{ $locations->count() }} trên tổng số {{ $locations->total() }} địa
-                        điểm</p>
+
                     <x-pagination :paginator="$locations" />
                     <div class="row g-2 scrollable-list">
                         @foreach ($locations as $location)
@@ -97,8 +121,8 @@
                                             <span>Thông tin vị trí</span>
                                             <div class="d-flex align-items-center my-2 ">
                                                 <img class="img-location rounded-circle me-3"
-                                                    src="{{ isset($location->businessMember->business) ? asset($location->businessMember->business->avt_businesses) : asset('images/business/business_default.webp') }}" alt="{{ $location->name }}"
-                                                    loading="lazy">
+                                                    src="{{ isset($location->businessMember->business) ? asset($location->businessMember->business->avt_businesses) : asset('images/business/business_default.webp') }}"
+                                                    alt="{{ $location->name }}" loading="lazy">
                                                 <div class="d-flex flex-column">
                                                     <h5>{{ $location->name }}</h5>
                                                     <div class="d-flex align-items-center">
@@ -135,6 +159,12 @@
                     </div>
                 </div>
             </div>
+            <div class="col-12 col-lg-8 mt-3">
+                <div class="position-relative">
+                    <div id="map" style="height: 450px;"></div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -160,6 +190,7 @@
         let map, infowindow, service, marker;
         const markers = [];
         const domain = window.location.origin;
+        const currentRouteName = "{{ Route::currentRouteName() }}";
 
         function initMap() {
             map = new google.maps.Map($("#map")[0], {
@@ -178,11 +209,13 @@
             infowindow = new google.maps.InfoWindow();
             service = new google.maps.places.PlacesService(map);
 
-            loadLocations();
+            loadLocations(currentRouteName);
         }
 
-        function loadLocations() {
-            $.getJSON('/client/get-locations', (locations) => {
+        function loadLocations(routeName) {
+            $.getJSON('/client/get-locations', {
+                route_name: routeName
+            }, (locations) => {
                 locations.forEach(location => {
                     const iconUrl = location.business_field.icon ?
                         `${domain}/${location.business_field.icon}` :
@@ -234,9 +267,6 @@
             map.setCenter(location);
             placeMarker(location, fullIconUrl);
             getGeocode(location);
-           
-            console.log(isLocation);
-            
 
             const locationDetails = `
                 <div class="info-location">
@@ -278,23 +308,23 @@
                                     <p>${isLocation.description}</p>
                                 </div>
                                 ${isLocation.location_products && isLocation.location_products.length > 0 ? `
-                                                   
-                                        <div class="mt-3">
-                                            ${isLocation.location_products.map(product => `
+                                                       
+                                            <div class="mt-3">
+                                                ${isLocation.location_products.map(product => `
                                             <div class="d-flex">
                                                 ${product.media_type === 'image' ? `
-                                                        <img src="${domain}/${product.file_path}" alt="${product.id}" class="img-fluid mb-2">
-                                                        ` : `
-                                                        <video controls class="img-fluid">
-                                                                <source src="${domain}/${product.file_path}" type="video/mp4">
-                                                            Your browser does not support the video tag.
-                                                        </video>
-                                                    `}
+                                                            <img src="${domain}/${product.file_path}" alt="${product.id}" class="img-fluid mb-2">
+                                                            ` : `
+                                                            <video controls class="img-fluid">
+                                                                    <source src="${domain}/${product.file_path}" type="video/mp4">
+                                                                Your browser does not support the video tag.
+                                                            </video>
+                                                        `}
                                             </div>
                                         `).join('')}
-                                        </div>
-                                                
-                                        ` : ''}
+                                            </div>
+                                                    
+                                            ` : ''}
                             </div>
                         </div>
                         <div class="text-end info-location-button">
@@ -384,7 +414,8 @@
 
             $.getJSON(`/client/search-locations`, {
                 query: placeName,
-                business_field: businessField
+                business_field: businessField,
+                route_name: currentRouteName
             }, function(results) {
                 displaySearchResults(results);
             }).fail(function() {
