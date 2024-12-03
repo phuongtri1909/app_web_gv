@@ -7,10 +7,11 @@
 @elseif(Route::currentRouteName() == 'locations-17')
     @section('title', 'Quản lý tiểu thương')
     @section('description', 'Quản lý tiểu thương')
-    @section('keyword', 'Quản lý tiểu thương') 
+    @section('keyword', 'Quản lý tiểu thương')
 @endif
 
 @push('styles')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
     <style>
         .form-filter {
             width: calc(100% - 70px) !important;
@@ -44,6 +45,10 @@
         .img-location {
             width: 70px;
             height: 70px;
+            object-fit: scale-down;
+        }
+
+        .img-locations{
             object-fit: scale-down;
         }
 
@@ -193,6 +198,7 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
     <script
         src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&callback=initMap&libraries=places&v=weekly"
         async></script>
@@ -273,6 +279,11 @@
                 `${domain}/${iconUrl}` :
                 `${domain}/images/icon/icon_location.png`;
 
+            const defaultImage = `${domain}/images/business/business_default.webp`;
+            const businessImage = isLocation.business_member && isLocation.business_member.business ?
+                `${domain}/${isLocation.business_member.business.avt_businesses}` : defaultImage;
+
+
 
             map.setCenter(location);
             placeMarker(location, fullIconUrl);
@@ -285,7 +296,7 @@
                             <div class="info-location">
                                 <strong>Thông tin vị trí:</strong>
                                 <div class="d-flex align-items-center my-2">
-                                    <img class="img-location rounded-circle me-3" src="${domain}/${isLocation.image}" alt="${isLocation.name}" loading="lazy">
+                                    <img class="img-location rounded-circle me-3" src="${businessImage}" alt="${businessImage}" loading="lazy">
                                     <div class="d-flex flex-column">
                                         <h5>${isLocation.name}</h5>
                                         <div class="d-flex align-items-center">
@@ -310,31 +321,42 @@
                 </div>
 
                 <div class="info-location-container mt-3">
-                        <div class="info-location-content">
-                            <strong>Thông tin mô tả:</strong>
-                            <div class="mt-3">
-                                <div class="d-flex">
-                                    <strong>Mô tả: </strong>
-                                    <p>${isLocation.description}</p>
-                                </div>
-                                ${isLocation.location_products && isLocation.location_products.length > 0 ? `
-                                                       
-                                            <div class="mt-3">
-                                                ${isLocation.location_products.map(product => `
-                                            <div class="d-flex">
-                                                ${product.media_type === 'image' ? `
-                                                            <img src="${domain}/${product.file_path}" alt="${product.id}" class="img-fluid mb-2">
-                                                            ` : `
-                                                            <video controls class="img-fluid">
-                                                                    <source src="${domain}/${product.file_path}" type="video/mp4">
-                                                                Your browser does not support the video tag.
-                                                            </video>
-                                                        `}
-                                            </div>
-                                        `).join('')}
-                                            </div>
-                                                    
-                                            ` : ''}
+                    <div class="info-location-content">
+                        <strong>Thông tin mô tả:</strong>
+                        <div class="mt-3">
+                            <div class="d-flex">
+                                <strong>Mô tả: </strong>
+                                <p>${isLocation.description}</p>
+                             </div>
+                             ${isLocation.location_products && isLocation.location_products.length > 0 ? `             
+                                <div class="row mt-3">
+                                    ${isLocation.location_products.map(product => `
+                                        <div class="col-6">
+                                            ${product.media_type === 'image' ? `
+                                                <a href="${domain}/${product.file_path}" data-fancybox="gallery">
+                                                    <img src="${domain}/${product.file_path}" alt="${product.id}" class="img-fluid mb-2 img-locations">
+                                                </a>
+                                            ` : `
+                                                <a href="${domain}/${product.file_path}" data-fancybox="gallery" data-caption="Video">
+                                                    <video controls class="img-fluid">
+                                                        <source src="${domain}/${product.file_path}" type="video/mp4">
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                </a>
+                                            `}
+                                        </div>
+                                    `).join('')}
+                                </div>                      
+                                ` : ''}
+
+                                ${isLocation.link_video ? `
+                                    <div class="mt-3">
+                                        <strong>Video giới thiệu:</strong>
+                                        <div class="embed-responsive embed-responsive-16by9">
+                                            <iframe class="embed-responsive-item w-100" src="${getYouTubeEmbedUrl(isLocation.link_video)}" allowfullscreen></iframe>
+                                        </div>
+                                    </div>
+                                ` : ''}
                             </div>
                         </div>
                         <div class="text-end info-location-button">
@@ -350,6 +372,15 @@
 
             const offcanvas = new bootstrap.Offcanvas(document.getElementById('locationOffcanvas'));
             offcanvas.show();
+        }
+
+        function getYouTubeEmbedUrl(url) {
+            const videoId = url.split('v=')[1];
+            const ampersandPosition = videoId.indexOf('&');
+            if (ampersandPosition !== -1) {
+                return `https://www.youtube.com/embed/${videoId.substring(0, ampersandPosition)}`;
+            }
+            return `https://www.youtube.com/embed/${videoId}`;
         }
 
         function getGeocode(latLng) {

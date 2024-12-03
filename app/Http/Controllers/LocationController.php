@@ -84,6 +84,13 @@ class LocationController extends Controller
         }
         
         $locations = Locations::where('status', 'approved')->where('unit_id',$unit_id)->with('businessField')->with('locationProducts')->with('businessField')->paginate(15);
+        
+        $locations->each(function ($location) {
+            if ($location->businessMember) {
+                $location->businessMember->business = $location->businessMember->business ?? null;
+            }
+        });
+        
         $business_fields = BusinessField::all();
         return view('pages.client.locations', compact('locations', 'business_fields'));
     }
@@ -242,6 +249,8 @@ class LocationController extends Controller
             }
 
             DB::commit();
+            session()->forget('key_business_code');
+            session()->forget('business_code');
             return redirect()->route('locations')->with('success', 'Đăng ký địa điểm thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
