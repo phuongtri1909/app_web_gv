@@ -274,9 +274,6 @@
 
         function selectLocation(isLocation, lat, lng, iconUrl) {
 
-            console.log(isLocation);
-            
-
             const location = new google.maps.LatLng(lat, lng);
             const fullIconUrl = iconUrl ?
                 `${domain}/${iconUrl}` :
@@ -478,9 +475,8 @@
                     `${domain}/images/business/business_default.webp`;
 
                 const iconUrl = result.business_field.icon ? 
-                    `${domain}/${result.business_field.icon}` : 
-                    `${domain}/images/icon/icon_location.png`;
-
+                    `/${result.business_field.icon}` : 
+                    `/images/icon/icon_location.png`;
             
                 const resultHtml = `
                     <div class="col-12 col-sm-6 col-lg-12">

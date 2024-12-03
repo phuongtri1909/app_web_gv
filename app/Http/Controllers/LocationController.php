@@ -83,7 +83,7 @@ class LocationController extends Controller
             $unit_id = Unit::where('unit_code','P17')->first()->id;
         }
         
-        $locations = Locations::where('status', 'approved')->where('unit_id',$unit_id)->with('businessField')->with('locationProducts')->with('businessField')->paginate(15);
+        $locations = Locations::where('status', 'approved')->where('unit_id',$unit_id)->with('businessField')->with('locationProducts')->paginate(15);
         
         $locations->each(function ($location) {
             if ($location->businessMember) {
@@ -127,7 +127,7 @@ class LocationController extends Controller
         }
 
 
-        $locations = Locations::where('status', 'approved');
+        $locations = Locations::where('status', 'approved')->with('businessField')->with('locationProducts');
 
         if ($query) {
             $locations->where('name', 'like', '%' . $query . '%')
