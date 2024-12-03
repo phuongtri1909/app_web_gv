@@ -260,6 +260,7 @@
                         $('#modal-address').text(response.address || '-');
                         $('#modal-email').text(response.email || '-');
                         $('#modal-phone-zalo').text(response.phone_zalo || '-');
+                        $('#modal-business-field').text(response.business_field || '-');
                         $('#modal-representative-full-name').text(response.representative_full_name || '-');
                         $('#modal-representative-phone').text(response.representative_phone || '-');
                         $('#modal-created-at').text(formattedDate || '-');
@@ -282,7 +283,10 @@
                             .text(statusText);
 
                         $('#memberDetailModal').modal('show');
-                    }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('Error: ' + error + '\n' + xhr.responseText);
+                    },
                 });
             });
         });

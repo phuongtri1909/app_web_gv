@@ -120,7 +120,7 @@
                         'address' => 'Địa chỉ kinh doanh',
                         'email' => 'Email',
                         'phone_zalo' => 'Số điện thoại zalo',
-                        'business_field' => 'Ngành nghề kinh doanh',
+                        'business_field_id' => 'Ngành nghề kinh doanh',
                         'representative_full_name' => 'Người đại diện',
                         'representative_phone' => 'Số điện thoại liên hệ',
                         'link' => 'liên kết'
@@ -130,8 +130,9 @@
                 @foreach ($fields as $key => $label)
                     @if (isset($businessMember->$key) && !empty($businessMember->$key))
                         <div class="info-item">
-                            @if ($key == 'business_field')
-                                <strong>{{ $label }}:</strong> {{ $businessMember->businessField->name }}
+                            @if ($key == 'business_field_id')
+                                <strong>{{ $label }}:</strong>
+                                {{ implode(', ', $businessMember->business_field_id) }}
                             @else
                                 <strong>{{ $label }}:</strong> {{ $businessMember->$key }}
                             @endif
