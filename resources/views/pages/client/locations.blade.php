@@ -60,6 +60,16 @@
             width: 100%;
             z-index: 1000;
         }
+
+        #map {
+            height: 450px;
+        }
+
+        @media (min-width: 768px) {
+            #map {
+                height: 700px;
+            }
+        }
     </style>
 @endpush
 
@@ -161,7 +171,7 @@
             </div>
             <div class="col-12 col-lg-8 mt-3">
                 <div class="position-relative">
-                    <div id="map" style="height: 450px;"></div>
+                    <div id="map"></div>
                 </div>
             </div>
 
