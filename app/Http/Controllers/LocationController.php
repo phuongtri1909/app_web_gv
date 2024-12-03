@@ -246,7 +246,7 @@ class LocationController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             $this->cleanupUploadedFiles1($data);
-            return redirect()->back()->withInput()->with('error', 'Đăng ký địa điểm thất bại' . $e->getMessage());
+            return redirect()->back()->with('error', 'Đăng ký địa điểm thất bại' . $e->getMessage())->withInput();
         }
     }
 }
