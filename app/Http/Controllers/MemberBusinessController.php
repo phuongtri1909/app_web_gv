@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\BusinessRegistrationsImport;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\BusinessField;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MemberBusinessController extends Controller
 {
@@ -214,6 +216,20 @@ class MemberBusinessController extends Controller
         } catch (\Exception $e) {
 
             return redirect()->route('members.index')->with('error', 'Xóa thất bại doanh nghiệp');
+        }
+    }
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:csv,xlsx,xls',
+        ]);
+        $file = $request->file('file');
+        try {
+            Excel::import(new BusinessRegistrationsImport, $file);
+            return redirect()->route('members.index')->with('success', 'Dữ liệu đã được import thành công!');
+        } catch (\Exception $e) {
+            Log::error($e);
+            return redirect()->route('members.index')->with('error', 'Lỗi khi import dữ liệu');
         }
     }
 }
