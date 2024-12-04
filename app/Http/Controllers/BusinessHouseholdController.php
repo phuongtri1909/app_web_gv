@@ -32,6 +32,12 @@ class BusinessHouseholdController extends Controller
         return redirect()->back()->with('success', 'Imported successfully');
     }
 
+    public function clientShow($id){
+        $businessHousehold = BusinessHousehold::find($id);
+
+        return view('pages.client.p17.layouts.partials.body-modal-bhh', compact('businessHousehold'));
+    }
+
     /**
      * Display a listing of the resource.
      */

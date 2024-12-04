@@ -14,6 +14,10 @@
             background-color: white;
             z-index: 1;
         }
+
+        p {
+            margin-bottom: 0;
+        }
     </style>
 @endpush
 
@@ -36,12 +40,12 @@
                             $('#load-more').attr("disabled", true);
                             return;
                         }
-                        $('#load-more').text('Load More');
+                        $('#load-more').text('Xem thêm');
                         $('#business-household-data').append(data);
                     })
                     .fail(function() {
-                        alert('Lỗi server');
-                        $('#load-more').text('Load More');
+                        showToast('Có lỗi xảy ra', 'error');
+                        $('#load-more').text('Xem thêm');
                     });
             });
         });
@@ -84,7 +88,7 @@
                     </tbody>
                 </table>
                 <div class="d-flex justify-content-center mt-3">
-                    <button id="load-more" class="btn btn-primary">Xem thêm</button>
+                    <button id="load-more" class="btn bg-app-gv rounded-pill text-white">Xem thêm</button>
                 </div>
             </div>
         </div>
