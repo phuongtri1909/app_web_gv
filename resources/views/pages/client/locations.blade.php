@@ -323,7 +323,7 @@
                 <div class="info-location-container mt-3">
                     <div class="info-location-content">
                         <strong>Thông tin mô tả:</strong>
-                        <div class="mt-3">
+                        <div class="mt-3 overflow-auto">
                             <div class="d-flex">
                                 <div>${isLocation.description}</div> 
                              </div>
