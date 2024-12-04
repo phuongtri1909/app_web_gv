@@ -24,4 +24,9 @@ class BusinessHousehold extends Model
         'status'     
     ];
 
+    public function road()
+    {
+        return $this->belongsTo(Road::class);
+    }
+
 }
