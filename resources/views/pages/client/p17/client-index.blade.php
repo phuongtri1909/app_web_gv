@@ -7,6 +7,13 @@
         .w-max-content {
             width: max-content;
         }
+
+        thead {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 1;
+        }
     </style>
 @endpush
 
@@ -43,41 +50,42 @@
 
 @section('content')
     <section id="business-household" class="business-household mt-5rem mb-5">
-        <div class="container">
+        <div class="container ">
 
             {{-- <form action="{{ route('p17.households.import') }}" method="POST" enctype="multipart/form-data">
               @csrf
               <input type="file" name="file" required>
               <button type="submit">Import</button>
           </form> --}}
-
-            <table class="table table-striped table-bordered table-responsive table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>#</th>
-                        <th>
-                            <p class="w-max-content">Số giấy phép</p>
-                        </th>
-                        <th>
-                            <p class="w-max-content">Họ tên chủ hộ kinh doanh</p>
-                        </th>
-                        <th>
-                            <p class="w-max-content">Bảng hiệu</p>
-                        </th>
-                        <th>
-                            <p class="w-max-content">Địa Chỉ</p>
-                        </th>
-                        <th>
-                            <p class="w-max-content">Chi Tiết</p>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody id="business-household-data">
-                    @include('pages.client.p17.business-household-list')
-                </tbody>
-            </table>
-            <div class="d-flex justify-content-center mt-3">
-                <button id="load-more" class="btn btn-primary">Xem thêm</button>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered  table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>
+                                <p class="w-max-content">Số giấy phép</p>
+                            </th>
+                            <th>
+                                <p class="w-max-content">Họ tên chủ hộ kinh doanh</p>
+                            </th>
+                            <th>
+                                <p class="w-max-content">Bảng hiệu</p>
+                            </th>
+                            <th>
+                                <p class="w-max-content">Địa Chỉ</p>
+                            </th>
+                            <th>
+                                <p class="w-max-content">Chi Tiết</p>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="business-household-data">
+                        @include('pages.client.p17.business-household-list')
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-center mt-3">
+                    <button id="load-more" class="btn btn-primary">Xem thêm</button>
+                </div>
             </div>
         </div>
 

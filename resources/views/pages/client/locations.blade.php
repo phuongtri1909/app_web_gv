@@ -5,9 +5,9 @@
     @section('description', 'Chỉ dẫn điểm đến')
     @section('keyword', 'Chỉ dẫn điểm đến')
 @elseif(Route::currentRouteName() == 'locations-17')
-    @section('title', 'Quản lý tiểu thương')
-    @section('description', 'Quản lý tiểu thương')
-    @section('keyword', 'Quản lý tiểu thương')
+    @section('title', 'Giới Thiệu Phường 17')
+    @section('description', 'Giới Thiệu Phường 17')
+    @section('keyword', 'Giới Thiệu Phường 17')
 @endif
 
 @push('styles')
@@ -96,14 +96,14 @@
                         @if (Route::currentRouteName() == 'locations')
                             Danh sách địa điểm
                         @elseif(Route::currentRouteName() == 'locations-17')
-                            Quản lý tiểu thương
+                            Giới Thiệu Phường 17
                         @endif
                     </h4>
                     <p class="text-center">Hiển thị {{ $locations->count() }} trên tổng số {{ $locations->total() }}
                         @if (Route::currentRouteName() == 'locations')
                             địa điểm
                         @elseif(Route::currentRouteName() == 'locations-17')
-                            tiểu thương
+                            địa điểm
                         @endif
                     </p>
 
