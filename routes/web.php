@@ -3,6 +3,7 @@
 use App\Models\Tab;
 use App\Models\User;
 use App\Models\SlideProgram;
+use App\Models\BusinessHousehold;
 use UniSharp\LaravelFilemanager\Lfm;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
@@ -44,6 +45,7 @@ use App\Http\Controllers\AdminQuestionController;
 use App\Http\Controllers\BusinessFieldController;
 use App\Http\Controllers\DetailContentController;
 use App\Http\Controllers\TabDetailPostController;
+use App\Http\Controllers\BusinessSurveyController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\MemberBusinessController;
 use App\Http\Controllers\TabsForParentsController;
@@ -54,16 +56,16 @@ use App\Http\Controllers\BusinessFeedBackController;
 use App\Http\Controllers\CategoryQuestionController;
 use App\Http\Controllers\CustomerInterestController;
 use App\Http\Controllers\FinancialSupportController;
+use App\Http\Controllers\BusinessDashboardController;
+use App\Http\Controllers\BusinessHouseholdController;
 use App\Http\Controllers\BusinessCapitalNeedController;
 use App\Http\Controllers\BusinessRecruitmentController;
 use App\Http\Controllers\ContactConsultationController;
 use App\Http\Controllers\AdmissionProcessDetailController;
-use App\Http\Controllers\BusinessDashboardController;
 use App\Http\Controllers\BusinessFairRegistrationController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PersonalBusinessInterestController;
 use App\Http\Controllers\BusinessStartPromotionInvestmentController;
-use App\Http\Controllers\BusinessSurveyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -111,9 +113,6 @@ Route::middleware(['language'])->group(function () {
         Route::get('/locations', [LocationController::class, 'clientIndex'])->name('locations');
         Route::get('/search-locations', [LocationController::class, 'searchLocations'])->name('search.locations');
         Route::get('/get-locations', [LocationController::class, 'getAllLocations'])->name('get.locations');
-
-        //cho phường 17
-        Route::get('/locations-17', [LocationController::class, 'clientIndex'])->name('locations-17');
 
         //tam gán trang intro HDN
         Route::get('/intro-hdn', function () {
@@ -166,6 +165,18 @@ Route::middleware(['language'])->group(function () {
         });
         Route::get('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'showFormStartPromotion'])->name('show.form.start.promotion'); // khởi nghiệp xúc tiến thương mại đầu tư
         Route::post('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'storeFormStartPromotion'])->name('form.start.promotion.store');
+        
+
+        //cho phường 17
+        Route::get('/locations-17', [LocationController::class, 'clientIndex'])->name('locations-17');
+        
+        Route::group(['prefix' => 'p17'], function () {
+            Route::get('business-households',[BusinessHouseholdController::class, 'clientIndex'])->name('p17.households.client.index');
+        
+            // Route::post('import', [BusinessHouseholdController::class, 'import'])->name('p17.households.import');
+        });
+    
+    
     });
 
     Route::get('switch-language/{locale}', [LanguageController::class, 'switchLanguage'])->name('language.switch');
