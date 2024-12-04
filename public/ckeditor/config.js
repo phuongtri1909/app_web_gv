@@ -4,8 +4,10 @@
  */
 CKEDITOR.editorConfig = function(config) {
     config.allowedContent = true;
-    // Define changes to the default configuration here.
-    config.extraPlugins = 'uploadimage,image,video,clipboard,table,justify,codesnippet'; // Add plugins as needed
+    config.forcePasteAsPlainText = false;
+    // Thêm các plugin cho kích cỡ chữ và màu chữ
+    config.extraPlugins = 'uploadimage,image,video,clipboard,table,justify,font,colorbutton';
+
     config.toolbarGroups = [
         { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
         { name: 'editing', groups: [ 'find', 'selection', 'editing' ] },
@@ -17,16 +19,18 @@ CKEDITOR.editorConfig = function(config) {
         { name: 'others', groups: [ 'others' ] },
         '/',
         { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-        { name: 'paragraph', groups: [ 'align', 'list', 'indent', 'blocks', 'bidi', 'paragraph', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] }, // Add more groups as needed. ] },
+        { name: 'paragraph', groups: [ 'align', 'list', 'indent', 'blocks', 'bidi', 'paragraph' ] },
         { name: 'styles', groups: [ 'styles' ] },
-        { name: 'colors', groups: [ 'colors' ] }
+        { name: 'colors', groups: [ 'colors' ] },
+        { name: 'font', groups: [ 'Font', 'FontSize', 'TextColor', 'BGColor' ] }
     ];
 
-    // Ensure toolbar includes specific buttons for image, video, and alignment.
-    config.removeButtons = 'Underline,Subscript,Superscript';  // Remove "Subscript" and "Superscript" buttons
+    config.removeButtons = 'Underline,Subscript,Superscript';
     config.format_tags = 'p;h1;h2;h3;pre';
     config.removeDialogTabs = 'image:advanced;link:advanced';
     config.height = 300;
+
+    config.fontSize_sizes = '8/8px;10/10px;12/12px;14/14px;16/16px;18/18px;24/24px;36/36px;48/48px;72/72px';
 
     // File browser settings (if using Laravel File Manager).
     config.filebrowserBrowseUrl = '/admin/laravel-filemanager?editor=ckeditor&type=Files';
@@ -36,7 +40,9 @@ CKEDITOR.editorConfig = function(config) {
     config.uploadUrl = '/admin/laravel-filemanager/upload?editor=ckeditor&type=Files';
     config.removePlugins = 'image2';
 
-    config.attributes = [ 'left', 'center', 'right' ];
+    // Kích hoạt plugin màu sắc
+    config.colorButton_enableMore = true;
 };
+
 
 

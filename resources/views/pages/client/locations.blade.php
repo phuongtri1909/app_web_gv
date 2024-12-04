@@ -325,8 +325,7 @@
                         <strong>Thông tin mô tả:</strong>
                         <div class="mt-3">
                             <div class="d-flex">
-                                <strong>Mô tả: </strong>
-                                <p>${isLocation.description}</p>
+                                <div>${isLocation.description}</div> 
                              </div>
                              ${isLocation.location_products && isLocation.location_products.length > 0 ? `             
                                 <div class="row mt-3">
