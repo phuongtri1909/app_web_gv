@@ -70,58 +70,58 @@
     <div class="col-12">
         <div class="card mb-4 mx-4">
             <div class="card-header pb-0">
-                <div class="d-flex flex-row justify-content-between">
+                <div class="">
                     <div class="row">
-                        <div class="col-12 col-md-7">
+                        <div class="col-12 col-md-6">
                             <div>
                                 <h5 class="mb-0">{{ __('Danh sách đăng ký thành viên app') }}</h5>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <div class="import-container d-flex">
-                            <form id="importForm" action="{{ route('import.business') }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <div class="d-flex">
-                                    <div class="file-upload">
-                                        <input type="file" name="file" id="fileInput" accept=".csv,.xls,.xlsx" required>
-                                        <label for="fileInput">Chọn file Excel</label>
+                        <div class="col-12 col-md-3">
+                            <div class="import-container d-flex">
+                                <form id="importForm" action="{{ route('import.business') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="d-flex">
+                                        <div class="file-upload">
+                                            <input type="file" name="file" id="fileInput" accept=".csv,.xls,.xlsx" required>
+                                            <label for="fileInput">Chọn file Excel</label>
+                                        </div>
+                                        <div class="button-submit">
+                                            <button type="submit" class="btn btn-primary btn-sm mb-0">Tải lên</button>
+                                        </div>
                                     </div>
-                                    <div class="button-submit">
-                                        <button type="submit" class="btn btn-primary btn-sm mb-0">Tải lên</button>
-                                    </div>
-                                </div>
-                                <span id="fileName" class="file-name-icon" style="display: none;">
-                                    <i class="fa fa-file" aria-hidden="true"></i>
-                                    <span id="fileNameText"></span>
-                                </span>                                                                               
-                            </form>                       
+                                    <span id="fileName" class="file-name-icon" style="display: none;">
+                                        <i class="fa fa-file" aria-hidden="true"></i>
+                                        <span id="fileNameText"></span>
+                                    </span>                                                                               
+                                </form>                       
+                            </div>
                         </div>
+                        <div class="col-12 col-md-3">
+                            <div>
+                                <form method="GET" class="d-flex">
+                                    @if (request('search'))
+                                        <input type="hidden" name="search" value="{{ request('search') }}">  
+                                    @endif
+                                    <select name="search-status" class="form-control-sm me-2">
+                                        <option value="">{{ __('Tất cả') }}</option>
+                                        <option value="approved" {{ request('search-status') == 'approved' ? 'selected' : '' }}>{{ __('Đã duyệt') }}</option>
+                                        <option value="pending" {{ request('search-status') == 'pending' ? 'selected' : '' }}>{{ __('Đang chờ') }}</option>
+                                        <option value="rejected" {{ request('search-status') == 'rejected' ? 'selected' : '' }}>{{ __('Đã từ chối') }}</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary btn-sm mb-0">{{ __('Tìm kiếm') }}</button>
+                                </form>
+                            </div>
+                        </div> 
                     </div>
-                    
                     <div id="progress-container" style="display: none;">
                         <h5>Đang xử lý...</h5>
                         <div class="progress">
                             <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
                         </div>
-                    </div>  
-                    <div class="col-12 col-md-3">
-                        <div>
-                            <form method="GET" class="d-flex">
-                                @if (request('search'))
-                                    <input type="hidden" name="search" value="{{ request('search') }}">  
-                                @endif
-                                <select name="search-status" class="form-control-sm me-2">
-                                    <option value="">{{ __('Tất cả') }}</option>
-                                    <option value="approved" {{ request('search-status') == 'approved' ? 'selected' : '' }}>{{ __('Đã duyệt') }}</option>
-                                    <option value="pending" {{ request('search-status') == 'pending' ? 'selected' : '' }}>{{ __('Đang chờ') }}</option>
-                                    <option value="rejected" {{ request('search-status') == 'rejected' ? 'selected' : '' }}>{{ __('Đã từ chối') }}</option>
-                                </select>
-                                <button type="submit" class="btn btn-primary btn-sm mb-0">{{ __('Tìm kiếm') }}</button>
-                            </form>
-                        </div>
-                    </div>          
+                    </div>        
                 </div>
+                   
             </div>
             <div class="card-body px-0 pt-0 pb-2">
                 @include('admin.pages.notification.success-error')
