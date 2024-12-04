@@ -21,8 +21,9 @@
     <script src="{{ asset('js/script.js') }}" ></script>
     <script src="{{ asset('js/app.js') }}" ></script>
     <script src="{{ asset('js/animation.js') }}" ></script>
+    <script type="text/javascript" src="{{ asset('ckeditor/ckeditor.js')}}"></script>
+    <script src="{{ asset('ckeditor/config.js')}}"></script>
 
-    
     <script>
         
         $(document).ready(function() {

@@ -238,7 +238,7 @@
                         <div class="col-12 mb-4">
                             <textarea  class="form-control @error('description') is-invalid @enderror"
                                 name="description" id="description" rows="5"
-                                placeholder="Nhập thông tin điểm đến">{{ old('description') }}</textarea>
+                                placeholder="Nhập thông tin điểm đến">{!! old('description') !!}</textarea>
                             <span class="error-message"></span>
                             @error('description')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
@@ -541,6 +541,11 @@
     
         document.addEventListener('DOMContentLoaded', function() {
             initMap();
+        });
+    </script>
+    <script>
+         document.addEventListener('DOMContentLoaded', function() {
+            CKEDITOR.replace( 'description' );
         });
     </script>
 @endpush
