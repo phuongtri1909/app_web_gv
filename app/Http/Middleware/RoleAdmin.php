@@ -16,7 +16,7 @@ class RoleAdmin
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->user()->role !== 'admin') {
-            return redirect()->route('business');
+            return redirect()->route('business')->with('error', 'Bạn không có quyền truy cập trang này');
         }
 
         return $next($request);

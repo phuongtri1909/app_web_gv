@@ -58,6 +58,7 @@ use App\Http\Controllers\BusinessCapitalNeedController;
 use App\Http\Controllers\BusinessRecruitmentController;
 use App\Http\Controllers\ContactConsultationController;
 use App\Http\Controllers\AdmissionProcessDetailController;
+use App\Http\Controllers\BusinessDashboardController;
 use App\Http\Controllers\BusinessFairRegistrationController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PersonalBusinessInterestController;
@@ -182,6 +183,7 @@ Route::middleware(['language'])->group(function () {
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
+
         Route::middleware(['role.admin'])->group(function () {
             Route::prefix('admin')->group(function () {
                 Route::get('/', function () {
@@ -261,7 +263,14 @@ Route::middleware(['language'])->group(function () {
             });
         });
 
-        Route::middleware(['role.business'])->group(function () {});
+        Route::middleware(['check.active'])->group(function () {
+            Route::middleware(['role.business'])->group(function () {
+                Route::prefix('business')->group(function () {
+                    Route::get('/', [BusinessDashboardController::class, 'index'])->name('business.dashboard');
+                });
+            });
+        });
+
     });
 
     Route::middleware(['guest'])->group(function () {

@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class RoleBusiness
+class CheckActive
 {
     /**
      * Handle an incoming request.
@@ -15,8 +15,12 @@ class RoleBusiness
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->user()->role !== 'business') {
-            return redirect()->route('business')->with('error', 'Bạn không có quyền truy cập trang này');
+
+        $authUser = auth()->user();
+
+        if ($authUser->status == 'inactive') {
+            auth()->logout();
+            return redirect()->route('admin.login')->with('error', 'Tài khoản của bạn đã bị vô hiệu hóa.');
         }
 
         return $next($request);
