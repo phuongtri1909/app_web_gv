@@ -249,6 +249,7 @@ Route::middleware(['language'])->group(function () {
                 Route::post('/update-status-1', [StatusController::class, 'updateStatus1'])->name('update.status.1');
 
                 Route::resource('members',  MemberBusinessController::class)->except('create', 'store', 'edit', 'update');
+                Route::post('/import-business', [MemberBusinessController::class, 'import'])->name('import.business');
 
                 Route::resource('business-fields',  BusinessFieldController::class);
 
