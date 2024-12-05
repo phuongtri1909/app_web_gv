@@ -20,6 +20,10 @@ class LanguageMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if ($request->route()->getName() !== 'admin.login') {
+            $request->session()->put('intended_route', $request->fullUrl());
+        }
+
         if (Auth::check()) {
             $languageExists = DB::table('languages')->where('locale', Auth::user()->language)->exists();
             $locale = $languageExists ? Auth::user()->language : config('app.locale');

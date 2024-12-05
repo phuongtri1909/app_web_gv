@@ -137,7 +137,7 @@ header.header-sticky .navbar-toggler {
     }
 }
 
-.header{
+.header {
     position: fixed;
     top: 0;
     left: 50%;
@@ -1914,13 +1914,14 @@ table.form-table td {
         font-size: 2rem;
     }
 }
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
-.bg-app-gv{
+.bg-app-gv {
     background: linear-gradient(45deg, orange, yellow) !important;
 }
 
@@ -1928,4 +1929,47 @@ input::-webkit-inner-spin-button {
     background: linear-gradient(45deg, orange, yellow) !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
+}
+
+/* Sidebar container */
+#sidebar-account {
+    position: fixed;
+    top: 30%;
+    left: 0;
+    transform: translateY(-50%);
+    background: linear-gradient(45deg, orange, yellow) !important;
+    color: #000;
+    font-weight: bold;
+    border-radius: 0 5px 5px 0;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 5;
+    cursor: move; /* Change cursor to indicate draggable */
+}
+
+/* Toggle button */
+#toggleButton {
+    background: linear-gradient(45deg, orange, yellow);
+    border: none;
+    color: #000;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 0 5px 5px 0;
+    font-size: 18px;
+}
+
+/* Sidebar content */
+#sidebarContent {
+    display: none;
+    padding: 10px;
+}
+
+#sidebarContent a {
+    color: #000;
+    text-decoration: none;
+    display: block;
+    margin: 5px 0;
+}
+
+#sidebarContent a:hover {
+    text-decoration: underline;
 }

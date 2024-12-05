@@ -67,8 +67,7 @@ class LegalAdviceController extends Controller
             ]);
     
             DB::commit();
-            session()->forget('key_business_code');
-            session()->forget('business_code');
+            
             return redirect()->back()->with('success', 'Yêu cầu tư vấn đã được gửi thành công!');
     
         } catch (\Exception $e) {

@@ -142,9 +142,7 @@ class BusinessCapitalNeedController extends Controller
 
         // Check business code 
         $business_member_id = $this->getBusinessMemberId($request);
-        if ($business_member_id instanceof \Illuminate\Http\RedirectResponse) {
-            return $business_member_id;
-        }
+
 
         DB::beginTransaction();
         try {
@@ -213,8 +211,7 @@ class BusinessCapitalNeedController extends Controller
 
 
             DB::commit();
-            session()->forget('key_business_code');
-            session()->forget('business_code');
+            
             return redirect()->route('show.home.bank')->with('success', 'Đăng ký kết nối ngân hàng thành công!');
         } catch (\Exception $e) {
             DB::rollBack();

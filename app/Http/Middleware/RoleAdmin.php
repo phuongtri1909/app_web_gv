@@ -15,6 +15,13 @@ class RoleAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Lấy thông tin route hiện tại
+        $currentRouteName = $request->route()->getName();
+        $currentRouteAction = $request->route()->getActionName();
+
+        // Ghi log thông tin route hiện tại
+      // dd($currentRouteName, $currentRouteAction);
+
         if (auth()->user()->role !== 'admin') {
             return redirect()->route('business')->with('error', 'Bạn không có quyền truy cập trang này');
         }

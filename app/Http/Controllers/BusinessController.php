@@ -61,9 +61,7 @@ class BusinessController extends Controller
     {
         // Check business code 
         $business_member_id = $this->getBusinessMemberId($request);
-        if ($business_member_id instanceof \Illuminate\Http\RedirectResponse) {
-            return $business_member_id;
-        }
+       
 
         $request->validate([
             'avt_businesses' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
@@ -93,8 +91,7 @@ class BusinessController extends Controller
         $existing_business = Business::where('business_member_id', $business_member_id)->first();
 
         if ($existing_business) {
-            session()->forget('key_business_code');
-            session()->forget('business_code');
+            
             return redirect()->route('form.check.business')->with('error', 'DN/Hộ KD này đã được đăng ký, vui lòng đăng ký DN/Hộ KD khác.');
         }
 
@@ -145,8 +142,7 @@ class BusinessController extends Controller
 
             DB::commit();
 
-            session()->forget('key_business_code');
-            session()->forget('business_code');
+            
 
             return redirect()->route('business')->with('success', 'Đăng ký thành công, vui lòng chờ duyệt!');
         } catch (\Exception $e) {

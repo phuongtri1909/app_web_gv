@@ -21,9 +21,7 @@ class BusinessFeedBackController extends Controller
             return redirect()->back()->with('error', 'Không tìm thấy danh mục');
         }
         $business_member_id = $this->getBusinessMemberId($request);
-        if ($business_member_id instanceof \Illuminate\Http\RedirectResponse) {
-            return $business_member_id;
-        }
+       
         return view('pages.client.feed-back.form-business-opinion',compact('business_member_id','isKhaoSat'));
     }
     public function storeBusinessOpinion(Request $request)
@@ -32,9 +30,7 @@ class BusinessFeedBackController extends Controller
         try {
             $data = [];
             $business_member_id = $this->getBusinessMemberId($request);
-            if ($business_member_id instanceof \Illuminate\Http\RedirectResponse) {
-                return $business_member_id;
-            }
+            
             $request->validate([
                 'opinion' => 'required|string|max:1000',
                 'attached_images' => 'required|array',
@@ -67,8 +63,7 @@ class BusinessFeedBackController extends Controller
             $businessFeedback->attached_images = $data['attached_images'];
             $businessFeedback->save();
             DB::commit();
-            session()->forget('key_business_code');
-            session()->forget('business_code');
+            
             return redirect()->route('business.opinion')->with('success', 'Gửi thành công!');
         } catch (\Exception $e) {
             DB::rollBack();

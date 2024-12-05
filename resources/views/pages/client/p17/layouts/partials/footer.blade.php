@@ -4,7 +4,7 @@
                 <div class="row ">
                     <div class="col-lg-12">
                         <div class="footer-bottom">
-                            <p class="mb-2">© 2024 Copyright S-TECH</p>
+                            <p class="mb-2">© 2024 Copyright STech</p>
                         </div>
                     </div>
                 </div>

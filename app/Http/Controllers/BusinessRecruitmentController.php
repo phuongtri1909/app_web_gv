@@ -97,9 +97,7 @@ class BusinessRecruitmentController extends Controller
     {
         // Check business code 
         $business_member_id = $this->getBusinessMemberId($request);
-        if ($business_member_id instanceof \Illuminate\Http\RedirectResponse) {
-            return $business_member_id;
-        }
+    
         try {
             $avatar_paths = [];
             DB::beginTransaction();
@@ -165,8 +163,7 @@ class BusinessRecruitmentController extends Controller
             ]);
 
             DB::commit();
-            session()->forget('key_business_code');
-            session()->forget('business_code');
+            
             return redirect()->route('job-connector')->with('success', 'Đăng ký tuyển dụng thành công!');
         } catch (\Exception $e) {
             DB::rollBack();

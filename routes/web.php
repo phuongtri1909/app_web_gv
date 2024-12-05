@@ -129,7 +129,7 @@ Route::middleware(['language'])->group(function () {
         Route::get('/form-job-application', [JobApplicationController::class, 'jobApplication'])->name('job.application'); //form ứng tuyển
         Route::post('/form-job-application', [JobApplicationController::class, 'storeForm'])->name('job.application.store');
 
-        Route::middleware(['check.business.code'])->group(function () {
+        Route::middleware(['check.business.code','check.active','check.business.member'])->group(function () {
 
             Route::post('form-check-business', function () {
 
@@ -168,7 +168,7 @@ Route::middleware(['language'])->group(function () {
         
 
         //cho phường 17
-        Route::get('/locations-17', [LocationController::class, 'clientIndex'])->name('locations-17');
+        Route::get('/locations-17', [LocationController::class, 'clientIndex17'])->name('locations-17');
         
         Route::group(['prefix' => 'p17'], function () {
             Route::get('business-households',[BusinessHouseholdController::class, 'clientIndex'])->name('p17.households.client.index');
@@ -278,6 +278,14 @@ Route::middleware(['language'])->group(function () {
             Route::middleware(['role.business'])->group(function () {
                 Route::prefix('business')->group(function () {
                     Route::get('/', [BusinessDashboardController::class, 'index'])->name('business.dashboard');
+
+                    Route::put('update-business', [BusinessDashboardController::class, 'updateBusiness'])->name('update.business');
+
+                    Route::put('update-business-member', [BusinessDashboardController::class, 'updateBusinessMember'])->name('update.business.member');
+                
+                    Route::put('update-representative-info',[BusinessDashboardController::class, 'updateRepresentativeInfo'])->name('update.representative.info');
+                
+                    Route::put('update-account-info',[BusinessDashboardController::class, 'updateAccountInfo'])->name('update.account.info');
                 });
             });
         });
