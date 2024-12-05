@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}?v={{ filemtime(public_path('css/styles.css')) }}">
     <link id="pagestyle" href="{{ asset('css/dashboard.css') }}" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -64,7 +64,7 @@
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
         {{-- <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script> --}}
         <script src="{{ asset('js/dashboard.min.js') }}"></script>
-        <script src="{{ asset('js/app.js') }}"></script>
+        <script src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }}"></script>
         <script type="text/javascript" src="{{ asset('ckeditor/ckeditor.js')}}"></script>
         <script src="{{ asset('ckeditor/config.js')}}"></script>
         <script>
