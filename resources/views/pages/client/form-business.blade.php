@@ -164,7 +164,7 @@
                             @error('avt_businesses')
                                 <div class="invalid-feedback d-block text-center" role="alert">{{ $message }}</div>
                             @enderror
-                            <input id="file-upload" type="file" accept="image/*" name="avt_businesses"
+                            <input id="file-upload" type="file" name="avt_businesses"
                                 value="{{ old('avt_businesses') }}" style="display: none;">
                         </div>
                     </div>
@@ -207,7 +207,8 @@
         const uploadIcon = document.getElementById('upload-icon');
         const uploadText = document.getElementById('upload-text');
         const errorMessage = document.getElementById('error-message1');
-        fileInput.addEventListener('change', function() {
+        fileInput.addEventListener('change', function(event) {
+            validateImageInput(event);
             const file = fileInput.files[0];
             errorMessage.textContent = '';
 

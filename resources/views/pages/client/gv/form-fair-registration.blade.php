@@ -234,10 +234,12 @@
             });
             input.files = dataTransfer.files;
         }
-        document.getElementById('product_images').addEventListener('change', function() {
+        document.getElementById('product_images').addEventListener('change', function(event) {
+            validateImageInput(event);
             previewFiles(this, 'product_image_preview_container', false, 5);
         }); 
-        document.getElementById('business_license').addEventListener('change', function() {
+        document.getElementById('business_license').addEventListener('change', function(event) {
+            validateImageInput(event);
             previewFiles(this, 'business_license_preview_container');
         });
     </script>

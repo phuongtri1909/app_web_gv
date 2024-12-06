@@ -78,11 +78,6 @@ use App\Http\Controllers\BusinessStartPromotionInvestmentController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('test', function () {
-    return view('pages.client.test');
-});
-
 Route::middleware(['language'])->group(function () {
 
     Route::get('/clear-cache', function () {
@@ -120,10 +115,6 @@ Route::middleware(['language'])->group(function () {
             return view('pages.client.introduction-hdn');
         })->name('introduction');
 
-        Route::get('form-check-business', function () {
-            return view('pages.client.gv.form-check-business');
-        })->name('form.check.business');
-
         Route::get('/member-business', [MemberBusinessController::class, 'showFormMemberBusiness'])->name('show.form.member.business'); //form đk hội viên doanh nghiệp chuyển sang đk app
         Route::post('/member-business', [MemberBusinessController::class, 'storFormMemberBusiness'])->name('form.member.business.store');
 
@@ -131,10 +122,6 @@ Route::middleware(['language'])->group(function () {
         Route::post('/form-job-application', [JobApplicationController::class, 'storeForm'])->name('job.application.store');
 
         Route::middleware(['check.business.code','check.active','check.business.member'])->group(function () {
-
-            Route::post('form-check-business', function () {
-
-            })->name('form.check.business');
 
             Route::get('/form-connect-supply-demand', [ProductBusinessController::class, 'connectSupplyDemand'])->name('connect.supply.demand'); //form kết nối cung cầu
             Route::post('/form-connect-supply-demand', [ProductBusinessController::class, 'storeConnectSupplyDemand'])->name('connect.supply.demand.store');

@@ -265,7 +265,7 @@
                         <div class="col-md-4 mb-4">
                             <label for="product_image" class="form-label">Hình ảnh điểm đến: <span
                                 class="text-danger">*</span></label>
-                            <input type="file" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp" id="product_image" name="product_image[]"
+                            <input type="file" id="product_image" name="product_image[]"
                                 class="form-control form-control-sm @error('product_image') is-invalid @enderror"
                                 multiple>
                             <span class="error-message"></span>
@@ -372,7 +372,8 @@
             input.files = dataTransfer.files;
         }
 
-        document.getElementById('product_image').addEventListener('change', function() {
+        document.getElementById('product_image').addEventListener('change', function(event) {
+            validateImageInput(event);
             previewFiles(this, 'product_image_preview_container', false, 5);
         });
     </script>

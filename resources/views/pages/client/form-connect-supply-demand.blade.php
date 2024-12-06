@@ -16,6 +16,7 @@
             color: red;
             margin-top: 10px;
         }
+
         #form-business {
             position: relative;
             /* margin: 30px auto; */
@@ -45,25 +46,27 @@
     <section id="form-business" class="form-business mt-5rem">
         <div class="container">
             <div class="row">
-                
-                <form action="{{route('connect.supply.demand.store')}}" method="POST" enctype="multipart/form-data">
+
+                <form action="{{ route('connect.supply.demand.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row ">
 
                         <div class="mb-3 col-md-6">
-                            <label for="name_product" class="form-label">Tên sản phẩm<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm" id="name_product"
-                                name="name_product" value="{{ old('name_product') }}" placeholder="Nhập tên sản phẩm"
-                                required>
+                            <label for="name_product" class="form-label">Tên sản phẩm<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id="name_product" name="name_product"
+                                value="{{ old('name_product') }}" placeholder="Nhập tên sản phẩm" required>
                             @error('name_product')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="mb-3 col-md-6">
-                            <label for="category_product_id" class="form-label">Danh mục sản phẩm<span class="text-danger">*</span></label>
+                            <label for="category_product_id" class="form-label">Danh mục sản phẩm<span
+                                    class="text-danger">*</span></label>
                             <select id="category_product_id" name="category_product_id"
-                                class="form-select form-select-sm @error('category_product_id') is-invalid @enderror" required>
+                                class="form-select form-select-sm @error('category_product_id') is-invalid @enderror"
+                                required>
                                 <option value="" disabled selected>Chọn danh mục sản phẩm</option>
                                 @foreach ($categoryProductBusinesses as $item)
                                     <option value="{{ $item->id }}"
@@ -87,9 +90,11 @@
                         </div>
 
                         <div class="col-md-4 mb-4">
-                            <label for="related_confirmation_document" class="form-label">Các giấy tờ xác nhận liên quan đến sản phẩm</label>
-                            <input type="file" class="form-control form-control-sm @error('related_confirmation_document') is-invalid @enderror"
-                                id="related_confirmation_document" name="related_confirmation_document[]" accept=".pdf,.doc,.docx" multiple>
+                            <label for="related_confirmation_document" class="form-label">Các giấy tờ xác nhận liên quan đến
+                                sản phẩm</label>
+                            <input type="file"
+                                class="form-control form-control-sm @error('related_confirmation_document') is-invalid @enderror"
+                                id="related_confirmation_document" name="related_confirmation_document[]" multiple>
                             @error('related_confirmation_document')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -97,40 +102,45 @@
 
                         <div class="col-md-4 mb-4">
                             <label for="price" class="form-label">Giá bán<span class="text-danger">*</span></label>
-                            <input required type="number" class="form-control form-control-sm @error('price') is-invalid @enderror"
-                                id="price" placeholder="Nhập giá bán sản phẩm" name="price"
-                                value="{{ old('price') }}">
+                            <input required type="number"
+                                class="form-control form-control-sm @error('price') is-invalid @enderror" id="price"
+                                placeholder="Nhập giá bán sản phẩm" name="price" value="{{ old('price') }}">
                             @error('price')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="col-md-4 mb-4">
-                            <label for="price_member" class="form-label">Giá cho thành viên<span class="text-danger">*</span></label>
+                            <label for="price_member" class="form-label">Giá cho thành viên<span
+                                    class="text-danger">*</span></label>
                             <input required type="number"
                                 class="form-control form-control-sm @error('price_member') is-invalid @enderror"
-                                id="price_member"
-                                placeholder="Nhập giá bán cho thành viên"
-                                name="price_member" value="{{ old('price_member') }}">
+                                id="price_member" placeholder="Nhập giá bán cho thành viên" name="price_member"
+                                value="{{ old('price_member') }}">
                             @error('price_member')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="col-12 col-md-6 mb-4">
-                            <label for="product_avatar" class="form-label">Hình đại diện sản phẩm (500x500px)<span class="text-danger">*</span></label>
-                            <input type="file" class="form-control form-control-sm @error('product_avatar') is-invalid @enderror"
-                                id="product_avatar" name="product_avatar" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp">
+                            <label for="product_avatar" class="form-label">Hình đại diện sản phẩm (500x500px)<span
+                                    class="text-danger">*</span></label>
+                            <input type="file"
+                                class="form-control form-control-sm @error('product_avatar') is-invalid @enderror"
+                                id="product_avatar" name="product_avatar">
                             @error('product_avatar')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
-                            <img id="avatar_preview" src="#" alt="Avatar Preview" class="img-fluid mt-3" style="display: none; max-height: 200px;">
+                            <img id="avatar_preview" src="#" alt="Avatar Preview" class="img-fluid mt-3"
+                                style="display: none; max-height: 200px;">
                         </div>
-                        
+
                         <div class="col-12 col-md-6 mb-4">
-                            <label for="product_images" class="form-label">Hình ảnh sản phẩm (Tối đa 4 ảnh) <span class="text-danger">*</span></label>
-                            <input type="file" class="form-control form-control-sm @error('product_images') is-invalid @enderror"
-                                id="product_images" name="product_images[]" multiple accept="image/jpeg,image/png,image/jpg,image/gif,image/webp">
+                            <label for="product_images" class="form-label">Hình ảnh sản phẩm (Tối đa 4 ảnh) <span
+                                    class="text-danger">*</span></label>
+                            <input type="file"
+                                class="form-control form-control-sm @error('product_images') is-invalid @enderror"
+                                id="product_images" name="product_images[]" multiple>
                             @error('product_images')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -166,6 +176,7 @@
         });
 
         document.getElementById('product_avatar').addEventListener('change', function(event) {
+            validateImageInput(event);
             const [file] = event.target.files;
             if (file) {
                 const reader = new FileReader();
@@ -177,13 +188,12 @@
                 reader.readAsDataURL(file);
             }
         });
-    </script>
 
-    <script>
         document.getElementById('product_images').addEventListener('change', function(event) {
+            validateImageInput(event);
             const files = event.target.files;
             if (files.length > 4) {
-               showToast('Chỉ được chọn tối đa 4 ảnh sản phẩm','error');
+                showToast('Chỉ được chọn tối đa 4 ảnh sản phẩm', 'error');
                 event.target.value = ''; // Clear the input
             } else {
                 // Optionally, you can add code here to preview the selected images
@@ -203,5 +213,7 @@
                 });
             }
         });
+
+        document.getElementById('related_confirmation_document').addEventListener('change', validateDocumentInput);
     </script>
 @endpush

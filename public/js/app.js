@@ -334,3 +334,54 @@ function showToast(message, status) {
     const toast = new bootstrap.Toast(toastElement[0]);
     toast.show();
 }
+
+
+function validateImageInput(event) {
+    const input = event.target;
+    const files = input.files;
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
+    const errorContainer = input.nextElementSibling;
+
+    if (files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+            if (!validImageTypes.includes(files[i].type)) {
+                if (errorContainer && errorContainer.classList.contains('invalid-feedback')) {
+                    errorContainer.style.display = 'block';
+                    errorContainer.textContent = 'Vui lòng chọn một tệp hình ảnh hợp lệ (jpeg, png, jpg, gif, webp).';
+                } else {
+                    showToast('Chỉ chấp nhận ảnh định dạng JPEG, PNG, JPG, GIF, WEBP.', 'error');
+                }
+                input.value = ''; // Clear the input
+                return;
+            }
+        }
+        if (errorContainer && errorContainer.classList.contains('invalid-feedback')) {
+            errorContainer.style.display = 'none';
+        }
+    }
+}
+
+function validateDocumentInput(event) {
+    const input = event.target;
+    const files = input.files;
+    const validDocumentTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'];
+    const errorContainer = input.nextElementSibling;
+
+    if (files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+            if (!validDocumentTypes.includes(files[i].type)) {
+                if (errorContainer && errorContainer.classList.contains('invalid-feedback')) {
+                    errorContainer.style.display = 'block';
+                    errorContainer.textContent = 'Vui lòng chọn một tệp tài liệu hợp lệ (PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX).';
+                } else {
+                    showToast('Vui lòng chọn một tệp tài liệu hợp lệ (PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX).','error');
+                }
+                input.value = ''; // Clear the input
+                return;
+            }
+        }
+        if (errorContainer && errorContainer.classList.contains('invalid-feedback')) {
+            errorContainer.style.display = 'none';
+        }
+    }
+}
