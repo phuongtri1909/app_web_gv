@@ -207,57 +207,39 @@
         const uploadIcon = document.getElementById('upload-icon');
         const uploadText = document.getElementById('upload-text');
         const errorMessage = document.getElementById('error-message1');
+    
         fileInput.addEventListener('change', function(event) {
             validateImageInput(event);
             const file = fileInput.files[0];
             errorMessage.textContent = '';
-
+    
             if (file) {
                 if (!file.type.startsWith('image/')) {
                     errorMessage.textContent = 'Tệp không hợp lệ: Vui lòng chỉ tải lên hình ảnh.';
                     fileInput.value = '';
                     return;
                 }
-
+    
                 const reader = new FileReader();
                 reader.onload = function() {
+                    // Clear previous image preview
+                    imagePreview.innerHTML = '';
+    
                     const img = document.createElement('img');
                     img.src = reader.result;
                     img.className = 'preview-image';
                     img.id = 'uploaded-image';
-
+    
                     const imagePreviewContainer = document.createElement('div');
                     imagePreviewContainer.className = 'image-preview-container';
-
+    
                     const overlay = document.createElement('div');
                     overlay.className = 'image-overlay';
-
-                    const deleteIcon = document.createElement('span');
-                    deleteIcon.className = 'control-icon delete-icon';
-                    deleteIcon.innerHTML = '<i class="fa-solid fa-trash"></i>';
-                    deleteIcon.onclick = function() {
-                        const img = document.getElementById('uploaded-image');
-                        img.remove();
-                        imagePreview.innerHTML = '';
-                        uploadIcon.style.display = 'block';
-                        uploadText.style.display = 'block';
-                    };
-
-                    const previewIcon = document.createElement('span');
-                    previewIcon.className = 'control-icon preview-icon';
-                    previewIcon.innerHTML = '<i class="fas fa-eye"></i>';
-                    previewIcon.onclick = function() {
-                        const img = document.getElementById('uploaded-image');
-                        const imgWindow = window.open("");
-                        imgWindow.document.write("<img src='" + img.src + "' style='max-width:100%;'>");
-                    };
-
-                    overlay.appendChild(deleteIcon);
-                    overlay.appendChild(previewIcon);
+    
                     imagePreviewContainer.appendChild(img);
                     imagePreviewContainer.appendChild(overlay);
                     imagePreview.appendChild(imagePreviewContainer);
-
+    
                     uploadIcon.style.display = 'none';
                     uploadText.style.display = 'none';
                 };

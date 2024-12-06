@@ -262,7 +262,10 @@ class BusinessFairRegistrationController extends Controller
     public function businessFairRegistration(Request $request, $news_id)
     {
         // dd($news_id);
-        $businessCode = session('business_code');
+        //$businessCode = session('business_code');
+
+        $businessCode = auth()->user()->businessMember->business_code;
+
         if ($businessCode) {
             $business = BusinessMember::where('business_code', $businessCode)->first();
 
@@ -275,7 +278,7 @@ class BusinessFairRegistrationController extends Controller
                 ]);
             }
         }
-        return redirect()->route('form.check.business')->with('error', 'Không tìm thấy doanh nghiệp, vui lòng kiểm tra lại mã số thuế.');
+        return redirect()->route('admin.login')->with('error', 'Vui lòng đăng nhập để tiếp tục.');
     }
 
     public function storeBusinessFairRegistration(Request $request)

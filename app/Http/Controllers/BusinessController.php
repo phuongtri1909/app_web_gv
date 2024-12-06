@@ -92,7 +92,7 @@ class BusinessController extends Controller
 
         if ($existing_business) {
             
-            return redirect()->route('form.check.business')->with('error', 'DN/Hộ KD này đã được đăng ký, vui lòng đăng ký DN/Hộ KD khác.');
+            return redirect()->back()->with('error', 'DN/Hộ KD này đã được đăng ký, vui lòng đăng ký DN/Hộ KD khác.');
         }
 
         $business = new Business();
