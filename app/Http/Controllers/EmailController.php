@@ -16,7 +16,7 @@ class EmailController extends Controller
 
     public function create()
     {
-        $templates = EmailTemplate::all();
+        $templates = EmailTemplate::where('name', '!=', 'ncb')->get();
         return view('admin.pages.emails.create',compact('templates'));
     }
 
@@ -62,7 +62,7 @@ class EmailController extends Controller
     public function edit($id)
     {
         $email = Email::findOrFail($id);
-        $templates = EmailTemplate::all();
+        $templates = EmailTemplate::where('name', '!=', 'ncb')->get();
         return view('admin.pages.emails.edit',compact('templates','email'));
     }
     public function update(Request $request, $id)
