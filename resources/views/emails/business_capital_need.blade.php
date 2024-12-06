@@ -106,37 +106,16 @@
 
 <body>
     <div class="container">
-        <div class="header">
-            <h2>{{ $businessCapitalNeed->subject }}</h2>
-        </div>
-        <div class="content">
-
-            <p class="">Có {{ $businessCapitalNeed->subject }} mới</p>
-            <div class="info-list">
-                <div class="info-item">
-                    <strong>Số vốn đăng ký:</strong> {{ number_format($businessCapitalNeed->finance, 0, ',', '.') }} ₫
-                </div>
-                <div class="info-item">
-                    <strong>Chu kỳ vay:</strong> {{ $businessCapitalNeed->loan_cycle }} tháng
-                </div>
-                <div class="info-item">
-                    <strong>Lãi suất đề xuất:</strong> {{ $businessCapitalNeed->interest_rate }}%
-                </div>
-                <div class="info-item">
-                    <strong>Mục đích vay vốn:</strong> {{ $businessCapitalNeed->purpose }}
-                </div>
-                <div class="info-item">
-                    <strong>Ngân hàng kết nối:</strong> {{ $businessCapitalNeed->bank_connection }}
-                </div>
-                <div class="info-item">
-                    <strong>Chính sách hỗ trợ:</strong> {{ $businessCapitalNeed->support_policy }}
-                </div>
-                @if ($businessCapitalNeed->feedback)
-                    <div class="info-item">
-                        <strong>Phản hồi:</strong> {{ $businessCapitalNeed->feedback }}
-                    </div>
-                @endif
+        @if ($email && $email->type == 'ncb')
+            <div class="header">
+                <h2>{{ $businessCapitalNeed->subject }}</h2>
             </div>
+        @endif
+        <div class="content">
+            @if ($email && $email->type == 'ncb')
+                 <p class="">Có {{ $businessCapitalNeed->subject }} mới</p>
+            @endif
+            {!! $emailBody !!}
         </div>
 
         <div class="footer">

@@ -27,7 +27,7 @@ use App\Models\CategoryProductBusiness;
 use Illuminate\Validation\ValidationException;
 use App\Models\BusinessPromotionalIntroduction;
 use App\Models\BusinessStartPromotionInvestment;
-
+use App\Models\Email;
 
 class BusinessController extends Controller
 {
@@ -133,14 +133,16 @@ class BusinessController extends Controller
             $business->description = $request->description;
             $business->business_member_id = $business_member_id;
             $business->save();
-
+            $email = Email::where('type', 'ncb')->first();
             $business->subject = 'Đăng ký kết nối giao thương';
-            try {
-                Mail::to('tri2003bt@gmail.com')->send(new BusinessMail($business));
-            } catch (\Exception $e) {
-                Log::error('Email Sending Error:', [
-                    'message' => $e->getMessage(),
-                ]);
+            if($email && $email->type == 'ncb'){
+                try {
+                    Mail::to($email->email)->send(new BusinessMail($business));
+                } catch (\Exception $e) {
+                    Log::error('Email Sending Error:', [
+                        'message' => $e->getMessage(),
+                    ]);
+                }
             }
 
             DB::commit();
