@@ -21,6 +21,7 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\AboutUsController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\BannersController;
 use App\Http\Controllers\TagNewsController;
 use App\Http\Controllers\TuitionController;
@@ -197,9 +198,7 @@ Route::middleware(['language'])->group(function () {
 
         Route::middleware(['role.admin'])->group(function () {
             Route::prefix('admin')->group(function () {
-                Route::get('/', function () {
-                    return view('admin.pages.dashboard');
-                })->name('admin.dashboard');
+                Route::get('/', [AdminDashboardController::class, 'dashboard'])->name('admin.dashboard');
 
 
                 Route::resource('languages', LanguageController::class)->except(['show']);
