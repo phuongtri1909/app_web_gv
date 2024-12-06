@@ -80,7 +80,7 @@
 
                         <div class="col-md-12 mb-4">
                             <label for="attached_images" class="form-label">Hình ảnh đính kèm <span class="text-danger">*</span></label>
-                            <input type="file" class="form-control form-control-sm @error('attached_images') is-invalid @enderror" id="attached_images" name="attached_images[]" multiple accept="image/*"  >
+                            <input type="file" class="form-control form-control-sm @error('attached_images') is-invalid @enderror" id="attached_images" name="attached_images[]" multiple  >
                             <span class="error-message"></span>
                             @error('attached_images')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
@@ -109,6 +109,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         document.getElementById('attached_images').addEventListener('change', function(event) {
+            validateImageInput(event);
             const files = event.target.files;
             const previewContainer = document.getElementById('image_preview_container');
             previewContainer.innerHTML = ''; // Clear previous previews

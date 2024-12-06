@@ -13,6 +13,7 @@
             <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
         </g>
     </svg> --}}
+    @include('pages.components.sidebar-account')
     <div id="page" class="mt-5rem flex-grow-1">
         @yield('content')
     </div>

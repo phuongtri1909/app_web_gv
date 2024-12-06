@@ -29,9 +29,7 @@ class ProductBusinessController extends Controller
         try {
 
             $business_member_id = $this->getBusinessMemberId($request);
-            if ($business_member_id instanceof \Illuminate\Http\RedirectResponse) {
-                return $business_member_id;
-            }
+            
 
             //dd($request->all());
             $request->validate([
@@ -162,8 +160,7 @@ class ProductBusinessController extends Controller
             }
 
             DB::commit();
-            session()->forget('key_business_code');
-            session()->forget('business_code');
+            
             return redirect()->route('business.products')->with('success', 'Đăng ký kết nối cung cầu thành công!');
         } catch (\Exception $e) {
             DB::rollBack();

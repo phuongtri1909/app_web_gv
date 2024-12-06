@@ -18,8 +18,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bxslider@4.2.17/dist/jquery.bxslider.min.js" ></script>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <script src="{{ asset('js/script.js') }}" ></script>
-    <script src="{{ asset('js/app.js') }}" ></script>
+    <script src="{{ asset('js/script.js') }}?v={{ filemtime(public_path('js/script.js')) }}"></script>
+    <script src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }}"></script>
     <script src="{{ asset('js/animation.js') }}" ></script>
     <script type="text/javascript" src="{{ asset('ckeditor/ckeditor.js')}}"></script>
     <script src="{{ asset('ckeditor/config.js')}}"></script>

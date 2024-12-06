@@ -23,6 +23,7 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\AboutUsController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\BannersController;
 use App\Http\Controllers\TagNewsController;
 use App\Http\Controllers\TuitionController;
@@ -79,11 +80,6 @@ use App\Http\Controllers\BusinessStartPromotionInvestmentController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('test', function () {
-    return view('pages.client.test');
-});
-
 Route::middleware(['language'])->group(function () {
 
     Route::get('/clear-cache', function () {
@@ -121,21 +117,13 @@ Route::middleware(['language'])->group(function () {
             return view('pages.client.introduction-hdn');
         })->name('introduction');
 
-        Route::get('form-check-business', function () {
-            return view('pages.client.gv.form-check-business');
-        })->name('form.check.business');
-
         Route::get('/member-business', [MemberBusinessController::class, 'showFormMemberBusiness'])->name('show.form.member.business'); //form đk hội viên doanh nghiệp chuyển sang đk app
         Route::post('/member-business', [MemberBusinessController::class, 'storFormMemberBusiness'])->name('form.member.business.store');
 
         Route::get('/form-job-application', [JobApplicationController::class, 'jobApplication'])->name('job.application'); //form ứng tuyển
         Route::post('/form-job-application', [JobApplicationController::class, 'storeForm'])->name('job.application.store');
 
-        Route::middleware(['check.business.code'])->group(function () {
-
-            Route::post('form-check-business', function () {
-
-            })->name('form.check.business');
+        Route::middleware(['check.business.code','check.active','check.business.member'])->group(function () {
 
             Route::get('/form-connect-supply-demand', [ProductBusinessController::class, 'connectSupplyDemand'])->name('connect.supply.demand'); //form kết nối cung cầu
             Route::post('/form-connect-supply-demand', [ProductBusinessController::class, 'storeConnectSupplyDemand'])->name('connect.supply.demand.store');
@@ -170,7 +158,7 @@ Route::middleware(['language'])->group(function () {
         
 
         //cho phường 17
-        Route::get('/locations-17', [LocationController::class, 'clientIndex'])->name('locations-17');
+        Route::get('/locations-17', [LocationController::class, 'clientIndex17'])->name('locations-17');
         
         Route::group(['prefix' => 'p17'], function () {
             Route::get('business-households',[BusinessHouseholdController::class, 'clientIndex'])->name('p17.households.client.index');
@@ -199,9 +187,7 @@ Route::middleware(['language'])->group(function () {
 
         Route::middleware(['role.admin'])->group(function () {
             Route::prefix('admin')->group(function () {
-                Route::get('/', function () {
-                    return view('admin.pages.dashboard');
-                })->name('admin.dashboard');
+                Route::get('/', [AdminDashboardController::class, 'dashboard'])->name('admin.dashboard');
 
 
                 Route::resource('languages', LanguageController::class)->except(['show']);
@@ -287,6 +273,14 @@ Route::middleware(['language'])->group(function () {
             Route::middleware(['role.business'])->group(function () {
                 Route::prefix('business')->group(function () {
                     Route::get('/', [BusinessDashboardController::class, 'index'])->name('business.dashboard');
+
+                    Route::put('update-business', [BusinessDashboardController::class, 'updateBusiness'])->name('update.business');
+
+                    Route::put('update-business-member', [BusinessDashboardController::class, 'updateBusinessMember'])->name('update.business.member');
+                
+                    Route::put('update-representative-info',[BusinessDashboardController::class, 'updateRepresentativeInfo'])->name('update.representative.info');
+                
+                    Route::put('update-account-info',[BusinessDashboardController::class, 'updateAccountInfo'])->name('update.account.info');
                 });
             });
         });

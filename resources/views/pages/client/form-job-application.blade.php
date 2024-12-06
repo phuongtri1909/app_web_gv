@@ -119,7 +119,7 @@
                     <div class="col-md-4 mb-4">
                         <label for="license" class="form-label">Upload CV:<span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="file" id="file-uploads" name="cv" class=" @error('cv') is-invalid @enderror" accept="application/pdf"
+                            <input type="file" id="file-uploads" name="cv" class=" @error('cv') is-invalid @enderror"
                                 value="{{ old('cv') }}" style="display: none;">
                             <button type="button" class="btn bg-app-gv rounded-pill text-white" id="upload-button">
                                 <i class="bi bi-upload"></i> Upload
@@ -163,12 +163,21 @@
 
             const files = fileInput.files;
 
+           
+
             const uploadButton = document.getElementById('upload-button');
             if (files.length > 0) {
-                uploadButton.disabled = true;
 
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
+                    if (file.type !== 'application/pdf') {
+                        errorMessage.textContent = 'Vui lòng chỉ tải lên tệp PDF.';
+                        showToast('vui lòng chỉ tải lên tệp PDF.', 'error');
+                        fileInput.value = '';
+                        return;
+                    }
+
+                    uploadButton.disabled = true;
                     const fileItem = document.createElement('div');
                     fileItem.classList.add('uploaded-file');
 

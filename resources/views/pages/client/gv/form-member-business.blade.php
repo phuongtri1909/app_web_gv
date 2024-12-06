@@ -141,7 +141,8 @@
                         </div>
 
                         <div class="mb-3 col-md-4 ">
-                            <label for="address" class="form-label">Địa chỉ kinh doanh:</label>
+                            <label for="address" class="form-label">Địa chỉ kinh doanh:<span
+                                class="text-danger">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="address" name="address"
                                 value="{{ old('address') }}" placeholder="Nhập địa chỉ chi nhánh" required>
                             @error('address')
@@ -188,7 +189,7 @@
                         <div class="mb-3 col-md-6">
                             <label for="link" class="form-label">Liên kết:</label>
                             <input type="tel" class="form-control form-control-sm" id="link" name="link"
-                                value="{{ old('link') }}" placeholder="website hoặc fanpage ..." required>
+                                value="{{ old('link') }}" placeholder="website hoặc fanpage ...">
                             @error('link')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror

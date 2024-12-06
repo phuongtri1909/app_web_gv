@@ -11,6 +11,7 @@ use App\Mail\BusinessRegistered;
 use App\Models\Email;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
@@ -147,11 +148,8 @@ class MemberBusinessController extends Controller
                 }
             }
 
-            $request->session()->put('business_code', $businessMember->business_code);
-    
-            $encryptedBusinessCode = $this->encrypt($businessMember->business_code, "E-Business@$^$%^");
-            $request->session()->put('key_business_code', $encryptedBusinessCode);
-
+            
+            Auth::login($user);
             $intendedRoute = session('intended_route', route('show.form.member.business'));
 
             if($intendedRoute){

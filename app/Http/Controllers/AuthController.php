@@ -9,6 +9,8 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
+        $intendedRoute = session('intended_route', route('business'));
+
         $credentials = $request->validate([
             'username' => 'required',
             'password' => 'required',
@@ -32,7 +34,7 @@ class AuthController extends Controller
                 }
                 // Check if business_member_id exists
                 if (auth()->user()->business_member_id && auth()->user()->businessMember && auth()->user()->businessMember->status == 'approved') {
-                    return redirect()->route('business.dashboard');
+                    return redirect($intendedRoute);
                 } else {
                     auth()->logout();
                     return redirect()->route('admin.login')->withErrors([
@@ -40,7 +42,7 @@ class AuthController extends Controller
                     ])->withInput($request->only('username'));
                 }
             } else {
-                return redirect()->route('business.dashboard');
+                return redirect($intendedRoute);
             }
         }
 
@@ -54,6 +56,6 @@ class AuthController extends Controller
         auth()->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('admin.login');
+        return redirect()->back();
     }
 }

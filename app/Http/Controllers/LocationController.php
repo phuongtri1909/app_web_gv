@@ -74,6 +74,29 @@ class LocationController extends Controller
 
     }
 
+
+    
+    public function clientIndex17()
+    {
+        if (request()->routeIs('locations')) {
+            $unit_id = Unit::where('unit_code','QGV')->first()->id;
+        }
+        elseif(request()->routeIs('locations-17')){
+            $unit_id = Unit::where('unit_code','P17')->first()->id;
+        }
+        
+        $locations = Locations::where('status', 'approved')->where('unit_id',$unit_id)->with('businessField')->with('locationProducts')->paginate(15);
+        
+        $locations->each(function ($location) {
+            if ($location->businessMember) {
+                $location->businessMember->business = $location->businessMember->business ?? null;
+            }
+        });
+        
+        $business_fields = BusinessField::all();
+        return view('pages.client.p17.locations', compact('locations', 'business_fields'));
+    }
+
     public function clientIndex()
     {
         if (request()->routeIs('locations')) {
@@ -166,9 +189,7 @@ class LocationController extends Controller
     {
         // Check business code 
         $business_member_id = $this->getBusinessMemberId($request);
-        if ($business_member_id instanceof \Illuminate\Http\RedirectResponse) {
-            return $business_member_id;
-        }
+        
         DB::beginTransaction();
         $data = [];
         try {
@@ -256,8 +277,7 @@ class LocationController extends Controller
             }
 
             DB::commit();
-            session()->forget('key_business_code');
-            session()->forget('business_code');
+            
             return redirect()->route('locations')->with('success', 'Đăng ký địa điểm thành công!');
         } catch (\Exception $e) {
             DB::rollBack();

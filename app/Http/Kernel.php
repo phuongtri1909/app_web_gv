@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'role.business' => \App\Http\Middleware\RoleBusiness::class,
         'check.business.code' => \App\Http\Middleware\CheckBusinessCode::class,
         'check.active' => \App\Http\Middleware\CheckActive::class,
+        'check.business.member' => \App\Http\Middleware\CheckBusinessMember::class,
     ];
 }

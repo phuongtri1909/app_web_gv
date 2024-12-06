@@ -122,25 +122,7 @@ class Controller extends BaseController
 
     protected function getBusinessMemberId(Request $request)
     {
-        $business_code = $request->session()->get('business_code');
-
-        if (!$business_code) {
-            return redirect()->back()->with('error', 'Thao tác sai, vui lòng thực hiện lại.')->withInput();
-        }
-
-        $business_member = BusinessMember::where('business_code', $business_code)->first();
-        if (!$business_member) {
-            session()->forget('key_business_code');
-            session()->forget('business_code');
-            return redirect()->back()->with('error', 'DN/Hộ KD không tồn tại, vui lòng thực hiện lại.');
-        }
-
-        if ($business_member->status == 'pending') {
-            return redirect()->route('form.check.business')->with('error', 'Tài khoản của bạn đang chờ xác nhận, vui lòng chờ trong giây lát')->withInput();
-        } elseif ($business_member->status == 'rejected') {
-            return redirect()->route('form.check.business')->with('error', 'Tài khoản của bạn đã bị từ chối, vui lòng liên hệ với chúng tôi nếu có thắc mắc')->withInput();
-        }
-
-        return $business_member->id;
+        $user = auth()->user();
+        return $user->businessMember->id;
     }
 }

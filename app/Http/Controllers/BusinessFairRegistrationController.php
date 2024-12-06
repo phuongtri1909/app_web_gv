@@ -262,7 +262,10 @@ class BusinessFairRegistrationController extends Controller
     public function businessFairRegistration(Request $request, $news_id)
     {
         // dd($news_id);
-        $businessCode = session('business_code');
+        //$businessCode = session('business_code');
+
+        $businessCode = auth()->user()->businessMember->business_code;
+
         if ($businessCode) {
             $business = BusinessMember::where('business_code', $businessCode)->first();
 
@@ -275,7 +278,7 @@ class BusinessFairRegistrationController extends Controller
                 ]);
             }
         }
-        return redirect()->route('form.check.business')->with('error', 'Không tìm thấy doanh nghiệp, vui lòng kiểm tra lại mã số thuế.');
+        return redirect()->route('admin.login')->with('error', 'Vui lòng đăng nhập để tiếp tục.');
     }
 
     public function storeBusinessFairRegistration(Request $request)
@@ -338,9 +341,7 @@ class BusinessFairRegistrationController extends Controller
         // }
 
         $business_member_id = $this->getBusinessMemberId($request);
-        if ($business_member_id instanceof \Illuminate\Http\RedirectResponse) {
-            return $business_member_id;
-        }
+        
         // $existingRegistration = BusinessFairRegistration::where('business_member_id', $business_member_id)->first();
         // if ($existingRegistration) {
         //     session()->forget('key_business_code');
@@ -353,8 +354,7 @@ class BusinessFairRegistrationController extends Controller
             ->first();
 
         if ($existingRegistration) {
-            session()->forget('key_business_code');
-            session()->forget('business_code');
+            
             return back()->with('error', 'Doanh nghiệp này đã đăng ký tham gia hội chợ này. Không thể đăng ký lại.')->withInput();
         }
         $businessLicensePath = null;
@@ -415,8 +415,7 @@ class BusinessFairRegistrationController extends Controller
             $registration->save();
 
             DB::commit();
-            session()->forget('key_business_code');
-            session()->forget('business_code');
+            
             return redirect()->route('business-fair-registrations', ['news_id' => $news_id])->with('success', 'Đăng ký tham gia hội chợ thành công!');
         } catch (\Exception $e) {
             DB::rollBack();

@@ -89,8 +89,7 @@
                                     class="text-danger">*</span></label>
                             <input type="file"
                                 class="form-control form-control-sm @error('recruitment_images') is-invalid @enderror"
-                                id="recruitment_images" name="recruitment_images[]" multiple
-                                accept="image/jpeg,image/png,image/jpg,image/gif,image/webp">
+                                id="recruitment_images" name="recruitment_images[]" multiple>
                             @error('recruitment_images')
                                 <div class="invalid-feedback" role="alert">{{ $message }}</div>
                             @enderror
@@ -119,6 +118,7 @@
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script>
         document.getElementById('recruitment_images').addEventListener('change', function(event) {
+            validateImageInput(event);
             const files = event.target.files;
             if (files.length > 4) {
                 showToast('Chỉ được chọn tối đa 4 ảnh sản phẩm', 'error');
