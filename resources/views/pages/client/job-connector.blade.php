@@ -159,69 +159,16 @@
 
         <div id="tuyen_dung" class="info-section active mt-4">
             <h3 class="text-center">Danh Sách Tuyển Dụng</h3>
-            <div class="text-start">
-
-                @if ($recruitments->count() != 0)
-
-                    @foreach ($recruitments as $item)
-                        <div class="job-listing">
-                            <div class="d-flex mb-2">
-                                <img src="{{ isset($item->businessMember->business) ? asset($item->businessMember->business->avt_businesses) : asset('images/business/business_default.webp') }}"
-                                    alt="" class=""
-                                    style="width: 100px ;height: 100px; object-fit: scale-down;">
-                                <h5 class="ms-2">{{ $item->businessMember->business_name ?? '' }}</h5>
-                            </div>
-                            <h5>{{ $item->recruitment_title }}</h5>
-                            <p><strong>Mô tả công việc:</strong>
-                                {!! Str::limit(strip_tags($item->recruitment_content), 300) !!}
-
-                            </p>
-                            <a href="javascript:void(0)" class="view-recruitment" data-id="{{ $item->id }}">Xem thêm</a>
-                        </div>
-                    @endforeach
-                @else
-                    <div class="col-12">
-                        <p>Không có công việc nào</p>
-                    </div>
-                @endif
+            <div class="text-start" id="recruitment-list">
+                
             </div>
         </div>
 
-        <!-- Danh sách tìm việc -->
+       
         <div id="tim_viec" class="info-section mt-4">
             <h3 class="text-center">Danh Sách Tìm Việc</h3>
-            <div class="text-start">
-                <!-- Ứng viên 1 -->
-                <div class="row g-3">
-
-                    @if ($jobApplications->count() == 0)
-                        <div class="col-12">
-                            <p>Không có ứng viên nào</p>
-                        </div>
-                    @else
-                        @foreach ($jobApplications as $item)
-                            <div class="applicant-listing col-12 col-md-6">
-                                <h5>Họ và tên: {{ $item->full_name }}</h5>
-                                <div class="d-flex">
-                                    <p class="me-3"><strong>Năm sinh:</strong> {{ $item->birth_year }}</p>
-                                    <p><strong>Giới tính:</strong>
-                                        @if ($item->gender == 'male')
-                                            Nam
-                                        @elseif($item->gender == 'female')
-                                            Nữ
-                                        @else
-                                            Khác
-                                        @endif
-                                    </p>
-                                </div>
-                                <p><strong>Điện thoại:</strong> {{ $item->phone }}</p>
-                                <p><strong>Thông tin giới thiệu:</strong> {{ $item->job_registration }}</p>
-                                <p><strong>CV:</strong> <a href="{{ asset($item->cv) }}">Tải về</a>
-                                </p>
-                            </div>
-                        @endforeach
-                    @endif
-                </div>
+            <div class="text-start" id="job-list">
+              
             </div>
         </div>
     </div>
@@ -333,5 +280,94 @@
                 });
             });
         });
+    </script>
+    <script>
+        var pageRecruitment = 1;  
+        var pageJob = 1;  
+    
+        function loadRecruitments(page = 1) {
+            $.ajax({
+                url: '{{ route("job-connector") }}?page=' + page,  
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if(response.recruitments.data.length > 0) {
+                        var recruitmentList = '';
+                        $.each(response.recruitments.data, function(index, item) {
+                            if ($('#recruitment-list').find('[data-id="' + item.id + '"]').length == 0) {
+                                var businessName = item.business_member && item.business_member.business ? item.business_member.business.business_name : 'Tên doanh nghiệp không có';
+                                var businessAvatar = item.business_member && item.business_member.business ? item.business_member.business.avt_businesses : '/images/business/business_default.webp';
+                                recruitmentList += `
+                                    <div class="job-listing" data-id="${item.id}">
+                                        <div class="d-flex mb-2">
+                                            <img src="${businessAvatar}" alt="" style="width: 100px; height: 100px; object-fit: scale-down;">
+                                            <h5 class="ms-2">${businessName}</h5>
+                                        </div>
+                                        <h5>${item.recruitment_title}</h5>
+                                        <p><strong>Mô tả công việc:</strong> ${item.recruitment_content}</p>
+                                        <a href="javascript:void(0)" class="view-recruitment" data-id="${item.id}">Xem thêm</a>
+                                    </div>`;
+                            }
+                        });
+                        $('#recruitment-list').append(recruitmentList);  
+                        if (page < response.recruitments.last_page) {
+                            pageRecruitment = page + 1;  
+                        } else {
+                            pageRecruitment = null;     
+                        }
+                    }
+                }
+            });
+        }
+    
+        function loadJobApplications(page = 1) {
+            $.ajax({
+                url: '{{ route("job-connector") }}?page=' + page, 
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if(response.jobApplications.data.length > 0) {
+                        var jobList = '';
+                        $.each(response.jobApplications.data, function(index, item) {
+                            if ($('#job-list').find('[data-id="' + item.id + '"]').length == 0) {
+                                jobList += `
+                                    <div class="applicant-listing col-12 col-md-6" data-id="${item.id}">
+                                        <h5>Họ và tên: ${item.full_name}</h5>
+                                        <div class="d-flex">
+                                            <p class="me-3"><strong>Năm sinh:</strong> ${item.birth_year}</p>
+                                            <p><strong>Giới tính:</strong> ${item.gender == 'male' ? 'Nam' : item.gender == 'female' ? 'Nữ' : 'Khác'}</p>
+                                        </div>
+                                        <p><strong>Điện thoại:</strong> ${item.phone}</p>
+                                        <p><strong>Thông tin giới thiệu:</strong> ${item.job_registration}</p>
+                                        <p><strong>CV:</strong> <a href="${item.cv}">Tải về</a></p>
+                                    </div>`;
+                            }
+                        });
+                        $('#job-list').append(jobList); 
+
+                        if (page < response.jobApplications.last_page) {
+                            pageJob = page + 1; 
+                        } else {
+                            pageJob = null; 
+                        }
+                    }
+                }
+            });
+        }
+    
+       
+        $(window).scroll(function() {
+           
+            if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+                if (pageRecruitment) {
+                    loadRecruitments(pageRecruitment);  
+                }
+                if (pageJob) {
+                    loadJobApplications(pageJob);
+                }
+            }
+        });
+        loadRecruitments(); 
+        loadJobApplications();  
     </script>
 @endpush
