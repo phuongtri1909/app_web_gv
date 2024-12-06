@@ -16,7 +16,7 @@
 @endpush
 
 @section('content')
-<input type="file" id="file-input" multiple ">
+<input type="file" id="file-input" multiple class="form-control">
 <div id="preview-container"></div>
 @endsection
 
