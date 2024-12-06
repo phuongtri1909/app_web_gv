@@ -163,19 +163,21 @@
 
             const files = fileInput.files;
 
-            if (files.type !== 'application/pdf') {
-                errorMessage.textContent = 'Vui lòng chỉ tải lên tệp PDF.';
-                showToast('vui lòng chỉ tải lên tệp PDF.', 'error');
-                fileInput.value = '';
-                return;
-            }
+           
 
             const uploadButton = document.getElementById('upload-button');
             if (files.length > 0) {
-                uploadButton.disabled = true;
 
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
+                    if (file.type !== 'application/pdf') {
+                        errorMessage.textContent = 'Vui lòng chỉ tải lên tệp PDF.';
+                        showToast('vui lòng chỉ tải lên tệp PDF.', 'error');
+                        fileInput.value = '';
+                        return;
+                    }
+
+                    uploadButton.disabled = true;
                     const fileItem = document.createElement('div');
                     fileItem.classList.add('uploaded-file');
 
