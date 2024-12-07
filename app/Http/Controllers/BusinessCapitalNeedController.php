@@ -205,9 +205,10 @@ class BusinessCapitalNeedController extends Controller
                 'support_policy' => $request->support_policy,
                 'feedback' => $request->feedback,
             ]);
-
+            $businessInfo = $businessCapitalNeed->businessMember;
             $emailBody = str_replace(
-                ['{{ finance }}', '{{ loan_cycle }}', '{{ interest_rate }}', '{{ purpose }}', '{{ bank_connection }}', '{{ support_policy }}', '{{ feedback }}'],
+                ['{{ finance }}', '{{ loan_cycle }}', '{{ interest_rate }}', '{{ purpose }}', '{{ bank_connection }}', '{{ support_policy }}', '{{ feedback }}', '{{ business_name }}', 
+                '{{ business_code }}', '{{ representative_full_name }}', '{{ representative_phone }}', '{{ address }}'],
                 [
                     number_format($businessCapitalNeed->finance, 0, ',', '.') ?? 0,
                     $businessCapitalNeed->loan_cycle ?? 0,
@@ -215,7 +216,12 @@ class BusinessCapitalNeedController extends Controller
                     $businessCapitalNeed->purpose ?? 'Không có phản hồi',
                     $businessCapitalNeed->bank_connection ?? 'Không có phản hồi',
                     $businessCapitalNeed->support_policy ?? 'Không có phản hồi',
-                    $businessCapitalNeed->feedback ?? 'Không có phản hồi'
+                    $businessCapitalNeed->feedback ?? 'Không có phản hồi',
+                    $businessInfo->business_name ?? 'Không có tên doanh nghiệp',
+                    $businessInfo->business_code ?? 'Không có mã doanh nghiệp',
+                    $businessInfo->representative_full_name ?? 'Không có đại diện',
+                    $businessInfo->representative_phone ?? 'Không có số điện thoại đại diện',
+                    $businessInfo->address ?? 'Không có địa chỉ'
                 ],
                 $templateContent
             );
@@ -240,24 +246,35 @@ class BusinessCapitalNeedController extends Controller
     }
     public function sendEmailToBank(Request $request)
     {
-        $capitalNeedId = $request->input('capital_need_id');
+        // Log::info('sendEmailToBank');
         // Log::info($request->all());
+    
+        $capitalNeedId = $request->input('capital_need_id');
         $businessCapitalNeed = BusinessCapitalNeed::findOrFail($capitalNeedId);
+    
         if ($businessCapitalNeed->email_status === 'sent') {
             return response()->json(['success' => false, 'error' => 'Email đã được gửi trước đó.']);
         }
+    
         $bankEmail = $request->input('email');
-
+        if (empty($bankEmail) || !filter_var($bankEmail, FILTER_VALIDATE_EMAIL)) {
+            return response()->json(['success' => false, 'error' => 'Email không hợp lệ.']);
+        }
+    
         $templateId = $request->input('email_template');
         $bankName = Email::where('email', $bankEmail)->value('bank_name') ?? 'Không xác định';
         $template = EmailTemplate::find($templateId);
-        if (!$template) {
-            // Log::warning('Email template not found for ID: ' . $templateId);
-            return redirect()->back()->with('error', 'Mẫu email không tồn tại.');
+    
+        if (!$template || empty($template->content)) {
+            return response()->json(['success' => false, 'error' => 'Mẫu email không tồn tại hoặc nội dung bị rỗng.']);
         }
+    
         $templateContent = $template->content;
+        $businessInfo = $businessCapitalNeed->businessMember;
+    
         $emailBody = str_replace(
-            ['{{ bank_name }}', '{{ finance }}', '{{ loan_cycle }}', '{{ interest_rate }}', '{{ purpose }}', '{{ bank_connection }}', '{{ support_policy }}', '{{ feedback }}'],
+            ['{{ bank_name }}', '{{ finance }}', '{{ loan_cycle }}', '{{ interest_rate }}', '{{ purpose }}', '{{ bank_connection }}', '{{ support_policy }}', '{{ feedback }}', '{{ business_name }}', 
+            '{{ business_code }}', '{{ representative_full_name }}', '{{ representative_phone }}', '{{ address }}'],
             [
                 $bankName,
                 number_format($businessCapitalNeed->finance, 0, ',', '.') ?? 0,
@@ -266,21 +283,27 @@ class BusinessCapitalNeedController extends Controller
                 $businessCapitalNeed->purpose ?? 'Không có phản hồi',
                 $businessCapitalNeed->bank_connection ?? 'Không có phản hồi',
                 $businessCapitalNeed->support_policy ?? 'Không có phản hồi',
-                $businessCapitalNeed->feedback ?? 'Không có phản hồi'
+                $businessCapitalNeed->feedback ?? 'Không có phản hồi',
+                $businessInfo->business_name ?? 'Không có tên doanh nghiệp',
+                $businessInfo->business_code ?? 'Không có mã doanh nghiệp',
+                $businessInfo->representative_full_name ?? 'Không có đại diện',
+                $businessInfo->representative_phone ?? 'Không có số điện thoại đại diện',
+                $businessInfo->address ?? 'Không có địa chỉ'
             ],
             $templateContent
         );
-
+    
         try {
             Mail::to($bankEmail)->send(new BusinessCapitalNeedMail($businessCapitalNeed, $emailBody));
             $businessCapitalNeed->email_status = 'sent';
             $businessCapitalNeed->save();
             return response()->json(['success' => true, 'message' => 'Gửi email thành công']);
         } catch (\Exception $e) {
-            Log::error('Email Sending Error: ' . $e->getMessage());
+            Log::error('Lỗi khi gửi email: ' . $e->getMessage());
             return response()->json(['success' => false, 'error' => 'Đã xảy ra lỗi khi gửi email.']);
         }
     }
+    
 
     public function getEmailTemplate($type, $keyName = null)
     {

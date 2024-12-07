@@ -58,4 +58,10 @@ class BusinessMember extends Model
     {
         return $this->hasMany(BusinessFeedback::class, 'business_member_id');
     }
+    public function businessCapitalNeed()
+    {
+        return $this->hasOne(BusinessCapitalNeed::class, 'business_member_id', 'id');
+    }
+    
+
 }
