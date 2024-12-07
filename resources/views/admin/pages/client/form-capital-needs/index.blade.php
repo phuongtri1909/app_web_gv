@@ -350,9 +350,19 @@
                         if (response.success) {
                             showToast(response.message, 'success');
                             var row = $('.send-email[data-id="' + $('#capitalNeedId').val() + '"]').closest('tr');
-                            row.find('.badge').removeClass('bg-warning').addClass('bg-success').text('Đã gửi');
-                            row.find('.send-email').addClass('btn-secondary disabled').text('Đã gửi');
                             
+                            row.find('.badge')
+                                .removeClass('bg-warning')
+                                .addClass('bg-success')
+                                .text('Đã gửi');
+
+                            var sendButton = row.find('.send-email');
+                            sendButton.removeClass('send-email')
+                                .addClass('btn-light disabled')
+                                .attr('title', 'Đã gửi email')
+                                .tooltip('dispose') 
+                                .tooltip(); 
+                            sendButton.html('<i class="fas fa-check-circle text-success"></i>');    
                             var modal = bootstrap.Modal.getInstance($('#sendEmailModal'));
                             modal.hide();
                             form.trigger('reset');
