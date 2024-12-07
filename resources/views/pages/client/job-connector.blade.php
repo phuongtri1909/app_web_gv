@@ -225,15 +225,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('.view-recruitment').click(function() {
-                var recruitmentId = $(this).data('id');
-                $.ajax({
+       $(document).on('click', '.view-recruitment', function() {
+            var recruitmentId = $(this).data('id');
+            $.ajax({
                     url: '/recruitment/' + recruitmentId,
                     type: 'GET',
                     success: function(response) {
+                        if (!response) {
+                            showToast('Không tìm thấy dữ liệu', 'error');
+                            return;
+                        }
 
-                        $('#modal-avatar').attr('src', response.avt_businesses || '');
+                        $('#modal-avatar').attr('src', response.avt_businesses || '/images/default-avatar.png');
                         $('#modal-business-name').text(response.business_name || '-');
                         $('#modal-business-code').text(response.business_code || '-');
 
@@ -241,15 +244,14 @@
                         $('#modal-recruitment-content').html(response.recruitment_content ||
                             '-');
 
-                        if (response.recruitment_images) {
-                            $('#modal-recruitment-images').empty();
+                        $('#modal-recruitment-images').empty();
+                        if (response.recruitment_images && response.recruitment_images.length > 0) {
                             response.recruitment_images.forEach(function(image) {
-                                $('#modal-recruitment-images').append(
-                                    '<a href="' + image +
-                                    '" data-fancybox="gallery"><img src="' +
-                                    image +
-                                    '" alt="Recruitment Image" style="width: 50px; height: 50px; object-fit: cover;"></a>'
-                                );
+                                $('#modal-recruitment-images').append(`
+                                    <a href="${image}" data-fancybox="gallery">
+                                        <img src="${image}" alt="Recruitment Image" style="width: 50px; height: 50px; object-fit: cover;">
+                                    </a>
+                                `);
                             });
                         }
 
@@ -279,7 +281,6 @@
                     }
                 });
             });
-        });
     </script>
     <script>
         var pageRecruitment = 1;  
@@ -295,17 +296,18 @@
                         var recruitmentList = '';
                         $.each(response.recruitments.data, function(index, item) {
                             if ($('#recruitment-list').find('[data-id="' + item.id + '"]').length == 0) {
-                                var businessName = item.business_member && item.business_member.business ? item.business_member.business.business_name : 'Tên doanh nghiệp không có';
+                                var businessName = item.business_member ? item.business_member.business_name : 'Tên doanh nghiệp không có';
                                 var businessAvatar = item.business_member && item.business_member.business ? item.business_member.business.avt_businesses : '/images/business/business_default.webp';
                                 recruitmentList += `
                                     <div class="job-listing" data-id="${item.id}">
                                         <div class="d-flex mb-2">
-                                            <img src="${businessAvatar}" alt="" style="width: 100px; height: 100px; object-fit: scale-down;">
+                                            <img src="{{ asset('${businessAvatar}') }}" alt="" style="width: 100px; height: 100px; object-fit: scale-down;">
                                             <h5 class="ms-2">${businessName}</h5>
                                         </div>
                                         <h5>${item.recruitment_title}</h5>
-                                        <p><strong>Mô tả công việc:</strong> ${item.recruitment_content}</p>
-                                        <a href="javascript:void(0)" class="view-recruitment" data-id="${item.id}">Xem thêm</a>
+                                        <p><strong>Mô tả công việc:</strong> ${item.recruitment_content.length > 800 ? item.recruitment_content.substr(0, 800) + '...' : item.recruitment_content}</p>
+
+                                        <a href="javascript:void(0);" class="view-recruitment" data-id="${item.id}">Xem thêm</a>
                                     </div>`;
                             }
                         });
