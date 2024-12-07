@@ -367,6 +367,41 @@
                         </ul>
                     </div>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('emails.*','email_templates.*') ? 'active' : '' }}"
+                        href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"
+                        data-bs-target="#email" aria-expanded="false">
+                        <div
+                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-envelope-open text-dark icon-sidebar"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">{{ __('Email') }}</span>
+                    </a>
+                    <div class="collapse mt-1" id="email" style="margin-left: 30px">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li>
+                                <a class="nav-link {{ Route::currentRouteNamed('emails.*') ? 'active' : '' }}"
+                                    href="{{ route('emails.index') }}">
+                                    <div
+                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                        <i class="fa-solid fa-envelope text-dark icon-sidebar"></i>
+                                    </div>
+                                    <span class="nav-link-text ms-1">{{ __('Email') }}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ Route::currentRouteNamed('email_templates.*') ? 'active' : '' }}"
+                                    href="{{ route('email_templates.index') }}">
+                                    <div
+                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                        <i class="fa-solid fa-file-text text-dark icon-sidebar"></i>
+                                    </div>
+                                    <span class="nav-link-text ms-1">{{ __('Mẫu email') }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
                 <li class="nav-item mt-2">
                     <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">{{ __('feature_page') }}
                     </h6>

@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use App\Mail\BusinessRegistered;
+use App\Models\Email;
+use App\Models\EmailTemplate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 
@@ -30,7 +32,9 @@ class BusinessCapitalNeedController extends Controller
         })
             ->orderBy('created_at', 'desc')
             ->paginate(15);
-        return view('admin.pages.client.form-capital-needs.index', compact('capitalNeeds'));
+        $emails = Email::where('type', '!=', 'ncb')->get();
+        $emailTemplates = EmailTemplate::where('name',  '!=', 'ncb')->get();
+        return view('admin.pages.client.form-capital-needs.index', compact('capitalNeeds', 'emails', 'emailTemplates'));
     }
 
     public function create()
@@ -64,13 +68,12 @@ class BusinessCapitalNeedController extends Controller
                 'business_name' => $capitalNeed->businessMember->business_name,
                 'avt_businesses' => isset($capitalNeed->businessMember->business) ? $capitalNeed->businessMember->business->avt_businesses : 'images/business/business_default.webp',
                 'business_code' => $capitalNeed->businessMember->business_code,
-                
+
                 'finance' => $capitalNeed->finance,
                 'interest_rate' => $capitalNeed->interest_rate,
                 'purpose' => $capitalNeed->purpose,
                 'bank_connection' => $capitalNeed->bank_connection,
                 'feedback' => $capitalNeed->feedback,
-                'status' => $capitalNeed->status,
                 'loan_cycle' => $capitalNeed->loan_cycle,
                 'support_policy' => $capitalNeed->support_policy,
                 'created_at' => $capitalNeed->created_at,
@@ -139,8 +142,11 @@ class BusinessCapitalNeedController extends Controller
     }
     public function storeFormCapitalNeeds(Request $request)
     {
-
-        // Check business code 
+        $templateContent = $this->getEmailTemplate('ncb');
+        if (!$templateContent) {
+            return redirect()->back()->with('error', 'Mẫu email không tồn tại.');
+        }
+        // Check business code
         $business_member_id = $this->getBusinessMemberId($request);
 
 
@@ -199,17 +205,37 @@ class BusinessCapitalNeedController extends Controller
                 'support_policy' => $request->support_policy,
                 'feedback' => $request->feedback,
             ]);
+            $businessInfo = $businessCapitalNeed->businessMember;
+            $emailBody = str_replace(
+                ['{{ finance }}', '{{ loan_cycle }}', '{{ interest_rate }}', '{{ purpose }}', '{{ bank_connection }}', '{{ support_policy }}', '{{ feedback }}', '{{ business_name }}', 
+                '{{ business_code }}', '{{ representative_full_name }}', '{{ representative_phone }}', '{{ address }}'],
+                [
+                    number_format($businessCapitalNeed->finance, 0, ',', '.') ?? 0,
+                    $businessCapitalNeed->loan_cycle ?? 0,
+                    $businessCapitalNeed->interest_rate ?? 0,
+                    $businessCapitalNeed->purpose ?? 'Không có phản hồi',
+                    $businessCapitalNeed->bank_connection ?? 'Không có phản hồi',
+                    $businessCapitalNeed->support_policy ?? 'Không có phản hồi',
+                    $businessCapitalNeed->feedback ?? 'Không có phản hồi',
+                    $businessInfo->business_name ?? 'Không có tên doanh nghiệp',
+                    $businessInfo->business_code ?? 'Không có mã doanh nghiệp',
+                    $businessInfo->representative_full_name ?? 'Không có đại diện',
+                    $businessInfo->representative_phone ?? 'Không có số điện thoại đại diện',
+                    $businessInfo->address ?? 'Không có địa chỉ'
+                ],
+                $templateContent
+            );
 
-           
+            $email = Email::where('type', 'ncb')->first();
             $businessCapitalNeed->subject = "Đăng ký nhu cầu vốn";
 
-            try {
-                Mail::to('tri2003bt@gmail.com')->send(new BusinessCapitalNeedMail($businessCapitalNeed));
-            } catch (\Exception $mailException) {
-                Log::error('Email Sending Exception: ' . $mailException->getMessage());
+            if($email && $email->type == 'ncb'){
+                try {
+                    Mail::to($email->email)->send(new BusinessCapitalNeedMail($businessCapitalNeed, $emailBody,$email));
+                } catch (\Exception $mailException) {
+                    Log::error('Email Sending Exception: ' . $mailException->getMessage());
+                }
             }
-
-
             DB::commit();
             
             return redirect()->route('show.home.bank')->with('success', 'Đăng ký kết nối ngân hàng thành công!');
@@ -218,5 +244,81 @@ class BusinessCapitalNeedController extends Controller
             return redirect()->back()->with('error', 'Đăng ký thất bại: ' . $e->getMessage())->withInput();
         }
     }
-   
+    public function sendEmailToBank(Request $request)
+    {
+        // Log::info('sendEmailToBank');
+        // Log::info($request->all());
+    
+        $capitalNeedId = $request->input('capital_need_id');
+        $businessCapitalNeed = BusinessCapitalNeed::findOrFail($capitalNeedId);
+    
+        if ($businessCapitalNeed->email_status === 'sent') {
+            return response()->json(['success' => false, 'error' => 'Email đã được gửi trước đó.']);
+        }
+    
+        $bankEmail = $request->input('email');
+        if (empty($bankEmail) || !filter_var($bankEmail, FILTER_VALIDATE_EMAIL)) {
+            return response()->json(['success' => false, 'error' => 'Email không hợp lệ.']);
+        }
+    
+        $templateId = $request->input('email_template');
+        $bankName = Email::where('email', $bankEmail)->value('bank_name') ?? 'Không xác định';
+        $template = EmailTemplate::find($templateId);
+    
+        if (!$template || empty($template->content)) {
+            return response()->json(['success' => false, 'error' => 'Mẫu email không tồn tại hoặc nội dung bị rỗng.']);
+        }
+    
+        $templateContent = $template->content;
+        $businessInfo = $businessCapitalNeed->businessMember;
+    
+        $emailBody = str_replace(
+            ['{{ bank_name }}', '{{ finance }}', '{{ loan_cycle }}', '{{ interest_rate }}', '{{ purpose }}', '{{ bank_connection }}', '{{ support_policy }}', '{{ feedback }}', '{{ business_name }}', 
+            '{{ business_code }}', '{{ representative_full_name }}', '{{ representative_phone }}', '{{ address }}'],
+            [
+                $bankName,
+                number_format($businessCapitalNeed->finance, 0, ',', '.') ?? 0,
+                $businessCapitalNeed->loan_cycle ?? 0,
+                $businessCapitalNeed->interest_rate ?? 0,
+                $businessCapitalNeed->purpose ?? 'Không có phản hồi',
+                $businessCapitalNeed->bank_connection ?? 'Không có phản hồi',
+                $businessCapitalNeed->support_policy ?? 'Không có phản hồi',
+                $businessCapitalNeed->feedback ?? 'Không có phản hồi',
+                $businessInfo->business_name ?? 'Không có tên doanh nghiệp',
+                $businessInfo->business_code ?? 'Không có mã doanh nghiệp',
+                $businessInfo->representative_full_name ?? 'Không có đại diện',
+                $businessInfo->representative_phone ?? 'Không có số điện thoại đại diện',
+                $businessInfo->address ?? 'Không có địa chỉ'
+            ],
+            $templateContent
+        );
+    
+        try {
+            Mail::to($bankEmail)->send(new BusinessCapitalNeedMail($businessCapitalNeed, $emailBody));
+            $businessCapitalNeed->email_status = 'sent';
+            $businessCapitalNeed->save();
+            return response()->json(['success' => true, 'message' => 'Gửi email thành công']);
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi gửi email: ' . $e->getMessage());
+            return response()->json(['success' => false, 'error' => 'Đã xảy ra lỗi khi gửi email.']);
+        }
+    }
+    
+
+    public function getEmailTemplate($type, $keyName = null)
+    {
+        $query = Email::where('type', $type);
+        if ($keyName) {
+            $query->where('key_name', $keyName);
+        }
+
+        $email = $query->first();
+
+        if ($email && $email->template) {
+            return $email->template->content;
+        }
+        return null;
+    }
+
+
 }

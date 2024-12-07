@@ -16,12 +16,24 @@ use Intervention\Image\Facades\Image;
 class BusinessRecruitmentController extends Controller
 {
 
-    public function jobConnector()
+    public function jobConnector(Request $request)
     {
-        $recruitments = BusinessRecruitment::with('businessMember')->where('status', 'approved')->orderBy('created_at', 'desc')->paginate(15);
-        $jobApplications = JobApplication::where('status', 'approved')->orderBy('created_at', 'desc')->paginate(15);
-        return view('pages.client.job-connector', compact('recruitments', 'jobApplications'));
+        if ($request->ajax()) {
+            $recruitments = BusinessRecruitment::with('businessMember')
+                ->where('status', 'approved')
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+            $jobApplications = JobApplication::where('status', 'approved')
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+            return response()->json([
+                'recruitments' => $recruitments,
+                'jobApplications' => $jobApplications
+            ]);
+        }
+        return view('pages.client.job-connector');
     }
+    
 
     public function jobConnectorDetail($id)
     {

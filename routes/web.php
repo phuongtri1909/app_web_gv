@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\EmailController;
+use App\Http\Controllers\EmailTemplatesController;
 use App\Models\Tab;
 use App\Models\User;
 use App\Models\SlideProgram;
@@ -220,6 +222,8 @@ Route::middleware(['language'])->group(function () {
                 Route::resource('start-promotion-investment', BusinessStartPromotionInvestmentController::class);
 
                 Route::resource('capital-needs', BusinessCapitalNeedController::class);
+                Route::post('/send-email', [BusinessCapitalNeedController::class, 'sendEmailToBank'])->name('capital-needs.send-email');
+
 
                 Route::resource('job-applications', JobApplicationController::class)->except('create', 'store', 'edit', 'update');
 
@@ -258,6 +262,10 @@ Route::middleware(['language'])->group(function () {
                 Route::get('locations', [LocationController::class, 'index'])->name('locations.index');
                 Route::delete('locations/destroy/{id}', [LocationController::class, 'destroy'])->name('locations.destroy');
                 Route::get('locations/detail/{id}', [LocationController::class, 'show'])->name('locations.show');
+
+                Route::resource('emails', EmailController::class);
+
+                Route::resource('email_templates', EmailTemplatesController::class);
             });
         });
 

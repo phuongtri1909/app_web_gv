@@ -24,6 +24,7 @@ class BusinessCapitalNeed extends Model
     
     public function businessMember()
     {
-        return $this->belongsTo(BusinessMember::class, 'business_member_id');
+        return $this->belongsTo(BusinessMember::class, 'business_member_id', 'id');
     }
+    
 }

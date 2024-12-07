@@ -6,7 +6,7 @@ CKEDITOR.editorConfig = function(config) {
     config.allowedContent = true;
     config.forcePasteAsPlainText = false;
     // Thêm các plugin cho kích cỡ chữ và màu chữ
-    config.extraPlugins = 'uploadimage,image,video,clipboard,table,justify,font,colorbutton';
+    config.extraPlugins = 'uploadimage,image,video,clipboard,table,justify,font,colorbutton,codesnippet,pastefromword';
 
     config.toolbarGroups = [
         { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },

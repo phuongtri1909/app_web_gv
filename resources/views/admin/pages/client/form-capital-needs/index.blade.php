@@ -42,8 +42,6 @@
                                         {{ __('Đề xuất chính sách') }}</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         {{ __('Ý kiến') }}</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('Trạng thái') }}</th>
                                     <th
                                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         {{ __('Thao tác') }}</th>
@@ -98,42 +96,7 @@
                                                 {{ $capitalNeed->feedback }}
                                             </p>
                                         </td>
-
-                                        <td>
-                                            <span id="status-badge-{{ $capitalNeed->id }}"
-                                                class="badge badge-sm bg-{{ $capitalNeed->status == 'approved' ? 'success' : ($capitalNeed->status == 'rejected' ? 'danger' : 'warning') }}"  data-status="{{ $capitalNeed->status }}">
-                                                {{ $capitalNeed->status == 'approved' ? 'Đã duyệt' : ($capitalNeed->status == 'rejected' ? 'Đã từ chối' : 'Đang chờ') }}
-                                            </span>
-                                        </td>
-                                        <td class="text-center">
-                                           
-                                            <div class="dropstart">
-                                                <button class="btn btn-sm p-0 border-0 mb-0" type="button"
-                                                    data-bs-toggle="dropdown" aria-expanded="false"
-                                                    title="Thay đổi trạng thái">
-                                                    <i class="fas fa-retweet"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li>
-                                                        <a class="dropdown-item" href="#"
-                                                            onclick="updateStatus('BusinessCapitalNeed', {{ $capitalNeed->id }}, 'approved')">
-                                                            <i class="fas fa-check-circle text-success me-2"></i>Duyệt
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="#"
-                                                            onclick="updateStatus('BusinessCapitalNeed', {{ $capitalNeed->id }}, 'rejected')">
-                                                            <i class="fas fa-times-circle text-danger me-2"></i>Từ chối
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="#"
-                                                            onclick="updateStatus('BusinessCapitalNeed', {{ $capitalNeed->id }}, 'pending')">
-                                                            <i class="fa fa-hourglass-half text-warning me-2"></i>Đang chờ
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                        <td class="text-center">                                  
                                             @include('admin.pages.components.delete-form', [
                                                 'id' => $capitalNeed->id,
                                                 'route' => route('capital-needs.destroy', $capitalNeed->id),
@@ -143,6 +106,16 @@
                                                 data-id="{{ $capitalNeed->id }}" title="{{ __('Xem chi tiết') }}">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
+                                            <a href="javascript:void(0)" 
+                                                class="{{ $capitalNeed->email_status === 'sent' ? 'btn-light' : ' send-email' }}" 
+                                                data-id="{{ $capitalNeed->id }}" 
+                                                title="{{ $capitalNeed->email_status === 'sent' ? 'Đã gửi email' : 'Gửi email' }}" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top">
+                                                    <i class="{{ $capitalNeed->email_status === 'sent' ? 'fas fa-check-circle text-success' : 'fas fa-paper-plane text-gray' }}"></i>
+                                            </a>
+
+                                         
                                         </td>
                                     </tr>
                                 @endforeach
@@ -179,7 +152,6 @@
                                         </div>
                                         <h6 id="modal-business-name" class="fw-bold text-primary"></h6>
                                         <p class="text-muted small">MST: <span id="modal-business-code"></span></p>
-                                        <span id="modal-status" class="badge badge-sm"></span>
                                     </div>
 
                                     <div class="col-md-8">
@@ -220,8 +192,8 @@
                                                     </label>
                                                     <p id="modal-created-at" class="text-sm mb-2"></p>
                                                 </div>
-                                               
-                                               
+
+
                                             </div>
                                             <div class="col-md-6">
 
@@ -247,10 +219,10 @@
                                                     </label>
                                                     <p id="modal-feedback" class="text-sm mb-2"></p>
                                                 </div>
-                                            
+
                                             </div>
                                         </div>
-                                      
+
                                     </div>
                                 </div>
                             </div>
@@ -258,7 +230,45 @@
                     </div>
                 </div>
             </div>
-
+            <!-- Form Gửi Email -->
+            <div class="modal fade" id="sendEmailModal" tabindex="-1" aria-labelledby="sendEmailModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="sendEmailModalLabel">Gửi Email</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="sendEmailForm" action="{{ route('capital-needs.send-email') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="capital_need_id" id="capitalNeedId">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email Ngân Hàng</label>
+                                    <select class="form-select" id="email" name="email" required>
+                                        <option value="">Chọn Email</option>
+                                        @foreach ($emails as $email)
+                                            <option value="{{ $email->email }}">{{ $email->email }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email_template" class="form-label">Chọn Mẫu Email</label>
+                                    <select class="form-select" id="email_template" name="email_template" required>
+                                        <option value="">Chọn Mẫu</option>
+                                        @foreach ($emailTemplates as $template)
+                                            <option value="{{ $template->id }}">{{ $template->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                <button type="submit" class="btn btn-primary">Gửi</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </div>
@@ -279,7 +289,7 @@
                             'DD/MM/YYYY HH:mm');
                         $('#modal-business-name').text(response.business_name || '-');
                         $('#modal-business-code').text(response.business_code || '-');
-                 
+
                         $('#modal-finance').text(new Intl.NumberFormat('vi-VN', {
                             style: 'currency',
                             currency: 'VND'
@@ -292,30 +302,12 @@
                                 maximumFractionDigits: 1
                             }).format(response.interest_rate / 100)
                         );
-                       
+
                         $('#modal-purpose').text(response.purpose || '-');
                         $('#modal-bank-connection').text(response.bank_connection || '-');
                         $('#modal-feedback').text(response.feedback || '-');
                         $('#modal-created-at').text(formattedDate);
                         $('#modal-avatar').attr('src', response.avt_businesses ? '/' + response.avt_businesses : '');
-                       
-                        const statusBadgeClass = {
-                            'approved': 'bg-success',
-                            'rejected': 'bg-danger',
-                            'pending': 'bg-warning'
-                        } [response.status] || 'bg-secondary';
-
-                        const statusText = {
-                            'approved': 'Đã duyệt',
-                            'rejected': 'Đã từ chối',
-                            'pending': 'Đang chờ'
-                        } [response.status] || '-';
-
-                        $('#modal-status')
-                            .removeClass('bg-success bg-danger bg-warning bg-secondary')
-                            .addClass(statusBadgeClass)
-                            .text(statusText);
-                        
                         $('#model-loan-cycle').text(response.loan_cycle || '-');
                         $('#modal-support-policy').text(response.support_policy || '-');
 
@@ -323,6 +315,65 @@
                     },
                     error: function(error) {
                         showToast(error.responseJSON.error, 'error');
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('[data-bs-toggle="tooltip"]').tooltip();
+
+            $('.send-email').on('click', function () {
+                var capitalNeedId = $(this).data('id');
+                $('#capitalNeedId').val(capitalNeedId);
+
+                var modal = new bootstrap.Modal($('#sendEmailModal'));
+                modal.show();
+            });
+
+            $('#sendEmailForm').on('submit', function (e) {
+                e.preventDefault();
+
+                var submitButton = $(this).find('button[type=submit]');
+                submitButton.attr('disabled', true).text('Đang gửi...');
+
+                var form = $(this);
+                var actionUrl = form.attr('action');
+                var formData = form.serialize();
+
+                $.ajax({
+                    url: actionUrl,
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            showToast(response.message, 'success');
+                            var row = $('.send-email[data-id="' + $('#capitalNeedId').val() + '"]').closest('tr');
+                            
+                            row.find('.badge')
+                                .removeClass('bg-warning')
+                                .addClass('bg-success')
+                                .text('Đã gửi');
+
+                            var sendButton = row.find('.send-email');
+                            sendButton.removeClass('send-email')
+                                .addClass('btn-light disabled')
+                                .attr('title', 'Đã gửi email')
+                                .tooltip('dispose') 
+                                .tooltip(); 
+                            sendButton.html('<i class="fas fa-check-circle text-success"></i>');    
+                            var modal = bootstrap.Modal.getInstance($('#sendEmailModal'));
+                            modal.hide();
+                            form.trigger('reset');
+                        } else {
+                            showToast('Lỗi gửi email: ' + response.error, 'error');
+                        }
+                        submitButton.attr('disabled', false).text('Gửi');
+                    },
+                    error: function (error) {
+                        showToast('Đã xảy ra lỗi khi gửi email: ' + error.statusText, 'error');
+                        submitButton.attr('disabled', false).text('Gửi');
                     }
                 });
             });

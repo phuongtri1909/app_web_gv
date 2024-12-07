@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\BusinessField;
 use App\Models\BusinessMember;
 use App\Mail\BusinessRegistered;
+use App\Models\Email;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -135,13 +136,16 @@ class MemberBusinessController extends Controller
                 $businessFields = BusinessField::whereIn('id', $businessFieldIds)->get();
             }
             $businessMember->business_field_id = (count($businessFields) > 0) ? $businessFields->pluck('name')->toArray() : [];
+            $email = Email::where('type', 'ncb')->first();
             $businessMember->subject = 'Đăng ký tham gia app';
-            try {
-                Mail::to('tri2003bt@gmail.com')->send(new BusinessRegistered($businessMember));
-            } catch (\Exception $e) {
-                Log::error('Email Sending Error:', [
-                    'message' => $e->getMessage()
-                ]);
+            if($email && $email->type == 'ncb'){
+                try {
+                    Mail::to( $email->email)->send(new BusinessRegistered($businessMember));
+                } catch (\Exception $e) {
+                    Log::error('Email Sending Error:', [
+                        'message' => $e->getMessage()
+                    ]);
+                }
             }
 
             
