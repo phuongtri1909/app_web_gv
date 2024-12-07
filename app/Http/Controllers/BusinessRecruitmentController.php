@@ -19,7 +19,7 @@ class BusinessRecruitmentController extends Controller
     public function jobConnector(Request $request)
     {
         if ($request->ajax()) {
-            $recruitments = BusinessRecruitment::with('businessMember')
+            $recruitments = BusinessRecruitment::with(['businessMember.business'])
                 ->where('status', 'approved')
                 ->orderBy('created_at', 'desc')
                 ->paginate(15);
@@ -37,9 +37,27 @@ class BusinessRecruitmentController extends Controller
 
     public function jobConnectorDetail($id)
     {
-        $recruitment = BusinessRecruitment::with('businessMember')->find($id);
-        return view('pages.client.job-connector-detail', compact('recruitment'));
+        try {
+            $recruitment = BusinessRecruitment::with('businessMember.business')->find($id);
+            if (!$recruitment) {
+                return response()->json(['message' => 'Recruitment not found'], 404);
+            }
+        
+            $business = $recruitment->businessMember->business ?? null;
+            return response()->json([
+                'avt_businesses' => $business->avt_businesses ?? null,
+                'business_name' => $recruitment->businessMember->business_name ?? null,
+                'business_code' => $recruitment->businessMember->business_code ?? null,
+                'recruitment_title' => $recruitment->recruitment_title,
+                'recruitment_content' => $recruitment->recruitment_content,
+                'recruitment_images' => json_decode($recruitment->recruitment_images, true),
+                'status' => $recruitment->status,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Internal server error'], 500);
+        }
     }
+    
 
 
     //
@@ -67,7 +85,7 @@ class BusinessRecruitmentController extends Controller
     public function destroy(BusinessRecruitment $businessRecruitment)
     {
         $businessRecruitment->delete();
-        return redirect()->route('business-recruitments.index')->with('success', 'Recruitment deleted successfully');
+        return redirect()->route('recruitment.index')->with('success', 'Recruitment deleted successfully');
     }
 
     public function show($id)
