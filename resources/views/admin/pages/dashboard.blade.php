@@ -33,23 +33,31 @@
                 </select>
             </div>
         </form>
-        <div class="row">
-            <div class="col-12 col-md-6">
-                <canvas id="businessMemberRegistrationsChart"></canvas>
-                <p>Số doanh nghiệp đăng ký trong khoảng thời gian này: {{ $businessMemberRegistrations['current'] }}</p>
-                <p>Tỷ lệ thay đổi so với khoảng thời gian trước: {{ $businessMemberPercentageChange }}%</p>
+        @if (auth()->user()->unit->unit_code == 'QGV')
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <canvas id="businessMemberRegistrationsChart"></canvas>
+                    <p>Số doanh nghiệp đăng ký trong khoảng thời gian này: {{ $businessMemberRegistrations['current'] }}</p>
+                    <p>Tỷ lệ thay đổi so với khoảng thời gian trước: {{ $businessMemberPercentageChange }}%</p>
+                </div>
+                <div class="col-12 col-md-6">
+                    <canvas id="businessRegistrationsChart"></canvas>
+                    <p>Số doanh nghiệp trong khoảng thời gian này: {{ $businessRegistrations['current'] }}</p>
+                    <p>Tỷ lệ thay đổi so với khoảng thời gian trước: {{ $businessPercentageChange }}%</p>
+                </div>
             </div>
-            <div class="col-12 col-md-6">
-                <canvas id="businessRegistrationsChart"></canvas>
-                <p>Số doanh nghiệp trong khoảng thời gian này: {{ $businessRegistrations['current'] }}</p>
-                <p>Tỷ lệ thay đổi so với khoảng thời gian trước: {{ $businessPercentageChange }}%</p>
-            </div>
-        </div>
+        @elseif(auth()->user()->unit->unit_code == 'P17')
+            <div class="row">
+                
+            </div>          
+        @endif
     </div>
 @endsection
 
 @push('scripts-admin')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+
+    @if (auth()->user()->unit->unit_code == 'QGV')
     <script>
         var ctx1 = document.getElementById('businessMemberRegistrationsChart').getContext('2d');
         var businessMemberRegistrationsChart = new Chart(ctx1, {
@@ -97,4 +105,7 @@
             }
         });
     </script>
+    @elseif(auth()->user()->unit->unit_code == 'P17')
+
+    @endif
 @endpush

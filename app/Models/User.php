@@ -27,6 +27,7 @@ class User extends Authenticatable
         'role',
         'business_member_id',
         'status',
+        'unit_id',
     ];
 
     public function businessMember()
@@ -37,6 +38,11 @@ class User extends Authenticatable
     public function business()
     {
         return $this->belongsTo(BusinessMember::class);
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
     }
 
     /**
