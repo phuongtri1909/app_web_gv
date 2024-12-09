@@ -12,9 +12,7 @@
     <div class="collapse navbar-collapse  w-auto" id="sidenav-collapse-main">
         <ul class="navbar-nav">
 
-            @if (auth()->user()->role == "admin")
-                
-            
+            @if (auth()->user()->role == 'admin')
                 <li class="nav-item">
                     <a class="nav-link {{ Route::currentRouteNamed('admin.dashboard') ? 'active' : '' }}"
                         href="{{ route('admin.dashboard') }}">
@@ -23,7 +21,8 @@
                             <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1"
                                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <g transform="translate(-1716.000000, -439.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                                    <g transform="translate(-1716.000000, -439.000000)" fill="#FFFFFF"
+                                        fill-rule="nonzero">
                                         <g transform="translate(1716.000000, 291.000000)">
                                             <g transform="translate(0.000000, 148.000000)">
                                                 <path class="color-background opacity-6"
@@ -42,101 +41,405 @@
                     </a>
                 </li>
 
-                <li class="nav-item mt-2">
-                    <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">{{ __('setup_page') }}</h6>
-                </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('members.index') ? 'active' : '' }}"
-                        href="{{ route('members.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-users text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Đăng ký app</span>
-                    </a>
-                </li>
+                @switch(auth()->user()->unit->unit_code)
+                    @case('QGV')
+                        <li class="nav-item mt-2">
+                            <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">{{ __('setup_page') }}
+                            </h6>
+                        </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('users.index') ? 'active' : '' }}"
-                        href="{{ route('users.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-user-gear text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Tài khoản</span>
-                    </a>
-                </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('members.index') ? 'active' : '' }}"
+                                href="{{ route('members.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-users text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">Đăng ký app</span>
+                            </a>
+                        </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('admin.business') ? 'active' : '' }}"
-                        href="{{ route('admin.business') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-globe text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">KN Giao thương</span>
-                    </a>
-                </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('users.index') ? 'active' : '' }}"
+                                href="{{ route('users.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-user-gear text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">Tài khoản</span>
+                            </a>
+                        </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('business.products.*') ? 'active' : '' }}"
-                        href="{{ route('business.products.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-truck-fast text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">KN Cung cầu</span>
-                    </a>
-                </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('admin.business') ? 'active' : '' }}"
+                                href="{{ route('admin.business') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-globe text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">KN Giao thương</span>
+                            </a>
+                        </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('capital-needs.*') ? 'active' : '' }}"
-                        href="{{ route('capital-needs.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-sack-dollar text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">{{ __('Nhu cầu vốn') }}</span>
-                    </a>
-                </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('business.products.*') ? 'active' : '' }}"
+                                href="{{ route('business.products.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-truck-fast text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">KN Cung cầu</span>
+                            </a>
+                        </li>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('recruitment.*','job-applications.*') ? 'active' : '' }}"
-                        href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"
-                        data-bs-target="#job-connect" aria-expanded="false">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-people-arrows text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Kết nối việc làm</span>
-                    </a>
-                    <div class="collapse mt-1" id="job-connect" style="margin-left: 30px">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li>
-                                <a class="nav-link {{ Route::currentRouteNamed('recruitment.*') ? 'active' : '' }}"
-                                    href="{{ route('recruitment.index') }}">
-                                    <div
-                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-city text-dark icon-sidebar"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1">{{ __('Tuyển dụng') }}</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link {{ Route::currentRouteNamed('job-applications.*') ? 'active' : '' }}"
-                                    href="{{ route('job-applications.index') }}">
-                                    <div
-                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-handshake text-dark icon-sidebar"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1">{{ __('Tìm việc làm') }}</span>
-                                </a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('capital-needs.*') ? 'active' : '' }}"
+                                href="{{ route('capital-needs.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-sack-dollar text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Nhu cầu vốn') }}</span>
+                            </a>
+                        </li>
 
-                        </ul>
-                    </div>
-                </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('recruitment.*', 'job-applications.*') ? 'active' : '' }}"
+                                href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"
+                                data-bs-target="#job-connect" aria-expanded="false">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-people-arrows text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">Kết nối việc làm</span>
+                            </a>
+                            <div class="collapse mt-1" id="job-connect" style="margin-left: 30px">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li>
+                                        <a class="nav-link {{ Route::currentRouteNamed('recruitment.*') ? 'active' : '' }}"
+                                            href="{{ route('recruitment.index') }}">
+                                            <div
+                                                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                                <i class="fa-solid fa-city text-dark icon-sidebar"></i>
+                                            </div>
+                                            <span class="nav-link-text ms-1">{{ __('Tuyển dụng') }}</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link {{ Route::currentRouteNamed('job-applications.*') ? 'active' : '' }}"
+                                            href="{{ route('job-applications.index') }}">
+                                            <div
+                                                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                                <i class="fa-solid fa-handshake text-dark icon-sidebar"></i>
+                                            </div>
+                                            <span class="nav-link-text ms-1">{{ __('Tìm việc làm') }}</span>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('start-promotion-investment.index') ? 'active' : '' }}"
+                                href="{{ route('start-promotion-investment.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('KN-XTTM-KGDT') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('feedback.*') ? 'active' : '' }}"
+                                href="{{ route('feedback.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-comments text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Ý kiến doanh nghiệp') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('survey.*') ? 'active' : '' }}"
+                                href="{{ route('survey.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-chart-pie text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Khảo sát doanh nghiệp') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('personal-business-interests.*') ? 'active' : '' }}"
+                                href="{{ route('personal-business-interests.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Mô hình kinh doanh') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('banks.*') ? 'active' : '' }}"
+                                href="{{ route('banks.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Ngân hàng') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('bank-servicers.*') ? 'active' : '' }}"
+                                href="{{ route('bank-servicers.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Dịch vụ ngân hàng') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('financial-support.*') ? 'active' : '' }}"
+                                href="{{ route('financial-support.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Tài trợ tài chính') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('business-fields.*') ? 'active' : '' }}"
+                                href="{{ route('business-fields.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-regular fa-building text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">Ngành nghề KD</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('contact-consultations.*') ? 'active' : '' }}"
+                                href="{{ route('contact-consultations.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-scale-balanced text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Kênh tư vấn PL') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('form-legal-advice.*') ? 'active' : '' }}"
+                                href="{{ route('form-legal-advice.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-gavel text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Tư vấn PL') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('start-promotion-investment.index') ? 'active' : '' }}"
+                                href="{{ route('start-promotion-investment.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('KN-XTTM-KGDT') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('feedback.*') ? 'active' : '' }}"
+                                href="{{ route('feedback.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-comments text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Ý kiến doanh nghiệp') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('survey.*') ? 'active' : '' }}"
+                                href="{{ route('survey.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-chart-pie text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Khảo sát doanh nghiệp') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('personal-business-interests.*') ? 'active' : '' }}"
+                                href="{{ route('personal-business-interests.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Mô hình kinh doanh') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('banks.*') ? 'active' : '' }}"
+                                href="{{ route('banks.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Ngân hàng') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('bank-servicers.*') ? 'active' : '' }}"
+                                href="{{ route('bank-servicers.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Dịch vụ ngân hàng') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('financial-support.*') ? 'active' : '' }}"
+                                href="{{ route('financial-support.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Tài trợ tài chính') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('business-fields.*') ? 'active' : '' }}"
+                                href="{{ route('business-fields.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-regular fa-building text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">Ngành nghề KD</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('contact-consultations.*') ? 'active' : '' }}"
+                                href="{{ route('contact-consultations.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-scale-balanced text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Kênh tư vấn PL') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('form-legal-advice.*') ? 'active' : '' }}"
+                                href="{{ route('form-legal-advice.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-gavel text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Tư vấn PL') }}</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('emails.*', 'email_templates.*') ? 'active' : '' }}"
+                                href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"
+                                data-bs-target="#email" aria-expanded="false">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-envelope-open text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Email') }}</span>
+                            </a>
+                            <div class="collapse mt-1" id="email" style="margin-left: 30px">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li>
+                                        <a class="nav-link {{ Route::currentRouteNamed('emails.*') ? 'active' : '' }}"
+                                            href="{{ route('emails.index') }}">
+                                            <div
+                                                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                                <i class="fa-solid fa-envelope text-dark icon-sidebar"></i>
+                                            </div>
+                                            <span class="nav-link-text ms-1">{{ __('Email') }}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ Route::currentRouteNamed('email_templates.*') ? 'active' : '' }}"
+                                            href="{{ route('email_templates.index') }}">
+                                            <div
+                                                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                                <i class="fa-solid fa-file-text text-dark icon-sidebar"></i>
+                                            </div>
+                                            <span class="nav-link-text ms-1">{{ __('Mẫu email') }}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('fair-registrations.*', 'business-fair-registrations.indexJoin') ? 'active' : '' }}"
+                                href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"
+                                data-bs-target="#hoicho" aria-expanded="false">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-store text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">{{ __('Hội chợ') }}</span>
+                            </a>
+                            <div class="collapse mt-1" id="hoicho" style="margin-left: 30px">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li>
+                                        <a class="nav-link {{ Route::currentRouteNamed('business-fair-registrations.indexJoin') ? 'active' : '' }}"
+                                            href="{{ route('business-fair-registrations.indexJoin') }}">
+                                            <div
+                                                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                                <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                            </div>
+                                            <span class="nav-link-text ms-1">{{ __('Danh sách tham gia') }}</span>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ Route::currentRouteNamed('fair-registrations.*') ? 'active' : '' }}"
+                                            href="{{ route('fair-registrations.index') }}">
+                                            <div
+                                                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                                <i class="fa-solid fa-store text-dark icon-sidebar"></i>
+                                            </div>
+                                            <span class="nav-link-text ms-1">{{ __('Hội chợ') }}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    @break
+
+                    @case('P17')
+                    @break
+
+                    @default
+                @endswitch
 
                 <li class="nav-item">
                     <a class="nav-link {{ Route::currentRouteNamed('locations.*') ? 'active' : '' }}"
@@ -149,120 +452,8 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('start-promotion-investment.index') ? 'active' : '' }}"
-                        href="{{ route('start-promotion-investment.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">{{ __('KN-XTTM-KGDT') }}</span>
-                    </a>
-                </li>
-
-
-
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('feedback.*') ? 'active' : '' }}"
-                        href="{{ route('feedback.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-comments text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">{{ __('Ý kiến doanh nghiệp') }}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('survey.*') ? 'active' : '' }}"
-                        href="{{ route('survey.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-chart-pie text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">{{ __('Khảo sát doanh nghiệp') }}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('personal-business-interests.*') ? 'active' : '' }}"
-                        href="{{ route('personal-business-interests.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">{{ __('Mô hình kinh doanh') }}</span>
-                    </a>
-                </li>
-
-
-
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('banks.*') ? 'active' : '' }}"
-                        href="{{ route('banks.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">{{ __('Ngân hàng') }}</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('bank-servicers.*') ? 'active' : '' }}"
-                        href="{{ route('bank-servicers.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">{{ __('Dịch vụ ngân hàng') }}</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('financial-support.*') ? 'active' : '' }}"
-                        href="{{ route('financial-support.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">{{ __('Tài trợ tài chính') }}</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('business-fields.*') ? 'active' : '' }}"
-                        href="{{ route('business-fields.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-regular fa-building text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Ngành nghề KD</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('contact-consultations.*') ? 'active' : '' }}"
-                        href="{{ route('contact-consultations.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-scale-balanced text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">{{ __('Kênh tư vấn PL') }}</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('form-legal-advice.*') ? 'active' : '' }}"
-                        href="{{ route('form-legal-advice.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-gavel text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">{{ __('Tư vấn PL') }}</span>
-                    </a>
-                </li>
-
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('news.*','categories-news.*','tags-news.*','news_contents.*','tabs_posts.*') ? 'active' : '' }}"
+                    <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('news.*', 'categories-news.*', 'tags-news.*', 'news_contents.*', 'tabs_posts.*') ? 'active' : '' }}"
                         href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"
                         data-bs-target="#news" aria-expanded="false">
                         <div
@@ -331,81 +522,14 @@
                         </ul>
                     </div>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('fair-registrations.*','business-fair-registrations.indexJoin') ? 'active' : '' }}"
-                        href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"
-                        data-bs-target="#hoicho" aria-expanded="false">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-store text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">{{ __('Hội chợ') }}</span>
-                    </a>
-                    <div class="collapse mt-1" id="hoicho" style="margin-left: 30px">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li>
-                                <a class="nav-link {{ Route::currentRouteNamed('business-fair-registrations.indexJoin') ? 'active' : '' }}"
-                                    href="{{ route('business-fair-registrations.indexJoin') }}">
-                                    <div
-                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1">{{ __('Danh sách tham gia') }}</span>
-                                </a>
-                            </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link {{ Route::currentRouteNamed('fair-registrations.*') ? 'active' : '' }}"
-                                    href="{{ route('fair-registrations.index') }}">
-                                    <div
-                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-store text-dark icon-sidebar"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1">{{ __('Hội chợ') }}</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('emails.*','email_templates.*') ? 'active' : '' }}"
-                        href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"
-                        data-bs-target="#email" aria-expanded="false">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-envelope-open text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">{{ __('Email') }}</span>
-                    </a>
-                    <div class="collapse mt-1" id="email" style="margin-left: 30px">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li>
-                                <a class="nav-link {{ Route::currentRouteNamed('emails.*') ? 'active' : '' }}"
-                                    href="{{ route('emails.index') }}">
-                                    <div
-                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-envelope text-dark icon-sidebar"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1">{{ __('Email') }}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ Route::currentRouteNamed('email_templates.*') ? 'active' : '' }}"
-                                    href="{{ route('email_templates.index') }}">
-                                    <div
-                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-file-text text-dark icon-sidebar"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1">{{ __('Mẫu email') }}</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
+
                 <li class="nav-item mt-2">
-                    <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">{{ __('feature_page') }}
+                    <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">
+                        {{ __('feature_page') }}
                     </h6>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link {{ Route::currentRouteNamed('languages.*') ? 'active' : '' }}"
                         href="{{ route('languages.index') }}">
@@ -425,7 +549,8 @@
                             <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1"
                                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <g transform="translate(-1716.000000, -439.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                                    <g transform="translate(-1716.000000, -439.000000)" fill="#FFFFFF"
+                                        fill-rule="nonzero">
                                         <g transform="translate(1716.000000, 291.000000)">
                                             <g transform="translate(0.000000, 148.000000)">
                                                 <path class="color-background opacity-6"
@@ -443,7 +568,6 @@
                         <span class="nav-link-text ms-1">{{ __('dashboard') }}</span>
                     </a>
                 </li>
-
             @endif
 
 
@@ -451,6 +575,7 @@
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">{{ __('account_page') }}
                 </h6>
             </li>
+            
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.logout') }}">
                     <div

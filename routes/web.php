@@ -80,6 +80,7 @@ use App\Http\Controllers\BusinessStartPromotionInvestmentController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
 Route::middleware(['language'])->group(function () {
 
     Route::get('/clear-cache', function () {
@@ -89,6 +90,19 @@ Route::middleware(['language'])->group(function () {
         Artisan::call('view:clear');
         return "Cache is cleared";
     })->name('clear.cache');
+
+    Route::get('switch-language/{locale}', [LanguageController::class, 'switchLanguage'])->name('language.switch');
+
+    Route::get('/b/blogs', [BlogsController::class, 'blogIndex'])->name('list-blogs');
+
+    Route::get('/detail-blog/{slug}', [BlogsController::class, 'showBlogIndex'])->name('detail-blog');
+    Route::get('/detail-blog/mini/{slug}', [BlogsController::class, 'showBlogIndexMini'])->name('detail-blog-mini');
+
+    Route::get('page-tab/{slug}', function ($slug) {
+        return view('pages.tab-custom.index', compact('slug'));
+    })->name('page.tab');
+
+    Route::get('recruitment/{id}', [BusinessRecruitmentController::class, 'show'])->name('recruitment.show');
 
     Route::group(['prefix' => 'client'], function () {
         Route::get('business', [BusinessController::class, 'business'])->name('business');
@@ -123,7 +137,7 @@ Route::middleware(['language'])->group(function () {
         Route::get('/form-job-application', [JobApplicationController::class, 'jobApplication'])->name('job.application'); //form ứng tuyển
         Route::post('/form-job-application', [JobApplicationController::class, 'storeForm'])->name('job.application.store');
 
-        Route::middleware(['check.business.code','check.active','check.business.member'])->group(function () {
+        Route::middleware(['check.business.code', 'check.active', 'check.business.member'])->group(function () {
 
             Route::get('/form-connect-supply-demand', [ProductBusinessController::class, 'connectSupplyDemand'])->name('connect.supply.demand'); //form kết nối cung cầu
             Route::post('/form-connect-supply-demand', [ProductBusinessController::class, 'storeConnectSupplyDemand'])->name('connect.supply.demand.store');
@@ -155,34 +169,19 @@ Route::middleware(['language'])->group(function () {
         });
         Route::get('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'showFormStartPromotion'])->name('show.form.start.promotion'); // khởi nghiệp xúc tiến thương mại đầu tư
         Route::post('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'storeFormStartPromotion'])->name('form.start.promotion.store');
-        
+
 
         //cho phường 17
         Route::get('/locations-17', [LocationController::class, 'clientIndex17'])->name('locations-17');
-        
+
         Route::group(['prefix' => 'p17'], function () {
-            Route::get('business-households',[BusinessHouseholdController::class, 'clientIndex'])->name('p17.households.client.index');
+            Route::get('business-households', [BusinessHouseholdController::class, 'clientIndex'])->name('p17.households.client.index');
             Route::get('/business-household/{id}', [BusinessHouseholdController::class, 'clientShow'])->name('p17.households.client.show');
             Route::get('advertising', [BusinessHouseholdController::class, 'advertising'])->name('p17.advertising.client.index');
             Route::get('form-advertising', [BusinessHouseholdController::class, 'formAdvertising'])->name('p17.advertising.client.form');
             // Route::post('import', [BusinessHouseholdController::class, 'import'])->name('p17.households.import');
         });
-    
-    
     });
-
-    Route::get('switch-language/{locale}', [LanguageController::class, 'switchLanguage'])->name('language.switch');
-
-    Route::get('/b/blogs', [BlogsController::class, 'blogIndex'])->name('list-blogs');
-
-    Route::get('/detail-blog/{slug}', [BlogsController::class, 'showBlogIndex'])->name('detail-blog');
-    Route::get('/detail-blog/mini/{slug}', [BlogsController::class, 'showBlogIndexMini'])->name('detail-blog-mini');
-
-    Route::get('page-tab/{slug}', function ($slug) {
-        return view('pages.tab-custom.index', compact('slug'));
-    })->name('page.tab');
-
-    Route::get('recruitment/{id}', [BusinessRecruitmentController::class, 'show'])->name('recruitment.show');
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
@@ -191,14 +190,12 @@ Route::middleware(['language'])->group(function () {
             Route::prefix('admin')->group(function () {
                 Route::get('/', [AdminDashboardController::class, 'dashboard'])->name('admin.dashboard');
 
-
                 Route::resource('languages', LanguageController::class)->except(['show']);
                 Route::get('languages/edit-system/{locale}', [LanguageController::class, 'editSystem'])->name('languages.edit-system');
                 Route::put('languages/update-system/{locale}', [LanguageController::class, 'updateSystem'])->name('languages.update-system');
 
-
                 Route::resource('tags-news', TagNewsController::class);
-                Route::resource('categories-news', CategoryNewsController::class)->except( 'edit', 'update','show', 'destroy');
+                Route::resource('categories-news', CategoryNewsController::class)->except('edit', 'update', 'show', 'destroy');
                 Route::resource('news', BlogsController::class);
 
                 Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
@@ -207,86 +204,93 @@ Route::middleware(['language'])->group(function () {
                     Route::post('/upload', [CustomUploadController::class, 'upload'])->name('lfm.upload');
                 });
 
-
                 Route::resource('tabs_posts', TabDetailPostController::class);
                 Route::resource('news_contents', NewsTabContentDetailPostController::class);
-
-                Route::resource('bank-servicers', BankServicerController::class);
-
-                Route::resource('personal-business-interests', PersonalBusinessInterestController::class);
-
-                Route::resource('financial-support', FinancialSupportController::class);
-
-                Route::resource('banks', BanksController::class);
-
-                Route::resource('businesses', BusinessController::class)->except('create', 'store', 'edit', 'update');
-
-                Route::resource('start-promotion-investment', BusinessStartPromotionInvestmentController::class);
-
-                Route::resource('capital-needs', BusinessCapitalNeedController::class);
-                Route::post('/send-email', [BusinessCapitalNeedController::class, 'sendEmailToBank'])->name('capital-needs.send-email');
-
-
-                Route::resource('job-applications', JobApplicationController::class)->except('create', 'store', 'edit', 'update');
-
-                Route::resource('feedback', BusinessFeedBackController::class)->except('create', 'store', 'edit', 'update');
-
-                Route::resource('survey', BusinessSurveyController::class)->except('show');
-
-                Route::resource('recruitment',  BusinessRecruitmentController::class)->except('create', 'store', 'edit', 'update','show');
-
-                Route::get('/form-business', [BusinessController::class, 'adminIndex'])->name('admin.business');
 
                 Route::post('/update-status', [StatusController::class, 'updateStatus'])->name('update.status');
                 Route::post('/update-status-1', [StatusController::class, 'updateStatus1'])->name('update.status.1');
 
-                Route::resource('members',  MemberBusinessController::class)->except('create', 'store', 'edit', 'update');
-                Route::post('/import-business', [MemberBusinessController::class, 'import'])->name('import.business');
-
-                Route::resource('business-fields',  BusinessFieldController::class);
-
-                Route::resource('contact-consultations',  ContactConsultationController::class);
-
-                Route::resource('form-legal-advice',  LegalAdviceController::class)->except('create', 'store', 'edit', 'update');
 
                 Route::resource('users', UserController::class)->except('show');
 
                 Route::post('/user/status', [UserController::class, 'changeStatus'])->name('user.changeStatus');
 
-                Route::resource('fair-registrations', BusinessFairRegistrationController::class)->except('show');
-                Route::get('/fair-registrations/join', [BusinessFairRegistrationController::class, 'indexJoin'])->name('business-fair-registrations.indexJoin');
-                Route::get('/fair-registrations/join/{id}', [BusinessFairRegistrationController::class, 'showIndexJoin'])->name('business-fair-registrations.showIndexJoin');
-                Route::delete('/fair-registrations/destroy/{id}', [BusinessFairRegistrationController::class, 'destroyindexJoin'])->name('business-fair-registrations.destroyindexJoin');
-                Route::get('business-products', [ProductBusinessController::class, 'index'])->name('business.products.index');
-                Route::get('business-products/detail/{id}', [ProductBusinessController::class, 'show'])->name('business.products.show');
-                Route::delete('business-products/destroy/{id}', [ProductBusinessController::class, 'destroy'])->name('business.products.destroy');
-
                 Route::get('locations', [LocationController::class, 'index'])->name('locations.index');
                 Route::delete('locations/destroy/{id}', [LocationController::class, 'destroy'])->name('locations.destroy');
                 Route::get('locations/detail/{id}', [LocationController::class, 'show'])->name('locations.show');
 
-                Route::resource('emails', EmailController::class);
 
-                Route::resource('email_templates', EmailTemplatesController::class);
+                Route::middleware(['role.admin.qgv'])->group(function () {
+                    Route::resource('bank-servicers', BankServicerController::class);
+
+                    Route::resource('personal-business-interests', PersonalBusinessInterestController::class);
+
+                    Route::resource('financial-support', FinancialSupportController::class);
+
+                    Route::resource('banks', BanksController::class);
+
+                    Route::resource('businesses', BusinessController::class)->except('create', 'store', 'edit', 'update');
+
+                    Route::resource('start-promotion-investment', BusinessStartPromotionInvestmentController::class);
+
+                    Route::resource('capital-needs', BusinessCapitalNeedController::class);
+                    Route::post('/send-email', [BusinessCapitalNeedController::class, 'sendEmailToBank'])->name('capital-needs.send-email');
+
+
+                    Route::resource('job-applications', JobApplicationController::class)->except('create', 'store', 'edit', 'update');
+
+                    Route::resource('feedback', BusinessFeedBackController::class)->except('create', 'store', 'edit', 'update');
+
+                    Route::resource('survey', BusinessSurveyController::class)->except('show');
+
+                    Route::resource('recruitment',  BusinessRecruitmentController::class)->except('create', 'store', 'edit', 'update', 'show');
+
+                    Route::get('/form-business', [BusinessController::class, 'adminIndex'])->name('admin.business');
+
+                    Route::resource('members',  MemberBusinessController::class)->except('create', 'store', 'edit', 'update');
+                    Route::post('/import-business', [MemberBusinessController::class, 'import'])->name('import.business');
+
+                    Route::resource('business-fields',  BusinessFieldController::class);
+
+                    Route::resource('contact-consultations',  ContactConsultationController::class);
+
+                    Route::resource('form-legal-advice',  LegalAdviceController::class)->except('create', 'store', 'edit', 'update');
+
+                    Route::resource('fair-registrations', BusinessFairRegistrationController::class)->except('show');
+                    Route::get('/fair-registrations/join', [BusinessFairRegistrationController::class, 'indexJoin'])->name('business-fair-registrations.indexJoin');
+                    Route::get('/fair-registrations/join/{id}', [BusinessFairRegistrationController::class, 'showIndexJoin'])->name('business-fair-registrations.showIndexJoin');
+                    Route::delete('/fair-registrations/destroy/{id}', [BusinessFairRegistrationController::class, 'destroyindexJoin'])->name('business-fair-registrations.destroyindexJoin');
+                    Route::get('business-products', [ProductBusinessController::class, 'index'])->name('business.products.index');
+                    Route::get('business-products/detail/{id}', [ProductBusinessController::class, 'show'])->name('business.products.show');
+                    Route::delete('business-products/destroy/{id}', [ProductBusinessController::class, 'destroy'])->name('business.products.destroy');
+                
+                    Route::resource('emails', EmailController::class);
+
+                    Route::resource('email_templates', EmailTemplatesController::class);
+                });
+
+                Route::middleware(['role.admin.p17'])->group(function () {
+
+                });
+
             });
         });
 
-        Route::middleware(['check.active'])->group(function () {
-            Route::middleware(['role.business'])->group(function () {
+        Route::middleware(['role.business'])->group(function () {
+            Route::middleware(['check.active'])->group(function () {
                 Route::prefix('business')->group(function () {
                     Route::get('/', [BusinessDashboardController::class, 'index'])->name('business.dashboard');
 
                     Route::put('update-business', [BusinessDashboardController::class, 'updateBusiness'])->name('update.business');
 
                     Route::put('update-business-member', [BusinessDashboardController::class, 'updateBusinessMember'])->name('update.business.member');
-                
-                    Route::put('update-representative-info',[BusinessDashboardController::class, 'updateRepresentativeInfo'])->name('update.representative.info');
-                
-                    Route::put('update-account-info',[BusinessDashboardController::class, 'updateAccountInfo'])->name('update.account.info');
+
+                    Route::put('update-representative-info', [BusinessDashboardController::class, 'updateRepresentativeInfo'])->name('update.representative.info');
+
+                    Route::put('update-account-info', [BusinessDashboardController::class, 'updateAccountInfo'])->name('update.account.info');
                 });
             });
         });
-
     });
 
     Route::middleware(['guest'])->group(function () {

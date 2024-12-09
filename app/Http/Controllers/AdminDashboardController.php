@@ -15,13 +15,22 @@ class AdminDashboardController extends Controller
         $month = $request->input('month', Carbon::now()->month);
         $year = $request->input('year', Carbon::now()->year);
 
-        $businessMemberRegistrations = $this->getRegistrationsByPeriod(BusinessMember::class, $period, $month, $year);
-        $businessRegistrations = $this->getRegistrationsByPeriod(Business::class, $period, $month, $year);
+        $unit = auth()->user()->unit;
 
-        $businessMemberPercentageChange = $this->getPercentageChange($businessMemberRegistrations['current'], $businessMemberRegistrations['previous']);
-        $businessPercentageChange = $this->getPercentageChange($businessRegistrations['current'], $businessRegistrations['previous']);
+        if($unit->unit_code == 'QGV'){
 
-        return view('admin.pages.dashboard', compact('businessMemberRegistrations', 'businessMemberPercentageChange', 'businessRegistrations', 'businessPercentageChange', 'period', 'month', 'year'));
+            $businessMemberRegistrations = $this->getRegistrationsByPeriod(BusinessMember::class, $period, $month, $year);
+            $businessRegistrations = $this->getRegistrationsByPeriod(Business::class, $period, $month, $year);
+    
+            $businessMemberPercentageChange = $this->getPercentageChange($businessMemberRegistrations['current'], $businessMemberRegistrations['previous']);
+            $businessPercentageChange = $this->getPercentageChange($businessRegistrations['current'], $businessRegistrations['previous']);
+            return view('admin.pages.dashboard', compact('businessMemberRegistrations', 'businessMemberPercentageChange', 'businessRegistrations', 'businessPercentageChange', 'period', 'month', 'year'));
+        }
+        elseif($unit->unit_code == 'P17'){
+            return view('admin.pages.dashboard',compact('period', 'month', 'year'));
+        }else{
+            return view('admin.pages.dashboard',compact('period', 'month', 'year'));
+        }
     }
 
     public function getPercentageChange($current, $previous)
