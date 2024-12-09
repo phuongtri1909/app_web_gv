@@ -18,7 +18,7 @@ class RoleAdminQGV
     {
         $unit = auth()->user()->unit;
         
-        if($unit->unit_code !== 'qgv') {
+        if($unit->unit_code !== 'QGV') {
             return redirect()->back()->with('error', 'Bạn không có quyền truy cập trang này');
         }
 
