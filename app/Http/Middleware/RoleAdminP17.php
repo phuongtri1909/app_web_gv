@@ -17,7 +17,7 @@ class RoleAdminP17
     {
         $unit = auth()->user()->unit;
         
-        if($unit->unit_code !== 'p17') {
+        if($unit->unit_code !== 'P17') {
             return redirect()->back()->with('error', 'Bạn không có quyền truy cập trang này');
         }
 
