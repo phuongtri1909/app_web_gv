@@ -163,6 +163,8 @@ Route::middleware(['language'])->group(function () {
         Route::group(['prefix' => 'p17'], function () {
             Route::get('business-households',[BusinessHouseholdController::class, 'clientIndex'])->name('p17.households.client.index');
             Route::get('/business-household/{id}', [BusinessHouseholdController::class, 'clientShow'])->name('p17.households.client.show');
+            Route::get('advertising', [BusinessHouseholdController::class, 'advertising'])->name('p17.advertising.client.index');
+            Route::get('form-advertising', [BusinessHouseholdController::class, 'formAdvertising'])->name('p17.advertising.client.form');
             // Route::post('import', [BusinessHouseholdController::class, 'import'])->name('p17.households.import');
         });
     
