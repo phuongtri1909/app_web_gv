@@ -16,7 +16,7 @@ class ZaloAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $accessToken = $request->header('accessToken');
+        $accessToken = $request->header('Authorization');
 
         if (!$accessToken) {
             return response()->json(['error' => 'Unauthorized'], 401);
