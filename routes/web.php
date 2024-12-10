@@ -72,6 +72,7 @@ use App\Http\Controllers\BusinessFairRegistrationController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PersonalBusinessInterestController;
 use App\Http\Controllers\BusinessStartPromotionInvestmentController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DigitalTransformationController;
 
 /*
@@ -280,6 +281,9 @@ Route::middleware(['language'])->group(function () {
                    Route::resource('ad-types',AdTypeController::class)->except('show');
                    Route::resource('ad-categories',AdCategoryController::class)->except('show');
                    Route::resource('advertisements',AdvertisementController::class);
+
+                   Route::resource('departments', DepartmentController::class)->except('show');
+
                 });
 
             });

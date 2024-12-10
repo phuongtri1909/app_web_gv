@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\DepartmentController;
+use App\Http\Controllers\API\CitizenMeetingScheduleController;
 use App\Http\Controllers\API\DigitalTransformationController;
 
 /*
@@ -19,7 +21,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::middleware(['zalo.auth'])->group(function () {
+    Route::group(['prefix' => 'client'], function () {
+        Route::get('digital-transformations', [DigitalTransformationController::class, 'index']);
+        Route::get('departments', [DepartmentController::class, 'index']);
 
-Route::group(['prefix' => 'client'], function () {
-    Route::get('digital-transformations', [DigitalTransformationController::class, 'index']);
+        Route::post('citizen-meeting-schedules', [CitizenMeetingScheduleController::class, 'store']);
+    });
 });
