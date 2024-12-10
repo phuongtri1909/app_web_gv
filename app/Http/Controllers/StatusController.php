@@ -130,6 +130,65 @@ class StatusController extends Controller
             ], 500);
         }
     }
-    
-    
+
+    public function updateStatus2(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $validated = $request->validate([
+                'model' => 'required|string',
+                'id' => 'required|integer',
+                'status' => 'required|in:pending,active,inactive',
+            ]);
+
+            $modelClass = "App\\Models\\" . $validated['model'];
+            if (!class_exists($modelClass)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Model không tồn tại.'
+                ], 404);
+            }
+
+            $record = $modelClass::findOrFail($validated['id']);
+
+            if (in_array($record->ad_status, ['active', 'inactive'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không thể thay đổi trạng thái khi đã chấp nhận hoặc từ chối.'
+                ], 403);
+            }
+
+            $record->ad_status = $validated['status'];
+            $record->save();
+
+            DB::commit();
+
+            $statusLabel = [
+                'active' => 'Hiển thị',
+                'inactive' => 'Không hiển thị',
+                'pending' => 'Đang chờ',
+            ];
+
+            $statusClass = [
+                'active' => 'success',
+                'inactive' => 'danger',
+                'pending' => 'warning',
+            ];
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cập nhật trạng thái thành công.',
+                'status' => $record->ad_status,
+                'statusLabel' => $statusLabel[$record->ad_status],
+                'statusClass' => $statusClass[$record->ad_status],
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Cập nhật trạng thái thất bại: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

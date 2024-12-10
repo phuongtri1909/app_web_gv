@@ -199,7 +199,7 @@
 
 @push('scripts')
     <script>
-        document.getElementById('image').addEventListener('change', function(event) {
+        document.getElementById('images').addEventListener('change', function(event) {
 
             const previewsContainer = document.querySelector('.images-preview-container');
 
@@ -269,7 +269,7 @@
                 alert('Vui lòng điền đầy đủ thông tin bắt buộc');
             }
         });
-        const priceInput = document.getElementById('price');
+        const priceInput = document.getElementById('ad_price');
         priceInput.addEventListener('input', function(e) {
             let value = this.value;
             if (value) {
@@ -280,7 +280,7 @@
         });
     </script>
     <script>
-        CKEDITOR.replace('description', {
+        CKEDITOR.replace('ad_description', {
             height: 200,
             on: {
                 instanceReady: function() {
@@ -322,65 +322,91 @@
     <section id="advertising-form" class="py-8">
         <div class="form-container">
             <h2 class="form-title">Đăng ký quảng cáo/rao vặt</h2>
-            <form action="" method="POST" enctype="multipart/form-data" class="ad-form">
+            <form action="{{ route('p17.advertising.client.store') }}" method="POST" enctype="multipart/form-data"
+                class="ad-form">
                 @csrf
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="title">Tiêu đề quảng cáo <span class="required">*</span></label>
+                            <label for="ad_title">Tiêu đề quảng cáo <span class="required">*</span></label>
                             <div class="input-group">
-                                <input type="text" id="title" name="title" class="form-input"
-                                    placeholder="Nhập tiêu đề ngắn gọn, hấp dẫn" required>
+                                <input type="text" id="ad_title" name="ad_title" class="form-input"
+                                    placeholder="Nhập tiêu đề ngắn gọn, hấp dẫn" value="{{ old('ad_title') }}" required>
                             </div>
+                            @error('ad_title')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="subcategory">Danh mục <span class="required">*</span></label>
-                            <select id="subcategory" name="subcategory" class="form-select" required>
-                                <option value="">-- Chọn danh mục --</option>
-                                <option value="dich-vu">Dịch vụ</option>
-                                <option value="nha-cho-thue">Nhà cho thuê</option>
-                                <option value="others">Khác</option>
+                            <label for="category_id">Danh mục <span class="required">*</span></label>
+                            <select id="category_id" name="category_id" class="form-select" required>
+                                <option value="" disabled {{ old('category_id') == '' ? 'selected' : '' }}>-- Chọn
+                                    danh mục --</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}"
+                                        {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="category">Loại tin <span class="required">*</span></label>
-                            <select id="category" name="category" class="form-select" required>
-                                <option value="">-- Chọn loại tin --</option>
-                                <option value="quang-cao">Quảng cáo</option>
-                                <option value="rao-vat">Rao vặt</option>
+                            <label for="type_id">Loại tin <span class="required">*</span></label>
+                            <select id="type_id" name="type_id" class="form-select" required>
+                                <option value="" disabled {{ old('type_id') == '' ? 'selected' : '' }}>-- Chọn loại
+                                    tin --</option>
+                                @foreach ($types as $type)
+                                    <option value="{{ $type->id }}"
+                                        {{ old('type_id') == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="price">Giá <span class="required">*</span></label>
+                            <label for="ad_price">Giá <span class="required">*</span></label>
                             <div class="price-wrapper">
-                                <input type="text" id="price" name="price" class="form-input"
-                                    placeholder="Nhập giá" required>
+                                <input type="text" id="ad_price" name="ad_price" class="form-input"
+                                    placeholder="Nhập giá" value="{{ old('ad_price') }}" required>
+                            </div>
+                            @error('ad_price')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="road_id">Tuyến đường <span class="required">*</span></label>
+                            <select id="road_id" name="road_id" class="form-select" required>
+                                <option value="" disabled {{ old('road_id') == '' ? 'selected' : '' }}>-- Chọn tuyến
+                                    đường --</option>
+                                @foreach ($roads as $road)
+                                    <option value="{{ $road->id }}"
+                                        {{ old('road_id') == $road->id ? 'selected' : '' }}>{{ $road->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('road_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="images">Hình ảnh minh họa</label>
+                            <input type="file" id="images" name="images[]" class="form-file-input" accept="image/*"
+                                multiple>
+                            <div class="images-preview-container d-flex flex-wrap mt-2">
+
                             </div>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="location">Tuyến đường <span class="required">*</span></label>
-                            <select id="location" name="location" class="form-select" required>
-                                <option value="">-- Chọn tuyến đường --</option>
-                                <option value="le-duc-tho">Lê Đức Thọ</option>
-                                <option value="nguyen-van-luong">Nguyễn Văn Lượng</option>
-                                <option value="nguyen-oanh">Nguyễn Oanh</option>
-                                <option value="quang-ham">Quảng Hàm</option>
-                                <option value="others">Khác</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="description">Mô tả chi tiết</label>
-                            <textarea id="description" name="description" class="form-textarea" placeholder="Nhập mô tả chi tiết"></textarea>
+                            <label for="ad_description">Mô tả chi tiết</label>
+                            <textarea id="ad_description" name="ad_description" class="form-textarea" placeholder="Nhập mô tả chi tiết">{{ old('ad_description') }}</textarea>
                             <div id="example-text">
                                 <div class="not-allowed">
                                     <p>Không cho phép:</p>
@@ -390,21 +416,42 @@
                                     - Thông tin trùng lặp với tin đăng cũ.
                                 </p>
                             </div>
+                            @error('ad_description')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="ad_full_name">Họ và tên <span class="required">*</span></label>
+                            <input type="text" id="ad_full_name" name="ad_full_name" class="form-input"
+                                placeholder="Nhập họ và tên" value="{{ old('ad_full_name') }}" required>
+                            @error('ad_full_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="ad_cccd">CCCD <span class="required">*</span></label>
+                            <input type="text" id="ad_cccd" name="ad_cccd" class="form-input"
+                                placeholder="Nhập số CCCD" value="{{ old('ad_cccd') }}" required>
+                            @error('ad_cccd')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="ad_contact_phone">SĐT <span class="required">*</span></label>
+                            <input type="text" id="ad_contact_phone" name="ad_contact_phone" class="form-input"
+                                placeholder="Nhập số SĐT" value="{{ old('ad_contact_phone') }}" required>
+                            @error('ad_contact_phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                 </div>
-                <div class="form-section">
-                    <div class="form-group">
-                        <label for="image">Hình ảnh minh họa</label>
-                        <input type="file" id="image" name="image[]" class="form-file-input" accept="image/*"
-                            multiple>
-                        <div class="images-preview-container d-flex flex-wrap mt-2">
-
-                        </div>
-                    </div>
-                </div>
-
-
                 <button type="submit" class="btn-submit">
                     Đăng tin
                 </button>

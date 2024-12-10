@@ -93,15 +93,4 @@ class BusinessHouseholdController extends Controller
     {
         //
     }
-
-    public function advertising()
-    {
-
-        return view('pages.client.p17.advertising-classifieds.advertising-classifieds');
-    }
-
-    public function formAdvertising()
-    {
-        return view('pages.client.p17.advertising-classifieds.form-advertising');
-    }
 }

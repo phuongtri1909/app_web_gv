@@ -4,6 +4,7 @@
 @section('keyword', 'Quảng cáo - Rao vặt')
 
 @push('styles')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
     <style>
         .classified-container {
             max-width: 1200px;
@@ -52,15 +53,13 @@
             font-size: 14px;
             min-width: 120px;
         }
-
         .category-tabs {
             display: flex;
-            gap: 8px;
+            flex-wrap: wrap; 
+            gap: 10px;
+            justify-content: space-between; 
             margin-bottom: 24px;
-            overflow-x: auto;
-            padding-bottom: 8px;
         }
-
         .tab-btn {
             padding: 8px 16px;
             border: none;
@@ -155,19 +154,46 @@
             margin-bottom: 16px;
         }
 
-        .view-btn {
-            width: 100%;
-            padding: 12px;
-            background: #0ea5e9;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: background 0.2s;
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .view-btn:hover {
-            background: #0284c7;
+        .view-adve {
+            color: #000001;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .view-adve:hover,
+        .view-adve:focus {
+            color: #0056b3;
+        }
+
+        .contact-btn {
+            color: #28a745;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .contact-btn:hover,
+        .contact-btn:focus {
+            color: #218838;
+        }
+
+        .btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover i {
+            transform: translateX(5px);
         }
 
         .loading-indicator {
@@ -191,86 +217,205 @@
         }
     </style>
 @endpush
-
 @push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const listingsContainer = document.getElementById('listingsContainer');
             const searchInput = document.getElementById('searchInput');
+            const areaFilter = document.getElementById('areaFilter');
+            const priceFilter = document.getElementById('priceFilter');
             const tabs = document.querySelectorAll('.tab-btn');
-            const loadingIndicator = document.getElementById('loadingIndicator');
+            let searchTimeout;
+            let page = 1;
+            let loading = false;
+            let currentRoadId = null;
+            let currentCategory = 'all';
 
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
-                    tabs.forEach(t => t.classList.remove('active'));
+                    tabs.forEach(t => {
+                        t.classList.remove('active');
+                        t.style.transition = 'background-color 0.3s, transform 0.3s';
+                        t.style.transform = 'scale(1)';
+                    });
                     tab.classList.add('active');
-
-                    const category = tab.dataset.category;
-                    filterListings(category);
+                    tab.style.transition = 'background-color 0.3s, transform 0.3s';
+                    tab.style.transform = 'scale(1.1)';
+                    currentCategory = tab.dataset.category;
+                    filterListings(currentCategory);
                 });
             });
-            let searchTimeout;
+
+            areaFilter.addEventListener('change', () => {
+                currentRoadId = areaFilter.value || null;
+                updateFilter('road_id', currentRoadId);
+            });
+
+            priceFilter.addEventListener('change', () => {
+                if (currentRoadId) updateFilter('road_id', null);
+                updateFilter('price_range', priceFilter.value);
+            });
+
             searchInput.addEventListener('input', (e) => {
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(() => {
                     const searchTerm = e.target.value.toLowerCase();
-                    searchListings(searchTerm);
+                    searchTerm.length < 2 ? filterListings(currentCategory) : searchListings(
+                        searchTerm, currentCategory);
                 }, 300);
             });
-            let page = 1;
-            let loading = false;
-
-            window.addEventListener('scroll', () => {
-                if (loading) return;
-
-                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-                    loadMoreListings();
-                }
-            });
-
             function filterListings(category) {
                 const listings = document.querySelectorAll('.listing-card');
+                let hasResults = false;
                 listings.forEach(listing => {
-                    if (category === 'all' || listing.dataset.category === category) {
-                        listing.style.display = 'block';
-                    } else {
-                        listing.style.display = 'none';
-                    }
+                    const matchesCategory = category === 'all' || listing.dataset.category === category;
+                    listing.style.display = matchesCategory ? 'block' : 'none';
+                    hasResults = hasResults || matchesCategory;
                 });
             }
 
-            function searchListings(term) {
+            function searchListings(term, category) {
                 const listings = document.querySelectorAll('.listing-card');
+                let hasResults = false;
                 listings.forEach(listing => {
                     const title = listing.querySelector('.card-title').textContent.toLowerCase();
                     const desc = listing.querySelector('.card-desc').textContent.toLowerCase();
-
-                    if (title.includes(term) || desc.includes(term)) {
-                        listing.style.display = 'block';
-                    } else {
-                        listing.style.display = 'none';
-                    }
+                    const matchesSearch = title.includes(term) || desc.includes(term);
+                    const matchesCategory = category === 'all' || listing.dataset.category === category;
+                    listing.style.display = matchesSearch && matchesCategory ? 'block' : 'none';
+                    hasResults = hasResults || (matchesSearch && matchesCategory);
                 });
             }
 
-            async function loadMoreListings() {
-                loading = true;
-                loadingIndicator.classList.remove('hidden');
-
-                try {
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    page++;
-                    loading = false;
-                    loadingIndicator.classList.add('hidden');
-                } catch (error) {
-                    console.error('Error loading more listings:', error);
-                    loading = false;
-                    loadingIndicator.classList.add('hidden');
-                }
+            function updateFilter(param, value) {
+                const urlParams = new URLSearchParams(window.location.search);
+                value ? urlParams.set(param, value) : urlParams.delete(param);
+                window.location.search = urlParams.toString();
             }
         });
     </script>
+    <script>
+        $(document).ready(function() {
+            $('.view-adve').click(function() {
+                var adsId = $(this).data('id');
+                $.ajax({
+                    url: '/admin/advertisements/' + adsId,
+                    type: 'GET',
+                    success: function(response) {
+                        var formattedDate = dayjs(response.created_at).format(
+                            'DD/MM/YYYY HH:mm');
+                        $('#modal-ad-title').text(response.ad_title || '-');
+                        $('#modal-ad-description').html(response.ad_description || '-');
+                        $('#modal-ad-price').text(response.ad_price + 'đ' || '-');
+                        // $('#modal-ad-full-name').text(response.ad_full_name || '-');
+                        // $('#modal-ad-cccd').text(response.ad_cccd || '-');
+                        $('#modal-ad-contact-phone').text(response.ad_contact_phone || '-');
+                        $('#modal-category-name').text(response.category_name || '-');
+                        var productImagesHtml = '';
+                        if (response.files && response.files.length > 0) {
+                            response.files.forEach(function(file) {
+                                productImagesHtml += '<a href="/' + file.file_url +
+                                    '" data-fancybox="gallery" >';
+                                productImagesHtml += '<img src="/' + file.file_url +
+                                    '" alt="Product Image" class="img-fluid product-thumbnail" style="max-width: 100px; margin: 5px;">';
+                                productImagesHtml += '</a>';
+                            });
+                        } else {
+                            productImagesHtml = '-';
+                        }
+                        $('#modal-images').html(productImagesHtml);
+
+                        $('#modal-type-name').text(response.type_name || '-');
+                        $('#modal-created-at').text(formattedDate || '-');
+                        $('#modal-road-name').text(response.road_name || '-');
+                        const statusBadgeClass = {
+                            'active': 'bg-success',
+                            'inactive': 'bg-danger',
+                            'pending': 'bg-warning'
+                        } [response.ad_status] || 'bg-secondary';
+                        const statusText = {
+                            'active': 'Hiển thị',
+                            'inactive': 'Không hiển thị',
+                            'pending': 'Đang chờ'
+                        } [response.ad_status] || '-';
+
+                        $('#modal-ad-status')
+                            .removeClass('bg-success bg-danger bg-warning bg-secondary')
+                            .addClass(statusBadgeClass)
+                            .text(statusText);
+
+
+                        $('#advertisementDetailModal').modal('show');
+                    },
+                    error: function(error) {
+                        console.log(error);
+
+                        showToast('Có lỗi xảy ra. Vui lòng thử lại sau.', 'error');
+                    }
+                });
+            });
+            $(document).on('click', '.product-thumbnail', function() {
+                var imageUrl = $(this).attr('src');
+                $('#modal-large-image').attr('src', imageUrl);
+                $('#viewImageModal').modal('show');
+            });
+            $(document).on('click', '.product-thumbnail1', function() {
+                var imageUrl = $(this).attr('src');
+                $('#modal-large-image').attr('src', imageUrl);
+                $('#viewImageModal').modal('show');
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            let page = 1; 
+            let isLoading = false;
+
+            $(window).scroll(function() {
+            
+                if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+                    if (!isLoading) {
+                        loadMoreListings();
+                    }
+                }
+            });
+
+            function loadMoreListings() {
+                isLoading = true;
+                page++; 
+
+        
+                $('#loadMoreSpinner').show();
+
+                $.ajax({
+                    url: '?page=' + page, 
+                    type: 'GET',
+                    success: function(data) {
+                        
+                        $('#loadMoreSpinner').hide();
+
+                        if (!data || data.trim() === '') {
+                            
+                            $('#loadMoreSpinner').text('Đã tải hết dữ liệu').fadeOut();
+                            $(window).off('scroll'); 
+                            return;
+                        }
+                        // $('#listingsContainer').append(data);
+                        // isLoading = false; 
+                    },
+                    error: function() {
+                        isLoading = false; 
+                        $('#loadMoreSpinner').hide();
+                        showToast('Có lỗi xảy ra khi tải dữ liệu', 'error');
+                    }
+                });
+            }
+        });
+    </script>
+
 @endpush
+
 
 @section('content')
     <section id="advertising-classifieds" class="py-8">
@@ -283,56 +428,133 @@
                     </button>
                 </div>
                 <div class="filters">
-                    <select class="filter-select">
+                    <select class="filter-select" id="priceFilter" name="price_range">
                         <option value="">Giá</option>
-                        <option value="0-1000000">Dưới 1 triệu</option>
-                        <option value="1000000-5000000">1-5 triệu</option>
-                        <option value="5000000+">Trên 5 triệu</option>
+                        <option value="0-1000000" {{ request()->price_range == '0-1000000' ? 'selected' : '' }}>Dưới 1 triệu
+                        </option>
+                        <option value="1000000-5000000" {{ request()->price_range == '1000000-5000000' ? 'selected' : '' }}>
+                            1-5 triệu</option>
+                        <option value="5000000+" {{ request()->price_range == '5000000+' ? 'selected' : '' }}>Trên 5 triệu
+                        </option>
                     </select>
-                    <select class="filter-select">
+                    <select class="filter-select" id="areaFilter" name="road_id">
                         <option value="">Khu vực</option>
-                        <option value="cau-giay">Cầu Giấy</option>
-                        <option value="hoan-kiem">Hoàn Kiếm</option>
+                        @foreach ($roads as $road)
+                            <option value="{{ $road->slug }}" {{ request()->road_id == $road->slug ? 'selected' : '' }}>
+                                {{ $road->name }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
             </div>
 
-           
-            <div class="category-tabs">
-                <button class="tab-btn active" data-category="all">Tất cả</button>
-                <button class="tab-btn" data-category="services">Dịch vụ</button>
-                <button class="tab-btn" data-category="house-rentals">Nhà cho thuê</button>
+            @if ($categories->isNotEmpty())
+                <div class="category-tabs-wrapper">
+                    <div class="category-tabs">
+                        <button class="tab-btn {{ request()->category == null ? 'active' : '' }}" data-category="all">
+                            Tất cả
+                        </button>
+                        @foreach ($categories as $category)
+                            <button class="tab-btn {{ request()->category == $category->slug ? 'active' : '' }}"
+                                data-category="{{ $category->slug }}">
+                                {{ $category->name }}
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        
+            <div id="listingsContainer">
+                @include('pages.client.p17.advertising-classifieds.list', ['query' => $query])
             </div>
-
+            <div id="loadMoreSpinner" class="text-center" style="display: none;">
+                Đang tải.....
+            </div>
             
-            <div class="listings-grid" id="listingsContainer">
-                @foreach (range(1, 6) as $i)
-                    <div class="listing-card" data-category="{{ $i % 2 == 0 ? 'services' : 'house-rentals' }}">
-                        <div class="card-image">
-                            <img src="https://picsum.photos/400/300?random={{ $i }}"
-                                alt="Listing {{ $i }}" loading="lazy">
-                            <span class="card-badge">{{ $i % 2 == 0 ? 'Dịch vụ' : 'Nhà cho thuê' }}</span>
-                        </div>
-                        <div class="card-content">
-                            <h3 class="card-title">Listing Title {{ $i }}</h3>
-                            <div class="card-price">{{ number_format(rand(1000000, 10000000)) }}đ</div>
-                            <p class="card-desc">Mô tả ngắn gọn về listing này...</p>
-                            <div class="card-meta">
-                                <span class="location">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    {{ $i % 2 == 0 ? 'Cầu Giấy' : 'Hoàn Kiếm' }}
-                                </span>
-                                <span class="date">{{ now()->subDays(rand(1, 10))->format('d/m/Y') }}</span>
+            <div class="modal fade" id="advertisementDetailModal" tabindex="-1"
+                aria-labelledby="advertisementDetailModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="card shadow-lg">
+                            <div class="card-header bg-gradient-info p-3">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h5 class="text-black mb-0">
+                                        <i class="fas fa-ad me-2"></i>
+                                        {{ __('Thông tin chi tiết') }}
+                                    </h5>
+                                    <button type="button" class="btn btn-link text-black" data-bs-dismiss="modal">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <button class="view-btn">Xem chi tiết</button>
+                            <div class="card-body p-4">
+                                <div class="row g-4">
+                                    <div class="col-12 text-center">
+                                        <h6 id="modal-ad-title" class="fw-bold text-primary"></h6>
+                                        {{-- <span id="modal-ad-status" class="badge badge-sm"></span> --}}
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="info-group">
+                                            <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                <i class="fas fa-phone me-2"></i>{{ __('Số điện thoại') }}
+                                            </label>
+                                            <p id="modal-ad-contact-phone" class="text-sm mb-2"></p>
+                                        </div>
+                                        <div class="info-group">
+                                            <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                <i class="fas fa-money-bill-wave me-2"></i>{{ __('Giá') }}
+                                            </label>
+                                            <p id="modal-ad-price" class="text-sm mb-2"></p>
+                                        </div>
+                                        <div class="info-group">
+                                            <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                <i class="fas fa-map-marker-alt me-2"></i>{{ __('Đường') }}
+                                            </label>
+                                            <p id="modal-road-name" class="text-sm mb-2"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="info-group">
+                                            <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                <i class="fas fa-tags me-2"></i>{{ __('Danh mục') }}
+                                            </label>
+                                            <p id="modal-category-name" class="text-sm mb-2"></p>
+                                        </div>
+                                        <div class="info-group">
+                                            <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                <i class="fas fa-list-alt me-2"></i>{{ __('Loại hình') }}
+                                            </label>
+                                            <p id="modal-type-name" class="text-sm mb-2"></p>
+                                        </div>
+                                        <div class="info-group">
+                                            <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                                <i class="fas fa-clock me-2"></i>{{ __('Ngày đăng ký') }}
+                                            </label>
+                                            <p id="modal-created-at" class="text-sm mb-2"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+
+                                    <div class="col-12">
+                                        <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                            <i class="fas fa-file-alt me-2"></i>{{ __('Mô tả') }}
+                                        </label>
+                                        <p id="modal-ad-description" class="text-sm mb-2"></p>
+                                    </div>
+                                    <div class="info-group">
+                                        <label class="text-uppercase text-xs font-weight-bolder opacity-7">
+                                            <i class="fas fa-image me-2"></i>{{ __('Hình ảnh') }}
+                                        </label>
+                                        <p id="modal-images" class="text-sm mb-2"></p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                @endforeach
-            </div>
-
-            <div id="loadingIndicator" class="loading-indicator hidden">
-                <div class="spinner"></div>
-                <span>Đang tải...</span>
+                </div>
             </div>
         </div>
     </section>

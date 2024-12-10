@@ -23,6 +23,7 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\AboutUsController;
+use App\Http\Controllers\AdCategoryController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\BannersController;
 use App\Http\Controllers\TagNewsController;
@@ -65,6 +66,8 @@ use App\Http\Controllers\BusinessCapitalNeedController;
 use App\Http\Controllers\BusinessRecruitmentController;
 use App\Http\Controllers\ContactConsultationController;
 use App\Http\Controllers\AdmissionProcessDetailController;
+use App\Http\Controllers\AdTypeController;
+use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\BusinessFairRegistrationController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PersonalBusinessInterestController;
@@ -178,8 +181,9 @@ Route::middleware(['language'])->group(function () {
         Route::group(['prefix' => 'p17'], function () {
             Route::get('business-households', [BusinessHouseholdController::class, 'clientIndex'])->name('p17.households.client.index');
             Route::get('/business-household/{id}', [BusinessHouseholdController::class, 'clientShow'])->name('p17.households.client.show');
-            Route::get('advertising', [BusinessHouseholdController::class, 'advertising'])->name('p17.advertising.client.index');
-            Route::get('form-advertising', [BusinessHouseholdController::class, 'formAdvertising'])->name('p17.advertising.client.form');
+            Route::get('advertising', [AdvertisementController::class, 'advertising'])->name('p17.advertising.client.index');
+            Route::get('form-advertising', [AdvertisementController::class, 'formAdvertising'])->name('p17.advertising.client.form');
+            Route::post('form-advertising', [AdvertisementController::class, 'storeFormAdvertising'])->name('p17.advertising.client.store');
             // Route::post('import', [BusinessHouseholdController::class, 'import'])->name('p17.households.import');
         });
     });
@@ -210,6 +214,7 @@ Route::middleware(['language'])->group(function () {
 
                 Route::post('/update-status', [StatusController::class, 'updateStatus'])->name('update.status');
                 Route::post('/update-status-1', [StatusController::class, 'updateStatus1'])->name('update.status.1');
+                Route::post('/update-status-2', [StatusController::class, 'updateStatus2'])->name('update.status.2');
 
 
                 Route::resource('users', UserController::class)->except('show');
@@ -264,7 +269,7 @@ Route::middleware(['language'])->group(function () {
                     Route::get('business-products', [ProductBusinessController::class, 'index'])->name('business.products.index');
                     Route::get('business-products/detail/{id}', [ProductBusinessController::class, 'show'])->name('business.products.show');
                     Route::delete('business-products/destroy/{id}', [ProductBusinessController::class, 'destroy'])->name('business.products.destroy');
-                
+
                     Route::resource('emails', EmailController::class);
 
                     Route::resource('email_templates', EmailTemplatesController::class);
@@ -272,6 +277,9 @@ Route::middleware(['language'])->group(function () {
 
                 Route::middleware(['role.admin.p17'])->group(function () {
                    Route::resource('digital-transformations',DigitalTransformationController::class)->except('show');
+                   Route::resource('ad-types',AdTypeController::class)->except('show');
+                   Route::resource('ad-categories',AdCategoryController::class)->except('show');
+                   Route::resource('advertisements',AdvertisementController::class);
                 });
 
             });
