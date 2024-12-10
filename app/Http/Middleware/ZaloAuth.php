@@ -16,7 +16,7 @@ class ZaloAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $accessToken = $request->header('Authorization');
+        $accessToken = $request->header('accessToken');
 
         if (!$accessToken) {
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -24,7 +24,7 @@ class ZaloAuth
 
         // Xác thực accessToken với Zalo API
         $response = Http::withHeaders([
-            'accessToken' => $accessToken,
+            'Authorization' => $accessToken,
         ])->get('https://graph.zalo.me/v2.0/me?fields=id,name');
 
         if ($response->failed()) {
