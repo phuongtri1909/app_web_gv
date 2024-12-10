@@ -24,7 +24,7 @@ class ZaloAuth
 
         // Xác thực accessToken với Zalo API
         $response = Http::withHeaders([
-            'Authorization' => $accessToken,
+            'accessToken' => $accessToken,
         ])->get('https://graph.zalo.me/v2.0/me?fields=id,name');
 
         if ($response->failed()) {
