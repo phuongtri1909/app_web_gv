@@ -19,7 +19,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
-Route::group(['prefix' => 'client'], function () {
-    Route::get('digital-transformations', [DigitalTransformationController::class, 'index']);
+Route::middleware(['zalo.auth'])->group(function () {
+    Route::group(['prefix' => 'client'], function () {
+        Route::get('digital-transformations', [DigitalTransformationController::class, 'index']);
+    });
 });
