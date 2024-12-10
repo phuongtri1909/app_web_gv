@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\DepartmentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\DigitalTransformationController;
@@ -22,5 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware(['zalo.auth'])->group(function () {
     Route::group(['prefix' => 'client'], function () {
         Route::get('digital-transformations', [DigitalTransformationController::class, 'index']);
+        Route::get('departments', [DepartmentController::class, 'index']);
     });
 });

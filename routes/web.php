@@ -69,6 +69,7 @@ use App\Http\Controllers\BusinessFairRegistrationController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PersonalBusinessInterestController;
 use App\Http\Controllers\BusinessStartPromotionInvestmentController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DigitalTransformationController;
 
 /*
@@ -270,6 +271,9 @@ Route::middleware(['language'])->group(function () {
 
                 Route::middleware(['role.admin.p17'])->group(function () {
                    Route::resource('digital-transformations',DigitalTransformationController::class)->except('show');
+
+                   Route::resource('departments', DepartmentController::class)->except('show');
+
                 });
 
             });
