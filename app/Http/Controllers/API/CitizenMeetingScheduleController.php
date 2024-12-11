@@ -12,6 +12,9 @@ class CitizenMeetingScheduleController extends Controller
 {
     public function store(Request $request)
     {
+        return response()->json([
+            $request->all()
+        ], 201);
         try {
             $data = $request->validate([
                 'department_id' => 'required|exists:departments,id',
@@ -58,12 +61,11 @@ class CitizenMeetingScheduleController extends Controller
 
         } catch (ValidationException $e) {
             return response()->json([
-                    'message' => $e->errors(),
+                'message' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
-                
             ], 500);
         }
     }
