@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\BusinessField;
 use App\Models\BusinessMember;
+use App\Models\User;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
@@ -45,7 +46,7 @@ class BusinessRegistrationsImport implements ToModel, WithHeadingRow, WithValida
             }
         }
         $businessFieldIdsFound = array_map('strval', $businessFieldIdsFound);
-        return new BusinessMember([
+        $businessMember = new BusinessMember([
             'business_name' => $row['business_name'],
             'business_code' => $row['business_code'],
             'address' => $row['address'],
@@ -57,6 +58,19 @@ class BusinessRegistrationsImport implements ToModel, WithHeadingRow, WithValida
             'link' => $row['link'],
             'business_field_id' => !empty($businessFieldIdsFound) ? json_encode($businessFieldIdsFound) : null, 
         ]);
+
+        $businessMember->save();
+        $user = User::updateOrCreate(
+            ['username' => $businessMember->business_code],
+            [
+                'password' => bcrypt($businessMember->business_code),
+                'full_name' => $businessMember->business_name,
+                'email' => $businessMember->email,
+                'role' => 'business',
+                'business_member_id' => $businessMember->id,
+            ]
+        );
+        return $businessMember;
     }
     
     

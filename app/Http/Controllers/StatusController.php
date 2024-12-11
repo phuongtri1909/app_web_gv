@@ -152,12 +152,12 @@ class StatusController extends Controller
 
             $record = $modelClass::findOrFail($validated['id']);
 
-            if (in_array($record->ad_status, ['active', 'inactive'])) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Không thể thay đổi trạng thái khi đã chấp nhận hoặc từ chối.'
-                ], 403);
-            }
+            // if (in_array($record->ad_status, ['active', 'inactive'])) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'Không thể thay đổi trạng thái khi đã chấp nhận hoặc từ chối.'
+            //     ], 403);
+            // }
 
             $record->ad_status = $validated['status'];
             $record->save();
