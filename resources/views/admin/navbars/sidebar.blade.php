@@ -436,6 +436,51 @@
                     @break
 
                     @case('P17')
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('ad-types.*', 'ad-categories.*','advertisements.*') ? 'active' : '' }}"
+                            href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"
+                            data-bs-target="#advertising" aria-expanded="false">
+                            <div
+                                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa-solid fa-people-arrows text-dark icon-sidebar"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">QC và RV</span>
+                        </a>
+                        <div class="collapse mt-1" id="advertising" style="margin-left: 30px">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li>
+                                    <a class="nav-link {{ Route::currentRouteNamed('ad-types.*') ? 'active' : '' }}"
+                                        href="{{ route('ad-types.index') }}">
+                                        <div
+                                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                        </div>
+                                        <span class="nav-link-text ms-1">{{ __('Loại tin') }}</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link {{ Route::currentRouteNamed('ad-categories.*') ? 'active' : '' }}"
+                                        href="{{ route('ad-categories.index') }}">
+                                        <div
+                                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                            <i class="fa-solid fa-list text-dark icon-sidebar"></i>
+                                        </div>
+                                        <span class="nav-link-text ms-1">{{ __('Danh mục') }}</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link {{ Route::currentRouteNamed('advertisements.*') ? 'active' : '' }}"
+                                        href="{{ route('advertisements.index') }}">
+                                        <div
+                                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                            <i class="fa-solid fa-user-tie text-dark icon-sidebar"></i>
+                                        </div>
+                                        <span class="nav-link-text ms-1">{{ __('Danh sách') }}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
                     @break
 
                     @default
@@ -601,7 +646,7 @@
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">{{ __('account_page') }}
                 </h6>
             </li>
-            
+
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.logout') }}">
                     <div
