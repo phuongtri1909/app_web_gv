@@ -10,6 +10,8 @@ class CitizenMeetingSchedule extends Model
     use HasFactory;
 
     protected $fillable = [
+        'stt',
+        'code',
         'department_id',
         'fullname',
         'description',
