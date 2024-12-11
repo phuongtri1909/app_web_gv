@@ -152,7 +152,83 @@ function updateStatus1(model, id, status) {
     });
 }
 
+function updateStatus2(model, id, status) {
+    const badge = $('#status-badge-' + id);
+    const currentStatus = badge.data('status');
 
+    if (currentStatus === 'active') {
+        new Noty({
+            type: 'error',
+            text: 'Không thể thay đổi trạng thái khi đã chấp nhận.',
+            timeout: 1500
+        }).show();
+        return;
+    }
+
+    if (currentStatus === 'active' && status === 'inactive') {
+        new Noty({
+            type: 'error',
+            text: 'Không thể thay đổi trạng thái khi đã chấp nhận hoặc từ chối.',
+            timeout: 1500
+        }).show();
+        return;
+    }
+
+    Swal.fire({
+        title: 'Xác nhận cập nhật',
+        text: `Bạn có chắc chắn muốn thay đổi trạng thái không?`,
+        icon: 'warning',
+        showCancelButton: true,
+        focusConfirm: false,
+        confirmButtonText: 'Cập nhật',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/admin/update-status-2',
+                type: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    model: model,
+                    id: id,
+                    status: status
+                },
+                success: function (response) {
+                    if (response.success) {
+                        const { status, statusLabel, statusClass } = response;
+                        badge
+                            .removeClass('bg-success bg-danger bg-warning')
+                            .addClass('bg-' + statusClass)
+                            .text(statusLabel)
+                            .data('status', status);
+
+                        new Noty({
+                            type: 'success',
+                            text: response.message,
+                            timeout: 1500
+                        }).show();
+                    } else {
+                        new Noty({
+                            type: 'error',
+                            text: response.message,
+                            timeout: 1500
+                        }).show();
+                    }
+                },
+                error: function (xhr) {
+                    const errorMessage =
+                        xhr.responseJSON?.message || 'Cập nhật trạng thái thất bại: Không rõ lý do';
+                        console.log(errorMessage); 
+                    new Noty({
+                        type: 'error',
+                        text: errorMessage,
+                        timeout: 1500
+                    }).show();
+                }
+            });
+        }
+    });
+}
 
 // thong bao loi form ngoai client
 
