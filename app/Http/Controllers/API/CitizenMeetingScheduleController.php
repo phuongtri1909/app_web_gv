@@ -20,7 +20,19 @@ class CitizenMeetingScheduleController extends Controller
                 'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
                 'card_number' => 'required|regex:/^[0-9]{12}$/',
                 'address' => 'required|string|max:255',
-                'working_day' => 'required|date',
+                'working_day' => [
+                    'required',
+                    'date',
+                    function ($attribute, $value, $fail) {
+                        $dayOfWeek = Carbon::parse($value)->dayOfWeek;
+                        if (!in_array($dayOfWeek, [Carbon::WEDNESDAY, Carbon::FRIDAY])) {
+                            $fail('Ngày làm việc phải là thứ 4 hoặc thứ 6.');
+                        }
+                        if (Carbon::parse($value)->isPast()) {
+                            $fail('Ngày làm việc bạn chọn đã qua.');
+                        }
+                    },
+                ],
             ], [
                 'department_id.required' => 'Phòng ban không được để trống.',
                 'department_id.exists' => 'Phòng ban không tồn tại.',
@@ -38,31 +50,19 @@ class CitizenMeetingScheduleController extends Controller
                 'working_day.date' => 'Ngày làm việc không hợp lệ.',
             ]);
 
-            // Generate unique code based on current date and time
             $currentDateTime = Carbon::now()->format('YmdHis');
             $data['code'] = 'P17-' . $currentDateTime;
 
-            // Generate sequential number (STT) that resets daily
-            $today = Carbon::today();
-            $stt = CitizenMeetingSchedule::whereDate('created_at', $today)->max('stt') + 1;
+            $workingDay = Carbon::parse($data['working_day']);
+            $maxStt = CitizenMeetingSchedule::whereDate('working_day', $workingDay)->max('stt');
+            $stt = $maxStt ? $maxStt + 1 : 1;
             $data['stt'] = $stt;
 
             $citizenMeetingSchedule = CitizenMeetingSchedule::create($data);
 
             return response()->json([
                 'message' => 'Tạo lịch hẹn thành công.',
-                'data' => [
-                    'id' => $citizenMeetingSchedule->id,
-                    'code' => $citizenMeetingSchedule->code,
-                    'stt' => $citizenMeetingSchedule->stt,
-                    'department_id' => $citizenMeetingSchedule->department_id,
-                    'fullname' => $citizenMeetingSchedule->fullname,
-                    'description' => $citizenMeetingSchedule->description,
-                    'phone' => $citizenMeetingSchedule->phone,
-                    'card_number' => $citizenMeetingSchedule->card_number,
-                    'address' => $citizenMeetingSchedule->address,
-                    'working_day' => $citizenMeetingSchedule->working_day,
-                ]
+                'data' => $citizenMeetingSchedule
             ], 201);
 
         } catch (ValidationException $e) {
