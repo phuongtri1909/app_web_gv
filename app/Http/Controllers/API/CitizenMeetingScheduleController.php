@@ -52,7 +52,16 @@ class CitizenMeetingScheduleController extends Controller
             return response()->json([
                 'message' => 'Tạo lịch hẹn thành công.',
                 'data' => [
-                    $citizenMeetingSchedule
+                    'id' => $citizenMeetingSchedule->id,
+                    'code' => $citizenMeetingSchedule->code,
+                    'stt' => $citizenMeetingSchedule->stt,
+                    'department_id' => $citizenMeetingSchedule->department_id,
+                    'fullname' => $citizenMeetingSchedule->fullname,
+                    'description' => $citizenMeetingSchedule->description,
+                    'phone' => $citizenMeetingSchedule->phone,
+                    'card_number' => $citizenMeetingSchedule->card_number,
+                    'address' => $citizenMeetingSchedule->address,
+                    'working_day' => $citizenMeetingSchedule->working_day,
                 ]
             ], 201);
 
