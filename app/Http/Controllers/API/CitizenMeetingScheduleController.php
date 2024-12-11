@@ -12,9 +12,6 @@ class CitizenMeetingScheduleController extends Controller
 {
     public function store(Request $request)
     {
-        return response()->json([
-            $request->all()
-        ], 201);
         try {
             $data = $request->validate([
                 'department_id' => 'required|exists:departments,id',
