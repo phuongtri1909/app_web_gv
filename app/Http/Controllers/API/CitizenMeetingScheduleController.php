@@ -50,23 +50,20 @@ class CitizenMeetingScheduleController extends Controller
             $citizenMeetingSchedule = CitizenMeetingSchedule::create($data);
 
             return response()->json([
+                'message' => 'Tạo lịch hẹn thành công.',
                 'data' => [
-                    'message' => 'Tạo lịch hẹn thành công.',
-                    'data' => $citizenMeetingSchedule
+                    $citizenMeetingSchedule
                 ]
             ], 201);
 
         } catch (ValidationException $e) {
             return response()->json([
-                'data' => [
                     'message' => $e->errors(),
-                ]
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
-                'data' => [
-                    'message' => $e->getMessage(),
-                ]
+                'message' => $e->getMessage(),
+                
             ], 500);
         }
     }
