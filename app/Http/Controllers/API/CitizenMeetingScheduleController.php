@@ -61,7 +61,7 @@ class CitizenMeetingScheduleController extends Controller
                 'data' => [
                     'message' => $e->errors(),
                 ]
-            ], 400);
+            ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'data' => [
