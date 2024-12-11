@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Validators\ValidationException;
 
 class MemberBusinessController extends Controller
 {
@@ -227,11 +228,20 @@ class MemberBusinessController extends Controller
         ]);
         $file = $request->file('file');
         try {
-            Excel::import(new BusinessRegistrationsImport, $file);
+            $import = new BusinessRegistrationsImport;
+            Excel::import($import, $file);
+    
             return redirect()->route('members.index')->with('success', 'Dữ liệu đã được import thành công!');
+        } catch (ValidationException $e) {
+            $errorMessages = '';
+            foreach ($e->failures() as $failure) {
+                $errorMessages .= "Row: {$failure->row()} - " . implode(', ', $failure->errors()) . '. ';
+            }
+            // dd($errorMessages,$failure->errors());
+            return redirect()->route('members.index')->with('error', 'Lỗi khi import dữ liệu: ' . $errorMessages);
         } catch (\Exception $e) {
-            Log::error($e);
-            return redirect()->route('members.index')->with('error', 'Lỗi khi import dữ liệu');
+            Log::error($e->getMessage(), ['context' => $e]);
+            return redirect()->route('members.index')->with('error', 'Lỗi khi import dữ liệu: ' . $e->getMessage());
         }
     }
 }

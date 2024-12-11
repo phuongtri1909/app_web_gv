@@ -418,6 +418,11 @@
 
 
 @section('content')
+    @include('pages.components.button-register', [
+        'buttonPosition' => 'right:15px',
+        'buttonTitle' => 'Đăng tin',
+        'buttonLink' => route('p17.advertising.client.form'),
+    ])
     <section id="advertising-classifieds" class="py-8">
         <div class="classified-container">
             <div class="search-filters">
