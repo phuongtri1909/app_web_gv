@@ -83,12 +83,12 @@ class BusinessRegistrationsImport implements ToModel, WithHeadingRow, WithValida
     {
         return [
             'business_name' => 'required|string|max:255',
-            'business_code' => 'required|regex:/^\d{10}(-\d{3})?$/|unique:business_registrations,business_code',
+            // 'business_code' => 'required|regex:/^\d{10}(-\d{3})?$/|unique:business_registrations,business_code',
             'address' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
-            'phone_zalo' => 'nullable|string|max:10|regex:/^[0-9]+$/',
+            // 'phone_zalo' => 'nullable|string|max:10|regex:/^[0-9]+$/',
             'representative_full_name' => 'nullable|string|max:255',
-            'representative_phone' => 'nullable|string|max:10|regex:/^[0-9]+$/',
+            // 'representative_phone' => 'nullable|string|max:10|regex:/^[0-9]+$/',
             'status' => 'in:pending,approved,rejected', 
             'link' => 'nullable|url',
         ];
