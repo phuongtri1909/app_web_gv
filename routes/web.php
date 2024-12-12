@@ -74,6 +74,7 @@ use App\Http\Controllers\PersonalBusinessInterestController;
 use App\Http\Controllers\BusinessStartPromotionInvestmentController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DigitalTransformationController;
+use App\Http\Controllers\OnlineXamsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -183,6 +184,7 @@ Route::middleware(['language'])->group(function () {
             Route::get('business-households', [BusinessHouseholdController::class, 'clientIndex'])->name('p17.households.client.index');
             Route::get('/business-household/{id}', [BusinessHouseholdController::class, 'clientShow'])->name('p17.households.client.show');
             Route::get('advertising', [AdvertisementController::class, 'advertising'])->name('p17.advertising.client.index');
+            Route::get('advertising/{id}', [AdvertisementController::class, 'show'])->name('p17.advertising.client.show');
             Route::get('form-advertising', [AdvertisementController::class, 'formAdvertising'])->name('p17.advertising.client.form');
             Route::post('form-advertising', [AdvertisementController::class, 'storeFormAdvertising'])->name('p17.advertising.client.store');
             // Route::post('import', [BusinessHouseholdController::class, 'import'])->name('p17.households.import');

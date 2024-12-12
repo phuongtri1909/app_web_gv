@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Illuminate\Support\Facades\Log;
-
+use Maatwebsite\Excel\Validators\Failure;
 class BusinessRegistrationsImport implements ToModel, WithHeadingRow, WithValidation
 {
     private $currentRow = 0;
@@ -133,10 +133,14 @@ class BusinessRegistrationsImport implements ToModel, WithHeadingRow, WithValida
      * @param \Maatwebsite\Excel\Validators\Failure ...$failures
      * @return void
      */
-    public function onFailure(\Maatwebsite\Excel\Validators\Failure ...$failures)
+    public function onFailure(Failure ...$failures)
     {
         foreach ($failures as $failure) {
-            Log::error('Validation failed on row ' . $failure->row() . ' due to ' . $failure->errors());
+            Log::error('Failure Details: ', [
+                'row' => $failure->row(),  
+                'errors' => $failure->errors(),
+            ]);
+            session()->flash('error', 'Lỗi tại dòng: ' . $failure->row() . ' - ' . implode(', ', $failure->errors()));
         }
     }
 }

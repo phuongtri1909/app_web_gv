@@ -55,7 +55,7 @@
         }
         .category-tabs {
             display: flex;
-            flex-wrap: wrap; 
+            flex-wrap: wrap;
             gap: 10px;
             /* justify-content: space-between;  */
             margin-bottom: 24px;
@@ -300,7 +300,7 @@
             $('.view-adve').click(function() {
                 var adsId = $(this).data('id');
                 $.ajax({
-                    url: '/admin/advertisements/' + adsId,
+                    url: 'advertising/' + adsId,
                     type: 'GET',
                     success: function(response) {
                         var formattedDate = dayjs(response.created_at).format(
@@ -369,7 +369,7 @@
     </script>
     <script>
         $(document).ready(function() {
-            let page = 1; 
+            let page = 1;
             let isLoading = false;
 
             $(window).scroll(function() {
@@ -383,29 +383,29 @@
 
             function loadMoreListings() {
                 isLoading = true;
-                page++; 
+                page++;
 
-        
+
                 $('#loadMoreSpinner').show();
 
                 $.ajax({
-                    url: '?page=' + page, 
+                    url: '?page=' + page,
                     type: 'GET',
                     success: function(data) {
-                        
+
                         $('#loadMoreSpinner').hide();
 
                         if (!data || data.trim() === '') {
-                            
+
                             $('#loadMoreSpinner').text('Đã tải hết dữ liệu').fadeOut();
-                            $(window).off('scroll'); 
+                            $(window).off('scroll');
                             return;
                         }
                         // $('#listingsContainer').append(data);
-                        // isLoading = false; 
+                        // isLoading = false;
                     },
                     error: function() {
-                        isLoading = false; 
+                        isLoading = false;
                         $('#loadMoreSpinner').hide();
                         showToast('Có lỗi xảy ra khi tải dữ liệu', 'error');
                     }
@@ -418,6 +418,11 @@
 
 
 @section('content')
+    @include('pages.components.button-register', [
+        'buttonPosition' => 'right:15px',
+        'buttonTitle' => 'Đăng tin',
+        'buttonLink' => route('p17.advertising.client.form'),
+    ])
     <section id="advertising-classifieds" class="py-8">
         <div class="classified-container">
             <div class="search-filters">
@@ -463,14 +468,14 @@
                     </div>
                 </div>
             @endif
-        
+
             <div id="listingsContainer">
                 @include('pages.client.p17.advertising-classifieds.list', ['query' => $query])
             </div>
             <div id="loadMoreSpinner" class="text-center" style="display: none;">
                 Đang tải.....
             </div>
-            
+
             <div class="modal fade" id="advertisementDetailModal" tabindex="-1"
                 aria-labelledby="advertisementDetailModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
