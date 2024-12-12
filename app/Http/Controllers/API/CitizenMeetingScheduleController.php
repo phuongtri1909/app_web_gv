@@ -14,10 +14,11 @@ class CitizenMeetingScheduleController extends Controller
     public function index(Request $request){
         $customer_id = $request->get('customer_id');
 
-        $
+        $schedules = CitizenMeetingSchedule::where('customer_id', $customer_id)->get();
 
-
-
+        return response()->json([
+            'data' => $schedules
+        ]);
     }
 
     public function store(Request $request)
