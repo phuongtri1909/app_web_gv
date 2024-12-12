@@ -2,9 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\ZaloAuthController;
 use App\Http\Controllers\API\DepartmentController;
-use App\Http\Controllers\API\CitizenMeetingScheduleController;
 use App\Http\Controllers\API\DigitalTransformationController;
+use App\Http\Controllers\API\CitizenMeetingScheduleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,15 +18,15 @@ use App\Http\Controllers\API\DigitalTransformationController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::middleware(['zalo.auth'])->group(function () {
     Route::group(['prefix' => 'client'], function () {
-        Route::get('digital-transformations', [DigitalTransformationController::class, 'index']);
-        Route::get('departments', [DepartmentController::class, 'index']);
 
-        Route::post('citizen-meeting-schedules', [CitizenMeetingScheduleController::class, 'store']);
+        Route::get('auth/zalo', [ZaloAuthController::class, 'redirectToZalo']);
+
+        Route::get('digital-transformations', [DigitalTransformationController::class, 'index']); // get chuyển đổi số
+        Route::get('departments', [DepartmentController::class, 'index']); // get danh sách phòng ban
+
+        Route::post('citizen-meeting-schedules', [CitizenMeetingScheduleController::class, 'store']); // tạo đặt lịch tiếp dân
+        Route::get('citizen-meeting-schedules', [CitizenMeetingScheduleController::class, 'index']);//lịch sử đặt lịch tiếp dân user hiện tại
     });
 });

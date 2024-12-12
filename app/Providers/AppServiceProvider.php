@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Tab;
 use App\Models\Language;
+use App\Services\ZaloApiService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\View;
@@ -17,7 +18,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(ZaloApiService::class, function ($app) {
+            return new ZaloApiService();
+        });
     }
 
     /**

@@ -4,11 +4,21 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use App\Services\ZaloApiService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
 
 class ZaloAuth
 {
+
+    protected $zaloApiService;
+
+    public function __construct(ZaloApiService $zaloApiService)
+    {
+        $this->zaloApiService = $zaloApiService;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -16,24 +26,26 @@ class ZaloAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $accessToken = $request->header('Authorization');
+        $accessToken = $request->header('access-token');
 
         if (!$accessToken) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json([
+                'error' => 'Unauthorized',
+                'status' => 401,
+            ], 401);
         }
 
-        // Xác thực accessToken với Zalo API
-        $response = Http::withHeaders([
-            'Authorization' => $accessToken,
-        ])->get('https://graph.zalo.me/v2.0/me?fields=id,name');
+        $get_info = $this->zaloApiService->getProfile($accessToken);
 
-        if ($response->failed()) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        if (isset($get_info['error']) && $get_info['error'] !== 0) {
+            return response()->json([
+                'error' => 'Unauthorized',
+                'status' => 401,
+            ], 401);
         }
 
-        // Lưu thông tin người dùng vào request
-        $request->merge(['zalo_user' => $response->json()]);
-
+        $request->merge(['get_info' => $get_info]);
+        $request->merge(['customer_id' => $get_info['id']]);
         return $next($request);
     }
 }
