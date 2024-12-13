@@ -14,15 +14,16 @@ class DigitalTransformationController extends Controller
      */
     public function index(Request $request)
     {
+        $unit_id = auth()->user()->unit_id;
         $search = $request->input('search');
 
         if ($search) {
-            $digitalTransformations = DigitalTransformation::where('title', 'like', "%$search%")
+            $digitalTransformations = DigitalTransformation::where('unit_id',$unit_id)->where('title', 'like', "%$search%")
                 ->paginate(15);
             return view('admin.pages.p17.digital_transformation.index', compact('digitalTransformations'));
         }
 
-        $digitalTransformations = DigitalTransformation::paginate(15);
+        $digitalTransformations = DigitalTransformation::where('unit_id',$unit_id)->paginate(15);
 
         return view('admin.pages.p17.digital_transformation.index', compact('digitalTransformations'));
     }
@@ -40,8 +41,8 @@ class DigitalTransformationController extends Controller
      */
     public function store(Request $request)
     {
-        try{
 
+        try{
             $request->validate([
                 'title' => 'required|max:255',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif,wepb',
@@ -55,6 +56,8 @@ class DigitalTransformationController extends Controller
                 'title.required' => 'Tiêu đề không được để trống.',
                 'title.max' => 'Tiêu đề không được vượt quá 255 ký tự.',
             ]);
+
+            $unit_id = auth()->user()->unit_id;
     
             $digitalTransformation = new DigitalTransformation();
 
@@ -81,6 +84,7 @@ class DigitalTransformationController extends Controller
             }
 
             $digitalTransformation->image = $image_path;
+            $digitalTransformation->unit_id = $unit_id;
 
             $digitalTransformation->save();
             
@@ -105,6 +109,12 @@ class DigitalTransformationController extends Controller
             return redirect()->route('digital-transformations.index')
                 ->with('error', 'Chuyển đổi số không tồn tại.');
         }
+
+        if ($digitalTransformation->unit_id != auth()->user()->unit_id) {
+            return redirect()->route('digital-transformations.index')
+                ->with('error', 'Chuyển đổi số không tồn tại.');
+        }
+
         return view('admin.pages.p17.digital_transformation.edit', compact('digitalTransformation'));
     }
 
@@ -121,6 +131,10 @@ class DigitalTransformationController extends Controller
                 ->with('error', 'Chuyển đổi số không tồn tại.');
         }
 
+        if ($digitalTransformation->unit_id != auth()->user()->unit_id) {
+            return redirect()->route('digital-transformations.index')
+                ->with('error', 'Chuyển đổi số không tồn tại.');
+        }
         try{
             $request->validate([
                 'title' => 'required|max:255',
@@ -178,6 +192,11 @@ class DigitalTransformationController extends Controller
         $digitalTransformation = DigitalTransformation::find($digitalTransformation);
 
         if (!$digitalTransformation) {
+            return redirect()->route('digital-transformations.index')
+                ->with('error', 'Chuyển đổi số không tồn tại.');
+        }
+
+        if ($digitalTransformation->unit_id != auth()->user()->unit_id) {
             return redirect()->route('digital-transformations.index')
                 ->with('error', 'Chuyển đổi số không tồn tại.');
         }

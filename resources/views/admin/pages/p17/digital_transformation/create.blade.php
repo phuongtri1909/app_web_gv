@@ -5,7 +5,13 @@
         <div class="col-12">
             <div class="card mb-4 mx-4">
                 <div class="card-header pb-0">
-                    <h5 class="mb-0">Thêm chuyển đổi số</h5>
+                    <h5 class="mb-0">Thêm 
+                        @if (auth()->user()->unit->unit_code == 'P17')
+                            chuyển đổi số
+                        @else
+                            liên kết
+                        @endif
+                    </h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('digital-transformations.store') }}" method="POST" enctype="multipart/form-data">

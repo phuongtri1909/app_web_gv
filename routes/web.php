@@ -228,6 +228,7 @@ Route::middleware(['language'])->group(function () {
                 Route::delete('locations/destroy/{id}', [LocationController::class, 'destroy'])->name('locations.destroy');
                 Route::get('locations/detail/{id}', [LocationController::class, 'show'])->name('locations.show');
 
+                Route::resource('digital-transformations',DigitalTransformationController::class)->except('show');
 
                 Route::middleware(['role.admin.qgv'])->group(function () {
                     Route::resource('bank-servicers', BankServicerController::class);
@@ -279,7 +280,7 @@ Route::middleware(['language'])->group(function () {
                 });
 
                 Route::middleware(['role.admin.p17'])->group(function () {
-                   Route::resource('digital-transformations',DigitalTransformationController::class)->except('show');
+                   
                    Route::resource('ad-types',AdTypeController::class)->except('show');
                    Route::resource('ad-categories',AdCategoryController::class)->except('show');
                    Route::resource('advertisements',AdvertisementController::class);
