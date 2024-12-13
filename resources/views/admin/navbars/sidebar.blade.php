@@ -481,6 +481,17 @@
                             </ul>
                         </div>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteNamed('departments.*') ? 'active' : '' }}"
+                            href="{{ route('departments.index') }}">
+                            <div
+                                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa-solid fa-people-roof text-dark icon-sidebar"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Phòng ban</span>
+                        </a>
+                    </li>
                     @break
 
                     @default
@@ -512,16 +523,6 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('departments.*') ? 'active' : '' }}"
-                        href="{{ route('departments.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-people-roof text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Phòng ban</span>
-                    </a>
-                </li>
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('news.*', 'categories-news.*', 'tags-news.*', 'news_contents.*', 'tabs_posts.*') ? 'active' : '' }}"
@@ -535,6 +536,29 @@
                     </a>
                     <div class="collapse mt-1" id="news" style="margin-left: 30px">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+
+                            <li>
+                                <a class="nav-link {{ Route::currentRouteNamed('categories-news.*') ? 'active' : '' }}"
+                                    href="{{ route('categories-news.index') }}">
+                                    <div
+                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                        <i class="fa-solid fa-receipt text-dark icon-sidebar"></i>
+                                    </div>
+                                    <span class="nav-link-text ms-1">{{ __('categories_news') }}</span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="nav-link {{ Route::currentRouteNamed('tags-news.*') ? 'active' : '' }}"
+                                    href="{{ route('tags-news.index') }}">
+                                    <div
+                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                        <i class="fa-solid fa-tag text-dark icon-sidebar"></i>
+                                    </div>
+                                    <span class="nav-link-text ms-1">{{ __('tags') }}</span>
+                                </a>
+                            </li>
+
                             <li>
                                 <a class="nav-link {{ Route::currentRouteNamed('news.*') ? 'active' : '' }}"
                                     href="{{ route('news.index') }}">
@@ -569,27 +593,6 @@
                                 </a>
                             </li>
 
-                            <li>
-                                <a class="nav-link {{ Route::currentRouteNamed('categories-news.*') ? 'active' : '' }}"
-                                    href="{{ route('categories-news.index') }}">
-                                    <div
-                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-receipt text-dark icon-sidebar"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1">{{ __('categories_news') }}</span>
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="nav-link {{ Route::currentRouteNamed('tags-news.*') ? 'active' : '' }}"
-                                    href="{{ route('tags-news.index') }}">
-                                    <div
-                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-tag text-dark icon-sidebar"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1">{{ __('tags') }}</span>
-                                </a>
-                            </li>
                         </ul>
                     </div>
                 </li>

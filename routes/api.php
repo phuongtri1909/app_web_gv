@@ -18,15 +18,22 @@ use App\Http\Controllers\API\CitizenMeetingScheduleController;
 |
 */
 
-Route::middleware(['zalo.auth'])->group(function () {
-    Route::group(['prefix' => 'client'], function () {
 
-        Route::get('auth/zalo', [ZaloAuthController::class, 'redirectToZalo']);
+Route::group(['prefix' => 'client'], function () {
+    Route::middleware(['zalo.auth'])->group(function () {
+        Route::group(['prefix' => 'p17'], function () {
+            Route::get('auth/zalo', [ZaloAuthController::class, 'redirectToZalo']);
+            Route::post('citizen-meeting-schedules', [CitizenMeetingScheduleController::class, 'store']); // tạo đặt lịch tiếp dân
+            Route::get('citizen-meeting-schedules', [CitizenMeetingScheduleController::class, 'index']); //lịch sử đặt lịch tiếp dân user hiện tại
+        });
+    });
 
-        Route::get('digital-transformations', [DigitalTransformationController::class, 'index']); // get chuyển đổi số
+    Route::group(['prefix' => 'p17'], function () {
+        Route::get('digital-transformations', [DigitalTransformationController::class, 'index']); // get chuyển đổi số P17
         Route::get('departments', [DepartmentController::class, 'index']); // get danh sách phòng ban
+    });
 
-        Route::post('citizen-meeting-schedules', [CitizenMeetingScheduleController::class, 'store']); // tạo đặt lịch tiếp dân
-        Route::get('citizen-meeting-schedules', [CitizenMeetingScheduleController::class, 'index']);//lịch sử đặt lịch tiếp dân user hiện tại
+    Route::group(['prefix' => 'qgv'], function () {
+        Route::get('digital-transformations', [DigitalTransformationController::class, 'indexQGV']); // get chuyển đổi số P17
     });
 });
