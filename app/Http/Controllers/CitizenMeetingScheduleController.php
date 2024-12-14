@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Models\CitizenMeetingSchedule;
@@ -71,8 +72,8 @@ class CitizenMeetingScheduleController extends Controller
             return redirect()->route('work-schedules.index')->with('error', 'Không tìm thấy lịch làm việc');
         }
 
-        if ($workSchedule->working_day < date('Y-m-d')) {
-            return redirect()->route('work-schedules.show', $id)->with('error', 'Không thể cập nhật trạng thái cho lịch làm việc đã qua.');
+        if (!Carbon::parse($workSchedule->working_day)->isToday()) {
+            return redirect()->route('work-schedules.show', $id)->with('error', 'Chỉ có thể cập nhật trạng thái cho lịch làm việc của ngày hôm nay.');
         }
 
         $workSchedule->status = $request->input('status');

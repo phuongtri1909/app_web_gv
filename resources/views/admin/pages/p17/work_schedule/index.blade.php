@@ -114,10 +114,10 @@
                                         <td>
                                             <span
                                                 class="badge
-                                                @if ($item->status == 1) bg-success text-white
+                                                @if ($item->status == "approved") bg-success text-white
                                                 @else
                                                     bg-danger text-white @endif">
-                                                @if ($item->status == 1)
+                                                @if ($item->status == "pending")
                                                     Đã làm việc
                                                 @else
                                                     Chưa làm việc
