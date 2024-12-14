@@ -75,9 +75,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="form-group mb-3 col-md-6">
-                            <input type="hidden" name="category_id" id="categories" value="{{ $category->id }}">
-                        </div>
+                      
 
                         {{-- <div class="form-group mb-3 col-md-6">
                             <label for="tags">{{ __('tags') }}</label>

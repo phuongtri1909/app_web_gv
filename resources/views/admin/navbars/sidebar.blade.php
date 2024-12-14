@@ -507,7 +507,7 @@
                         @if (auth()->user()->unit->unit_code == 'QGV')
                             <span class="nav-link-text ms-1">Địa điểm</span>
                         @else
-                        <span class="nav-link-text ms-1">Kết nối tiểu thương</span>
+                        <span class="nav-link-text ms-1">BĐH khu phố</span>
                         @endif
                     </a>
                 </li>
@@ -554,7 +554,7 @@
                                 </a>
                             </li>
 
-                            <li>
+                            {{-- <li>
                                 <a class="nav-link {{ Route::currentRouteNamed('tags-news.*') ? 'active' : '' }}"
                                     href="{{ route('tags-news.index') }}">
                                     <div
@@ -563,7 +563,7 @@
                                     </div>
                                     <span class="nav-link-text ms-1">{{ __('tags') }}</span>
                                 </a>
-                            </li>
+                            </li> --}}
 
                             <li>
                                 <a class="nav-link {{ Route::currentRouteNamed('news.*') ? 'active' : '' }}"
@@ -576,35 +576,39 @@
                                 </a>
                             </li>
 
-                            <li>
-                                <a class="nav-link {{ Route::currentRouteNamed('tabs_posts.*') ? 'active' : '' }}"
-                                    href="{{ route('tabs_posts.index') }}">
-                                    <div
-                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1">{{ __('tabs_posts') }}</span>
-                                </a>
-                            </li>
+                            @if (auth()->user()->unit->unit_code == 'QGV')
+                                <li>
+                                    <a class="nav-link {{ Route::currentRouteNamed('tabs_posts.*') ? 'active' : '' }}"
+                                        href="{{ route('tabs_posts.index') }}">
+                                        <div
+                                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                        </div>
+                                        <span class="nav-link-text ms-1">{{ __('tabs_posts') }}</span>
+                                    </a>
+                                </li>
 
 
-                            <li>
-                                <a class="nav-link {{ Route::currentRouteNamed('news_contents.*') ? 'active' : '' }}"
-                                    href="{{ route('news_contents.index') }}">
-                                    <div
-                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1">{{ __('news_contents') }}</span>
-                                </a>
-                            </li>
+                                <li>
+                                    <a class="nav-link {{ Route::currentRouteNamed('news_contents.*') ? 'active' : '' }}"
+                                        href="{{ route('news_contents.index') }}">
+                                        <div
+                                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                        </div>
+                                        <span class="nav-link-text ms-1">{{ __('news_contents') }}</span>
+                                    </a>
+                                </li>
+                                
+                            @endif
+                            
 
                         </ul>
                     </div>
                 </li>
 
 
-                <li class="nav-item mt-2">
+                {{-- <li class="nav-item mt-2">
                     <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">
                         {{ __('feature_page') }}
                     </h6>
@@ -619,7 +623,7 @@
                         </div>
                         <span class="nav-link-text ms-1">{{ __('language') }}</span>
                     </a>
-                </li>
+                </li> --}}
             @else
                 <li class="nav-item">
                     <a class="nav-link {{ Route::currentRouteNamed('business.dashboard') ? 'active' : '' }}"

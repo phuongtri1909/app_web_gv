@@ -15,7 +15,7 @@ class CategoryNews extends Model
     ];
 
     protected $table = 'categories';
-    protected $fillable = ['name', 'slug'];
+    protected $fillable = ['name', 'slug','unit_id'];
 
     public function news()
     {
@@ -25,6 +25,11 @@ class CategoryNews extends Model
     {
         $this->attributes['name'] = $value;
         $this->attributes['slug'] = Str::slug($value);
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
     }
 
 }

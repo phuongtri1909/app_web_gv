@@ -16,7 +16,7 @@ class BusinessFeedBackController extends Controller
 {
     public function businessOpinion(Request $request)
     {
-        $isKhaoSat = CategoryNews::where('slug', 'khao-sat')->first();
+        $isKhaoSat = CategoryNews::where('unit_id', auth()->user()->unit_id)->where('slug', 'khao-sat')->first();
         if (!$isKhaoSat) {
             return redirect()->back()->with('error', 'Không tìm thấy danh mục');
         }

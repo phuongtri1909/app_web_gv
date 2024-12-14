@@ -296,37 +296,18 @@
                             <div class="form-group">
                                 <select id="subCategory" name="subCategory" class="form-control" onchange="this.form.submit()">
                                     <option value="all" {{ request('subCategory') === 'all' ? 'selected' : '' }}>{{ __('Tất cả') }}</option>
-                                    <option value="hoat-dong-xuc-tien" {{ request('subCategory') === 'hoat-dong-xuc-tien' ? 'selected' : '' }}>
-                                        Hoạt động xúc tiến
-                                    </option>
-                                    <option value="tin-tuc" {{ request('subCategory') === 'tin-tuc' ? 'selected' : '' }}>
-                                        Tin tức
-                                    </option>
-                                    <option value="hoi-cho" {{ request('subCategory') === 'hoi-cho' ? 'selected' : '' }}>
-                                        Hội chợ
-                                    </option>
+                                    @foreach ($categories as $item)
+                                        <option value="{{ $item->slug }}" {{ request('subCategory') === $item->slug ? 'selected' : '' }}>
+                                            {{ $item->name }}
+                                        </option>
+                                    @endforeach
+                                   
                                 </select>
                             </div>
                         </form>
                     @endif
                 </div>
-                {{-- @if($categories->isNotEmpty())
-                    <div class="category-new mb-5">
-                        <div class="col-md-12">
-                            <ul class="flex-news">
-                                <li>
-                                    <a class="{{ request('category') == '' ? 'active' : '' }}" href="{{ route('list-blogs', $tab->slug) }}">{{ __('all') }}</a>
-                                </li>
-                                @foreach ($categories as $item)
-                                    <li>
-                                        <a href="{{ route('list-blogs', ['slug' => $tab->slug, 'category' => $item->slug]) }}"
-                                            class="{{ request('category') == $item->slug ? 'active' : '' }}">{{ $item->name }}</a>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    </div>
-                @endif --}}
+               
                 @if ($noResults)
                     <div class="content-table-contact my-5 text-center">
                         <div class="alert alert-danger" role="alert">
@@ -364,69 +345,6 @@
             </div>
         </div>
     </section>
-    {{-- <div class="container mt-5">
-        <div class="row">
-            @forEach($tabProject as $tabs)
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="main-approach">
-                        <div class="content-approach">
-                            <div class="image-approach">
-                                <img src="{{ asset($tabs->image) }}" alt="" width="1000" height="667"
-                                    style="max-width: 100%; height: auto;">
-                            </div>
-                            <div class="content-b">
-                                <a href="{{ route('detail-blog-mini', ['slug' => $tabs->slug]) }}">
-                                    <div class="title-approach-b">
-                                        <h3>{{$tabs->project_name}}</h3>
-                                    </div>
-                                    <div class="boder-ri"></div>
-                                    <div class="desc-approach">
-                                        <p>
-                                            {!!$tabs->content!!}
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div> --}}
-    {{-- <div class="container-kids position-r mt-4">
-        @if (
-            $forumsCp3->isNotEmpty() &&
-                $forumsCp3->contains(function ($forum) {
-                    return !empty($forum->image);
-                }))
-            <div class="navigation-buttons left">
-                <button onclick="prevImage()">&#10094;</button>
-            </div>
-            <div class="gallery-container">
-                <h2>{{ __('gallery') }}</h2>
-                <div class="main-image" id="mainImageContainer">
-                    @foreach ($forumsCp3 as $forum)
-                        @foreach ($forum->image as $index => $imagePath)
-                            <img id="mainDisplay-{{ $forum->id }}-{{ $index }}" src="{{ asset($imagePath) }}"
-                                alt="Main Image" style="{{ $index === 0 ? '' : 'display:none;' }}" />
-                        @endforeach
-                    @endforeach
-                </div>
-
-                <div class="thumbnail-gallery">
-                    @foreach ($forumsCp3 as $forum)
-                        @foreach ($forum->image as $index => $imagePath)
-                            <img src="{{ asset($imagePath) }}" alt="Thumbnail"
-                                onclick="changeImage({{ $forum->id }}, {{ $index }})" />
-                        @endforeach
-                    @endforeach
-                </div>
-            </div>
-            <div class="navigation-buttons right">
-                <button onclick="nextImage()">&#10095;</button>
-            </div>
-        @endif
-    </div> --}}
 @endsection
 
 @push('scripts')

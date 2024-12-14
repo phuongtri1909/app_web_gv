@@ -61,9 +61,8 @@ class BusinessSurveyController extends Controller
 
     public function create()
     {
-        $category = CategoryNews::where('slug', 'khao-sat')->first();
         $languages = Language::all();
-        return view('admin.pages.client.business-survey.create', compact('category',  'languages'));
+        return view('admin.pages.client.business-survey.create', compact('languages'));
     }
 
     public function store(Request $request)
@@ -140,14 +139,10 @@ class BusinessSurveyController extends Controller
             $news->expired_at = $request->input('expired_at');
             $news->save();
 
-            try {
-                if ($request->filled('category_id')) {
-                    $news->categories()->attach($request->input('category_id'));
-                }
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', __('create_post_error'));
-            }
-            // dd($news);
+            $category = CategoryNews::where('slug', 'khao-sat')->first();
+            $news->categories()->attach($category->id);
+                
+            
             return redirect()->route('survey.index')->with('success', __('create_post_success'));
         } catch (\Exception $e) {
             if (isset($image_path) && File::exists(public_path($image_path))) {
@@ -157,10 +152,6 @@ class BusinessSurveyController extends Controller
         }
     }
 
-    public function show($id)
-    {
-    }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -168,15 +159,14 @@ class BusinessSurveyController extends Controller
      *
      */
     public function edit($id)
-    {
-        $category = CategoryNews::where('slug', 'khao-sat')->first();
+    { 
         $news = News::find($id);
-        if (!$news) {
+        if (!$news || !$news->categories()->where('unit_id', Auth::user()->unit_id)->where('slug', 'khao-sat')->exists()) {
             return back()->with('error', __('no_find_data'));
         }
         $languages = Language::all();
 
-        return view('admin.pages.client.business-survey.edit', compact('news', 'languages', 'category'));
+        return view('admin.pages.client.business-survey.edit', compact('news', 'languages'));
     }
 
 
@@ -213,6 +203,10 @@ class BusinessSurveyController extends Controller
         try {
             $news = News::findOrFail($id);
 
+            if(!$news->categories()->where('unit_id', Auth::user()->unit_id)->where('slug', 'khao-sat')->exists()) {
+                return back()->with('error', __('no_find_data'))->withInput();
+            }
+
             $translateTitle = [];
             $translateContent = [];
             foreach ($locales as $locale) {
@@ -245,13 +239,10 @@ class BusinessSurveyController extends Controller
             $news->setTranslations('content', $translateContent);
             $news->published_at = $request->input('published_at');
             $news->expired_at = $request->input('expired_at');
-            try {
-                if ($request->filled('category_id')) {
-                    $news->categories()->sync($request->input('category_id'));
-                }
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', __('update_error'). ' ' . $e->getMessage())->withInput();
-            }
+            
+            $category = CategoryNews::where('slug', 'khao-sat')->first();
+            $news->categories()->sync($category->id);
+               
             $news->save();
 
             return redirect()->route('survey.index')->with('success', __('update_success'));
@@ -267,11 +258,11 @@ class BusinessSurveyController extends Controller
     {
         $news = News::find($id);
 
-        if (!$news) {
-            return redirect()->route('survey.index')->with('error', __('Không tồn tại!!'));
+        if (!$news || !$news->categories()->where('unit_id', Auth::user()->unit_id)->where('slug', 'khao-sat')->exists()) {
+            return redirect()->route('survey.index')->with('error', 'Khảo sát không tồn tại');
         }
         $news->delete();
 
-        return redirect()->route('survey.index')->with('success', __('Xóa thành công!!'));
+        return redirect()->route('survey.index')->with('success', 'Xóa khảo sát thành công');
     }
 }

@@ -203,7 +203,7 @@ Route::middleware(['language'])->group(function () {
                 Route::put('languages/update-system/{locale}', [LanguageController::class, 'updateSystem'])->name('languages.update-system');
 
                 Route::resource('tags-news', TagNewsController::class);
-                Route::resource('categories-news', CategoryNewsController::class)->except('edit', 'update', 'show', 'destroy');
+                Route::resource('categories-news', CategoryNewsController::class)->except('show');
                 Route::resource('news', BlogsController::class);
 
                 Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
