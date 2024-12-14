@@ -18,7 +18,8 @@ class CategoryNewsController extends Controller
         'khao-sat',
         'ket-noi-giao-thuong',
         'ket-noi-viec-lam',
-        'y-kien'
+        'y-kien',
+        'about-us-17'
     ];
     /**
      * Display a listing of the resource.

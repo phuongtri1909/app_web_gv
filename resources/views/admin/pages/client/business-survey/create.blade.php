@@ -39,6 +39,24 @@
                                     @enderror
                                 </div>
                             @endforeach
+
+                            <div class="form-group mb-3 col-md-6">
+                                <label for="published_at" class="form-label">{{ __('Ngày bắt đầu') }}</label>
+                                <input type="datetime-local" class="form-control @error('published_at') is-invalid @enderror"
+                                    id="published_at" name="published_at" value="{{ old('published_at') }}">
+                                @error('published_at')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+    
+                            <div class="form-group mb-3 col-md-6">
+                                <label for="expired_at" class="form-label">{{ __('Ngày hết hạn') }}</label>
+                                <input type="datetime-local" class="form-control @error('expired_at') is-invalid @enderror"
+                                    id="expired_at" name="expired_at" value="{{ old('expired_at') }}">
+                                @error('expired_at')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
                         <div class="form-group mb-3 col-md-6">
                             <label for="image" class="form-label">{{ __('image') }}</label>
@@ -49,23 +67,7 @@
                             @enderror
                         </div>
 
-                        <div class="form-group mb-3 col-md-6">
-                            <label for="published_at" class="form-label">{{ __('Ngày bắt đầu') }}</label>
-                            <input type="datetime-local" class="form-control @error('published_at') is-invalid @enderror"
-                                id="published_at" name="published_at" value="{{ old('published_at') }}">
-                            @error('published_at')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group mb-3 col-md-6">
-                            <label for="expired_at" class="form-label">{{ __('Ngày hết hạn') }}</label>
-                            <input type="datetime-local" class="form-control @error('expired_at') is-invalid @enderror"
-                                id="expired_at" name="expired_at" value="{{ old('expired_at') }}">
-                            @error('expired_at')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        
                        
                         {{-- <div class="form-group">
                             <label for="tags">{{ __('tags') }}</label>

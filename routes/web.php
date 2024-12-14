@@ -102,7 +102,7 @@ Route::middleware(['language'])->group(function () {
     Route::get('/b/blogs', [BlogsController::class, 'blogIndex'])->name('list-blogs');
 
     Route::get('/detail-blog/{slug}', [BlogsController::class, 'showBlogIndex'])->name('detail-blog');
-    Route::get('/detail-blog/mini/{slug}', [BlogsController::class, 'showBlogIndexMini'])->name('detail-blog-mini');
+    // Route::get('/detail-blog/mini/{slug}', [BlogsController::class, 'showBlogIndexMini'])->name('detail-blog-mini');
 
     Route::get('page-tab/{slug}', function ($slug) {
         return view('pages.tab-custom.index', compact('slug'));
@@ -229,6 +229,8 @@ Route::middleware(['language'])->group(function () {
                 Route::get('locations/detail/{id}', [LocationController::class, 'show'])->name('locations.show');
 
                 Route::resource('digital-transformations',DigitalTransformationController::class)->except('show');
+
+                Route::post('/news/toggle-digital-transformation', [BlogsController::class, 'toggleDigitalTransformation'])->name('news.toggleDigitalTransformation');
 
                 Route::middleware(['role.admin.qgv'])->group(function () {
                     Route::resource('bank-servicers', BankServicerController::class);

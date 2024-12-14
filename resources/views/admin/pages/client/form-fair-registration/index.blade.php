@@ -2,7 +2,7 @@
 
 @push('styles-admin')
     <style>
-        .img-square{
+        .img-square {
             width: 200px;
             height: 100px;
             object-fit: cover;
@@ -97,6 +97,14 @@
                                                 'route' => route('fair-registrations.destroy', $post->id),
                                                 'message' => __('delete_message'),
                                             ])
+
+                                            <div class="form-check form-switch d-flex justify-content-center p-0">
+                                                <input class="form-check-input digital-transformation-switch"
+                                                    type="checkbox" role="switch" id="flexSwitchCheckDefault"
+                                                    data-news-id="{{ $post->id }}"
+                                                    @if(in_array($post->id, $newsDigitalTransformations)) checked @endif>
+                                                <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -110,8 +118,8 @@
     </div>
 @endsection
 
+@include('admin.pages.components.toggleDigitalTransformation')
+
 @push('scripts-admin')
-    <script>
-        // You can add custom scripts here
-    </script>
+    
 @endpush

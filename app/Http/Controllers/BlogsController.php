@@ -12,15 +12,82 @@ use Illuminate\Support\Str;
 use App\Models\CategoryNews;
 use Illuminate\Http\Request;
 use App\Models\FinancialSupport;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Models\BankServicesInterest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use App\Models\DigitalTransformation;
+use App\Models\NewsDigitalTransformation;
 use Illuminate\Validation\ValidationException;
 
 
 class BlogsController extends Controller
 {
+
+    public function toggleDigitalTransformation(Request $request)
+    {
+        $newsId = $request->input('news_id');
+        $news = News::find($newsId);
+
+        if (!$news || !$news->categories()->where('unit_id', Auth::user()->unit_id)->exists()) {
+            return response()->json(['success' => false, 'message' => 'Bài viết không tồn tại.']);
+        }
+
+        DB::beginTransaction();
+        try {
+            $newsDigitalTransformation = NewsDigitalTransformation::where('news_id', $newsId)->first();
+
+            if (!$newsDigitalTransformation) {
+                $digitalTransformation = new DigitalTransformation();
+                $digitalTransformation->title = $news->title;
+                $digitalTransformation->image = $news->image;
+                $digitalTransformation->link = route('detail-blog', $news->slug);
+                $digitalTransformation->unit_id = Auth::user()->unit_id;
+
+                if ($digitalTransformation->save()) {
+                    $newsDigitalTransformation = new NewsDigitalTransformation();
+                    $newsDigitalTransformation->news_id = $newsId;
+                    $newsDigitalTransformation->digital_transformation_id = $digitalTransformation->id;
+
+                    if ($newsDigitalTransformation->save()) {
+                        DB::commit();
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Bài viết đã được thêm vào danh sách ' . (auth()->user()->unit->unit_code == 'QGV' ? 'liên kết' : 'Chuyển đổi số'),
+                            'status' => 'added'
+                        ]);
+                    } else {
+                        DB::rollBack();
+                        return response()->json(['success' => false, 'message' => 'Không thể lưu ' . (auth()->user()->unit->unit_code == 'QGV' ? 'liên kết' : 'Chuyển đổi số')]);
+                    }
+                } else {
+                    DB::rollBack();
+                    return response()->json(['success' => false, 'message' => 'Không thể lưu ' . (auth()->user()->unit->unit_code == 'QGV' ? 'liên kết' : 'Chuyển đổi số')]);
+                }
+            } else {
+                $digitalTransformation = DigitalTransformation::find($newsDigitalTransformation->digital_transformation_id);
+
+                if ($digitalTransformation) {
+                    $digitalTransformation->delete();
+                }
+
+                $newsDigitalTransformation->delete();
+
+                DB::commit();
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Bài viết đã được xóa khỏi danh sách ' . (auth()->user()->unit->unit_code == 'QGV' ? 'liên kết' : 'Chuyển đổi số'),
+                    'status' => 'removed'
+                ]);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => 'Có lỗi xảy ra.']);
+        }
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -65,7 +132,9 @@ class BlogsController extends Controller
             })
             ->paginate(15);
 
-        return view('admin.pages.blogs.index', compact('blogs', 'categories'));
+        $newsDigitalTransformations = NewsDigitalTransformation::pluck('news_id')->toArray();
+
+        return view('admin.pages.blogs.index', compact('blogs', 'categories', 'newsDigitalTransformations'));
     }
 
     /**
@@ -106,9 +175,9 @@ class BlogsController extends Controller
             $messages["content_{$locale}.string"] = __('content_string');
         }
 
-       
-            $validatedData = $request->validate($rules, $messages);
-       
+
+        $validatedData = $request->validate($rules, $messages);
+
         try {
             $translateTitle = [];
             $tranSlateContent = [];
@@ -140,7 +209,7 @@ class BlogsController extends Controller
                     }
                     return back()->withInput()->with('error', __('upload_image_error'));
                 }
-            }else{
+            } else {
                 return back()->withInput()->with('error', 'Ảnh không được để trống.');
             }
 
@@ -244,7 +313,7 @@ class BlogsController extends Controller
         try {
             $news = News::findOrFail($id);
 
-            if(!$news || !$news->categories()->where('unit_id', Auth::user()->unit_id)->where('slug', '!=', 'khao-sat')->where('slug', '!=', 'hoi-cho')->exists()){
+            if (!$news || !$news->categories()->where('unit_id', Auth::user()->unit_id)->where('slug', '!=', 'khao-sat')->where('slug', '!=', 'hoi-cho')->exists()) {
                 return back()->with('error', __('no_find_data'))->withInput();
             }
 
@@ -344,10 +413,18 @@ class BlogsController extends Controller
             return redirect()->route('news.index')->with('error', __('news_not_found'));
         }
 
-        // Xóa bài viết
-        $news->delete();
-
-        return redirect()->route('news.index')->with('success', __('news_deleted_successfully'));
+        try {
+            // Xóa digital của bài viết
+            $newsDigitalTransformation = NewsDigitalTransformation::where('news_id', $id)->first();
+            if ($newsDigitalTransformation) {
+                $newsDigitalTransformation->digitalTransformation->delete();
+            }
+            // Xóa bài viết
+            $news->delete();
+            return redirect()->route('news.index')->with('success', __('news_deleted_successfully'));
+        } catch (\Exception $e) {
+            return redirect()->route('news.index')->with('error', 'Có lỗi xảy ra khi xóa bài viết.');
+        }
     }
 
     public function blogIndex(Request $request)

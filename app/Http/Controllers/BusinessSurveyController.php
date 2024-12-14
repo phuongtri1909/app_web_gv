@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Business;
-use App\Models\CategoryNews;
-use App\Models\Language;
 use App\Models\News;
+use App\Models\Business;
+use App\Models\Language;
+use Illuminate\Support\Str;
+use App\Models\CategoryNews;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Validation\ValidationException ;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
+use App\Models\NewsDigitalTransformation;
+use Illuminate\Validation\ValidationException ;
 
 class BusinessSurveyController extends Controller
 {
@@ -54,7 +55,9 @@ class BusinessSurveyController extends Controller
                 ->paginate(15);
         }
 
-        return view('admin.pages.client.business-survey.index', compact('blogs'));
+        $newsDigitalTransformations = NewsDigitalTransformation::pluck('news_id')->toArray();
+
+        return view('admin.pages.client.business-survey.index', compact('blogs', 'newsDigitalTransformations'));
     }
 
 
@@ -261,6 +264,12 @@ class BusinessSurveyController extends Controller
         if (!$news || !$news->categories()->where('unit_id', Auth::user()->unit_id)->where('slug', 'khao-sat')->exists()) {
             return redirect()->route('survey.index')->with('error', 'Khảo sát không tồn tại');
         }
+
+        $newsDigitalTransformation = NewsDigitalTransformation::where('news_id', $news->id)->first();
+        if ($newsDigitalTransformation) {
+            $newsDigitalTransformation->digitalTransformation->delete();
+        }
+
         $news->delete();
 
         return redirect()->route('survey.index')->with('success', 'Xóa khảo sát thành công');

@@ -32,8 +32,7 @@
                                         Ảnh</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         Tiêu đề</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Url</th>
+                                    
                                     <th
                                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         {{ __('Thao tác') }}</th>
@@ -53,9 +52,7 @@
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">{{ $item->title }}</p>
                                         </td>
-                                        <td>
-                                            <a href="{{ $item->url }}">{{ $item->url }}</a>
-                                        </td>
+                                      
 
                                         <td class="text-center">
 
