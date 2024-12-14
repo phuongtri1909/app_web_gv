@@ -29,8 +29,16 @@
                             <input type="hidden" name="search-category" value="{{ request('search-category') }}">
                         @endif
 
-                        @if (request('search-member_id'))
+                        @if (request('search-member-id'))
                             <input type="hidden" name="search-member-id" value="{{ request('search-member-id') }}">
+                        @endif
+
+                        @if (request('search-date'))
+                            <input type="hidden" name="search-date" value="{{ request('search-date') }}">
+                        @endif
+
+                        @if (request('search-department_id'))
+                            <input type="hidden" name="search-department_id" value="{{ request('search-department_id') }}">
                         @endif
 
                         <button type="submit" class="input-group-text text-body">
