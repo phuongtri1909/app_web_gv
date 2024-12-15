@@ -436,6 +436,18 @@
                     @break
 
                     @case('P17')
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteNamed('feedbacks.*') ? 'active' : '' }}"
+                            href="{{ route('feedbacks.index') }}">
+                            <div
+                                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa-regular fa-comment-dots text-dark icon-sidebar"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Góp ý - Phản ánh</span>
+                        </a>
+                    </li>
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('ad-types.*', 'ad-categories.*','advertisements.*') ? 'active' : '' }}"
                             href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"
@@ -491,7 +503,7 @@
                                 class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                                 <i class="fa-solid fa-list-check text-dark icon-sidebar"></i>
                             </div>
-                            <span class="nav-link-text ms-1">Lịch Tiếp dân</span>
+                            <span class="nav-link-text ms-1">Tiếp dân & Khảo sát</span>
                         </a>
                         <div class="collapse mt-1" id="email" style="margin-left: 30px">
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -502,9 +514,21 @@
                                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                                             <i class="fa-regular fa-calendar-days text-dark icon-sidebar"></i>
                                         </div>
-                                        <span class="nav-link-text ms-1">Danh sách</span>
+                                        <span class="nav-link-text ms-1">Lịch tiếp dân</span>
                                     </a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Route::currentRouteNamed('satisfaction-survey.*') ? 'active' : '' }}"
+                                        href="{{ route('satisfaction-survey.index') }}">
+                                        <div
+                                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                            <i class="fa-solid fa-square-poll-vertical text-dark icon-sidebar"></i>
+                                        </div>
+                                        <span class="nav-link-text ms-1">Khảo sát hài lòng</span>
+                                    </a>
+                                </li>
+
                                 <li class="nav-item">
                                     <a class="nav-link {{ Route::currentRouteNamed('departments.*') ? 'active' : '' }}"
                                         href="{{ route('departments.index') }}">

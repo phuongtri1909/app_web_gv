@@ -13,4 +13,8 @@ class Department extends Model
         'name',
         'slug',
     ];
+
+    public function satisfactionSurveys(){
+        return $this->hasMany(SatisfactionSurvey::class);
+    }
 }

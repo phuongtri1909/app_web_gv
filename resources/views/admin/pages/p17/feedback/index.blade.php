@@ -14,8 +14,10 @@
                         <div class="row g-2">
                             <div class="col-md-3">
                                 <input type="date" name="search-date" class="form-control form-control-sm"
-                                    value="{{ request('search-date', \Carbon\Carbon::today()->toDateString()) }}">
+                                    value="{{ request('search-date') }}">
                             </div>
+
+                            
 
                             <div class="col-md-3">
                                 <button type="submit" class="btn btn-sm btn-primary">Tìm kiếm</button>

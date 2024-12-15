@@ -67,6 +67,7 @@ use App\Http\Controllers\CustomerInterestController;
 use App\Http\Controllers\FinancialSupportController;
 use App\Http\Controllers\BusinessDashboardController;
 use App\Http\Controllers\BusinessHouseholdController;
+use App\Http\Controllers\SatisfactionSurveyController;
 use App\Http\Controllers\BusinessCapitalNeedController;
 use App\Http\Controllers\BusinessRecruitmentController;
 use App\Http\Controllers\ContactConsultationController;
@@ -295,7 +296,8 @@ Route::middleware(['language'])->group(function () {
                     Route::get('work-schedules/{id}', [CitizenMeetingScheduleController::class, 'show'])->name('work-schedules.show');
                     Route::post('/work-schedules/{id}/update-status', [CitizenMeetingScheduleController::class, 'update'])->name('work-schedules.update');
 
-                    Route::get('feedbacks', [FeedbackController::class, 'index']);
+                    Route::get('feedbacks', [FeedbackController::class, 'index'])->name('feedbacks.index');
+                    Route::get('satisfaction-survey' , [SatisfactionSurveyController::class, 'index'])->name('satisfaction-survey.index');
                 });
             });
         });
