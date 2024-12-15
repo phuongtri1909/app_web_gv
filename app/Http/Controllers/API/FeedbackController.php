@@ -16,7 +16,7 @@ class FeedbackController extends Controller
 
     public function index(Request $request)
     {
-        $feedbacks = Feedback::where('customer_id', $request->customer_id)->with('feedbackImages')->get();
+        $feedbacks = Feedback::where('customer_id', $request->customer_id)->orderBy('created_at','desc')->with('feedbackImages')->get();
 
         return response()->json(['feedbacks' => $feedbacks], 200);
     }
