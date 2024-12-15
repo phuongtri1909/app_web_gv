@@ -8,6 +8,7 @@ use App\Models\FeedbackImages;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Intervention\Image\Facades\Image;
 use Illuminate\Validation\ValidationException;
 
@@ -89,6 +90,7 @@ class FeedbackController extends Controller
                 return response()->json(['message' => 'Có lỗi xảy ra, vui lòng thử lại: ' . $e->getMessage()], 400);
             }
         } catch (ValidationException $e) {
+            Log::info("message: " . $request->all());
             return response()->json([
                 'message' => $e->errors(),
             ], 422);
