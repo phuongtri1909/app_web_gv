@@ -11,7 +11,7 @@ class TopQuestionController extends Controller
 {
     public function topQuestions()
     {
-        $top_questions = TopQuestion::all();
+        $top_questions = TopQuestion::where('updated_at','desc')->all();
         return response()->json(['topQuestions' => $top_questions], 200);
     }
 
@@ -38,7 +38,7 @@ class TopQuestionController extends Controller
                 $attachment = $request->file('attachment');
                 $originalFileName = pathinfo($attachment->getClientOriginalName(), PATHINFO_FILENAME);
                 $fileName = $originalFileName . '_' . time() . '.' . $attachment->getClientOriginalExtension();
-                $uploadPath = public_path('uploads/files/attachment' . $folderName);
+                $uploadPath = public_path('uploads/files/attachment/' . $folderName);
 
                 if (!File::exists($uploadPath)) {
                     File::makeDirectory($uploadPath, 0755, true);
