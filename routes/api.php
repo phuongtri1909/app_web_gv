@@ -7,6 +7,7 @@ use App\Http\Controllers\API\ZaloAuthController;
 use App\Http\Controllers\API\DepartmentController;
 use App\Http\Controllers\API\DigitalTransformationController;
 use App\Http\Controllers\API\CitizenMeetingScheduleController;
+use App\Http\Controllers\API\SatisfactionSurveyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,8 @@ Route::group(['prefix' => 'client'], function () {
         
             Route::post('feedbacks', [FeedbackController::class, 'sendFeedback']); // tạo góp ý - phản ảnh
             Route::get('feedbacks', [FeedbackController::class, 'index']); // lịch sử góp ý - phản ảnh user hiện tại
+
+            Route::post('satisfaction-survey', [SatisfactionSurveyController::class, 'store']); // tạo khảo sát hài lòng
         });
     });
 
