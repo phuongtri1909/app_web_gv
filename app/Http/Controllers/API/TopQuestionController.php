@@ -11,7 +11,7 @@ class TopQuestionController extends Controller
 {
     public function topQuestions()
     {
-        $top_questions = TopQuestion::where('updated_at','desc')->all();
+        $top_questions = TopQuestion::orderBy('updated_at','desc')->all();
         return response()->json(['topQuestions' => $top_questions], 200);
     }
 
