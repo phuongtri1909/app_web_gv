@@ -46,6 +46,8 @@ class TopQuestionController extends Controller
 
                 $attachment->move($uploadPath, $fileName);
 
+                $uploadPath = 'uploads/files/attachment/' . $folderName;
+
                 $validatedData['attachment'] = $uploadPath . '/' . $fileName;
             }
 
