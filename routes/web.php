@@ -28,6 +28,7 @@ use App\Http\Controllers\TagNewsController;
 use App\Http\Controllers\TuitionController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\QuestionController;
@@ -229,7 +230,7 @@ Route::middleware(['language'])->group(function () {
                 Route::delete('locations/destroy/{id}', [LocationController::class, 'destroy'])->name('locations.destroy');
                 Route::get('locations/detail/{id}', [LocationController::class, 'show'])->name('locations.show');
 
-                Route::resource('digital-transformations',DigitalTransformationController::class)->except('show');
+                Route::resource('digital-transformations', DigitalTransformationController::class)->except('show');
 
                 Route::post('/news/toggle-digital-transformation', [BlogsController::class, 'toggleDigitalTransformation'])->name('news.toggleDigitalTransformation');
 
@@ -283,18 +284,19 @@ Route::middleware(['language'])->group(function () {
                 });
 
                 Route::middleware(['role.admin.p17'])->group(function () {
-                   
-                   Route::resource('ad-types',AdTypeController::class)->except('show');
-                   Route::resource('ad-categories',AdCategoryController::class)->except('show');
-                   Route::resource('advertisements',AdvertisementController::class);
 
-                   Route::resource('departments', DepartmentController::class)->except('show');
+                    Route::resource('ad-types', AdTypeController::class)->except('show');
+                    Route::resource('ad-categories', AdCategoryController::class)->except('show');
+                    Route::resource('advertisements', AdvertisementController::class);
 
-                   Route::get('work-schedules', [CitizenMeetingScheduleController::class,'index'])->name('work-schedules.index');
-                   Route::get('work-schedules/{id}', [CitizenMeetingScheduleController::class,'show'])->name('work-schedules.show');
-                   Route::post('/work-schedules/{id}/update-status', [CitizenMeetingScheduleController::class, 'update'])->name('work-schedules.update');
+                    Route::resource('departments', DepartmentController::class)->except('show');
+
+                    Route::get('work-schedules', [CitizenMeetingScheduleController::class, 'index'])->name('work-schedules.index');
+                    Route::get('work-schedules/{id}', [CitizenMeetingScheduleController::class, 'show'])->name('work-schedules.show');
+                    Route::post('/work-schedules/{id}/update-status', [CitizenMeetingScheduleController::class, 'update'])->name('work-schedules.update');
+
+                    Route::get('feedbacks', [FeedbackController::class, 'index']);
                 });
-
             });
         });
 
