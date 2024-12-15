@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\FeedbackController;
 use App\Http\Controllers\API\ZaloAuthController;
 use App\Http\Controllers\API\DepartmentController;
 use App\Http\Controllers\API\DigitalTransformationController;
@@ -25,6 +26,9 @@ Route::group(['prefix' => 'client'], function () {
             Route::get('auth/zalo', [ZaloAuthController::class, 'redirectToZalo']);
             Route::post('citizen-meeting-schedules', [CitizenMeetingScheduleController::class, 'store']); // tạo đặt lịch tiếp dân
             Route::get('citizen-meeting-schedules', [CitizenMeetingScheduleController::class, 'index']); //lịch sử đặt lịch tiếp dân user hiện tại
+        
+            Route::post('feedbacks', [FeedbackController::class, 'sendFeedback']); // tạo góp ý - phản ảnh
+            Route::get('feedbacks', [FeedbackController::class, 'index']); // lịch sử góp ý - phản ảnh user hiện tại
         });
     });
 
