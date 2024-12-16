@@ -61,10 +61,10 @@
                 <div class="card-header pb-0">
                     <div class="d-flex flex-row justify-content-between">
                         <div>
-                            <h5 class="mb-0">Danh sách câu hỏi - {{ $quiz->title }}</h5>
+                            <h5 class="mb-0">{{ $type == 'survey-p' ? 'Danh sách câu hỏi khảo sát' : 'Danh sách câu hỏi'}}-{{ $quiz->title }}</h5>
                         </div>
                         <div>
-                            <a href="{{ route('questions.create', ['quizId' => $quiz->id]) }}" class="btn btn-primary">Thêm
+                            <a href="{{ route('questions.create', ['type' => $type,'quizId' => $quiz->id]) }}" class="btn btn-primary">Thêm
                                 câu
                                 hỏi</a>
                         </div>
@@ -115,12 +115,12 @@
                                                 {{ $correctAnswer }}
                                             </td>
                                             <td class="text-center">
-                                                <a href="{{ route('questions.edit', $question->id) }}"><i
+                                                <a href="{{ route('questions.edit',['type' => $type, 'id' => $question->id]) }}"><i
                                                         class="fa-regular fa-pen-to-square"></i></a>
 
                                                 @include('admin.pages.components.delete-form', [
-                                                    'id' => $question->id,
-                                                    'route' => route('questions.destroy', $question->id),
+                                                    'id' => $question->id, 'type' => $type,
+                                                    'route' => route('questions.destroy',['type' => $type, 'id' => $question->id]),
                                                     'message' => __('Bạn có chắc chắn muốn xóa?'),
                                                 ])
                                             </td>

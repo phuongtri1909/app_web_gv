@@ -92,8 +92,12 @@ class OnlineXamsController extends Controller
     
             Session::put('user_id', $userOnlineExam->id);
             Session::put('user_full_name', $userOnlineExam->full_name);
-    
-            return redirect()->route('p17.list.competitions.exams.client')->with('success', 'Bạn đã tham gia cuộc thi thành công! Chúc may mắn.');
+            $competitionType = $userOnlineExam->competition_type; 
+            if ($competitionType == 'competition') {
+                return redirect()->route('p17.list.competitions.exams.client')->with('success', 'Bạn đã tham gia cuộc thi thành công! Chúc may mắn.');
+            } else {
+                return redirect()->route('p17.list.surveys.client')->with('success', 'Bạn đã tham gia khảo sát thành công!');
+            }
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->validator)->withInput();
         } catch (\Exception $e) {
@@ -141,7 +145,7 @@ class OnlineXamsController extends Controller
         $quizzes = Quiz::where('competition_id', $competitionId)->where('status', 'active')->get();
     
         if ($quizzes->isEmpty()) {
-            if($competition->type == 'survey'){
+            if($competition->type == 'survey-p'){
                 return redirect()->route('p17.list.surveys.client')
                 ->with('error', 'Cuộc thi hiện không có bộ câu hỏi nào để tham gia.');
             }else{
@@ -297,7 +301,7 @@ class OnlineXamsController extends Controller
         //     return redirect()->route('p17.online.xams.client.index')->with('error', 'Bạn phải đăng ký tham gia cuộc thi.');
         // }
 
-        $competitions = Competition::where('status', 'active')->where('type', 'survey')->get()->map(function ($competition) {
+        $competitions = Competition::where('status', 'active')->where('type', 'survey-p')->get()->map(function ($competition) {
             $now = Carbon::now();
 
             if ($now->lessThan($competition->start_date)) {

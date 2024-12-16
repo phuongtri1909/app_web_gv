@@ -504,8 +504,8 @@
                         </a>
                     </li>   
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::currentRouteNamed('competitions.*', 'quizzes.*', 'questions.*') && request('type') == 'survey' ? 'active' : '' }}"
-                            href="{{ route('competitions.index', ['type' => 'survey']) }}">
+                        <a class="nav-link {{ Route::currentRouteNamed('competitions.*', 'quizzes.*', 'questions.*') && request('type') == 'survey-p' ? 'active' : '' }}"
+                            href="{{ route('competitions.index', ['type' => 'survey-p']) }}">
                             <div
                                 class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                                 <i class="fa-solid fa-square-poll-horizontal text-dark icon-sidebar"></i>

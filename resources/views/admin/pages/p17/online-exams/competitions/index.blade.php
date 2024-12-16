@@ -60,11 +60,11 @@
                 <div class="card-header pb-0">
                     <div class="d-flex flex-row justify-content-between">
                         <div>
-                            <h5 class="mb-0">{{ $type == 'survey' ? 'Danh sách khảo sát' : 'Danh sách cuộc thi' }}</h5>
+                            <h5 class="mb-0">{{ $type == 'survey-p' ? 'Danh sách khảo sát' : 'Danh sách cuộc thi' }}</h5>
                         </div>
                         <div class="col-12 col-md-3">
                             <div class="import-container d-flex">
-                                <form id="importForm" action="{{ route('competitions.import') }}" method="POST"
+                                <form id="importForm" action="{{ route('competitions.import', ['type' => $type]) }}" method="POST"
                                     enctype="multipart/form-data">
                                     @csrf
                                     <div class="d-flex">
@@ -85,7 +85,7 @@
                             </div>
                         </div>
                         <div>
-                            <a href="{{ route('competitions.create') }}" class="btn bg-gradient-primary">Thêm cuộc thi</a>
+                            <a href="{{ route('competitions.create', ['type' => $type]) }}" class="btn bg-gradient-primary">{{ $type == 'survey-p' ? 'Tạo khảo sát' : 'Tạo cuộc thi' }}</a>
                         </div>
                     </div>
                     <div id="progress-container" style="display: none;">
@@ -103,7 +103,7 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         {{ __('STT') }}</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Tên cuộc thi</th>
+                                        {{ $type == 'survey-p' ? 'Tên khảo sát' : 'Tên cuộc thi' }}</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         Ngày bắt đầu</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
@@ -138,15 +138,15 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <a href="{{ route('competitions.edit', $competition->id) }}"><i
+                                            <a href="{{ route('competitions.edit', ['type' => $type, 'id' => $competition->id ]) }}"><i
                                                     class="fa-regular fa-pen-to-square"></i></a>
-                                            <a href="{{ route('quizzes.index', $competition->id) }}" class="mx-2"
-                                                title="Tạo bộ câu hỏi">
+                                            <a href="{{ route('quizzes.index',['type' => $type, 'competitionId' => $competition->id]) }}" class="mx-2"
+                                                title="{{ $type == 'survey-p' ? 'Tạo bộ khảo sát' : 'Tạo bộ câu hỏi' }}">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
                                             @include('admin.pages.components.delete-form', [
-                                                'id' => $competition->id,
-                                                'route' => route('competitions.destroy', $competition->id),
+                                                'id' => $competition->id, 'type' => $competition->type,
+                                                'route' => route('competitions.destroy', ['type' => $type, 'id' => $competition->id]),
                                                 'message' => __('Bạn có chắc chắn muốn xóa?'),
                                             ])
                                         </td>

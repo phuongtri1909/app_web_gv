@@ -19,23 +19,23 @@ class CompetitionController extends Controller
     public function index($type = 'competition')
     {
         $competitions = Competition::where('type', $type)->paginate(10);
-    
+
         return view('admin.pages.p17.online-exams.competitions.index', compact('competitions','type'));
     }
-    
+
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($type = 'competition')
     {
-        return view('admin.pages.p17.online-exams.competitions.create');
+        return view('admin.pages.p17.online-exams.competitions.create', compact('type'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store($type = 'competition', Request $request)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -61,7 +61,7 @@ class CompetitionController extends Controller
             'banner.image' => 'Ảnh bìa phải là tệp hình ảnh.',
             'banner.mimes' => 'Ảnh bìa phải có định dạng: jpeg, jpg, png.',
             'banner.max' => 'Ảnh bìa không được lớn hơn :max KB.',
-        ]);        
+        ]);
 
         try {
 
@@ -91,7 +91,7 @@ class CompetitionController extends Controller
                 'time_limit' => $validated['time_limit'],
                 'banner' => $bannerPath,
             ]);
-            return redirect()->route('competitions.index')->with('success', 'Cuộc thi đã được tạo thành công.');
+            return redirect()->route('competitions.index', ['type' => $type])->with('success', 'Cuộc thi đã được tạo thành công.');
         } catch (\Exception $e) {
             if (isset($bannerPath) && File::exists(public_path($bannerPath))) {
                 File::delete(public_path($bannerPath));
@@ -113,20 +113,21 @@ class CompetitionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($type = 'competition', $id)
     {
-       $competition = Competition::findOrFail($id);
 
-        return view('admin.pages.p17.online-exams.competitions.edit', compact('competition'));
+        $competition = Competition::where('type', $type)->findOrFail($id);
+
+        return view('admin.pages.p17.online-exams.competitions.edit', compact('competition', 'type'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update($type = 'competition',Request $request, $id)
     {
-        $competition = Competition::findOrFail($id);
-    
+        $competition = Competition::where('type', $type)->findOrFail($id);
+
         try {
             $validated = $request->validate(
                 [
@@ -155,11 +156,11 @@ class CompetitionController extends Controller
                     'banner.mimes' => 'Banner phải có định dạng jpeg, jpg, hoặc png.',
                 ]
             );
-            
-    
+
+
             if ($request->hasFile('banner')) {
                 $image = $request->file('banner');
-    
+
                 if ($competition->banner && File::exists(public_path($competition->banner))) {
                     File::delete(public_path($competition->banner));
                 }
@@ -168,16 +169,16 @@ class CompetitionController extends Controller
                 $originalFileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
                 $fileName = $originalFileName . '_' . time() . '.webp';
                 $uploadPath = public_path('uploads/images/p17/competitions/banner/' . $folderName);
-    
+
                 if (!File::exists($uploadPath)) {
                     File::makeDirectory($uploadPath, 0755, true);
                 }
-    
+
                 $image = Image::make($image->getRealPath());
                 $image->resize(360, 203);
                 $image->encode('webp', 75);
                 $image->save($uploadPath . '/' . $fileName);
-    
+
                 $bannerPath = 'uploads/images/p17/competitions/banner/' . $folderName . '/' . $fileName;
                 $competition->banner = $bannerPath;
             }
@@ -191,8 +192,8 @@ class CompetitionController extends Controller
                 'banner' => $competition->banner ?? $competition->getOriginal('banner'),
             ]);
 
-            return redirect()->route('competitions.index')->with('success', 'Cuộc thi đã được cập nhật thành công.');
-    
+            return redirect()->route('competitions.index', ['type' => $type , 'id' => $id])->with('success', 'Cuộc thi đã được cập nhật thành công.');
+
         } catch (\Exception $e) {
             if (isset($bannerPath) && File::exists(public_path($bannerPath))) {
                 File::delete(public_path($bannerPath));
@@ -201,38 +202,49 @@ class CompetitionController extends Controller
             return redirect()->back()->with('error', 'Đã xảy ra lỗi khi cập nhật cuộc thi. Vui lòng thử lại.');
         }
     }
-    
-    
-    
+
+
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy( $type = 'competition' ,string $id)
     {
         try {
             $competition = Competition::findOrFail($id);
             $competition->delete();
 
-            return redirect()->route('competitions.index')->with('success', 'Cuộc thi đã được xóa thành công.');
+            return redirect()->route('competitions.index', ['type' => $type , 'id' => $id])->with('success', 'Cuộc thi đã được xóa thành công.');
         } catch (ModelNotFoundException $e) {
             Log::error('Lỗi khi xóa cuộc thi: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Cuộc thi không tồn tại. Vui lòng thử lại.');
         }
     }
 
-    public function import(Request $request)
+    public function import($type = 'competition', Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,csv', 
+            'file' => 'required|mimes:xlsx,xls,csv',
         ]);
 
         try {
             Excel::import(new CompetitionsImport, $request->file('file'));
 
-            return redirect()->route('competitions.index')->with('success', 'Thêm thành công!');
+            return redirect()->route('competitions.index', ['type' => $type])
+                ->with('success', 'Dữ liệu cuộc thi đã được nhập thành công.');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+
+            // Hiển thị lỗi validation
+            return back()->withErrors([
+                'file' => 'Dữ liệu trong file không hợp lệ. Vui lòng kiểm tra lại.'
+            ])->with('importErrors', $failures);
         } catch (\Exception $e) {
-            return back()->with('error', 'An error occurred while importing the file.')->withInput();
+            \Log::error('Import Error: ' . $e->getMessage());
+
+            return back()->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage());
         }
     }
+
 }

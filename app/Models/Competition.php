@@ -11,7 +11,7 @@ class Competition extends Model
 
     protected $table = 'competition';
 
-    protected $fillable = ['title', 'start_date', 'end_date', 'status', 'time_limit', 'banner'];
+    protected $fillable = ['title', 'start_date', 'end_date', 'status', 'time_limit', 'banner','type'];
 
     public function quizzes()
     {
