@@ -72,9 +72,12 @@ use App\Http\Controllers\BusinessFairRegistrationController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PersonalBusinessInterestController;
 use App\Http\Controllers\BusinessStartPromotionInvestmentController;
+use App\Http\Controllers\CaptchaController;
+use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DigitalTransformationController;
 use App\Http\Controllers\OnlineXamsController;
+use App\Http\Controllers\QuizController;
 
 /*
 |--------------------------------------------------------------------------
@@ -187,6 +190,21 @@ Route::middleware(['language'])->group(function () {
             Route::get('advertising/{id}', [AdvertisementController::class, 'show'])->name('p17.advertising.client.show');
             Route::get('form-advertising', [AdvertisementController::class, 'formAdvertising'])->name('p17.advertising.client.form');
             Route::post('form-advertising', [AdvertisementController::class, 'storeFormAdvertising'])->name('p17.advertising.client.store');
+            Route::get('register-exams', [OnlineXamsController::class, 'registerOnline'])->name('p17.online.xams.client.index');
+            Route::get('list-quiz/{competitionId}', [OnlineXamsController::class, 'listQuizOnline'])->name('p17.list.quiz.client');
+            Route::get('list-questions/{competitionId}', [OnlineXamsController::class, 'listQuestionsOnline'])->name('p17.list.questions.client');
+            Route::get('list-competitions', [OnlineXamsController::class, 'listCompetitionsOnline'])->name('p17.list.competitions.exams.client');
+            Route::post('list-competitions', [OnlineXamsController::class, 'submitCompetitionsOnline'])->name('p17.submit.competitions.exams.client');
+            Route::get('start-online-exams/{quizId}', [OnlineXamsController::class, 'startOnlineExams'])->name('p17.start.online.exams.client');
+            Route::post('submit-quiz/{quizId}', [OnlineXamsController::class, 'submitQuiz'])->name('p17.submit.quiz.client');
+            Route::get('list-quiz-result/{quizId}', [OnlineXamsController::class, 'listQuizResult'])->name('p17.list.quiz.result.client');
+            Route::get('generate-captcha', [CaptchaController::class, 'generateCaptcha'])->name('p17.generate.captcha');
+            Route::post('forget-session', [OnlineXamsController::class, 'forgetSession'])->name('p17.forget.session');
+
+            Route::get('list-surveys', [OnlineXamsController::class, 'listSurveys'])->name('p17.list.surveys.client');
+            Route::post('submit-survey/{surveyId}', [OnlineXamsController::class, 'submitSurvey'])->name('p17.submit.survey.client');  
+            Route::get('start-survey/{surveyId}', [OnlineXamsController::class, 'startSurvey'])->name('p17.start.survey.client');  
+            Route::get('list-survey-result/{surveyId}', [OnlineXamsController::class, 'listSurveyResult'])->name('p17.list.survey.result.client');  
             // Route::post('import', [BusinessHouseholdController::class, 'import'])->name('p17.households.import');
         });
     });
@@ -285,6 +303,23 @@ Route::middleware(['language'])->group(function () {
                    Route::resource('advertisements',AdvertisementController::class);
 
                    Route::resource('departments', DepartmentController::class)->except('show');
+
+                  Route::resource('competitions', CompetitionController::class)->except('show');
+                  Route::get('/competitions/{type?}', [CompetitionController::class, 'index'])->name('competitions.index');
+                  Route::get('/competitions/{competitionId}/quizzes', [QuizController::class, 'index'])->name('quizzes.index');
+                  Route::get('/competitions/{competitionId}/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
+                  Route::post('/competitions/{competitionId}/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
+                  Route::get('/quizzes/{id}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
+                  Route::put('/quizzes/{id}', [QuizController::class, 'update'])->name('quizzes.update');
+                  Route::delete('/quizzes/{id}', [QuizController::class, 'destroy'])->name('quizzes.destroy');
+
+                  Route::get('/quizzes/{quizId}/questions', [QuestionController::class, 'index'])->name('questions.index');
+                  Route::get('/quizzes/{quizId}/questions/create', [QuestionController::class, 'create'])->name('questions.create');
+                  Route::post('/quizzes/{quizId}/questions', [QuestionController::class, 'store'])->name('questions.store');
+                  Route::get('/questions/{id}/edit', [QuestionController::class, 'edit'])->name('questions.edit');
+                  Route::put('/questions/{id}', [QuestionController::class, 'update'])->name('questions.update');
+                  Route::delete('/questions/{id}', [QuestionController::class, 'destroy'])->name('questions.destroy');
+                  Route::post('competitions/import', [CompetitionController::class, 'import'])->name('competitions.import');
 
                 });
 
