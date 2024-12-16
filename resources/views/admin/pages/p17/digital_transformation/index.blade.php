@@ -7,10 +7,17 @@
                 <div class="card-header pb-0">
                     <div class="d-flex flex-row justify-content-between">
                         <div>
-                            <h5 class="mb-0">Danh sách chuyển đổi số</h5>
+                            <h5 class="mb-0">Danh sách
+                                @if (auth()->user()->unit->unit_code == 'P17')
+                                    chuyển đổi số
+                                @else
+                                    liên kết
+                                @endif
+                            </h5>
                         </div>
                         <div>
-                            <a href="{{ route('digital-transformations.create') }}" class="btn bg-gradient-primary">Thêm mới</a>
+                            <a href="{{ route('digital-transformations.create') }}" class="btn bg-gradient-primary">Thêm
+                                mới</a>
                         </div>
                     </div>
                 </div>
@@ -25,8 +32,7 @@
                                         Ảnh</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         Tiêu đề</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Url</th>
+                                    
                                     <th
                                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         {{ __('Thao tác') }}</th>
@@ -43,15 +49,15 @@
                                             <img src="{{ asset($item->image) }}" alt="image" height="40">
                                         </td>
 
-                                        <td><p class="text-xs font-weight-bold mb-0">{{ $item->title }}</p></td>
                                         <td>
-                                            <a href="{{ $item->url }}">{{ $item->url }}</a>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $item->title }}</p>
                                         </td>
-                                        
+                                      
+
                                         <td class="text-center">
-                                            
-                                            <a href="{{ route('digital-transformations.edit', $item->id) }}"
-                                                ><i class="fa-regular fa-pen-to-square"></i></a>
+
+                                            <a href="{{ route('digital-transformations.edit', $item->id) }}"><i
+                                                    class="fa-regular fa-pen-to-square"></i></a>
 
                                             @include('admin.pages.components.delete-form', [
                                                 'id' => $item->id,
@@ -64,7 +70,7 @@
                             </tbody>
                         </table>
                         <x-pagination :paginator="$digitalTransformations" />
-                        
+
                     </div>
                 </div>
             </div>
@@ -72,5 +78,4 @@
     </div>
 @endsection
 @push('scripts-admin')
-   
 @endpush

@@ -5,7 +5,7 @@
         <div class="col-12">
             <div class="card mb-4 mx-4">
                 <div class="card-header pb-0">
-                    <h5 class="mb-0">{{ __('Edit News') }}</h5>
+                    <h5 class="mb-0">Chỉnh sửa bài viết</h5>
                 </div>
                 <div class="card-body">
                     @include('admin.pages.notification.success-error')
@@ -29,6 +29,21 @@
                                     @enderror
                                 </div>
 
+                                <div class="form-group mb-3 col-md-6">
+                                    <label for="categories">{{ __('categories_news') }}</label>
+                                    <select class="form-control @error('category_id') is-invalid @enderror" id="categories" name="category_id">
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}"
+                                                {{ (collect(old('category_id', $news->categories->pluck('id')))->contains($category->id)) ? 'selected' : '' }}>
+                                                {{ $category->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('category_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
                                 <div class="form-group mb-3 col-12">
                                     <label for="content">{{ __('content') }} {{ $language->name }}</label>
                                     <textarea name="content_{{ $language->locale }}" id="content_{{ $language->locale }}"
@@ -40,46 +55,34 @@
                                     @enderror
                                 </div>
                             @endforeach
-                        </div>
 
-                        <div class="form-group mb-3 col-md-6">
-                            <label for="image" class="form-label">{{ __('image') }}</label>
-                            <input type="file" class="form-control @error('image') is-invalid @enderror" id="image"
-                                name="image">
-                            @if ($news->image)
-                                <div class="mt-2">
-                                    <img src="{{ asset($news->image) }}" class="img-fluid img-thumbnail" width="150"
-                                        alt="Current Image">
-                                </div>
-                            @endif
-                            @error('image')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
 
-                        <div class="form-group mb-3 col-md-6">
-                            <label for="published_at" class="form-label">{{ __('published_at') }}</label>
-                            <input type="datetime-local" class="form-control @error('published_at') is-invalid @enderror"
-                                id="published_at" name="published_at"
-                                value="{{ old('published_at', $news->published_at ? \Carbon\Carbon::parse($news->published_at)->format('Y-m-d\TH:i') : '') }}">
-                            @error('published_at')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                            <div class="form-group mb-3 col-md-6">
+                                <label for="image" class="form-label">{{ __('image') }}</label>
+                                <input type="file" class="form-control @error('image') is-invalid @enderror"
+                                    id="image" name="image">
+                                @if ($news->image)
+                                    <div class="mt-2">
+                                        <img src="{{ asset($news->image) }}" class="img-fluid img-thumbnail" width="150"
+                                            alt="Current Image">
+                                    </div>
+                                @endif
+                                @error('image')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-                        {{-- <div class="form-group mb-3 col-md-6">
-                            <label for="categories">{{ __('categories_news') }}</label>
-                            <select class="form-control @error('category_id') is-invalid @enderror" id="categories" name="category_id">
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}" {{ $category->id == $news->category_id ? 'selected' : '' }}>
-                                        {{ $category->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('category_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div> --}}
+                            <div class="form-group mb-3 col-md-6">
+                                <label for="published_at" class="form-label">{{ __('published_at') }}</label>
+                                <input type="datetime-local"
+                                    class="form-control @error('published_at') is-invalid @enderror" id="published_at"
+                                    name="published_at"
+                                    value="{{ old('published_at', $news->published_at ? \Carbon\Carbon::parse($news->published_at)->format('Y-m-d\TH:i') : '') }}">
+                                @error('published_at')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
 
                         {{-- <div class="form-group mb-3 col-md-6">
                             <label for="tags">{{ __('tags') }}</label>
@@ -105,10 +108,9 @@
     </div>
 @endsection
 @push('scripts-admin')
-<script>
-    @foreach ($languages as $language)
-        CKEDITOR.replace("content_{{ $language->locale }}", {
-        });
-    @endforeach
-</script>
+    <script>
+        @foreach ($languages as $language)
+            CKEDITOR.replace("content_{{ $language->locale }}", {});
+        @endforeach
+    </script>
 @endpush

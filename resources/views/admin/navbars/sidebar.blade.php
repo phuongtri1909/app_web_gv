@@ -436,6 +436,18 @@
                     @break
 
                     @case('P17')
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteNamed('feedbacks.*') ? 'active' : '' }}"
+                            href="{{ route('feedbacks.index') }}">
+                            <div
+                                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa-regular fa-comment-dots text-dark icon-sidebar"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Góp ý - Phản ánh</span>
+                        </a>
+                    </li>
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('ad-types.*', 'ad-categories.*','advertisements.*') ? 'active' : '' }}"
                             href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"
@@ -501,6 +513,56 @@
                             <span class="nav-link-text ms-1">Khảo sát trực tuyến</span>
                         </a>
                     </li>                   
+
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('departments.*', 'work-schedules.*') ? 'active' : '' }}"
+                            href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"
+                            data-bs-target="#email" aria-expanded="false">
+                            <div
+                                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa-solid fa-list-check text-dark icon-sidebar"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Tiếp dân & Khảo sát</span>
+                        </a>
+                        <div class="collapse mt-1" id="email" style="margin-left: 30px">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Route::currentRouteNamed('work-schedules.*') ? 'active' : '' }}"
+                                        href="{{ route('work-schedules.index') }}">
+                                        <div
+                                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                            <i class="fa-regular fa-calendar-days text-dark icon-sidebar"></i>
+                                        </div>
+                                        <span class="nav-link-text ms-1">Lịch tiếp dân</span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Route::currentRouteNamed('satisfaction-survey.*') ? 'active' : '' }}"
+                                        href="{{ route('satisfaction-survey.index') }}">
+                                        <div
+                                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                            <i class="fa-solid fa-square-poll-vertical text-dark icon-sidebar"></i>
+                                        </div>
+                                        <span class="nav-link-text ms-1">Khảo sát hài lòng</span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Route::currentRouteNamed('departments.*') ? 'active' : '' }}"
+                                        href="{{ route('departments.index') }}">
+                                        <div
+                                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                            <i class="fa-solid fa-people-roof text-dark icon-sidebar"></i>
+                                        </div>
+                                        <span class="nav-link-text ms-1">Phòng ban</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
                     @break
 
                     @default
@@ -516,7 +578,7 @@
                         @if (auth()->user()->unit->unit_code == 'QGV')
                             <span class="nav-link-text ms-1">Địa điểm</span>
                         @else
-                        <span class="nav-link-text ms-1">Kết nối tiểu thương</span>
+                        <span class="nav-link-text ms-1">BĐH khu phố</span>
                         @endif
                     </a>
                 </li>
@@ -528,20 +590,16 @@
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-gears text-dark icon-sidebar"></i>
                         </div>
-                        <span class="nav-link-text ms-1">Chuyển đổi số</span>
+                        <span class="nav-link-text ms-1">
+                            @if (auth()->user()->unit->unit_code == 'P17')
+                                Chuyển đổi số
+                            @else
+                                Liên kết
+                            @endif
+                        </span>
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteNamed('departments.*') ? 'active' : '' }}"
-                        href="{{ route('departments.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-people-roof text-dark icon-sidebar"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Phòng ban</span>
-                    </a>
-                </li>
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('news.*', 'categories-news.*', 'tags-news.*', 'news_contents.*', 'tabs_posts.*') ? 'active' : '' }}"
@@ -555,39 +613,6 @@
                     </a>
                     <div class="collapse mt-1" id="news" style="margin-left: 30px">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li>
-                                <a class="nav-link {{ Route::currentRouteNamed('news.*') ? 'active' : '' }}"
-                                    href="{{ route('news.index') }}">
-                                    <div
-                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1">{{ __('news') }}</span>
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="nav-link {{ Route::currentRouteNamed('tabs_posts.*') ? 'active' : '' }}"
-                                    href="{{ route('tabs_posts.index') }}">
-                                    <div
-                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1">{{ __('tabs_posts') }}</span>
-                                </a>
-                            </li>
-
-
-                            <li>
-                                <a class="nav-link {{ Route::currentRouteNamed('news_contents.*') ? 'active' : '' }}"
-                                    href="{{ route('news_contents.index') }}">
-                                    <div
-                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1">{{ __('news_contents') }}</span>
-                                </a>
-                            </li>
 
                             <li>
                                 <a class="nav-link {{ Route::currentRouteNamed('categories-news.*') ? 'active' : '' }}"
@@ -600,7 +625,7 @@
                                 </a>
                             </li>
 
-                            <li>
+                            {{-- <li>
                                 <a class="nav-link {{ Route::currentRouteNamed('tags-news.*') ? 'active' : '' }}"
                                     href="{{ route('tags-news.index') }}">
                                     <div
@@ -609,13 +634,52 @@
                                     </div>
                                     <span class="nav-link-text ms-1">{{ __('tags') }}</span>
                                 </a>
+                            </li> --}}
+
+                            <li>
+                                <a class="nav-link {{ Route::currentRouteNamed('news.*') ? 'active' : '' }}"
+                                    href="{{ route('news.index') }}">
+                                    <div
+                                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                        <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                    </div>
+                                    <span class="nav-link-text ms-1">{{ __('news') }}</span>
+                                </a>
                             </li>
+
+                            @if (auth()->user()->unit->unit_code == 'QGV')
+                                <li>
+                                    <a class="nav-link {{ Route::currentRouteNamed('tabs_posts.*') ? 'active' : '' }}"
+                                        href="{{ route('tabs_posts.index') }}">
+                                        <div
+                                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                        </div>
+                                        <span class="nav-link-text ms-1">{{ __('tabs_posts') }}</span>
+                                    </a>
+                                </li>
+
+
+                                <li>
+                                    <a class="nav-link {{ Route::currentRouteNamed('news_contents.*') ? 'active' : '' }}"
+                                        href="{{ route('news_contents.index') }}">
+                                        <div
+                                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                            <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
+                                        </div>
+                                        <span class="nav-link-text ms-1">{{ __('news_contents') }}</span>
+                                    </a>
+                                </li>
+                                
+                            @endif
+                            
+
                         </ul>
                     </div>
                 </li>
 
 
-                <li class="nav-item mt-2">
+                {{-- <li class="nav-item mt-2">
                     <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">
                         {{ __('feature_page') }}
                     </h6>
@@ -630,7 +694,7 @@
                         </div>
                         <span class="nav-link-text ms-1">{{ __('language') }}</span>
                     </a>
-                </li>
+                </li> --}}
             @else
                 <li class="nav-item">
                     <a class="nav-link {{ Route::currentRouteNamed('business.dashboard') ? 'active' : '' }}"

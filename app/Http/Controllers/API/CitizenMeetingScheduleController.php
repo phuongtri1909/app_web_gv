@@ -10,6 +10,17 @@ use Carbon\Carbon;
 
 class CitizenMeetingScheduleController extends Controller
 {
+
+    public function index(Request $request){
+        $customer_id = $request->get('customer_id');
+
+        $schedules = CitizenMeetingSchedule::where('customer_id', $customer_id)->orderBy('working_day','desc')->get();
+
+        return response()->json([
+            'data' => $schedules
+        ]);
+    }
+
     public function store(Request $request)
     {
         try {
@@ -33,6 +44,7 @@ class CitizenMeetingScheduleController extends Controller
                         }
                     },
                 ],
+                'customer_id' => 'required|exists:customers,id',
             ], [
                 'department_id.required' => 'Phòng ban không được để trống.',
                 'department_id.exists' => 'Phòng ban không tồn tại.',
@@ -48,6 +60,8 @@ class CitizenMeetingScheduleController extends Controller
                 'address.max' => 'Địa chỉ không được vượt quá 255 ký tự.',
                 'working_day.required' => 'Ngày làm việc không được để trống.',
                 'working_day.date' => 'Ngày làm việc không hợp lệ.',
+                'customer_id.required' => 'Thao tác không hợp lệ.',
+                'customer_id.exists' => 'Thao tác không hợp lệ.',
             ]);
 
             $currentDateTime = Carbon::now()->format('YmdHis');

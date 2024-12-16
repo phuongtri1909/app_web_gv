@@ -13,5 +13,11 @@ class DigitalTransformation extends Model
         'title',
         'image',
         'link',
+        'unit_id'
     ];
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }
 }

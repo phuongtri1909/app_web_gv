@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\EmailController;
-use App\Http\Controllers\EmailTemplatesController;
 use App\Models\Tab;
 use App\Models\User;
 use App\Models\SlideProgram;
@@ -16,25 +14,29 @@ use App\Http\Controllers\TabsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BanksController;
 use App\Http\Controllers\BlogsController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\PaperController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\AdTypeController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\AboutUsController;
-use App\Http\Controllers\AdCategoryController;
-use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\BannersController;
 use App\Http\Controllers\TagNewsController;
 use App\Http\Controllers\TuitionController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\AdmissionController;
+use App\Http\Controllers\AdCategoryController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EvironmentController;
+use App\Http\Controllers\OnlineXamsController;
 use App\Http\Controllers\TabsCustomController;
 use App\Http\Controllers\LegalAdviceController;
 use App\Http\Controllers\BankServicerController;
@@ -46,10 +48,13 @@ use App\Http\Controllers\TabAdmissionController;
 use App\Http\Controllers\TestimonialsController;
 use App\Models\BusinessStartPromotionInvestment;
 use App\Http\Controllers\AdminQuestionController;
+use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\BusinessFieldController;
 use App\Http\Controllers\DetailContentController;
 use App\Http\Controllers\TabDetailPostController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\BusinessSurveyController;
+use App\Http\Controllers\EmailTemplatesController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\MemberBusinessController;
 use App\Http\Controllers\TabsForParentsController;
@@ -62,21 +67,19 @@ use App\Http\Controllers\CustomerInterestController;
 use App\Http\Controllers\FinancialSupportController;
 use App\Http\Controllers\BusinessDashboardController;
 use App\Http\Controllers\BusinessHouseholdController;
+use App\Http\Controllers\SatisfactionSurveyController;
 use App\Http\Controllers\BusinessCapitalNeedController;
 use App\Http\Controllers\BusinessRecruitmentController;
 use App\Http\Controllers\ContactConsultationController;
+use App\Http\Controllers\DigitalTransformationController;
 use App\Http\Controllers\AdmissionProcessDetailController;
-use App\Http\Controllers\AdTypeController;
-use App\Http\Controllers\AdvertisementController;
+use App\Http\Controllers\CitizenMeetingScheduleController;
 use App\Http\Controllers\BusinessFairRegistrationController;
 use App\Http\Controllers\NewsTabContentDetailPostController;
 use App\Http\Controllers\PersonalBusinessInterestController;
 use App\Http\Controllers\BusinessStartPromotionInvestmentController;
 use App\Http\Controllers\CaptchaController;
 use App\Http\Controllers\CompetitionController;
-use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\DigitalTransformationController;
-use App\Http\Controllers\OnlineXamsController;
 use App\Http\Controllers\QuizController;
 
 /*
@@ -105,7 +108,7 @@ Route::middleware(['language'])->group(function () {
     Route::get('/b/blogs', [BlogsController::class, 'blogIndex'])->name('list-blogs');
 
     Route::get('/detail-blog/{slug}', [BlogsController::class, 'showBlogIndex'])->name('detail-blog');
-    Route::get('/detail-blog/mini/{slug}', [BlogsController::class, 'showBlogIndexMini'])->name('detail-blog-mini');
+    // Route::get('/detail-blog/mini/{slug}', [BlogsController::class, 'showBlogIndexMini'])->name('detail-blog-mini');
 
     Route::get('page-tab/{slug}', function ($slug) {
         return view('pages.tab-custom.index', compact('slug'));
@@ -221,7 +224,7 @@ Route::middleware(['language'])->group(function () {
                 Route::put('languages/update-system/{locale}', [LanguageController::class, 'updateSystem'])->name('languages.update-system');
 
                 Route::resource('tags-news', TagNewsController::class);
-                Route::resource('categories-news', CategoryNewsController::class)->except('edit', 'update', 'show', 'destroy');
+                Route::resource('categories-news', CategoryNewsController::class)->except('show');
                 Route::resource('news', BlogsController::class);
 
                 Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
@@ -246,6 +249,9 @@ Route::middleware(['language'])->group(function () {
                 Route::delete('locations/destroy/{id}', [LocationController::class, 'destroy'])->name('locations.destroy');
                 Route::get('locations/detail/{id}', [LocationController::class, 'show'])->name('locations.show');
 
+                Route::resource('digital-transformations', DigitalTransformationController::class)->except('show');
+
+                Route::post('/news/toggle-digital-transformation', [BlogsController::class, 'toggleDigitalTransformation'])->name('news.toggleDigitalTransformation');
 
                 Route::middleware(['role.admin.qgv'])->group(function () {
                     Route::resource('bank-servicers', BankServicerController::class);
@@ -297,12 +303,10 @@ Route::middleware(['language'])->group(function () {
                 });
 
                 Route::middleware(['role.admin.p17'])->group(function () {
-                   Route::resource('digital-transformations',DigitalTransformationController::class)->except('show');
-                   Route::resource('ad-types',AdTypeController::class)->except('show');
-                   Route::resource('ad-categories',AdCategoryController::class)->except('show');
-                   Route::resource('advertisements',AdvertisementController::class);
 
-                   Route::resource('departments', DepartmentController::class)->except('show');
+                    Route::resource('ad-types', AdTypeController::class)->except('show');
+                    Route::resource('ad-categories', AdCategoryController::class)->except('show');
+                    Route::resource('advertisements', AdvertisementController::class);
 
                   Route::resource('competitions', CompetitionController::class)->except('show');
                   Route::get('/competitions/{type?}', [CompetitionController::class, 'index'])->name('competitions.index');
@@ -321,8 +325,15 @@ Route::middleware(['language'])->group(function () {
                   Route::delete('/questions/{id}', [QuestionController::class, 'destroy'])->name('questions.destroy');
                   Route::post('competitions/import', [CompetitionController::class, 'import'])->name('competitions.import');
 
-                });
+                    Route::resource('departments', DepartmentController::class)->except('show');
 
+                    Route::get('work-schedules', [CitizenMeetingScheduleController::class, 'index'])->name('work-schedules.index');
+                    Route::get('work-schedules/{id}', [CitizenMeetingScheduleController::class, 'show'])->name('work-schedules.show');
+                    Route::post('/work-schedules/{id}/update-status', [CitizenMeetingScheduleController::class, 'update'])->name('work-schedules.update');
+
+                    Route::get('feedbacks', [FeedbackController::class, 'index'])->name('feedbacks.index');
+                    Route::get('satisfaction-survey' , [SatisfactionSurveyController::class, 'index'])->name('satisfaction-survey.index');
+                });
             });
         });
 

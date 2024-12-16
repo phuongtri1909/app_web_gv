@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BusinessFairRegistration;
-use App\Models\BusinessMember;
-use App\Models\CategoryNews;
-use App\Models\Language;
 use App\Models\News;
-use Illuminate\Http\Request;
-use Intervention\Image\Facades\Image;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
+use App\Models\Language;
 use Illuminate\Support\Str;
+use App\Models\CategoryNews;
+use Illuminate\Http\Request;
+use App\Models\BusinessMember;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
+use Intervention\Image\Facades\Image;
+use App\Models\BusinessFairRegistration;
+use App\Models\NewsDigitalTransformation;
+
 class BusinessFairRegistrationController extends Controller
 {
     /**
@@ -21,7 +23,7 @@ class BusinessFairRegistrationController extends Controller
      */
     public function index()
     {
-        $category = CategoryNews::where('slug', 'hoi-cho')->first();
+        $category = CategoryNews::where('unit_id',auth()->user()->unit_id)->where('slug', 'hoi-cho')->first();
         $blogs = [];
         if ($category) {
             $blogs = News::with('categories')
@@ -32,7 +34,9 @@ class BusinessFairRegistrationController extends Controller
                 ->paginate(15);
         }
 
-        return view('admin.pages.client.form-fair-registration.index', compact('blogs'));
+        $newsDigitalTransformations = NewsDigitalTransformation::pluck('news_id')->toArray();
+
+        return view('admin.pages.client.form-fair-registration.index', compact('blogs', 'newsDigitalTransformations'));
     }
 
     /**
@@ -40,9 +44,8 @@ class BusinessFairRegistrationController extends Controller
      */
     public function create()
     {
-        $category = CategoryNews::where('slug', 'hoi-cho')->first();
         $languages = Language::all();
-        return view('admin.pages.client.form-fair-registration.create', compact('category',  'languages'));
+        return view('admin.pages.client.form-fair-registration.create', compact('languages'));
     }
 
     public function store(Request $request)
@@ -74,8 +77,10 @@ class BusinessFairRegistrationController extends Controller
             $messages["title_{$locale}.max"] = __('title_max', ['max' => 255]);
             $messages["content_{$locale}.string"] = __('content_string');
         }
+
         $validatedData = $request->validate($rules, $messages);
 
+        
         try {
             $translateTitle = [];
             $tranSlateContent = [];
@@ -89,7 +94,7 @@ class BusinessFairRegistrationController extends Controller
             $slug = Str::slug($translateTitle[config('app.locale')]);
 
             if (News::where('slug', $slug)->exists()) {
-                return redirect()->back()->with('error', __('slug_exists'));
+                return redirect()->back()->with('error', 'Tiêu đề đã tồn tại. Vui lòng chọn tiêu đề khác.')->withInput();
             }
 
             if ($request->hasFile('image')) {
@@ -119,14 +124,10 @@ class BusinessFairRegistrationController extends Controller
             $news->expired_at = $request->input('expired_at');
             $news->save();
 
-            try {
-                if ($request->filled('category_id')) {
-                    $news->categories()->attach($request->input('category_id'));
-                }
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', __('create_post_error'));
-            }
-            // dd($news);
+            $category = CategoryNews::where('unit_id',auth()->user()->unit_id)->where('slug', 'hoi-cho')->first();
+
+            $news->categories()->attach($category->id);
+               
             return redirect()->route('fair-registrations.index')->with('success', __('create_post_success'));
         } catch (\Exception $e) {
             if (isset($image_path) && File::exists(public_path($image_path))) {
@@ -136,28 +137,19 @@ class BusinessFairRegistrationController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-
-    }
-
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit($id)
     {
-        $category = CategoryNews::where('slug', 'hoi-cho')->first();
         $news = News::find($id);
-        if (!$news) {
+        if (!$news || !$news->categories()->where('unit_id', Auth::user()->unit_id)->where('slug', 'hoi-cho')->exists()) {
             return back()->with('error', __('no_find_data'));
         }
         $languages = Language::all();
 
-        return view('admin.pages.client.form-fair-registration.edit', compact('news', 'languages', 'category'));
+        return view('admin.pages.client.form-fair-registration.edit', compact('news', 'languages'));
     }
 
 
@@ -194,6 +186,10 @@ class BusinessFairRegistrationController extends Controller
         try {
             $news = News::findOrFail($id);
 
+            if (!$news || !$news->categories()->where('unit_id', Auth::user()->unit_id)->where('slug', 'hoi-cho')->exists()) {
+                return back()->with('error', __('no_find_data'))->withInput();
+            }
+
             $translateTitle = [];
             $translateContent = [];
             foreach ($locales as $locale) {
@@ -226,13 +222,7 @@ class BusinessFairRegistrationController extends Controller
             $news->setTranslations('content', $translateContent);
             $news->published_at = $request->input('published_at');
             $news->expired_at = $request->input('expired_at');
-            try {
-                if ($request->filled('category_id')) {
-                    $news->categories()->sync($request->input('category_id'));
-                }
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', __('update_error'). ' ' . $e->getMessage())->withInput();
-            }
+                
             $news->save();
 
             return redirect()->route('fair-registrations.index')->with('success', __('update_success'));
@@ -251,9 +241,16 @@ class BusinessFairRegistrationController extends Controller
     {
         $news = News::find($id);
 
-        if (!$news) {
+        if (!$news || !$news->categories()->where('unit_id', Auth::user()->unit_id)->where('slug', 'hoi-cho')->exists()) {
             return redirect()->route('fair-registrations.index')->with('error', __('Không tồn tại!!'));
         }
+
+        $newsDigitalTransformation = NewsDigitalTransformation::where('news_id', $news->id)->first();
+       
+        if ($newsDigitalTransformation) {
+            $newsDigitalTransformation->digitalTransformation->delete();
+        }
+
         $news->delete();
 
         return redirect()->route('fair-registrations.index')->with('success', __('Xóa thành công!!'));
@@ -327,18 +324,18 @@ class BusinessFairRegistrationController extends Controller
             'is_join_charity.boolean' => 'Lựa chọn tham gia từ thiện không hợp lệ. Vui lòng chọn đúng kiểu giá trị (true/false).',
         ]);
 
-        // $recaptchaResponse = $request->input('g-recaptcha-response');
-        // $secretKey = env('RECAPTCHA_SECRET_KEY');
-        // $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-        //     'secret' => $secretKey,
-        //     'response' => $recaptchaResponse,
-        // ]);
+        $recaptchaResponse = $request->input('g-recaptcha-response');
+        $secretKey = env('RECAPTCHA_SECRET_KEY');
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $secretKey,
+            'response' => $recaptchaResponse,
+        ]);
 
-        // $responseBody = json_decode($response->body());
+        $responseBody = json_decode($response->body());
 
-        // if (!$responseBody->success) {
-        //     return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
-        // }
+        if (!$responseBody->success) {
+            return redirect()->back()->withErrors(['error' => 'Vui lòng xác nhận bạn không phải là robot.'])->withInput();
+        }
 
         $business_member_id = $this->getBusinessMemberId($request);
         

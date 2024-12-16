@@ -18,7 +18,8 @@ class CitizenMeetingSchedule extends Model
         'phone',
         'card_number',
         'address',
-        'working_day'
+        'working_day',
+        'customer_id',
     ];
 
     public function department()

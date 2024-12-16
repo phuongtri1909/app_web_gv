@@ -2,24 +2,92 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CategoryNews;
-use App\Models\FinancialSupport;
-use App\Models\Forum;
+use App\Models\Tab;
 use App\Models\News;
+use App\Models\Forum;
+use App\Models\TagNews;
+use App\Models\Language;
+use App\Models\TabProject;
+use Illuminate\Support\Str;
+use App\Models\CategoryNews;
 use Illuminate\Http\Request;
+use App\Models\FinancialSupport;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Models\BankServicesInterest;
-use App\Models\Language;
-use App\Models\Tab;
-use App\Models\TabProject;
-use App\Models\TagNews;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
+use App\Models\DigitalTransformation;
+use App\Models\NewsDigitalTransformation;
+use Illuminate\Validation\ValidationException;
 
 
 class BlogsController extends Controller
 {
+
+    public function toggleDigitalTransformation(Request $request)
+    {
+        $newsId = $request->input('news_id');
+        $news = News::find($newsId);
+
+        if (!$news || !$news->categories()->where('unit_id', Auth::user()->unit_id)->exists()) {
+            return response()->json(['success' => false, 'message' => 'Bài viết không tồn tại.']);
+        }
+
+        DB::beginTransaction();
+        try {
+            $newsDigitalTransformation = NewsDigitalTransformation::where('news_id', $newsId)->first();
+
+            if (!$newsDigitalTransformation) {
+                $digitalTransformation = new DigitalTransformation();
+                $digitalTransformation->title = $news->title;
+                $digitalTransformation->image = $news->image;
+                $digitalTransformation->link = route('detail-blog', $news->slug);
+                $digitalTransformation->unit_id = Auth::user()->unit_id;
+
+                if ($digitalTransformation->save()) {
+                    $newsDigitalTransformation = new NewsDigitalTransformation();
+                    $newsDigitalTransformation->news_id = $newsId;
+                    $newsDigitalTransformation->digital_transformation_id = $digitalTransformation->id;
+
+                    if ($newsDigitalTransformation->save()) {
+                        DB::commit();
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Bài viết đã được thêm vào danh sách ' . (auth()->user()->unit->unit_code == 'QGV' ? 'liên kết' : 'Chuyển đổi số'),
+                            'status' => 'added'
+                        ]);
+                    } else {
+                        DB::rollBack();
+                        return response()->json(['success' => false, 'message' => 'Không thể lưu ' . (auth()->user()->unit->unit_code == 'QGV' ? 'liên kết' : 'Chuyển đổi số')]);
+                    }
+                } else {
+                    DB::rollBack();
+                    return response()->json(['success' => false, 'message' => 'Không thể lưu ' . (auth()->user()->unit->unit_code == 'QGV' ? 'liên kết' : 'Chuyển đổi số')]);
+                }
+            } else {
+                $digitalTransformation = DigitalTransformation::find($newsDigitalTransformation->digital_transformation_id);
+
+                if ($digitalTransformation) {
+                    $digitalTransformation->delete();
+                }
+
+                $newsDigitalTransformation->delete();
+
+                DB::commit();
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Bài viết đã được xóa khỏi danh sách ' . (auth()->user()->unit->unit_code == 'QGV' ? 'liên kết' : 'Chuyển đổi số'),
+                    'status' => 'removed'
+                ]);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => 'Có lỗi xảy ra.']);
+        }
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -27,21 +95,46 @@ class BlogsController extends Controller
      */
     public function index(Request $request)
     {
+        $unit_id = Auth::user()->unit_id;
+
         $search = $request->input('search');
         $searchCategory = $request->input('search-category');
         $blogs = News::query();
+
+        // Lọc theo tiêu đề nếu có từ khóa tìm kiếm
         if ($search) {
             $blogs = $blogs->where('title', 'like', '%' . $search . '%');
         }
+
+        // Lọc theo category nếu có từ khóa tìm kiếm category
         if ($searchCategory) {
             $blogs = $blogs->whereHas('categories', function ($query) use ($searchCategory) {
-                $query->where('name', 'like', '%'.$searchCategory.'%')->orWhere('slug', $searchCategory)
-                        ->orWhere('slug', $searchCategory);
+                $query->where('name', 'like', '%' . $searchCategory . '%')
+                    ->orWhere('slug', $searchCategory);
             });
         }
-        $categories = CategoryNews::where('slug', '!=', 'khao-sat')->where('slug', '!=', 'hoi-cho')->get();
-        $blogs = $blogs->orderBy('published_at', 'desc')->whereHas('categories', function ($query) { $query->whereNotIn('slug', ['khao-sat', 'hoi-cho']);})->paginate(15);
-        return view('admin.pages.blogs.index', compact('blogs', 'categories'));
+
+        // Lọc theo unit_id của người dùng hiện tại
+        $blogs = $blogs->whereHas('categories', function ($query) use ($unit_id) {
+            $query->where('unit_id', $unit_id);
+        });
+
+        // Lọc các categories không có slug là 'khao-sat' và 'hoi-cho'
+        $categories = CategoryNews::where('unit_id', $unit_id)
+            ->where('slug', '!=', 'khao-sat')
+            ->where('slug', '!=', 'hoi-cho')
+            ->get();
+
+        // Lọc các blogs không có categories với slug là 'khao-sat' và 'hoi-cho'
+        $blogs = $blogs->orderBy('published_at', 'desc')
+            ->whereHas('categories', function ($query) {
+                $query->whereNotIn('slug', ['khao-sat', 'hoi-cho']);
+            })
+            ->paginate(15);
+
+        $newsDigitalTransformations = NewsDigitalTransformation::pluck('news_id')->toArray();
+
+        return view('admin.pages.blogs.index', compact('blogs', 'categories', 'newsDigitalTransformations'));
     }
 
     /**
@@ -51,7 +144,8 @@ class BlogsController extends Controller
      */
     public function create()
     {
-        $categories = CategoryNews::where('slug', '!=', 'khao-sat')->get();
+        $unit_id = Auth::user()->unit_id;
+        $categories = CategoryNews::where('unit_id', $unit_id)->where('slug', '!=', 'khao-sat')->where('slug', '!=', 'hoi-cho')->get();
         $tags = TagNews::all();
         $languages = Language::all();
         return view('admin.pages.blogs.create', compact('categories', 'tags', 'languages'));
@@ -65,6 +159,7 @@ class BlogsController extends Controller
      */
     public function store(Request $request)
     {
+        $unit_id = Auth::user()->unit_id;
         $locales = Language::pluck('locale')->toArray();
 
         $rules = [];
@@ -72,12 +167,15 @@ class BlogsController extends Controller
 
         foreach ($locales as $locale) {
             $rules["title_{$locale}"] = 'string|max:255';
-            $rules["content_{$locale}"] = 'string';
+            $rules["content_{$locale}"] = 'required|string';
 
             $messages["title_{$locale}.string"] = __('title_string');
             $messages["title_{$locale}.max"] = __('title_max', ['max' => 255]);
+            $messages["content_{$locale}.required"] = __('content_required');
             $messages["content_{$locale}.string"] = __('content_string');
         }
+
+
         $validatedData = $request->validate($rules, $messages);
 
         try {
@@ -93,7 +191,7 @@ class BlogsController extends Controller
             $slug = Str::slug($translateTitle[config('app.locale')]);
 
             if (News::where('slug', $slug)->exists()) {
-                return redirect()->back()->with('error', __('slug_exists'));
+                return redirect()->back()->with('error', __('slug_exists'))->withInput();
             }
 
             if ($request->hasFile('image')) {
@@ -111,6 +209,8 @@ class BlogsController extends Controller
                     }
                     return back()->withInput()->with('error', __('upload_image_error'));
                 }
+            } else {
+                return back()->withInput()->with('error', 'Ảnh không được để trống.');
             }
 
             $tab_content = new News();
@@ -124,14 +224,29 @@ class BlogsController extends Controller
 
             try {
                 if ($request->filled('categories')) {
-                    $tab_content->categories()->attach($request->input('categories'));
+                    $category_id = $request->input('categories');
+
+                    // Kiểm tra xem category có thuộc về unit_id của người dùng hiện tại không
+                    $category = CategoryNews::where('id', $category_id)
+                        ->where('unit_id', Auth::user()->unit_id)
+                        ->where('slug', '!=', 'khao-sat')
+                        ->where('slug', '!=', 'hoi-cho')
+                        ->first();
+
+                    if ($category) {
+                        $tab_content->categories()->attach($category_id);
+                    } else {
+                        return redirect()->back()->with('error', 'Danh mục không tồn tại.')->withInput();
+                    }
+                } else {
+                    return redirect()->back()->with('error', 'Danh mục không được để trống.')->withInput();
                 }
 
                 if ($request->filled('tags')) {
                     $tab_content->tags()->attach($request->input('tags'));
                 }
             } catch (\Exception $e) {
-                return redirect()->back()->with('error', __('create_post_error'));
+                return redirect()->back()->with('error', __('create_post_error'))->withInput();
             }
 
             return redirect()->route('news.index')->with('success', __('create_post_success'));
@@ -165,14 +280,14 @@ class BlogsController extends Controller
      */
     public function edit($id)
     {
-        $categories = CategoryNews::where('slug', '!=', 'khao-sat')->where('slug', '!=', 'hoi-cho')->get();
-        $tags = TagNews::all();
         $news = News::find($id);
-        if (!$news) {
+        if (!$news || !$news->categories()->where('unit_id', Auth::user()->unit_id)->where('slug', '!=', 'khao-sat')->where('slug', '!=', 'hoi-cho')->exists()) {
             return back()->with('error', __('no_find_data'));
         }
+        $unit_id = Auth::user()->unit_id;
+        $categories = CategoryNews::where('unit_id', $unit_id)->where('slug', '!=', 'khao-sat')->where('slug', '!=', 'hoi-cho')->get();
+        $tags = TagNews::all();
         $languages = Language::all();
-
         return view('admin.pages.blogs.edit', compact('news', 'languages', 'categories', 'tags'));
     }
 
@@ -198,6 +313,10 @@ class BlogsController extends Controller
         try {
             $news = News::findOrFail($id);
 
+            if (!$news || !$news->categories()->where('unit_id', Auth::user()->unit_id)->where('slug', '!=', 'khao-sat')->where('slug', '!=', 'hoi-cho')->exists()) {
+                return back()->with('error', __('no_find_data'))->withInput();
+            }
+
             $translateTitle = [];
             $translateContent = [];
             foreach ($locales as $locale) {
@@ -222,26 +341,39 @@ class BlogsController extends Controller
                     if (isset($news->image) && File::exists(public_path($news->image))) {
                         File::delete(public_path($news->image));
                     }
-                    return back()->withInput()->with('error', __('upload_image_error'));
+                    return back()->withInput()->with('error', __('upload_image_error'))->withInput();
                 }
             }
 
             $news->setTranslations('title', $translateTitle);
             $news->setTranslations('content', $translateContent);
             $news->published_at = $request->input('published_at');
-            // try {
-            //     if ($request->filled('category_id')) {
-            //         $news->categories()->sync($request->input('category_id'));
-            //     }
+            try {
+                if ($request->filled('category_id')) {
+                    $category_id = $request->input('category_id');
 
-            //     if ($request->filled('tag_id')) {
-            //         $news->tags()->sync($request->input('tag_id'));
-            //     }
-            // } catch (\Exception $e) {
-            //     return redirect()->back()->with('error', __('update_error'));
-            // }
-            // dd($request->input('categories'), $request->input('tags'));
-            // dd($news);
+                    // Kiểm tra xem category có thuộc về unit_id của người dùng hiện tại không
+                    $category = CategoryNews::where('id', $category_id)
+                        ->where('unit_id', Auth::user()->unit_id)
+                        ->where('slug', '!=', 'khao-sat')
+                        ->where('slug', '!=', 'hoi-cho')
+                        ->first();
+
+                    if ($category) {
+                        $news->categories()->sync($category_id);
+                    } else {
+                        return redirect()->back()->with('error', 'Danh mục không tồn tại.')->withInput();
+                    }
+                } else {
+                    return redirect()->back()->with('error', 'Danh mục không được để trống.')->withInput();
+                }
+
+                if ($request->filled('tag_id')) {
+                    $news->tags()->sync($request->input('tag_id'));
+                }
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', __('update_error'))->withInput();
+            }
 
             $news->save();
 
@@ -250,7 +382,6 @@ class BlogsController extends Controller
             if (isset($news->image) && File::exists(public_path($news->image))) {
                 File::delete(public_path($news->image));
             }
-            // return $e->getMessage();
             return back()->with(['error' => __('update_error')])->withInput();
         }
     }
@@ -270,38 +401,65 @@ class BlogsController extends Controller
             return redirect()->route('news.index')->with('error', __('news_not_found'));
         }
 
-        // if ($news->published_at && $news->published_at <= now()) {
-        //     return redirect()->route('news.index')->with('error', __('You cannot delete a published post.'));
-        // }
+        // Kiểm tra xem bài viết có nằm trong category thuộc unit hiện tại không
+        $unit_id = Auth::user()->unit_id;
+        $belongsToUnit = $news->categories()
+            ->where('unit_id', $unit_id)
+            ->where('slug', '!=', 'khao-sat')
+            ->where('slug', '!=', 'hoi-cho')
+            ->exists();
 
-        $news->delete();
+        if (!$belongsToUnit) {
+            return redirect()->route('news.index')->with('error', __('news_not_found'));
+        }
 
-        return redirect()->route('news.index')->with('success', __('news_deleted_successfully'));
+        try {
+            // Xóa digital của bài viết
+            $newsDigitalTransformation = NewsDigitalTransformation::where('news_id', $id)->first();
+            if ($newsDigitalTransformation) {
+                $newsDigitalTransformation->digitalTransformation->delete();
+            }
+            // Xóa bài viết
+            $news->delete();
+            return redirect()->route('news.index')->with('success', __('news_deleted_successfully'));
+        } catch (\Exception $e) {
+            return redirect()->route('news.index')->with('error', 'Có lỗi xảy ra khi xóa bài viết.');
+        }
     }
 
     public function blogIndex(Request $request)
     {
 
         $query = News::query();
+
         if ($request->has('category') && $request->input('category') !== 'all') {
             $categorySlug = $request->input('category');
             $subCategory = $request->input('subCategory', 'all');
             if ($categorySlug === 'hoat-dong-xuc-tien') {
-                $categories = ['hoat-dong-xuc-tien', 'tin-tuc', 'hoi-cho'];
+                // Lấy danh sách slug của categories
+                $categorySlugs = CategoryNews::whereHas('unit', function ($query) {
+                    $query->where('unit_code', 'QGV');
+                })
+                    ->whereNotIn('slug', ['thong-bao', 'khao-sat', 'hoat-dong-hoi'])
+                    ->pluck('slug')
+                    ->toArray();
+
                 if ($subCategory !== 'all') {
                     $query->whereHas('categories', fn($q) => $q->where('slug', $subCategory));
                 } else {
-                    $query->whereHas('categories', fn($q) => $q->whereIn('slug', $categories));
+                    $query->whereHas('categories', fn($q) => $q->whereIn('slug', $categorySlugs));
                 }
             } else {
-                $categories = [$categorySlug];
+                $categorySlugs = [$categorySlug];
             }
-            $query->whereHas('categories', fn($q) => $q->whereIn('slug', $categories));
-            $category = CategoryNews::whereIn('slug', $categories)->get();
+            $query->whereHas('categories', fn($q) => $q->whereIn('slug', $categorySlugs));
+            // Lấy toàn bộ thông tin của categories
+            $categories = CategoryNews::whereIn('slug', $categorySlugs)->get();
+            $category = CategoryNews::whereIn('slug', $categorySlugs)->get();
         } else {
             $category = null;
+            $categories = collect(); // Trả về một collection rỗng nếu không có category
         }
-
 
         if ($request->has('tag')) {
             $tagId = $request->input('tag');
@@ -315,16 +473,13 @@ class BlogsController extends Controller
         foreach ($blogs as $blog) {
             $blog->shortContent = Str::limit(strip_tags($blog->content), 1000);
         }
-        $categories = CategoryNews::all();
         $tags = TagNews::all();
 
         $recentPosts = News::orderBy('published_at', 'desc')
             ->take(5)
             ->get();
 
-
-        return view('pages.blogs.blogs', compact( 'blogs', 'categories', 'tags', 'recentPosts', 'noResults', 'category', 'subCategory','categorySlug'));
-
+        return view('pages.blogs.blogs', compact('blogs', 'categories', 'tags', 'recentPosts', 'noResults', 'category', 'subCategory', 'categorySlug'));
     }
 
 

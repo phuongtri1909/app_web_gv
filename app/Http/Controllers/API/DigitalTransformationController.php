@@ -12,8 +12,23 @@ class DigitalTransformationController extends Controller
 {
     public function index(Request $request)
     {
-        $digitalTransformations = DigitalTransformation::get();
+        $digitalTransformations = DigitalTransformation::with('unit')->get();
 
-        return response()->json($digitalTransformations);
+        $filteredTransformations = $digitalTransformations->filter(function ($digitalTransformation) {
+            return $digitalTransformation->unit && $digitalTransformation->unit->unit_code == "P17";
+        });
+
+        return response()->json($filteredTransformations);
+    }
+
+    public function indexQGV(Request $request)
+    {
+        $digitalTransformations = DigitalTransformation::with('unit')->get();
+
+        $filteredTransformations = $digitalTransformations->filter(function ($digitalTransformation) {
+            return $digitalTransformation->unit && $digitalTransformation->unit->unit_code == "QGV";
+        });
+
+        return response()->json($filteredTransformations);
     }
 }

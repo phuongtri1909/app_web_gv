@@ -40,6 +40,25 @@
                                     @enderror
                                 </div>
                             @endforeach
+
+                            <div class="form-group mb-3 col-md-6">
+                                <label for="published_at" class="form-label">{{ __('Ngày bắt đầu') }}</label>
+                                <input type="datetime-local" class="form-control @error('published_at') is-invalid @enderror"
+                                    id="published_at" name="published_at"
+                                    value="{{ old('published_at', $news->published_at ? \Carbon\Carbon::parse($news->published_at)->format('Y-m-d\TH:i') : '') }}">
+                                @error('published_at')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group mb-3 col-md-6">
+                                <label for="expired_at" class="form-label">{{ __('Ngày hết hạn') }}</label>
+                                <input type="datetime-local" class="form-control @error('expired_at') is-invalid @enderror"
+                                    id="expired_at" name="expired_at"
+                                    value="{{ old('expired_at', $news->expired_at ? \Carbon\Carbon::parse($news->expired_at)->format('Y-m-d\TH:i') : '') }}">
+                                @error('expired_at')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
                         <div class="form-group mb-3 col-md-6">
@@ -57,27 +76,8 @@
                             @enderror
                         </div>
 
-                        <div class="form-group mb-3 col-md-6">
-                            <label for="published_at" class="form-label">{{ __('Ngày bắt đầu') }}</label>
-                            <input type="datetime-local" class="form-control @error('published_at') is-invalid @enderror"
-                                id="published_at" name="published_at"
-                                value="{{ old('published_at', $news->published_at ? \Carbon\Carbon::parse($news->published_at)->format('Y-m-d\TH:i') : '') }}">
-                            @error('published_at')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="form-group mb-3 col-md-6">
-                            <label for="expired_at" class="form-label">{{ __('Ngày hết hạn') }}</label>
-                            <input type="datetime-local" class="form-control @error('expired_at') is-invalid @enderror"
-                                id="expired_at" name="expired_at"
-                                value="{{ old('expired_at', $news->expired_at ? \Carbon\Carbon::parse($news->expired_at)->format('Y-m-d\TH:i') : '') }}">
-                            @error('expired_at')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="form-group mb-3 col-md-6">
-                            <input type="hidden" name="category_id" id="categories" value="{{ $category->id }}">
-                        </div>
+                        
+                      
 
                         {{-- <div class="form-group mb-3 col-md-6">
                             <label for="tags">{{ __('tags') }}</label>
