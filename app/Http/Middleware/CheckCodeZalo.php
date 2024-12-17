@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Services\ZaloApiService;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,75 +27,49 @@ class CheckCodeZalo
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $code = $request->query('code');
 
-        if (!$code) {
-            // Bước 1: Tạo code_verifier
-            $codeVerifier = Str::random(43);
+        $routeActions = ['p17.list.surveys.client', 'p17.list.competitions.exams.client'];
+        $routeAuth = 'p17.auth.zalo.client';
 
-            // Bước 2: Tạo code_challenge
-            $codeChallenge = rtrim(strtr(base64_encode(hash('sha256', $codeVerifier, true)), '+/', '-_'), '=');
-
-            // Bước 3: Lưu code_verifier vào session
-            session(['code_verifier' => $codeVerifier]);
-
-            $state = Str::random(32); // Tạo chuỗi random 32 ký tự
-            session(['oauth_state' => $state]);
-
-            $appId = env('ZALO_APP_ID');
-            $redirectUri = route('p17.auth.zalo.client');
-            $codeChallenge = $codeChallenge;
-            $state = $state; // Thay thế bằng giá trị thực tế
-
-            $authUrl = "https://oauth.zaloapp.com/v4/permission?app_id={$appId}&redirect_uri={$redirectUri}&code_challenge={$codeChallenge}&state={$state}";
-
-            return redirect($authUrl);
+        if (in_array($request->route()->getName(), $routeActions)) {
+            Session::put('previous_url', $request->fullUrl());
         }
 
-
+        $code = $request->query('code');
         $codeVerifier = session('code_verifier');
 
-        if (!$codeVerifier) {
-             // Bước 1: Tạo code_verifier
-             $codeVerifier = Str::random(43);
+        if (Session::has('access_token')) {
+            $accessToken = Session::get('access_token');
+            $get_info = $this->zaloApiService->getProfile($accessToken);
 
-             // Bước 2: Tạo code_challenge
-             $codeChallenge = rtrim(strtr(base64_encode(hash('sha256', $codeVerifier, true)), '+/', '-_'), '=');
- 
-             // Bước 3: Lưu code_verifier vào session
-             session(['code_verifier' => $codeVerifier]);
- 
-             $state = Str::random(32); // Tạo chuỗi random 32 ký tự
-             session(['oauth_state' => $state]);
- 
-             $appId = env('ZALO_APP_ID');
-             $redirectUri = route('p17.auth.zalo.client');
-             $codeChallenge = $codeChallenge;
-             $state = $state; // Thay thế bằng giá trị thực tế
- 
-             $authUrl = "https://oauth.zaloapp.com/v4/permission?app_id={$appId}&redirect_uri={$redirectUri}&code_challenge={$codeChallenge}&state={$state}";
- 
-             return redirect($authUrl);
+            if (isset($get_info['error']) && $get_info['error'] !== 0) {
+                if (in_array($request->route()->getName(), $routeActions)) {
+                    //452 lỗi token hết hạn
+                    if($get_info['error'] == 452){
+                        return $this->zaloApiService->refreshAcessToken($next, $request);
+                    }
+
+                    return $this->zaloApiService->redirectToZaloLogin();
+                }
+            }
+
+            if (Route::currentRouteName() == $routeAuth) {
+                $previousUrl = Session::get('previous_url');
+
+                return redirect($previousUrl);
+            }
+            return $next($request);
         }
 
-        // Đổi code lấy access_token từ Zalo
-        $response = Http::withHeaders([
-            'secret_key' => env('ZALO_SECRET_KEY'),
-        ])->asForm()->post('https://oauth.zaloapp.com/v4/access_token', [
-            'app_id' => env('ZALO_APP_ID'),
-            'code' => $code,
-            'code_verifier' => $codeVerifier,
-            'grant_type' => 'authorization_code',
-        ]);
+        return $this->checkCodeZalo($code, $codeVerifier);
+    }
 
-        if (isset($response['error']) && $response['error'] !== 0) {
-            dd($response->json());
-            return abort(401);
+    protected function checkCodeZalo($code, $codeVerifier)
+    {
+        if(!$code || !$codeVerifier){
+            return $this->zaloApiService->redirectToZaloLogin();
+        }else{
+            return $this->zaloApiService->getAccessToken($code, $codeVerifier);
         }
-
-        dd($response->json());
-
-
-        return $next($request);
     }
 }

@@ -216,10 +216,7 @@ Route::middleware(['language'])->group(function () {
 
             Route::middleware(['check.code.zalo'])->group(function () {
 
-                Route::get('auth-zalo', [OnlineXamsController::class, 'authZalo'])->name('p17.auth.zalo.client');
-            });
-
-            Route::middleware(['zalo.auth'])->group(function () {
+                Route::get('auth-zalo', [AuthController::class, 'authZalo'])->name('p17.auth.zalo.client');
                 Route::get('list-surveys', [OnlineXamsController::class, 'listSurveys'])->name('p17.list.surveys.client');
                 Route::get('list-competitions', [OnlineXamsController::class, 'listCompetitionsOnline'])->name('p17.list.competitions.exams.client');
             });

@@ -36,7 +36,6 @@ class ZaloAuth
             }
         }
 
-
         if (!isset($accessToken) || !$accessToken) {
             return $this->unauthorizedResponse($request);
         }
@@ -54,36 +53,9 @@ class ZaloAuth
 
     protected function unauthorizedResponse(Request $request)
     {
-        if ($request->expectsJson() || $request->is('api/*')) {
-            return response()->json([
-                'error' => 'Unauthorized',
-                'status' => 401,
-            ], 401);
-        } else {
-            try {
-                // Bước 1: Tạo code_verifier
-                $codeVerifier = Str::random(43);
-
-                // Bước 2: Tạo code_challenge
-                $codeChallenge = rtrim(strtr(base64_encode(hash('sha256', $codeVerifier, true)), '+/', '-_'), '=');
-
-                // Bước 3: Lưu code_verifier vào session
-                session(['code_verifier' => $codeVerifier]);
-
-                $state = Str::random(32); // Tạo chuỗi random 32 ký tự
-                session(['oauth_state' => $state]);
-
-                $appId = env('ZALO_APP_ID');
-                $redirectUri = route('p17.auth.zalo.client');
-                $codeChallenge = $codeChallenge;
-                $state = $state; // Thay thế bằng giá trị thực tế
-
-                $authUrl = "https://oauth.zaloapp.com/v4/permission?app_id={$appId}&redirect_uri={$redirectUri}&code_challenge={$codeChallenge}&state={$state}";
-
-                return redirect($authUrl);
-            } catch (\Exception $e) {
-                return abort(401);
-            }
-        }
+        return response()->json([
+            'error' => 'Unauthorized',
+            'status' => 401,
+        ], 401);
     }
 }
