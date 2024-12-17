@@ -58,4 +58,9 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect()->back();
     }
+
+    public function authZalo(Request $request)
+    {
+        return view('pages.client.p17.auth-zalo');
+    }
 }
