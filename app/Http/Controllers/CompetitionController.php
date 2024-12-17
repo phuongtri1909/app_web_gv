@@ -241,7 +241,7 @@ class CompetitionController extends Controller
                 'file' => 'Dữ liệu trong file không hợp lệ. Vui lòng kiểm tra lại.'
             ])->with('importErrors', $failures);
         } catch (\Exception $e) {
-            \Log::error('Import Error: ' . $e->getMessage());
+            Log::error('Import Error: ' . $e->getMessage());
 
             return back()->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage());
         }

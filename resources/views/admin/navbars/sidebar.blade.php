@@ -512,9 +512,27 @@
                             </div>
                             <span class="nav-link-text ms-1">Khảo sát trực tuyến</span>
                         </a>
-                    </li>                   
-
-
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteNamed('category-market.*')  ? 'active' : '' }}"
+                            href="{{ route('category-market.index') }}">
+                            <div
+                                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa-solid fa-store text-dark icon-sidebar"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Kết nối tiểu thương</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteNamed('business-households.*')  ? 'active' : '' }}"
+                            href="{{ route('business-households.index') }}">
+                            <div
+                                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa-solid fa-store text-dark icon-sidebar"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Danh sách tiểu thương</span>
+                        </a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('departments.*', 'work-schedules.*') ? 'active' : '' }}"
                             href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"

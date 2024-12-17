@@ -141,11 +141,11 @@
                             <p><strong>Thời gian làm bài:</strong> {{ $competition->time_limit }} phút</p>
                         </div>
                         <div class="text-center mt-2">
-                            @if ($usersOnlineExam->hasUserTakenQuiz($quiz->id))
+                            {{-- @if ($usersOnlineExam->hasUserTakenQuiz($quiz->id))
                                 <p class="btn btn-primary btn-sm" disabled >Đã làm bài</p>
-                            @else
+                            @else --}}
                                 <a href="{{ route('p17.start.online.exams.client', ['quizId' => $quiz->id]) }}" class="btn btn-primary btn-sm">Bắt đầu thi</a>
-                            @endif
+                            {{-- @endif --}}
                         </div>
                     </div>
                 @endforeach

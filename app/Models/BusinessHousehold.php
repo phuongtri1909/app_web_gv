@@ -21,12 +21,18 @@ class BusinessHousehold extends Model
         'phone',
         'cccd',
         'address',
-        'status'     
+        'status',
+        'category_market_id'
     ];
 
     public function road()
     {
         return $this->belongsTo(Road::class);
+    }
+
+    public function categoryMarket()
+    {
+        return $this->belongsTo(CategoryMarket::class, 'category_market_id');
     }
 
 }
