@@ -46,9 +46,10 @@ class CheckCodeZalo
         }
 
         // Đổi code lấy access_token từ Zalo
-        $response = Http::asForm()->post('https://oauth.zaloapp.com/v4/access_token', [
-            'app_id' => env('ZALO_APP_ID'),
+        $response = Http::withHeaders([
             'secret_key' => env('ZALO_SECRET_KEY'),
+        ])->asForm()->post('https://oauth.zaloapp.com/v4/access_token', [
+            'app_id' => env('ZALO_APP_ID'),
             'code' => $code,
             'code_verifier' => $request->query('code_verifier'),
             'grant_type' => 'authorization_code',
