@@ -1,7 +1,14 @@
 @extends('pages.client.p17.layouts.app')
-@section('title', 'Thi trực tuyến')
-@section('description', 'Thi trực tuyến')
-@section('keyword', 'Thi trực tuyến')
+
+@if(Route::currentRouteName() == 'p17.list.surveys.client')
+    @section('title', 'Khảo sát trực tuyến')
+    @section('description', 'Khảo sát trực tuyến')
+    @section('keyword', 'Khảo sát trực tuyến')
+@elseif(Route::currentRouteName() == 'p17.list.competitions.exams.client')
+    @section('title', 'Thi trực tuyến')
+    @section('description', 'Thi trực tuyến')
+    @section('keyword', 'Thi trực tuyến')
+@endif
 
 @push('styles')
     <style>
@@ -338,7 +345,11 @@
                 </div>
             @empty
                 <p class="text-center">
-                    Không có kỳ thi nào đang diễn ra hoặc sắp diễn ra.
+                    @if(Route::currentRouteName() == 'p17.list.surveys.client')
+                        Không có khảo sát nào đang diễn ra hoặc sắp diễn ra.
+                    @elseif(Route::currentRouteName() == 'p17.list.competitions.exams.client')
+                        Không có kỳ thi nào đang diễn ra hoặc sắp diễn ra.
+                    @endif
                 </p>
             @endforelse
         </div>

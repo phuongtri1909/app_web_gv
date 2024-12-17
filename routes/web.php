@@ -40,6 +40,7 @@ use App\Http\Controllers\EvironmentController;
 use App\Http\Controllers\OnlineXamsController;
 use App\Http\Controllers\TabsCustomController;
 use App\Http\Controllers\LegalAdviceController;
+use App\Http\Controllers\TopQuestionController;
 use App\Http\Controllers\BankServicerController;
 use App\Http\Controllers\CategoryNewsController;
 use App\Http\Controllers\CustomUploadController;
@@ -198,7 +199,7 @@ Route::middleware(['language'])->group(function () {
             Route::get('register-exams', [OnlineXamsController::class, 'registerOnline'])->name('p17.online.xams.client.index');
             Route::get('list-quiz/{competitionId}', [OnlineXamsController::class, 'listQuizOnline'])->name('p17.list.quiz.client');
             Route::get('list-questions/{competitionId}', [OnlineXamsController::class, 'listQuestionsOnline'])->name('p17.list.questions.client');
-            Route::get('list-competitions', [OnlineXamsController::class, 'listCompetitionsOnline'])->name('p17.list.competitions.exams.client');
+            
             Route::post('list-competitions', [OnlineXamsController::class, 'submitCompetitionsOnline'])->name('p17.submit.competitions.exams.client');
             Route::get('start-online-exams/{quizId}', [OnlineXamsController::class, 'startOnlineExams'])->name('p17.start.online.exams.client');
             Route::post('submit-quiz/{quizId}', [OnlineXamsController::class, 'submitQuiz'])->name('p17.submit.quiz.client');
@@ -206,11 +207,22 @@ Route::middleware(['language'])->group(function () {
             Route::get('generate-captcha', [CaptchaController::class, 'generateCaptcha'])->name('p17.generate.captcha');
             Route::post('forget-session', [OnlineXamsController::class, 'forgetSession'])->name('p17.forget.session');
 
-            Route::get('list-surveys', [OnlineXamsController::class, 'listSurveys'])->name('p17.list.surveys.client');
-            Route::post('submit-survey/{surveyId}', [OnlineXamsController::class, 'submitSurvey'])->name('p17.submit.survey.client');
-            Route::get('start-survey/{surveyId}', [OnlineXamsController::class, 'startSurvey'])->name('p17.start.survey.client');
-            Route::get('list-survey-result/{surveyId}', [OnlineXamsController::class, 'listSurveyResult'])->name('p17.list.survey.result.client');
+            
+            Route::post('submit-survey/{surveyId}', [OnlineXamsController::class, 'submitSurvey'])->name('p17.submit.survey.client');  
+            Route::get('start-survey/{surveyId}', [OnlineXamsController::class, 'startSurvey'])->name('p17.start.survey.client');  
+            Route::get('list-survey-result/{surveyId}', [OnlineXamsController::class, 'listSurveyResult'])->name('p17.list.survey.result.client');  
             // Route::post('import', [BusinessHouseholdController::class, 'import'])->name('p17.households.import');
+           
+
+            Route::middleware(['check.code.zalo'])->group(function () {
+
+                Route::get('auth-zalo', [OnlineXamsController::class, 'authZalo'])->name('p17.auth.zalo.client');
+            });
+
+            Route::middleware(['zalo.auth'])->group(function () {
+                Route::get('list-surveys', [OnlineXamsController::class, 'listSurveys'])->name('p17.list.surveys.client');
+                Route::get('list-competitions', [OnlineXamsController::class, 'listCompetitionsOnline'])->name('p17.list.competitions.exams.client');
+            });
         });
     });
 
@@ -343,6 +355,7 @@ Route::middleware(['language'])->group(function () {
                     Route::resource('category-market', CategoryMarketController::class)->except('show');
                     Route::resource('business-households', BusinessHouseholdController::class);
                     Route::post('/business-households/status', [BusinessHouseholdController::class, 'changeStatus'])->name('business.households.changeStatus');
+                    Route::get('top-questions', [TopQuestionController::class, 'index'])->name('top-questions.index');
                 });
             });
         });
