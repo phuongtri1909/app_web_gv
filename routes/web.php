@@ -185,10 +185,11 @@ Route::middleware(['language'])->group(function () {
         Route::post('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'storeFormStartPromotion'])->name('form.start.promotion.store');
 
 
-        //cho phường 17
-        Route::get('/locations-17', [LocationController::class, 'clientIndex17'])->name('locations-17');
+        
 
         Route::group(['prefix' => 'p17'], function () {
+            //cho phường 17
+            Route::get('/locations', [LocationController::class, 'clientIndex17'])->name('locations-17');
             Route::get('connecting-small-businesses', [BusinessHouseholdController::class, 'connectingSmallBusiness'])->name('p17.connecting.small.businesses.client.index');
             Route::get('business-households/{slug}', [BusinessHouseholdController::class, 'clientIndex'])->name('p17.households.client.index');
             Route::get('/business-household/{id}', [BusinessHouseholdController::class, 'clientShow'])->name('p17.households.client.show');
@@ -196,23 +197,26 @@ Route::middleware(['language'])->group(function () {
             Route::get('advertising/{id}', [AdvertisementController::class, 'show'])->name('p17.advertising.client.show');
             Route::get('form-advertising', [AdvertisementController::class, 'formAdvertising'])->name('p17.advertising.client.form');
             Route::post('form-advertising', [AdvertisementController::class, 'storeFormAdvertising'])->name('p17.advertising.client.store');
-            Route::get('register-exams', [OnlineXamsController::class, 'registerOnline'])->name('p17.online.xams.client.index');
-            Route::get('list-quiz/{competitionId}', [OnlineXamsController::class, 'listQuizOnline'])->name('p17.list.quiz.client');
-            Route::get('list-questions/{competitionId}', [OnlineXamsController::class, 'listQuestionsOnline'])->name('p17.list.questions.client');
-            
-            Route::post('list-competitions', [OnlineXamsController::class, 'submitCompetitionsOnline'])->name('p17.submit.competitions.exams.client');
-            Route::get('start-online-exams/{quizId}', [OnlineXamsController::class, 'startOnlineExams'])->name('p17.start.online.exams.client');
-            Route::post('submit-quiz/{quizId}', [OnlineXamsController::class, 'submitQuiz'])->name('p17.submit.quiz.client');
-            Route::get('list-quiz-result/{quizId}', [OnlineXamsController::class, 'listQuizResult'])->name('p17.list.quiz.result.client');
-            Route::get('generate-captcha', [CaptchaController::class, 'generateCaptcha'])->name('p17.generate.captcha');
-            Route::post('forget-session', [OnlineXamsController::class, 'forgetSession'])->name('p17.forget.session');
 
-            
-            Route::post('submit-survey/{surveyId}', [OnlineXamsController::class, 'submitSurvey'])->name('p17.submit.survey.client');  
-            Route::get('start-survey/{surveyId}', [OnlineXamsController::class, 'startSurvey'])->name('p17.start.survey.client');  
-            Route::get('list-survey-result/{surveyId}', [OnlineXamsController::class, 'listSurveyResult'])->name('p17.list.survey.result.client');  
+            Route::middleware(['zalo.auth'])->group(function () {
+                Route::get('register-exams', [OnlineXamsController::class, 'registerOnline'])->name('p17.online.xams.client.index');
+                Route::get('list-quiz/{competitionId}', [OnlineXamsController::class, 'listQuizOnline'])->name('p17.list.quiz.client');
+                Route::get('list-questions/{competitionId}', [OnlineXamsController::class, 'listQuestionsOnline'])->name('p17.list.questions.client');
+
+                Route::post('list-competitions', [OnlineXamsController::class, 'submitCompetitionsOnline'])->name('p17.submit.competitions.exams.client');
+                Route::get('start-online-exams/{quizId}', [OnlineXamsController::class, 'startOnlineExams'])->name('p17.start.online.exams.client');
+                Route::post('submit-quiz/{quizId}', [OnlineXamsController::class, 'submitQuiz'])->name('p17.submit.quiz.client');
+                Route::get('list-quiz-result/{quizId}', [OnlineXamsController::class, 'listQuizResult'])->name('p17.list.quiz.result.client');
+                Route::get('generate-captcha', [CaptchaController::class, 'generateCaptcha'])->name('p17.generate.captcha');
+                Route::post('forget-session', [OnlineXamsController::class, 'forgetSession'])->name('p17.forget.session');
+
+
+                Route::post('submit-survey/{surveyId}', [OnlineXamsController::class, 'submitSurvey'])->name('p17.submit.survey.client');
+                Route::get('start-survey/{surveyId}', [OnlineXamsController::class, 'startSurvey'])->name('p17.start.survey.client');
+                Route::get('list-survey-result/{surveyId}', [OnlineXamsController::class, 'listSurveyResult'])->name('p17.list.survey.result.client');
+            });
             // Route::post('import', [BusinessHouseholdController::class, 'import'])->name('p17.households.import');
-           
+
 
             Route::middleware(['check.code.zalo'])->group(function () {
 
@@ -347,7 +351,7 @@ Route::middleware(['language'])->group(function () {
                     Route::post('/work-schedules/{id}/update-status', [CitizenMeetingScheduleController::class, 'update'])->name('work-schedules.update');
 
                     Route::get('feedbacks', [FeedbackController::class, 'index'])->name('feedbacks.index');
-                    Route::get('satisfaction-survey' , [SatisfactionSurveyController::class, 'index'])->name('satisfaction-survey.index');
+                    Route::get('satisfaction-survey', [SatisfactionSurveyController::class, 'index'])->name('satisfaction-survey.index');
 
                     Route::resource('category-market', CategoryMarketController::class)->except('show');
                     Route::resource('business-households', BusinessHouseholdController::class);
