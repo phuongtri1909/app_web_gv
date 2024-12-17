@@ -210,7 +210,8 @@ Route::middleware(['language'])->group(function () {
             Route::get('start-survey/{surveyId}', [OnlineXamsController::class, 'startSurvey'])->name('p17.start.survey.client');  
             Route::get('list-survey-result/{surveyId}', [OnlineXamsController::class, 'listSurveyResult'])->name('p17.list.survey.result.client');  
             // Route::post('import', [BusinessHouseholdController::class, 'import'])->name('p17.households.import');
-        
+            Route::get('auth-zalo', [OnlineXamsController::class, 'authZalo'])->name('p17.auth.zalo.client');
+            
             Route::middleware(['check.code.zalo'])->group(function () {
                 Route::get('list-surveys', [OnlineXamsController::class, 'listSurveys'])->name('p17.list.surveys.client');
                

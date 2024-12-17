@@ -17,6 +17,11 @@ use Illuminate\Validation\ValidationException;
 class OnlineXamsController extends Controller
 {
 
+    public function authZalo()
+    {
+        return view('pages.client.p17.online-exams.index');
+    }
+
     public function registerOnline()
     {
         $wards = WardGovap::all();
