@@ -5,10 +5,10 @@
         <div class="col-12">
             <div class="card mb-4 mx-4">
                 <div class="card-header pb-0">
-                    <h5 class="mb-0">Thêm cuộc thi</h5>
+                    <h5 class="mb-0">{{ $type == 'survey-p' ? 'Tạo khảo sát' : 'Tạo cuộc thi' }}</h5>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('competitions.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('competitions.store', ['type' => $type]) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-12 col-md-6">
@@ -92,7 +92,7 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary">{{ __('create') }}</button>
-                        <a href="{{ route('competitions.index') }}" class="btn btn-secondary">{{ __('cancel') }}</a>
+                        <a href="{{ route('competitions.index', ['type' => $type]) }}" class="btn btn-secondary">{{ __('cancel') }}</a>
                     </form>
                 </div>
             </div>

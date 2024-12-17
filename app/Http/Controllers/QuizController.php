@@ -13,28 +13,28 @@ class QuizController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index($competitionId)
+    public function index( $type = 'competition',$competitionId)
     {
-        $competition = Competition::findOrFail($competitionId);
+        $competition = Competition::where('id', $competitionId)->where('type', $type)->firstOrFail();
 
         $quizzes = Quiz::where('competition_id', $competitionId)->paginate(10);
 
-        return view('admin.pages.p17.online-exams.quizzes.index', compact('competition', 'quizzes'));
+        return view('admin.pages.p17.online-exams.quizzes.index', compact('competition', 'quizzes','type'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create($competitionId)
+    public function create($type = 'competition',$competitionId)
     {
         $competition = Competition::findOrFail($competitionId);
-        return view('admin.pages.p17.online-exams.quizzes.ce', compact('competition'));
+        return view('admin.pages.p17.online-exams.quizzes.ce', compact('competition','type'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, $competitionId)
+    public function store($type = 'competition',Request $request, $competitionId)
     {
         try {
             $request->validate([
@@ -62,7 +62,7 @@ class QuizController extends Controller
                 'status' => $request->status,
             ]);
 
-            return redirect()->route('quizzes.index', $competition->id)
+            return redirect()->route('quizzes.index', ['type' => $type, 'competitionId' => $competitionId])->with('competition_id', $competition->id)
                 ->with('success', 'Bộ câu hỏi đã được thêm thành công.');
         } catch (\Exception $e) {
             return redirect()->back()
@@ -73,17 +73,17 @@ class QuizController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit($type = 'competition',$id)
     {
         $quiz = Quiz::findOrFail($id);
         $competition = $quiz->competition;
 
-        return view('admin.pages.p17.online-exams.quizzes.ce', compact('quiz', 'competition'));
+        return view('admin.pages.p17.online-exams.quizzes.ce', compact('quiz', 'competition','type'));
     }
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update($type = 'competition',Request $request, $id)
     {
         try {
             $request->validate([
@@ -109,7 +109,7 @@ class QuizController extends Controller
                 'status' => $request->status,
             ]);
 
-            return redirect()->route('quizzes.index', $quiz->competition_id)
+            return redirect()->route('quizzes.index', ['type' => $type, 'competitionId' => $quiz->competition_id])
                 ->with('success', 'Bộ câu hỏi đã được cập nhật thành công.');
         } catch (\Exception $e) {
             return redirect()->back()
@@ -122,13 +122,13 @@ class QuizController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($type = 'competition', string $id)
     {
         try {
             $quiz = Quiz::findOrFail($id);
             $quiz->delete();
 
-            return redirect()->route('quizzes.index', $quiz->competition_id)
+            return redirect()->route('quizzes.index', ['type' => $type, 'competitionId' => $quiz->competition_id])
                 ->with('success', 'Bộ câu hỏi đã được xóa thành công.');
         } catch (ModelNotFoundException $e) {
             Log::error('Lỗi khi xóa bộ câu hỏi: ' . $e->getMessage());

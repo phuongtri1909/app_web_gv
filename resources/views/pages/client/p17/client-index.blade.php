@@ -7,16 +7,41 @@
         .w-max-content {
             width: max-content;
         }
-
-        thead {
-            position: sticky;
-            top: 0;
-            background-color: white;
-            z-index: 1;
-        }
-
         p {
             margin-bottom: 0;
+        }
+        .table-responsive {
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .table-responsive table {
+            white-space: nowrap; /
+        }
+
+        .table-responsive th:nth-child(2),
+        .table-responsive td:nth-child(2) {
+            position: sticky;
+            left: 0;
+            background-color: #fff;
+            z-index: 2;
+            border-right: 1px solid #ddd;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .table-responsive thead th:nth-child(2) {
+            top: 0;
+            z-index: 3;
+        }
+        .table-responsive.scrolled th:nth-child(2),
+        .table-responsive.scrolled td:nth-child(2) {
+            background-color: #f8f9fa;
+            box-shadow: -6px 5px 15px 2px rgba(0, 0, 0, 0.6);
+            -webkit-box-shadow: -6px 5px 15px 2px rgba(0, 0, 0, 0.6);
+            -moz-box-shadow: -6px 5px 15px 2px rgba(0, 0, 0, 0.6);
+        }
+        .table-bordered>:not(caption)>*>* {
+            border-width: 0 0px;
         }
     </style>
 @endpush
@@ -47,6 +72,18 @@
                         showToast('Có lỗi xảy ra', 'error');
                         $('#load-more').text('Xem thêm');
                     });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            const $tableContainer = $('.table-responsive');
+            $tableContainer.on('scroll', function () {
+                if (this.scrollLeft > 0) {
+                    $(this).addClass('scrolled');
+                } else {
+                    $(this).removeClass('scrolled');
+                }
             });
         });
     </script>
