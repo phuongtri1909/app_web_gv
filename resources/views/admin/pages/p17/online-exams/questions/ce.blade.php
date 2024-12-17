@@ -1,27 +1,62 @@
 @extends('admin.layouts.app')
 
 @push('styles-admin')
-<style>
-.remove-answer {
-    background-color: #f44336; 
-    color: white; 
-    border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+    <style>
+    .answer-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        transition: box-shadow 0.3s;
+    }
 
-.remove-answer:hover {
-    background-color: #d32f2f; 
-}
+    .answer-row:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-.remove-answer i {
-    margin-right: 5px; 
-}
+    .input-group-append {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
 
-</style>
+    .form-check-input {
+        cursor: pointer;
+        transform: scale(1.2);
+        margin-right: 5px;
+        background-color: teal;
+    }
+
+    .form-control {
+        flex: 1;
+        border-radius: 10px !important;
+    }
+    .input-group .form-control:not(:first-child) {
+         border-left: 0;
+         padding-left: 10px;
+    }
+    .remove-answer {
+        background-color: transparent;
+        color: #f44336;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        transition: color 0.3s;
+    }
+
+    .remove-answer:hover {
+        color: #d32f2f;
+    }
+    #answers-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    </style>
 @endpush
 
 @section('content-auth')
@@ -33,7 +68,7 @@
                 </div>
                 <div class="card-body px-4 pt-4 pb-2">
                     <form
-                        action="{{ isset($question) ? route('questions.update', [$question->id]) : route('questions.store', $quiz->id) }}"
+                        action="{{ isset($question) ? route('questions.update', ['type' => $type, 'id' => $question->id]) : route('questions.store', ['type' => $type, 'quizId' => $quiz->id]) }}"
                         method="POST">
                         @csrf
                         @if (isset($question))
@@ -59,10 +94,20 @@
                                         'answers',
                                         isset($question) ? json_decode($question->answer, true) : [],
                                     );
+                                    $answerTrue = old('answer_true', isset($question) ? $question->answer_true : '');
                                 @endphp
 
-                                @foreach ($answers as $key => $value)
-                                    <div class="input-group mb-2 answer-row">
+                                @foreach ($answers as $key  => $value)
+                                    @php
+                                        $originalKey = base64_decode($key);
+                                    @endphp
+                                    <div class="input-group mb-2 answer-row" data-key="{{ $key }}">
+                                        <div class="input-group-append">
+                                            <input type="radio" name="answer_true" value="{{ $key }}"
+                                                class="form-check-input @error('answer_true') is-invalid @enderror"
+                                                id="answer_true_{{ $key }}"
+                                                {{ old('answer_true', isset($question) ? $question->answer_true : '') === $key ? 'checked' : '' }}>
+                                        </div>
                                         <input type="text" name="answers[{{ $key }}]"
                                             class="form-control @error('answers.' . $key) is-invalid @enderror"
                                             value="{{ old('answers.' . $key, $value) }}" placeholder="Nhập đáp án" required>
@@ -76,27 +121,8 @@
                             <button type="button" class="btn btn-success mt-2" id="add-answer">Thêm đáp án</button>
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label for="answer_true" class="form-label">Đáp án đúng</label>
-                            <select name="answer_true" id="answer_true"
-                                class="form-control @error('answer_true') is-invalid @enderror">
-                                @foreach ($answers as $key => $value)
-                                    <option value="{{ $key }}"
-                                        {{ old('answer_true', isset($question) ? $question->answer_true : '') === $key ? 'selected' : '' }}>
-                                        {{ $value }}
-                                    </option>
-                                @endforeach
-                            </select>
-
-                            @error('answer_true')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-
-
                         <div class="d-flex justify-content-end">
-                            <a href="{{ route('questions.index', $quiz->id) }}" class="btn btn-secondary me-2">Hủy</a>
+                            <a href="{{ route('questions.index', ['type' => $type, 'quizId' => $quiz->id]) }}" class="btn btn-secondary me-2">Hủy</a>
                             <button type="submit"
                                 class="btn btn-primary">{{ isset($question) ? 'Cập nhật' : 'Thêm mới' }}</button>
                         </div>
@@ -109,53 +135,69 @@
 
 @push('scripts-admin')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const answersContainer = document.getElementById('answers-container');
             const addAnswerButton = document.getElementById('add-answer');
-            const answerTrueSelect = document.getElementById('answer_true');
+            const answerTrueRadio = document.getElementById('answer-true');
 
-            let key = 0;
+            let answerKeyCount = 0;
+
+            function generateUniqueKey() {
+                return 'answer' + Math.random().toString(36).substr(2, 8);
+            }
+
+
             function updateAnswerOptions() {
-                answerTrueSelect.innerHTML = '';
-                const inputs = answersContainer.querySelectorAll('.answer-row input');
+                const rows = answersContainer.querySelectorAll('.answer-row');
+                rows.forEach((row, index) => {
+                    const textInput = row.querySelector('input[type=text]');
+                    const radio = row.querySelector('input[type=radio]');
+                    const key = row.dataset.key;
 
-                inputs.forEach((input, index) => {
-                    const value = input.value;
-                    const option = document.createElement('option');
-                    option.value = key + index;
-                    option.textContent = `${value}`;
-                    answerTrueSelect.appendChild(option);
+
+                    textInput.name = `answers[${key}]`;
+                    radio.value = key;
+
+
+                    if (radio.checked) {
+                        answerTrueRadio.value = key;
+                    }
                 });
             }
 
-            addAnswerButton.addEventListener('click', () => {
+
+            addAnswerButton.addEventListener('click', function () {
+                const key = generateUniqueKey();
                 const newRow = document.createElement('div');
                 newRow.classList.add('input-group', 'mb-2', 'answer-row');
+                newRow.dataset.key = key;
+
                 newRow.innerHTML = `
-                <input type="text" class="form-control" name="answers[${++key}]" value="" placeholder="Nhập đáp án" required>
-                <button type="button" class="remove-answer"><i class="fas fa-times"></i></button>
-            `;
+                    <div class="input-group-append">
+                        <input type="radio" name="answer_true" value="${key}" class="form-check-input">
+                    </div>
+                    <input type="text" class="form-control" name="answers[${key}]" placeholder="Nhập đáp án" required>
+                    <button type="button" class="remove-answer"><i class="fas fa-times"></i></button>
+                `;
                 answersContainer.appendChild(newRow);
+
+
                 updateAnswerOptions();
             });
 
-            answersContainer.addEventListener('input', (event) => {
-                if (event.target.tagName.toLowerCase() === 'input') {
-                    updateAnswerOptions();
-                }
-            });
 
-            answersContainer.addEventListener('click', (event) => {
+            answersContainer.addEventListener('click', function (event) {
                 if (event.target.closest('.remove-answer')) {
-                    event.target.closest('.answer-row').remove();
+                    const rowToRemove = event.target.closest('.answer-row');
+                    rowToRemove.remove();
                     updateAnswerOptions();
-                    if (answerTrueSelect.value === '') {
-                        answerTrueSelect.selectedIndex = 0;
-                    }
                 }
             });
 
             updateAnswerOptions();
         });
+
+
+
     </script>
 @endpush

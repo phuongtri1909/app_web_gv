@@ -7,10 +7,10 @@
                 <div class="card-header pb-0">
                     <div class="d-flex flex-row justify-content-between">
                         <div>
-                            <h5 class="mb-0">Danh sách bộ câu hỏi - {{ $competition->title }}</h5>
+                            <h5 class="mb-0">{{ $type == 'survey-p' ? 'Danh sách bộ câu hỏi khảo sát' : 'Danh sách bộ câu hỏi cuộc thi' }}-{{ $competition->title }}</h5>
                         </div>
                         <div>
-                            <a href="{{ route('quizzes.create', $competition->id) }}" class="btn bg-gradient-primary">
+                            <a href="{{ route('quizzes.create',['type' => $type, 'competitionId' => $competition->id]) }}" class="btn bg-gradient-primary">
                                 <i class="fa fa-plus"></i> Thêm bộ câu hỏi
                             </a>
                         </div>
@@ -56,15 +56,15 @@
                                                 </span>
                                             </td>
                                             <td class="text-center">
-                                                <a href="{{ route('quizzes.edit', $quiz->id) }}"><i
+                                                <a href="{{ route('quizzes.edit',['type' => $type, 'id' => $quiz->id] ) }}"><i
                                                         class="fa-regular fa-pen-to-square"></i></a>
-                                                <a href="{{ route('questions.index', $quiz->id) }}"
+                                                <a href="{{ route('questions.index', ['type' => $type, 'quizId' => $quiz->id]) }}"
                                                     class="mx-2" title="Tạo câu hỏi">
                                                     <i class="fa-solid fa-eye"></i>
                                                 </a>
                                                 @include('admin.pages.components.delete-form', [
-                                                    'id' => $quiz->id,
-                                                    'route' => route('quizzes.destroy', $quiz->id),
+                                                    'id' => $quiz->id, 'type' => $type,
+                                                    'route' => route('quizzes.destroy', ['type' => $type, 'id' => $quiz->id]),
                                                     'message' => __('Bạn có chắc chắn muốn xóa?'),
                                                 ])
                                             </td>

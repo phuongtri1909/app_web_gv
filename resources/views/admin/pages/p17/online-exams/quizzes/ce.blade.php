@@ -8,7 +8,7 @@
                     <h5 class="mb-0">{{ isset($quiz) ? 'Chỉnh sửa bộ câu hỏi' : 'Thêm mới bộ câu hỏi' }}</h5>
                 </div>
                 <div class="card-body px-4 pt-4 pb-2">
-                    <form action="{{ isset($quiz) ? route('quizzes.update', $quiz->id) : route('quizzes.store', $competition->id) }}" method="POST">
+                    <form action="{{ isset($quiz) ? route('quizzes.update', ['type' => $type, 'id' => $quiz->id]) : route('quizzes.store',['type' => $type, 'competitionId' => $competition->id]) }}" method="POST">
                         @csrf
                         @if(isset($quiz))
                             @method('PUT')
@@ -45,7 +45,7 @@
                         </div>
 
                         <div class="d-flex justify-content-end">
-                            <a href="{{ route('quizzes.index', $competition->id) }}" class="btn btn-secondary me-2">Hủy</a>
+                            <a href="{{ route('quizzes.index', ['type' => $type, 'competitionId' => $competition->id]) }}" class="btn btn-secondary me-2">Hủy</a>
                             <button type="submit" class="btn btn-primary">{{ isset($quiz) ? 'Cập nhật' : 'Thêm mới' }}</button>
                         </div>
                     </form>

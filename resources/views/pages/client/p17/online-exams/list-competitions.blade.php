@@ -1,7 +1,7 @@
 @extends('pages.client.p17.layouts.app')
-@section('title', 'Thi trực tuyến')
-@section('description', 'Thi trực tuyến')
-@section('keyword', 'Thi trực tuyến')
+@section('title', 'Bài thi')
+@section('description', 'Bài thi')
+@section('keyword', 'Bài thi')
 
 @push('styles')
     <style>
@@ -258,11 +258,8 @@
                     window.history.back();
                 })
                 .catch(function(error) {
-                    if (error.responseJSON) {
-                        showToast(error.responseJSON.message, 'error');
-                    } else {
-                        showToast('Có lỗi xảy ra. Vui lòng thử lại sau.', 'error');
-                    }
+                    const message = error.responseJSON?.message || 'Có lỗi xảy ra. Vui lòng thử lại sau.';
+                    showToast(message, 'error');
                     window.history.back();
                 });
         }
@@ -280,66 +277,47 @@
             </p>
         @endif
     </div>
+
     <section id="home-online-exams">
         <div class="filters">
             <select class="filter select">
                 <option value="all">Tất cả</option>
-                <option value="ongoing">Đang thi</option>
+                <option value="ongoing">Đang diễn ra</option>
                 <option value="upcoming">Sắp diễn ra</option>
                 <option value="completed">Đã kết thúc</option>
             </select>
         </div>
+
         <div class="exam-list">
             @forelse ($competitions as $competition)
-                <div class="exam-item"
-                    data-status="{{ strtolower(str_replace(' ', '-', $competition->calculated_status_key)) }}">
-                    @if ($competition->calculated_status_key == 'completed' || $competition->calculated_status_key == 'upcoming')
-                        <a href="javascript:void(0)">
-                            <div class="exam-link disabled">
-                                <div class="banner">
-                                    <img src="{{ $competition->banner ? asset($competition->banner) : 'https://via.placeholder.com/360x203' }}"
-                                        alt="{{ $competition->title }}" loading="lazy" class="img-fluid">
-                                </div>
-                                <div class="details">
-                                    <div class="title">{{ $competition->title }}</div>
-                                    <div class="date">
-                                        {{ \Carbon\Carbon::parse($competition->start_date)->format('d/m/Y H:i') }}
-                                        <span>-</span>
-                                        {{ \Carbon\Carbon::parse($competition->end_date)->format('d/m/Y H:i') }}
-                                    </div>
-                                </div>
-                                <div
-                                    class="status {{ strtolower(str_replace(' ', '-', $competition->calculated_status_key)) }}">
-                                    {{ $competition->calculated_status }}
-                                </div>
-                            </div>
-                        </a>
-                    @else
-                        <a href="{{ route('p17.list.quiz.client', ['competitionId' => $competition->id]) }}"
-                            class="exam-link">
+                @php
+                    $statusKey = strtolower($competition->calculated_status_key);
+                    $statusClass = $statusKey === 'upcoming' || $statusKey === 'completed' ? 'disabled' : '';
+                    $link = $statusKey === 'ongoing' ? route('p17.list.quiz.client', ['competitionId' => $competition->id]) : 'javascript:void(0)';
+                @endphp
+
+                <div class="exam-item" data-status="{{ $statusKey }}">
+                    <a href="{{ $link }}" class="exam-link {{ $statusClass }}">
+                        @if ($competition->banner)
                             <div class="banner">
-                                <img src="{{ $competition->banner ? asset($competition->banner) : 'https://via.placeholder.com/360x203' }}"
-                                    alt="{{ $competition->title }}" loading="lazy" class="img-fluid">
+                                <img src="{{ asset($competition->banner) }}" alt="{{ $competition->title }}" loading="lazy" class="img-fluid">
                             </div>
-                            <div class="details">
-                                <div class="title">{{ $competition->title }}</div>
-                                <div class="date">
-                                    {{ \Carbon\Carbon::parse($competition->start_date)->format('d/m/Y H:i') }}
-                                    <span>-</span>
-                                    {{ \Carbon\Carbon::parse($competition->end_date)->format('d/m/Y H:i') }}
-                                </div>
+                        @endif
+                        <div class="details">
+                            <div class="title">{{ $competition->title }}</div>
+                            <div class="date">
+                                {{ \Carbon\Carbon::parse($competition->start_date)->format('d/m/Y H:i') }}
+                                <span>-</span>
+                                {{ \Carbon\Carbon::parse($competition->end_date)->format('d/m/Y H:i') }}
                             </div>
-                            <div
-                                class="status {{ strtolower(str_replace(' ', '-', $competition->calculated_status_key)) }}">
-                                {{ $competition->calculated_status }}
-                            </div>
-                        </a>
-                    @endif
+                        </div>
+                        <div class="status {{ $statusKey }}">
+                            {{ $competition->calculated_status }}
+                        </div>
+                    </a>
                 </div>
             @empty
-                <p class="text-center">
-                    Không có kỳ thi nào đang diễn ra hoặc sắp diễn ra.
-                </p>
+                <p class="text-center">Không có kỳ thi nào đang diễn ra hoặc sắp diễn ra.</p>
             @endforelse
         </div>
     </section>

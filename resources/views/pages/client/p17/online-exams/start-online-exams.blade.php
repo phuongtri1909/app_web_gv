@@ -112,7 +112,7 @@
             } else {
                 startTime = new Date(startTime);
             }
-                 = timeLimit - Math.floor((new Date() - startTime) / 1000);
+            remainingTime = timeLimit - Math.floor((new Date() - startTime) / 1000);
 
             const isQuizFinished = localStorage.getItem(isQuizFinishedKey);
             if (isQuizFinished) {
@@ -129,6 +129,7 @@
                     dataType: 'json',
                     success: function(response) {
                         const questions = response.questions.data || response.questions;
+                        console.log(questions);
                         if (Array.isArray(questions)) {
                             renderQuestions(questions, isQuizFinished);
                             restoreSavedAnswers();

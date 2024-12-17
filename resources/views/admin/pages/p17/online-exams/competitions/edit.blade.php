@@ -5,10 +5,10 @@
         <div class="col-12">
             <div class="card mb-4 mx-4">
                 <div class="card-header pb-0">
-                    <h5 class="mb-0">Chỉnh sửa cuộc thi</h5>
+                    <h5 class="mb-0">{{ $type == 'survey-p' ? 'Chỉnh sửa khảo sát' : 'Chỉnh sửa cuộc thi' }}</h5>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('competitions.update', $competition->id) }}" method="POST"
+                    <form action="{{ route('competitions.update', ['type' => $type, 'id' => $competition->id]) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
@@ -108,7 +108,7 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary">Cập nhật</button>
-                        <a href="{{ route('competitions.index') }}" class="btn btn-secondary">Hủy</a>
+                        <a href="{{ route('competitions.index', ['type' => $type]) }}" class="btn btn-secondary">Hủy</a>
                     </form>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryMarketController;
 use App\Models\Tab;
 use App\Models\User;
 use App\Models\SlideProgram;
@@ -188,7 +189,8 @@ Route::middleware(['language'])->group(function () {
         Route::get('/locations-17', [LocationController::class, 'clientIndex17'])->name('locations-17');
 
         Route::group(['prefix' => 'p17'], function () {
-            Route::get('business-households', [BusinessHouseholdController::class, 'clientIndex'])->name('p17.households.client.index');
+            Route::get('connecting-small-businesses', [BusinessHouseholdController::class, 'connectingSmallBusiness'])->name('p17.connecting.small.businesses.client.index');
+            Route::get('business-households/{slug}', [BusinessHouseholdController::class, 'clientIndex'])->name('p17.households.client.index');
             Route::get('/business-household/{id}', [BusinessHouseholdController::class, 'clientShow'])->name('p17.households.client.show');
             Route::get('advertising', [AdvertisementController::class, 'advertising'])->name('p17.advertising.client.index');
             Route::get('advertising/{id}', [AdvertisementController::class, 'show'])->name('p17.advertising.client.show');
@@ -320,22 +322,26 @@ Route::middleware(['language'])->group(function () {
                     Route::resource('ad-categories', AdCategoryController::class)->except('show');
                     Route::resource('advertisements', AdvertisementController::class);
 
-                  Route::resource('competitions', CompetitionController::class)->except('show');
-                  Route::get('/competitions/{type?}', [CompetitionController::class, 'index'])->name('competitions.index');
-                  Route::get('/competitions/{competitionId}/quizzes', [QuizController::class, 'index'])->name('quizzes.index');
-                  Route::get('/competitions/{competitionId}/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
-                  Route::post('/competitions/{competitionId}/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
-                  Route::get('/quizzes/{id}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
-                  Route::put('/quizzes/{id}', [QuizController::class, 'update'])->name('quizzes.update');
-                  Route::delete('/quizzes/{id}', [QuizController::class, 'destroy'])->name('quizzes.destroy');
+                    Route::get('/p/{type}', [CompetitionController::class, 'index'])->name('competitions.index');
+                    Route::get('/p/{type}/create', [CompetitionController::class, 'create'])->name('competitions.create');
+                    Route::post('/p/{type}/store', [CompetitionController::class, 'store'])->name('competitions.store');
+                    Route::get('/p/{type}/{id}/edit', [CompetitionController::class, 'edit'])->name('competitions.edit');
+                    Route::put('/p/{type}/{id}', [CompetitionController::class, 'update'])->name('competitions.update');
+                    Route::delete('p//{type}/{id}', [CompetitionController::class, 'destroy'])->name('competitions.destroy');
+                    Route::get('/{type}/{competitionId}/quizzes', [QuizController::class, 'index'])->name('quizzes.index');
+                    Route::get('/{type}/{competitionId}/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
+                    Route::post('/{type}/{competitionId}/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
+                    Route::get('/{type}/quizzes/{id}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
+                    Route::put('/{type}/quizzes/{id}', [QuizController::class, 'update'])->name('quizzes.update');
+                    Route::delete('/{type}/quizzes/{id}', [QuizController::class, 'destroy'])->name('quizzes.destroy');
 
-                  Route::get('/quizzes/{quizId}/questions', [QuestionController::class, 'index'])->name('questions.index');
-                  Route::get('/quizzes/{quizId}/questions/create', [QuestionController::class, 'create'])->name('questions.create');
-                  Route::post('/quizzes/{quizId}/questions', [QuestionController::class, 'store'])->name('questions.store');
-                  Route::get('/questions/{id}/edit', [QuestionController::class, 'edit'])->name('questions.edit');
-                  Route::put('/questions/{id}', [QuestionController::class, 'update'])->name('questions.update');
-                  Route::delete('/questions/{id}', [QuestionController::class, 'destroy'])->name('questions.destroy');
-                  Route::post('competitions/import', [CompetitionController::class, 'import'])->name('competitions.import');
+                    Route::get('/{type}/quizzes/{quizId}/questions', [QuestionController::class, 'index'])->name('questions.index');
+                    Route::get('/{type}/quizzes/{quizId}/questions/create', [QuestionController::class, 'create'])->name('questions.create');
+                    Route::post('/{type}/quizzes/{quizId}/questions', [QuestionController::class, 'store'])->name('questions.store');
+                    Route::get('/{type}/questions/{id}/edit', [QuestionController::class, 'edit'])->name('questions.edit');
+                    Route::put('/{type}/questions/{id}', [QuestionController::class, 'update'])->name('questions.update');
+                    Route::delete('/{type}/questions/{id}', [QuestionController::class, 'destroy'])->name('questions.destroy');
+                    Route::post('/p/{type}/import', [CompetitionController::class, 'import'])->name('competitions.import');
 
                     Route::resource('departments', DepartmentController::class)->except('show');
 
@@ -345,6 +351,10 @@ Route::middleware(['language'])->group(function () {
 
                     Route::get('feedbacks', [FeedbackController::class, 'index'])->name('feedbacks.index');
                     Route::get('satisfaction-survey' , [SatisfactionSurveyController::class, 'index'])->name('satisfaction-survey.index');
+
+                    Route::resource('category-market', CategoryMarketController::class)->except('show');
+                    Route::resource('business-households', BusinessHouseholdController::class);
+                    Route::post('/business-households/status', [BusinessHouseholdController::class, 'changeStatus'])->name('business.households.changeStatus');
                     Route::get('top-questions', [TopQuestionController::class, 'index'])->name('top-questions.index');
                 });
             });
