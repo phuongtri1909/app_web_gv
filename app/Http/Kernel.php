@@ -73,5 +73,6 @@ class Kernel extends HttpKernel
         'role.admin.qgv' => \App\Http\Middleware\RoleAdminQGV::class,
         'role.admin.p17' => \App\Http\Middleware\RoleAdminP17::class,
         'zalo.auth' => \App\Http\Middleware\ZaloAuth::class,
+        'check.code.zalo' => \App\Http\Middleware\CheckCodeZalo::class,
     ];
 }

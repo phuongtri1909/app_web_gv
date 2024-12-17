@@ -29,23 +29,29 @@ class ZaloAuth
         $accessToken = $request->header('access-token');
 
         if (!$accessToken) {
-            return response()->json([
-                'error' => 'Unauthorized',
-                'status' => 401,
-            ], 401);
+            return $this->unauthorizedResponse($request);
         }
 
         $get_info = $this->zaloApiService->getProfile($accessToken);
 
         if (isset($get_info['error']) && $get_info['error'] !== 0) {
+            return $this->unauthorizedResponse($request);
+        }
+
+        $request->merge(['get_info' => $get_info]);
+        $request->merge(['customer_id' => $get_info['id']]);
+        return $next($request);
+    }
+
+    protected function unauthorizedResponse(Request $request)
+    {
+        if ($request->expectsJson() || $request->is('api/*')) {
             return response()->json([
                 'error' => 'Unauthorized',
                 'status' => 401,
             ], 401);
         }
 
-        $request->merge(['get_info' => $get_info]);
-        $request->merge(['customer_id' => $get_info['id']]);
-        return $next($request);
+        return abort(401);
     }
 }

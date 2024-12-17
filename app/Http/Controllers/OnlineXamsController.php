@@ -291,7 +291,7 @@ class OnlineXamsController extends Controller
         return response()->json(['message' => 'Session deleted successfully']);
     }
 
-    public function listSurveys()
+    public function listSurveys(Request $request)
     {
         // if (!Session::has('user_id')) {
         //     return redirect()->route('p17.online.xams.client.index')->with('error', 'Bạn phải đăng ký tham gia cuộc thi.');
