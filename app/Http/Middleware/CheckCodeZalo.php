@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Services\ZaloApiService;
 use Illuminate\Support\Facades\Http;
@@ -25,24 +26,55 @@ class CheckCodeZalo
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Kiểm tra nếu đã có access_token trong session
-        if (Session::has('access_token')) {
+        $code = $request->query('code');
 
-            $accessToken = Session::get('access_token');
+        if (!$code) {
+            // Bước 1: Tạo code_verifier
+            $codeVerifier = Str::random(43);
 
-            $get_info = $this->zaloApiService->getProfile($accessToken);
+            // Bước 2: Tạo code_challenge
+            $codeChallenge = rtrim(strtr(base64_encode(hash('sha256', $codeVerifier, true)), '+/', '-_'), '=');
 
-            //nếu access_token chưa hết hạn
-            if (!isset($get_info['error']) && !$get_info['error'] !== 0) {
-                $request->merge(['get_info' => $get_info]);
-                $request->merge(['customer_id' => $get_info['id']]);
-                return $next($request);
-            }
+            // Bước 3: Lưu code_verifier vào session
+            session(['code_verifier' => $codeVerifier]);
+
+            $state = Str::random(32); // Tạo chuỗi random 32 ký tự
+            session(['oauth_state' => $state]);
+
+            $appId = env('ZALO_APP_ID');
+            $redirectUri = route('p17.auth.zalo.client');
+            $codeChallenge = $codeChallenge;
+            $state = $state; // Thay thế bằng giá trị thực tế
+
+            $authUrl = "https://oauth.zaloapp.com/v4/permission?app_id={$appId}&redirect_uri={$redirectUri}&code_challenge={$codeChallenge}&state={$state}";
+
+            return redirect($authUrl);
         }
 
-        $code = $request->query('code');
-        if (!$code) {
-            return abort(401);
+
+        $codeVerifier = session('code_verifier');
+
+        if (!$codeVerifier) {
+             // Bước 1: Tạo code_verifier
+             $codeVerifier = Str::random(43);
+
+             // Bước 2: Tạo code_challenge
+             $codeChallenge = rtrim(strtr(base64_encode(hash('sha256', $codeVerifier, true)), '+/', '-_'), '=');
+ 
+             // Bước 3: Lưu code_verifier vào session
+             session(['code_verifier' => $codeVerifier]);
+ 
+             $state = Str::random(32); // Tạo chuỗi random 32 ký tự
+             session(['oauth_state' => $state]);
+ 
+             $appId = env('ZALO_APP_ID');
+             $redirectUri = route('p17.auth.zalo.client');
+             $codeChallenge = $codeChallenge;
+             $state = $state; // Thay thế bằng giá trị thực tế
+ 
+             $authUrl = "https://oauth.zaloapp.com/v4/permission?app_id={$appId}&redirect_uri={$redirectUri}&code_challenge={$codeChallenge}&state={$state}";
+ 
+             return redirect($authUrl);
         }
 
         // Đổi code lấy access_token từ Zalo
@@ -51,7 +83,7 @@ class CheckCodeZalo
         ])->asForm()->post('https://oauth.zaloapp.com/v4/access_token', [
             'app_id' => env('ZALO_APP_ID'),
             'code' => $code,
-            'code_verifier' => $request->query('code_verifier'),
+            'code_verifier' => $codeVerifier,
             'grant_type' => 'authorization_code',
         ]);
 
@@ -60,7 +92,7 @@ class CheckCodeZalo
             return abort(401);
         }
 
-        dd($response['access_token']);
+        dd($response->json());
 
 
         return $next($request);

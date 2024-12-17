@@ -197,7 +197,7 @@ Route::middleware(['language'])->group(function () {
             Route::get('register-exams', [OnlineXamsController::class, 'registerOnline'])->name('p17.online.xams.client.index');
             Route::get('list-quiz/{competitionId}', [OnlineXamsController::class, 'listQuizOnline'])->name('p17.list.quiz.client');
             Route::get('list-questions/{competitionId}', [OnlineXamsController::class, 'listQuestionsOnline'])->name('p17.list.questions.client');
-            Route::get('list-competitions', [OnlineXamsController::class, 'listCompetitionsOnline'])->name('p17.list.competitions.exams.client');
+            
             Route::post('list-competitions', [OnlineXamsController::class, 'submitCompetitionsOnline'])->name('p17.submit.competitions.exams.client');
             Route::get('start-online-exams/{quizId}', [OnlineXamsController::class, 'startOnlineExams'])->name('p17.start.online.exams.client');
             Route::post('submit-quiz/{quizId}', [OnlineXamsController::class, 'submitQuiz'])->name('p17.submit.quiz.client');
@@ -210,11 +210,16 @@ Route::middleware(['language'])->group(function () {
             Route::get('start-survey/{surveyId}', [OnlineXamsController::class, 'startSurvey'])->name('p17.start.survey.client');  
             Route::get('list-survey-result/{surveyId}', [OnlineXamsController::class, 'listSurveyResult'])->name('p17.list.survey.result.client');  
             // Route::post('import', [BusinessHouseholdController::class, 'import'])->name('p17.households.import');
-            Route::get('auth-zalo', [OnlineXamsController::class, 'authZalo'])->name('p17.auth.zalo.client');
-            
+           
+
             Route::middleware(['check.code.zalo'])->group(function () {
+
+                Route::get('auth-zalo', [OnlineXamsController::class, 'authZalo'])->name('p17.auth.zalo.client');
+            });
+
+            Route::middleware(['zalo.auth'])->group(function () {
                 Route::get('list-surveys', [OnlineXamsController::class, 'listSurveys'])->name('p17.list.surveys.client');
-               
+                Route::get('list-competitions', [OnlineXamsController::class, 'listCompetitionsOnline'])->name('p17.list.competitions.exams.client');
             });
         });
     });
