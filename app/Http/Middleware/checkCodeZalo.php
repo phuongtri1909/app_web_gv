@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 
-class checkCodeZalo
+class CheckCodeZalo
 {
 
     protected $zaloApiService;
