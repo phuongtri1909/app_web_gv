@@ -128,7 +128,7 @@ class OnlineXamsController extends Controller
         ->where('status', 'active')
         ->where('type', 'competition')
         ->get();
-        // dd($competitions); 
+        // dd($competitions);
         return view('pages.client.p17.online-exams.list-competitions', compact('competitions'));
     }
 
@@ -203,7 +203,7 @@ class OnlineXamsController extends Controller
         }
 
         $type = $competition->type;
-        if (!$type || !in_array($type, ['survey', 'competition'])) {
+        if (!$type || !in_array($type, ['survey-p', 'competition'])) {
             return redirect()->back()->with('error', 'Không xác định được loại bài thi.');
         }
         if (request()->ajax()) {
@@ -213,7 +213,7 @@ class OnlineXamsController extends Controller
                 'startTime' => $startTime,
             ]);
         }
-        return view('pages.client.p17.online-exams.start-online-exams', compact('quiz', 'timeLimit', 'startTime'));
+        return view('pages.client.p17.online-exams.start-online-exams', compact('quiz', 'timeLimit', 'startTime','type'));
     }
 
 
@@ -249,13 +249,18 @@ class OnlineXamsController extends Controller
             $submission_time_vn = Carbon::parse($validated['submission_time'])->setTimezone('Asia/Ho_Chi_Minh')->format('Y-m-d H:i:s');
 
             $customer_id = $request->get('customer_id');
-            UsersOnlineExamAnswer::create([
-                'customer_id' =>   $customer_id,
-                'question_id' => $question->id,
-                'status' => $selectedAnswer,
-                'start_time' => $start_time_vn,
-                'submission_time' => $submission_time_vn,
-            ]);
+            try {
+                UsersOnlineExamAnswer::create([
+                    'customer_id' => $customer_id,
+                    'question_id' => $question->id,
+                    'status' => $selectedAnswer,
+                    'start_time' => $start_time_vn,
+                    'submission_time' => $submission_time_vn,
+                ]);
+            } catch (\Exception $e) {
+                dd('Error creating record:', $e->getMessage());
+            }
+
         }
         $totalQuestions = $quiz->questions->count();
         return response()->json([
@@ -281,7 +286,7 @@ class OnlineXamsController extends Controller
             ->whereIn('question_id', $quiz->questions->pluck('id'))
             ->get();
         $type = $quiz->competition->type;
-        if (!$type || !in_array($type, ['survey', 'competition'])) {
+        if (!$type || !in_array($type, ['survey-p', 'competition'])) {
             return redirect()->back()->with('error', 'Không xác định được loại bài thi.');
         }
 
@@ -299,24 +304,10 @@ class OnlineXamsController extends Controller
     public function listSurveys(Request $request)
     {
 
-        $competitions = Competition::where('status', 'active')->where('type', 'survey-p')->get()->map(function ($competition) {
-            $now = Carbon::now();
-
-            if ($now->lessThan($competition->start_date)) {
-                $competition->calculated_status = 'Sắp diễn ra';
-                $competition->calculated_status_key = 'upcoming';
-            } elseif ($now->between($competition->start_date, $competition->end_date)) {
-                $competition->calculated_status = 'Đang diễn ra';
-                $competition->calculated_status_key = 'ongoing';
-            } elseif ($now->greaterThan($competition->end_date)) {
-                $competition->calculated_status = 'Đã kết thúc';
-                $competition->calculated_status_key = 'completed';
-            } else {
-                $competition->calculated_status = 'Không xác định';
-                $competition->calculated_status_key = 'unknown';
-            }
-            return $competition;
-        });
+        $competitions = Competition::with('quizzes')
+        ->where('status', 'active')
+        ->where('type', 'survey-p')
+        ->get();
         return view('pages.client.p17.survey-exams.list-surveys', compact('competitions'));
     }
 

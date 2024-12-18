@@ -10,7 +10,7 @@ class UsersOnlineExamAnswer extends Model
     use HasFactory;
 
     protected $table = 'users_online_exam_answer';
-    protected $fillable = ['users_online_exam_id', 'question_id', 'status', 'submission_time', 'start_time'];
+    protected $fillable = ['customer_id', 'question_id', 'status', 'submission_time', 'start_time'];
 
     public function customer()
     {

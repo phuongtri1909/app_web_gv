@@ -152,10 +152,7 @@
                 <button type="button" onclick="history.back()" class="back-btn">
                     <i class="fa-solid fa-arrow-left back-icon"></i> Quay lại
                 </button>
-                {{-- @if(Session::has('user_full_name'))
-                    <p class="user-greeting">Chào, {{ Session::get('user_full_name') }}!</p>
-                @endif --}}
-            </div>                       
+            </div>
             <div class="contest-list">
                     <div class="contest-item">
                         <h2 class="contest-title">{{ $competition->title }}</h2>
