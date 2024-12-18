@@ -52,6 +52,8 @@ class CheckCodeZalo
                 }
             }
 
+            $this->zaloApiService->updateProfile( $get_info);
+
             if (Route::currentRouteName() == $routeAuth) {
                 $previousUrl = Session::get('previous_url');
 

@@ -356,7 +356,9 @@ Route::middleware(['language'])->group(function () {
                     Route::resource('category-market', CategoryMarketController::class)->except('show');
                     Route::resource('business-households', BusinessHouseholdController::class);
                     Route::post('/business-households/status', [BusinessHouseholdController::class, 'changeStatus'])->name('business.households.changeStatus');
-                    Route::get('top-questions', [TopQuestionController::class, 'index'])->name('top-questions.index');
+                    
+                    Route::resource('top-questions', TopQuestionController::class)->except('show','edit','update');
+                    Route::post('top-questions/{id}/answer', [TopQuestionController::class, 'answer'])->name('top-questions.answer');
                 });
             });
         });

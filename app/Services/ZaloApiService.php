@@ -12,6 +12,39 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class ZaloApiService
 {
+
+    public function updateProfile($get_info,$get_phone = null)
+    {
+        $customer = Customer::where('id', $get_info['id'])->first();
+
+        if (!$customer) {
+            $customer = new Customer();
+            $customer->id = $get_info['id'];
+            $customer->customerName = $get_info['name'];
+
+            if (isset($get_info['picture']['data']['url'])) {
+                $customer->imageUrl = $get_info['picture']['data']['url'];
+            }
+            if (!empty($get_phone['data']['number'])) {
+                $customer->phone = $get_phone['data']['number'];
+            }
+            $customer->save();
+        } else {
+            $customer->customerName = $get_info['name'];
+
+            if (!empty($get_phone['data']['number'])) {
+                $customer->phone = $get_phone['data']['number'];
+            }
+
+            if (isset($get_info['picture']['data']['url'])) {
+                $customer->imageUrl = $get_info['picture']['data']['url'];
+            }
+            $customer->save();
+        }
+
+        return $customer;
+    }
+
     public function getProfile($accessToken)
     {
         try {
@@ -20,25 +53,6 @@ class ZaloApiService
             ])->get('https://graph.zalo.me/v2.0/me', [
                 'fields' => 'id,name,picture',
             ]);
-            $customer = Customer::where('id', $response->json()['id'])->first();
-
-            if (!$customer) {
-                $customer = new Customer();
-                $customer->id = $response->json()['id'];
-                $customer->customerName = $response->json()['name'];
-
-                if (isset($response->json()['picture']['data']['url'])) {
-                    $customer->imageUrl = $response->json()['picture']['data']['url'];
-                }
-                $customer->save();
-            }else{
-                $customer->customerName = $response->json()['name'];
-
-                if (isset($response->json()['picture']['data']['url'])) {
-                    $customer->imageUrl = $response->json()['picture']['data']['url'];
-                }
-                $customer->save();
-            }
 
             return $response->json();
         } catch (\Exception $e) {
@@ -111,7 +125,7 @@ class ZaloApiService
             if (isset($response['error']) && $response['error'] == -14019) {
 
                 return $this->redirectToZaloLogin();
-            }elseif(isset($response['error']) && $response['error'] !== 0){
+            } elseif (isset($response['error']) && $response['error'] !== 0) {
                 return $this->redirectToZaloLogin();
             }
 
@@ -124,7 +138,6 @@ class ZaloApiService
             $previousUrl = Session::get('previous_url');
 
             return redirect($previousUrl);
-
         } catch (\Exception $e) {
             Log::error("get access token: " . $e->getMessage());
             return abort(400);
