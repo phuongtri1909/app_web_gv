@@ -123,9 +123,6 @@
                 <button type="button" onclick="history.back()" class="back-btn">
                     <i class="fa-solid fa-arrow-left back-icon"></i> Back
                 </button>
-                {{-- @if(Session::has('user_full_name'))
-                    <p class="user-greeting">Chào, {{ Session::get('user_full_name') }}!</p>
-                @endif --}}
             </div>
             <div class="contest-list">
                 @foreach ($quizzes as $quiz)
@@ -141,11 +138,11 @@
                             <p><strong>Thời gian làm bài:</strong> {{ $competition->time_limit }} phút</p>
                         </div>
                         <div class="text-center mt-2">
-                            {{-- @if ($usersOnlineExam->hasUserTakenQuiz($quiz->id))
+                            @if ($usersOnlineExam->hasUserTakenQuiz($quiz->id))
                                 <p class="btn btn-primary btn-sm" disabled >Đã làm bài</p>
-                            @else --}}
+                            @else
                                 <a href="{{ route('p17.start.online.exams.client', ['quizId' => $quiz->id]) }}" class="btn btn-primary btn-sm">Bắt đầu thi</a>
-                            {{-- @endif --}}
+                            @endif
                         </div>
                     </div>
                 @endforeach

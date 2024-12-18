@@ -71,11 +71,11 @@ class ZaloApiService
             ])->get('https://graph.zalo.me/v2.0/me/info');
 
 
-            $customer = Customer::where('id', $response['id'])->first();
+            $customer = Customer::where('id', $response->json()['id'])->first();
 
             if ($customer) {
-                if (isset($response['data']['number'])) {
-                    $customer->phone = $get_phone['data']['number'];
+                if (isset($response->json()['data']['number'])) {
+                    $customer->phone = $response->json()['data']['number'];
                 }
                 $customer->save();
             }

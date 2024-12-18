@@ -185,7 +185,7 @@ Route::middleware(['language'])->group(function () {
         Route::post('/form-start-promotion', [BusinessStartPromotionInvestmentController::class, 'storeFormStartPromotion'])->name('form.start.promotion.store');
 
 
-        
+
 
         Route::group(['prefix' => 'p17'], function () {
             //cho phường 17
@@ -198,7 +198,7 @@ Route::middleware(['language'])->group(function () {
             Route::get('form-advertising', [AdvertisementController::class, 'formAdvertising'])->name('p17.advertising.client.form');
             Route::post('form-advertising', [AdvertisementController::class, 'storeFormAdvertising'])->name('p17.advertising.client.store');
 
-            Route::middleware(['zalo.auth'])->group(function () {
+            Route::middleware(['zalo.auth.web'])->group(function () {
                 Route::get('register-exams', [OnlineXamsController::class, 'registerOnline'])->name('p17.online.xams.client.index');
                 Route::get('list-quiz/{competitionId}', [OnlineXamsController::class, 'listQuizOnline'])->name('p17.list.quiz.client');
                 Route::get('list-questions/{competitionId}', [OnlineXamsController::class, 'listQuestionsOnline'])->name('p17.list.questions.client');
@@ -209,11 +209,6 @@ Route::middleware(['language'])->group(function () {
                 Route::get('list-quiz-result/{quizId}', [OnlineXamsController::class, 'listQuizResult'])->name('p17.list.quiz.result.client');
                 Route::get('generate-captcha', [CaptchaController::class, 'generateCaptcha'])->name('p17.generate.captcha');
                 Route::post('forget-session', [OnlineXamsController::class, 'forgetSession'])->name('p17.forget.session');
-
-
-                Route::post('submit-survey/{surveyId}', [OnlineXamsController::class, 'submitSurvey'])->name('p17.submit.survey.client');
-                Route::get('start-survey/{surveyId}', [OnlineXamsController::class, 'startSurvey'])->name('p17.start.survey.client');
-                Route::get('list-survey-result/{surveyId}', [OnlineXamsController::class, 'listSurveyResult'])->name('p17.list.survey.result.client');
             });
             Route::post('import', [BusinessHouseholdController::class, 'import'])->name('p17.households.import');
 
@@ -356,7 +351,7 @@ Route::middleware(['language'])->group(function () {
                     Route::resource('category-market', CategoryMarketController::class)->except('show');
                     Route::resource('business-households', BusinessHouseholdController::class);
                     Route::post('/business-households/status', [BusinessHouseholdController::class, 'changeStatus'])->name('business.households.changeStatus');
-                    
+
                     Route::resource('top-questions', TopQuestionController::class)->except('show','edit','update');
                     Route::post('top-questions/{id}/answer', [TopQuestionController::class, 'answer'])->name('top-questions.answer');
                 });

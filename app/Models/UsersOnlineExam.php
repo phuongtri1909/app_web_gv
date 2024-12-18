@@ -35,7 +35,7 @@ class UsersOnlineExam extends Model
         return DB::table('users_online_exam_answer')
             ->join('questions', 'users_online_exam_answer.question_id', '=', 'questions.id')
             ->where('questions.quiz_id', $quizId)
-            ->where('users_online_exam_answer.users_online_exam_id', $this->id)
+            ->where('users_online_exam_answer.customer_id', $this->id)
             ->exists();
     }
 }

@@ -1,7 +1,8 @@
 @extends('pages.client.p17.layouts.app')
-@section('title', 'Thi trực tuyến')
-@section('description', 'Thi trực tuyến')
-@section('keyword', 'Thi trực tuyến')
+@section('title', $type === 'competition' ? 'Thi trực tuyến' : 'Khảo sát trực tuyến')
+@section('description', $type === 'competition' ? 'Thi trực tuyến' : 'Khảo sát trực tuyến')
+@section('keyword', $type === 'competition' ? 'Thi trực tuyến' : 'Khảo sát trực tuyến')
+
 
 @push('styles')
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
@@ -291,7 +292,9 @@
                     <div class="submitted-page text-center mt-4">
                         <h2>Đã nộp bài!</h2>
                         <p>Cảm ơn bạn đã hoàn thành bài kiểm tra.</p>
-                        <a href="{{ route('p17.list.competitions.exams.client') }}" class="btn btn-primary mt-3">Quay lại trang Chủ</a>
+                        <a href="{{ route($type === 'competition' ? 'p17.list.competitions.exams.client' : 'p17.list.surveys.client') }}" class="btn btn-primary mt-3">
+                                Quay lại {{ $type === 'competition' ? 'Cuộc thi' : 'Khảo sát' }}
+                            </a>
                     </div>
                 `);
             }

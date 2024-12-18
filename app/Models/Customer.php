@@ -22,7 +22,7 @@ class Customer extends Model
 
     public function hasUserTakenQuiz($quizId)
     {
-        return DB::table('customers')
+        return DB::table('users_online_exam_answer')
             ->join('questions', 'users_online_exam_answer.question_id', '=', 'questions.id')
             ->where('questions.quiz_id', $quizId)
             ->where('users_online_exam_answer.customer_id', $this->id)

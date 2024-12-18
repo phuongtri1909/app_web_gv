@@ -1,7 +1,14 @@
 @extends('pages.client.p17.layouts.app')
-@section('title', 'Bài thi')
-@section('description', 'Bài thi')
-@section('keyword', 'Bài thi')
+
+@if(Route::currentRouteName() == 'p17.list.surveys.client')
+    @section('title', 'Khảo sát trực tuyến')
+    @section('description', 'Khảo sát trực tuyến')
+    @section('keyword', 'Khảo sát trực tuyến')
+@elseif(Route::currentRouteName() == 'p17.list.competitions.exams.client')
+    @section('title', 'Thi trực tuyến')
+    @section('description', 'Thi trực tuyến')
+    @section('keyword', 'Thi trực tuyến')
+@endif
 
 @push('styles')
     <style>
