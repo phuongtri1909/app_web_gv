@@ -70,15 +70,6 @@ class ZaloApiService
                 'secret_key' => env("ZALO_SECRET_KEY"),
             ])->get('https://graph.zalo.me/v2.0/me/info');
 
-
-            $customer = Customer::where('id', $response->json()['id'])->first();
-
-            if ($customer) {
-                if (isset($response->json()['data']['number'])) {
-                    $customer->phone = $response->json()['data']['number'];
-                }
-                $customer->save();
-            }
             return $response->json();
         } catch (\Exception $e) {
             Log::error("get phone error:" . $e->getMessage());

@@ -24,24 +24,9 @@ class ZaloAuthController extends Controller
 
         $customer = Customer::where('id', $get_info['id'])->first();
 
-        if (!$customer) {
-            $customer = new Customer();
-            $customer->id = $get_info['id'];
-            $customer->customerName = $get_info['name'];
+        if ($customer) {
             if (isset($get_phone['data']['number'])) {
                 $customer->phone = $get_phone['data']['number'];
-            }
-            if (isset($get_info['picture']['data']['url'])) {
-                $customer->imageUrl = $get_info['picture']['data']['url'];
-            }
-            $customer->save();
-        }else{
-            $customer->customerName = $get_info['name'];
-            if (isset($get_phone['data']['number'])) {
-                $customer->phone = $get_phone['data']['number'];
-            }
-            if (isset($get_info['picture']['data']['url'])) {
-                $customer->imageUrl = $get_info['picture']['data']['url'];
             }
             $customer->save();
         }
