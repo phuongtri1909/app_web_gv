@@ -22,7 +22,7 @@ class ZaloAuthController extends Controller
         $get_info = $request->get('get_info');
         $get_phone = $this->zaloApiService->getPhoneNumber($request->header('access_token'), $request->header('code'));
 
-        $customer = $this->zaloApiService->updateProfile( $get_info, $get_phone);
+        return $customer = $this->zaloApiService->updateProfile( $get_info, $get_phone);
 
         return response()->json([
             'customer' => $customer,
