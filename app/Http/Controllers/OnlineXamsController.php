@@ -22,8 +22,10 @@ class OnlineXamsController extends Controller
         return view('pages.client.p17.online-exams.index');
     }
 
-    public function registerOnline()
+    public function registerOnline(Request $request)
     {
+        dd($request->get('customer_id'));
+
         $wards = WardGovap::all();
         return view('pages.client.p17.online-exams.register-online', compact('wards'));
     }
