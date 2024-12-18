@@ -21,15 +21,15 @@ class Quiz extends Model
     {
         return $this->hasMany(Question::class, 'quiz_id');
     }
-    public function usersOnlineExams()
+    public function customer()
     {
         return $this->hasManyThrough(
-            UsersOnlineExam::class, 
+            Customer::class, 
             UsersOnlineExamAnswer::class,
             'question_id',      
             'quiz_id',         
             'id',               
-            'users_online_exam_id' 
+            'customer_id' 
         );
     }
 }

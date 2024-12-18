@@ -43,7 +43,7 @@ class CompetitionController extends Controller
             'end_date' => 'required|date|after:start_date',
             'status' => 'required|in:active,inactive,completed',
             'time_limit' => 'required|integer|min:1',
-            'banner' => 'required|image|mimes:jpeg,jpg,png|max:2048', // Giới hạn 2MB
+            'banner' => 'nullable|image|mimes:jpeg,jpg,png', 
         ], [
             'title.required' => 'Tiêu đề là bắt buộc.',
             'title.max' => 'Tiêu đề không được vượt quá :max ký tự.',
@@ -57,14 +57,12 @@ class CompetitionController extends Controller
             'time_limit.required' => 'Giới hạn thời gian là bắt buộc.',
             'time_limit.integer' => 'Giới hạn thời gian phải là số nguyên.',
             'time_limit.min' => 'Giới hạn thời gian phải lớn hơn hoặc bằng :min phút.',
-            'banner.required' => 'Ảnh bìa là bắt buộc.',
             'banner.image' => 'Ảnh bìa phải là tệp hình ảnh.',
             'banner.mimes' => 'Ảnh bìa phải có định dạng: jpeg, jpg, png.',
-            'banner.max' => 'Ảnh bìa không được lớn hơn :max KB.',
         ]);
 
+        $bannerPath = null;
         try {
-
             if ($request->hasFile('banner')) {
                 $image = $request->file('banner');
                 $folderName = date('Y/m');
@@ -82,16 +80,22 @@ class CompetitionController extends Controller
 
                 $bannerPath = 'uploads/images/p17/competitions/banner/' . $folderName . '/' . $fileName;
             }
-
+            $type = $request->get('type', $type); 
             Competition::create([
                 'title' => $validated['title'],
                 'start_date' => $validated['start_date'],
                 'end_date' => $validated['end_date'],
                 'status' => $validated['status'],
                 'time_limit' => $validated['time_limit'],
+                'type' => $type,
                 'banner' => $bannerPath,
             ]);
-            return redirect()->route('competitions.index', ['type' => $type])->with('success', 'Cuộc thi đã được tạo thành công.');
+            if ($type === 'survey-p') {
+                $message = 'Khảo sát đã được tạo thành công.';
+            } else {
+                $message = 'Cuộc thi đã được tạo thành công.';
+            }
+            return redirect()->route('competitions.index', ['type' => $type])->with('success', $message);
         } catch (\Exception $e) {
             if (isset($bannerPath) && File::exists(public_path($bannerPath))) {
                 File::delete(public_path($bannerPath));
@@ -182,17 +186,22 @@ class CompetitionController extends Controller
                 $bannerPath = 'uploads/images/p17/competitions/banner/' . $folderName . '/' . $fileName;
                 $competition->banner = $bannerPath;
             }
-
+            $type = $request->get('type', $type); 
             $competition->update([
                 'title' => $validated['title'],
                 'start_date' => $validated['start_date'],
                 'end_date' => $validated['end_date'],
                 'status' => $validated['status'],
                 'time_limit' => $validated['time_limit'],
+                'type' => $type,
                 'banner' => $competition->banner ?? $competition->getOriginal('banner'),
             ]);
-
-            return redirect()->route('competitions.index', ['type' => $type , 'id' => $id])->with('success', 'Cuộc thi đã được cập nhật thành công.');
+            if ($type === 'survey-p') {
+                $message = 'Khảo sát đã được cập nhật thành công.';
+            } else {
+                $message = 'Cuộc thi đã được cập nhật thành công.';
+            }
+            return redirect()->route('competitions.index', ['type' => $type , 'id' => $id])->with('success', $message);
 
         } catch (\Exception $e) {
             if (isset($bannerPath) && File::exists(public_path($bannerPath))) {
@@ -230,9 +239,13 @@ class CompetitionController extends Controller
 
         try {
             Excel::import(new CompetitionsImport, $request->file('file'));
-
+            if ($type === 'survey-p') {
+                $message = 'Dữ liệu khảo sát đã được nhập thành công.';
+            } else {
+                $message = 'Dữ liệu cuộc thi đã được nhập thành công.';
+            }
             return redirect()->route('competitions.index', ['type' => $type])
-                ->with('success', 'Dữ liệu cuộc thi đã được nhập thành công.');
+                ->with('success', $message);
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = $e->failures();
 

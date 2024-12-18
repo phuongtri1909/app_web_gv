@@ -12,9 +12,9 @@ class UsersOnlineExamAnswer extends Model
     protected $table = 'users_online_exam_answer';
     protected $fillable = ['users_online_exam_id', 'question_id', 'status', 'submission_time', 'start_time'];
 
-    public function userExam()
+    public function customer()
     {
-        return $this->belongsTo(UsersOnlineExam::class, 'users_online_exam_id');
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
     public function question()

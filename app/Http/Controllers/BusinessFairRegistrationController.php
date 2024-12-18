@@ -23,8 +23,9 @@ class BusinessFairRegistrationController extends Controller
      */
     public function index()
     {
-        $category = CategoryNews::where('unit_id',auth()->user()->unit_id)->where('slug', 'hoi-cho')->first();
-        $blogs = [];
+        $category = CategoryNews::where('unit_id', auth()->user()->unit_id)
+            ->where('slug', 'hoi-cho')
+            ->first();
         if ($category) {
             $blogs = News::with('categories')
                 ->whereHas('categories', function ($query) use ($category) {
@@ -32,12 +33,13 @@ class BusinessFairRegistrationController extends Controller
                 })
                 ->latest('published_at')
                 ->paginate(15);
+        } else {
+            $blogs = News::whereNull('id')->paginate(15);
         }
-
         $newsDigitalTransformations = NewsDigitalTransformation::pluck('news_id')->toArray();
-
         return view('admin.pages.client.form-fair-registration.index', compact('blogs', 'newsDigitalTransformations'));
     }
+    
 
     /**
      * Show the form for creating a new resource.
@@ -127,7 +129,6 @@ class BusinessFairRegistrationController extends Controller
             $category = CategoryNews::where('unit_id',auth()->user()->unit_id)->where('slug', 'hoi-cho')->first();
 
             $news->categories()->attach($category->id);
-               
             return redirect()->route('fair-registrations.index')->with('success', __('create_post_success'));
         } catch (\Exception $e) {
             if (isset($image_path) && File::exists(public_path($image_path))) {
@@ -284,7 +285,7 @@ class BusinessFairRegistrationController extends Controller
 
         DB::beginTransaction();
         $validatedData = $request->validate([
-            'business_license' => 'nullable|file|mimes:jpg,jpeg,png',
+            'business_license_f' => 'nullable|file|mimes:jpg,jpeg,png',
             'representative_full_name' => 'required|string|max:255',
             'birth_year' => 'required|integer|min:1500|max:' . date('Y'),
             'gender' => 'required|in:male,female,other',
@@ -296,8 +297,7 @@ class BusinessFairRegistrationController extends Controller
             'is_join_stage_promotion' => 'nullable',
             'is_join_charity' => 'nullable',
         ], [
-            'business_license.mimes' => 'Giấy phép kinh doanh phải là file hình ảnh (jpg, jpeg, png) hoặc PDF. Vui lòng chọn lại tệp đúng định dạng.',
-            'business_license.max' => 'Tệp giấy phép kinh doanh không được vượt quá 2MB. Vui lòng tải tệp nhỏ hơn.',
+            'business_license_f.mimes' => 'Giấy phép kinh doanh phải là file hình ảnh (jpg, jpeg, png) hoặc PDF. Vui lòng chọn lại tệp đúng định dạng.',
             'representative_full_name.required' => 'Vui lòng nhập tên đầy đủ của đại diện. Tên phải có ít nhất một ký tự.',
             'representative_full_name.string' => 'Tên đại diện chỉ được chứa các ký tự chữ cái và khoảng trắng.',
             'representative_full_name.max' => 'Tên đại diện không được vượt quá 255 ký tự.',
@@ -356,8 +356,8 @@ class BusinessFairRegistrationController extends Controller
         }
         $businessLicensePath = null;
         $folderName = date('Y/m');
-        if ($request->hasFile('business_license')) {
-            $avatar = $request->file('business_license');
+        if ($request->hasFile('business_license_f')) {
+            $avatar = $request->file('business_license_f');
             $originalFileName = pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME);
             $fileName = $originalFileName . '_' . time() . '.webp';
             $uploadPath = public_path('uploads/images/fair-registration/licenses/' . $folderName);

@@ -40,7 +40,9 @@
                         <p>Tổng số câu hỏi: {{ $totalQuestions }}</p>
                     </div>
                     <div class="text-center mt-4">
-                        <a href="{{ route('p17.list.competitions.exams.client') }}" class="btn btn-secondary">Trang chủ</a>
+                        <a href="{{ route($type === 'competition' ? 'p17.list.competitions.exams.client' : 'p17.list.surveys.client') }}" class="btn btn-secondary">
+                            Quay lại {{ $type === 'competition' ? 'Cuộc thi' : 'Khảo sát' }}
+                        </a>
                     </div>
                 </div>
             </div>
