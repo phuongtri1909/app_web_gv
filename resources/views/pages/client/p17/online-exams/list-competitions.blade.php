@@ -246,36 +246,36 @@
         });
     </script>
     <script>
-        function goBack() {
-            $.ajax({
-                    url: '/client/p17/forget-session',
-                    method: 'POST',
-                    data: {
-                        _token: $('meta[name="csrf-token"]').attr('content')
-                    }
-                })
-                .then(function(response) {
-                    window.history.back();
-                })
-                .catch(function(error) {
-                    const message = error.responseJSON?.message || 'Có lỗi xảy ra. Vui lòng thử lại sau.';
-                    showToast(message, 'error');
-                    window.history.back();
-                });
-        }
+        // function goBack() {
+        //     $.ajax({
+        //             url: '/client/p17/forget-session',
+        //             method: 'POST',
+        //             data: {
+        //                 _token: $('meta[name="csrf-token"]').attr('content')
+        //             }
+        //         })
+        //         .then(function(response) {
+        //             window.history.back();
+        //         })
+        //         .catch(function(error) {
+        //             const message = error.responseJSON?.message || 'Có lỗi xảy ra. Vui lòng thử lại sau.';
+        //             showToast(message, 'error');
+        //             window.history.back();
+        //         });
+        // }
     </script>
 @endpush
 
 @section('content')
     <div class="form-actions my-2">
-        <button type="button" onclick="goBack()" class="back-btn">
+        {{-- <button type="button" onclick="goBack()" class="back-btn">
             <i class="fa-solid fa-arrow-left back-icon"></i> Quay lại
-        </button>
-        @if (Session::has('user_full_name'))
+        </button> --}}
+        {{-- @if (Session::has('user_full_name'))
             <p class="user-greeting">
                 <i class="fa-solid fa-user"></i> Chào, {{ Session::get('user_full_name') }}!
             </p>
-        @endif
+        @endif --}}
     </div>
 
     <section id="home-online-exams">

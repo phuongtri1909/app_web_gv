@@ -28,6 +28,55 @@
             overflow: hidden;
             -webkit-box-orient: vertical;
         }
+        .import-container {
+            border-radius: 5px;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload {
+            margin-right: 10px;
+        }
+
+        .file-upload label {
+            display: inline-block;
+            padding: 6px 15px;
+            border: 1px solid #007bff;
+            color: #007bff;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .file-upload label:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .file-name-icon {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 10px;
+            padding: 5px 10px;
+            border: 1px solid #007bff;
+            background-color: #f0f8ff;
+            color: #007bff;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .file-name-icon i {
+            margin-right: 5px;
+            font-size: 1rem;
+            color: #007bff;
+        }
     </style>
 @endpush
 
@@ -36,7 +85,42 @@
         <div class="col-12">
             <div class="card mb-4 mx-4">
                 <div class="card-header pb-0">
-                    <h5 class="mb-0">Danh sách Hộ Kinh Doanh</h5>
+                    <div class="d-flex flex-row justify-content-between">
+                        <div>
+                            <h5 class="mb-0">Danh sách Hộ Kinh Doanh</h5>
+                        </div>
+                        <div>
+                            <a href="{{ route('business-households.create') }}" class="btn bg-gradient-primary">Thêm mới</a>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="import-container d-flex">
+                            <form id="importForm" action="{{ route('p17.households.import')}}" method="POST"
+                                enctype="multipart/form-data">
+                                @csrf
+                                <div class="d-flex">
+                                    <div class="file-upload">
+                                        <input type="file" name="file" id="fileInput" accept=".csv,.xls,.xlsx"
+                                            required>
+                                        <label for="fileInput">Chọn file Excel</label>
+                                    </div>
+                                    <div class="button-submit">
+                                        <button type="submit" class="btn btn-primary btn-sm mb-0">Tải lên</button>
+                                    </div>
+                                </div>
+                                <span id="fileName" class="file-name-icon" style="display: none;">
+                                    <i class="fa fa-file" aria-hidden="true"></i>
+                                    <span id="fileNameText"></span>
+                                </span>
+                            </form>
+                        </div>
+                    </div>
+                    <div id="progress-container" style="display: none;">
+                        <h5>Đang xử lý...</h5>
+                        <div class="progress">
+                            <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
@@ -91,6 +175,13 @@
                                                     </li>
                                                 </ul>
                                             </div>
+                                            @include('admin.pages.components.delete-form', [
+                                                'id' => $business->id,
+                                                'route' => route('business-households.destroy', $business->id),
+                                                'message' => __('Bạn có chắc chắn muốn xóa?'),
+                                            ])
+                                            <a href="{{ route('business-households.edit', $business->id) }}"
+                                                ><i class="fa-regular fa-pen-to-square"></i></a>
                                             <a href="#" class="mx-2 view-business" data-id="{{ $business->id }}"
                                                 title="Xem chi tiết">
                                                 <i class="fa-solid fa-eye"></i>
@@ -175,7 +266,8 @@
                                         <p id="modal-business-field" class="text-sm mb-2"></p>
                                     </div>
                                     <div class="col-6">
-                                        <label class="text-uppercase text-xs font-weight-bolder opacity-7">Loại hình</label>
+                                        <label class="text-uppercase text-xs font-weight-bolder opacity-7">Loại
+                                            hình</label>
                                         <p id="modal-category-market" class="text-sm mb-2"></p>
                                     </div>
                                 </div>
@@ -267,6 +359,42 @@
                     }
                 });
             });
+        });
+    </script>
+    <script>
+        $("#fileInput").change(function() {
+            const fileNameDisplay = $("#fileName");
+            const fileNameText = $("#fileNameText");
+            const fileInput = $(this).prop("files")[0];
+
+            if (fileInput) {
+                fileNameDisplay.show();
+                fileNameText.text(fileInput.name);
+            } else {
+                fileNameDisplay.hide();
+                fileNameText.text("");
+            }
+        });
+
+        $("#importForm").submit(function(e) {
+            const fileInput = $("#fileInput").prop("files")[0];
+            if (!fileInput) {
+                e.preventDefault();
+                alert("Vui lòng chọn một file trước khi tải lên.");
+                return;
+            }
+
+            $("#progress-container").show();
+            const progressBar = $("#progress-bar");
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                } else {
+                    width += 10;
+                    progressBar.css("width", width + "%");
+                }
+            }, 500);
         });
     </script>
 @endpush

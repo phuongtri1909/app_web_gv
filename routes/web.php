@@ -200,7 +200,7 @@ Route::middleware(['language'])->group(function () {
             Route::get('list-quiz/{competitionId}', [OnlineXamsController::class, 'listQuizOnline'])->name('p17.list.quiz.client');
             Route::get('list-questions/{competitionId}', [OnlineXamsController::class, 'listQuestionsOnline'])->name('p17.list.questions.client');
             
-            Route::post('list-competitions', [OnlineXamsController::class, 'submitCompetitionsOnline'])->name('p17.submit.competitions.exams.client');
+            // Route::post('list-competitions', [OnlineXamsController::class, 'submitCompetitionsOnline'])->name('p17.submit.competitions.exams.client');
             Route::get('start-online-exams/{quizId}', [OnlineXamsController::class, 'startOnlineExams'])->name('p17.start.online.exams.client');
             Route::post('submit-quiz/{quizId}', [OnlineXamsController::class, 'submitQuiz'])->name('p17.submit.quiz.client');
             Route::get('list-quiz-result/{quizId}', [OnlineXamsController::class, 'listQuizResult'])->name('p17.list.quiz.result.client');
@@ -211,7 +211,7 @@ Route::middleware(['language'])->group(function () {
             Route::post('submit-survey/{surveyId}', [OnlineXamsController::class, 'submitSurvey'])->name('p17.submit.survey.client');  
             Route::get('start-survey/{surveyId}', [OnlineXamsController::class, 'startSurvey'])->name('p17.start.survey.client');  
             Route::get('list-survey-result/{surveyId}', [OnlineXamsController::class, 'listSurveyResult'])->name('p17.list.survey.result.client');  
-            // Route::post('import', [BusinessHouseholdController::class, 'import'])->name('p17.households.import');
+            Route::post('import', [BusinessHouseholdController::class, 'import'])->name('p17.households.import');
            
 
             Route::middleware(['check.code.zalo'])->group(function () {
