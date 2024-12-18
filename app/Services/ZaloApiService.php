@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Customer;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
@@ -20,6 +21,26 @@ class ZaloApiService
                 'fields' => 'id,name,picture',
             ]);
 
+            $customer = Customer::where('id', $response['id'])->first();
+
+            if (!$customer) {
+                $customer = new Customer();
+                $customer->id = $response['id'];
+                $customer->customerName = $response['name'];
+               
+                if (isset($response['picture']['data']['url'])) {
+                    $customer->imageUrl = $response['picture']['data']['url'];
+                }
+                $customer->save();
+            }else{
+                $customer->customerName = $response['name'];
+               
+                if (isset($response['picture']['data']['url'])) {
+                    $customer->imageUrl = $response['picture']['data']['url'];
+                }
+                $customer->save();
+            }
+
             return $response->json();
         } catch (\Exception $e) {
             Log::error("get profile: " . $e->getMessage());
@@ -36,6 +57,15 @@ class ZaloApiService
                 'secret_key' => env("ZALO_SECRET_KEY"),
             ])->get('https://graph.zalo.me/v2.0/me/info');
 
+
+            $customer = Customer::where('id', $response['id'])->first();
+
+            if ($customer) {
+                if (isset($response['data']['number'])) {
+                    $customer->phone = $get_phone['data']['number'];
+                }
+                $customer->save();
+            }
             return $response->json();
         } catch (\Exception $e) {
             Log::error("get phone error:" . $e->getMessage());

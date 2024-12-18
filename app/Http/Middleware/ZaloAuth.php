@@ -31,19 +31,17 @@ class ZaloAuth
         if ($request->expectsJson() || $request->is('api/*')) {
             $accessToken = $request->header('access-token');
         } else {
-            if (Session::has('access_token')) {
-                $accessToken = Session::get('access_token');
-            }
+            $accessToken = Session::get('access_token');
         }
 
         if (!isset($accessToken) || !$accessToken) {
-            return $this->unauthorizedResponse($request);
+            return $this->unauthorizedResponse($next,$request);
         }
 
         $get_info = $this->zaloApiService->getProfile($accessToken);
-
         if (isset($get_info['error']) && $get_info['error'] !== 0) {
-            return $this->unauthorizedResponse($request);
+            
+            return $this->unauthorizedResponse($next,$request, $get_info);
         }
 
         $request->merge(['get_info' => $get_info]);
@@ -51,11 +49,25 @@ class ZaloAuth
         return $next($request);
     }
 
-    protected function unauthorizedResponse(Request $request)
+    protected function unauthorizedResponse($next, $request, $get_info = null)
     {
-        return response()->json([
-            'error' => 'Unauthorized',
-            'status' => 401,
-        ], 401);
+        if ($request->expectsJson() || $request->is('api/*')) {
+            return response()->json([
+                'error' => 'Unauthorized',
+                'status' => 401,
+            ], 401);
+        } else {
+            try {
+                if($get_info != null){
+                    if ($get_info['error'] == 452) {
+                        return $this->zaloApiService->refreshAcessToken($next, $request);
+                    }
+                }
+                return $this->zaloApiService->redirectToZaloLogin();
+            } catch (\Exception $e) {
+                // dd($e->getMessage());
+                return abort(401);
+            }
+        }
     }
 }

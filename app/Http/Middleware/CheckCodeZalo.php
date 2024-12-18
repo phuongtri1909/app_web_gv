@@ -28,9 +28,8 @@ class CheckCodeZalo
     public function handle(Request $request, Closure $next): Response
     {
 
-        $routeActions = ['p17.list.surveys.client', 'p17.list.competitions.exams.client'];
+        $routeActions = ['p17.list.surveys.client', 'p17.list.competitions.exams.client','p17.online.xams.client.index'];
         $routeAuth = 'p17.auth.zalo.client';
-
         if (in_array($request->route()->getName(), $routeActions)) {
             Session::put('previous_url', $request->fullUrl());
         }
@@ -41,7 +40,7 @@ class CheckCodeZalo
         if (Session::has('access_token')) {
             $accessToken = Session::get('access_token');
             $get_info = $this->zaloApiService->getProfile($accessToken);
-
+           
             if (isset($get_info['error']) && $get_info['error'] !== 0) {
                 if (in_array($request->route()->getName(), $routeActions)) {
                     //452 lỗi token hết hạn

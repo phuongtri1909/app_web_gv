@@ -23,11 +23,107 @@ class OnlineXamsController extends Controller
         return view('pages.client.p17.online-exams.index');
     }
 
-    public function listCompetitionsOnline(Request $request)
+    public function registerOnline(Request $request)
     {
+        // dd($request->get('customer_id'));
 
-        $customer_id = $request->get('customer_id');
-        dd($customer_id);
+        $wards = WardGovap::all();
+        return view('pages.client.p17.online-exams.register-online', compact('wards'));
+    }
+
+    public function submitCompetitionsOnline(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'cccd' => 'required|string|regex:/^[0-9]{12}$/',
+                'phone' => 'required|string|max:10|regex:/^[0-9]+$/',
+                'name' => 'required|string|max:100',
+                'dob' => [
+                    'required',
+                    'date',
+                    'before_or_equal:today',
+                    function ($attribute, $value, $fail) {
+                        $year = \Carbon\Carbon::parse($value)->year;
+                        $currentYear = \Carbon\Carbon::now()->year;
+                        if ($year == $currentYear) {
+                            $fail('Năm sinh không thể là năm hiện tại (' . $currentYear . ').');
+                        }
+                    }
+                ],
+                'ward' => 'nullable|string|max:100',
+                'village' => 'nullable|string|max:100',
+                'captcha' => 'required|string',
+            ], [
+                'cccd.required' => 'CCCD là bắt buộc.',
+                'cccd.regex' => 'CCCD phải bao gồm 12 chữ số.',
+                'phone.required' => 'Số điện thoại là bắt buộc.',
+                'phone.regex' => 'Số điện thoại chỉ được phép chứa các chữ số.',
+                'phone.max' => 'Số điện thoại không được vượt quá 10 chữ số.',
+                'name.required' => 'Tên là bắt buộc.',
+                'name.max' => 'Tên không được vượt quá 100 ký tự.',
+                'dob.required' => 'Ngày sinh là bắt buộc.',
+                'dob.date' => 'Ngày sinh phải là một ngày hợp lệ.',
+                'captcha.required' => 'Captcha là bắt buộc.',
+            ]);
+
+            if ($request->input('captcha') !== session('captcha_code')) {
+                return redirect()->back()->with('error', 'Mã captcha không đúng.')->withInput();
+            }
+
+            $userOnlineExam = UsersOnlineExam::firstOrNew([
+                'identity_card_number' => $request->input('cccd'),
+            ]);
+
+            // Check if the user is already registered in a competition or survey
+            if ($userOnlineExam->exists) {
+                Session::put('user_id', $userOnlineExam->id);
+                Session::put('user_full_name', $userOnlineExam->full_name);
+
+
+                $competitionType = $userOnlineExam->competition_type;
+                if ($competitionType == 'competition') {
+                    return redirect()->route('p17.list.competitions.exams.client')->with('success', 'Bạn đã tham gia cuộc thi thành công! Chúc may mắn.');
+                } else {
+                    return redirect()->route('p17.list.surveys.client')->with('success', 'Bạn đã tham gia khảo sát thành công!');
+                }
+            }
+
+            // Save new user
+            $userOnlineExam->fill([
+                'full_name' => $request->input('name'),
+                'phone_number' => $request->input('phone'),
+                'date_of_birth' => $request->input('dob'),
+                'wards_id' => $request->input('ward'),
+                'street_number' => $request->input('village'),
+            ]);
+            $userOnlineExam->save();
+
+            Session::put('user_id', $userOnlineExam->id);
+            Session::put('user_full_name', $userOnlineExam->full_name);
+            $competitionType = $userOnlineExam->competition_type;
+            if ($competitionType == 'competition') {
+                return redirect()->route('p17.list.competitions.exams.client')->with('success', 'Bạn đã tham gia cuộc thi thành công! Chúc may mắn.');
+            } else {
+                return redirect()->route('p17.list.surveys.client')->with('success', 'Bạn đã tham gia khảo sát thành công!');
+            }
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->validator)->withInput();
+        } catch (\Exception $e) {
+            Log::error('Error submitting competition online: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Đã xảy ra lỗi, vui lòng thử lại!')->withInput();
+        }
+    }
+
+
+
+    public function listCompetitionsOnline()
+    {
+        // if (!Session::has('user_id')) {
+        //     return redirect()->route('p17.online.xams.client.index')->with('error', 'Bạn phải đăng ký tham gia cuộc thi.');
+        // }
+
+        // $customer_id = $request->get('customer_id');
+        // dd($customer_id);
         $competitions = Competition::with('quizzes')
         ->where('status', 'active')
         ->where('type', 'competition')
