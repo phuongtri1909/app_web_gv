@@ -40,6 +40,8 @@ class ZaloAuthWeb
             return $this->unauthorizedResponse($next, $request, $get_info);
         }
 
+        $this->zaloApiService->updateProfile( $get_info);
+
         $request->merge(['get_info' => $get_info]);
         $request->merge(['customer_id' => $get_info['id']]);
         return $next($request);

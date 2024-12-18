@@ -28,23 +28,22 @@ class ZaloAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->expectsJson() || $request->is('api/*')) {
-            $accessToken = $request->header('access-token');
-        } else {
-            $accessToken = Session::get('access_token');
-        }
+
+        $accessToken = $request->header('access-token');
 
         if (!isset($accessToken) || !$accessToken) {
-            return $this->unauthorizedResponse($next,$request);
+            return $this->unauthorizedResponse($next, $request);
         }
 
         $get_info = $this->zaloApiService->getProfile($accessToken);
+
+
         if (isset($get_info['error']) && $get_info['error'] !== 0) {
-            
-            return $this->unauthorizedResponse($next,$request, $get_info);
+
+            return $this->unauthorizedResponse($next, $request, $get_info);
         }
 
-        $this->zaloApiService->updateProfile( $get_info);
+        $this->zaloApiService->updateProfile($get_info);
 
         $request->merge(['get_info' => $get_info]);
         $request->merge(['customer_id' => $get_info['id']]);
@@ -53,23 +52,9 @@ class ZaloAuth
 
     protected function unauthorizedResponse($next, $request, $get_info = null)
     {
-        if ($request->expectsJson() || $request->is('api/*')) {
-            return response()->json([
-                'error' => 'Unauthorized',
-                'status' => 401,
-            ], 401);
-        } else {
-            try {
-                if($get_info != null){
-                    if ($get_info['error'] == 452) {
-                        return $this->zaloApiService->refreshAcessToken($next, $request);
-                    }
-                }
-                return $this->zaloApiService->redirectToZaloLogin();
-            } catch (\Exception $e) {
-                // dd($e->getMessage());
-                return abort(401);
-            }
-        }
+        return response()->json([
+            'error' => 'Unauthorized',
+            'status' => 401,
+        ], 401);
     }
 }
