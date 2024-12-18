@@ -198,7 +198,7 @@ Route::middleware(['language'])->group(function () {
             Route::get('form-advertising', [AdvertisementController::class, 'formAdvertising'])->name('p17.advertising.client.form');
             Route::post('form-advertising', [AdvertisementController::class, 'storeFormAdvertising'])->name('p17.advertising.client.store');
 
-            Route::middleware(['zalo.auth'])->group(function () {
+            Route::middleware(['zalo.auth.web'])->group(function () {
                 Route::get('register-exams', [OnlineXamsController::class, 'registerOnline'])->name('p17.online.xams.client.index');
                 Route::get('list-quiz/{competitionId}', [OnlineXamsController::class, 'listQuizOnline'])->name('p17.list.quiz.client');
                 Route::get('list-questions/{competitionId}', [OnlineXamsController::class, 'listQuestionsOnline'])->name('p17.list.questions.client');

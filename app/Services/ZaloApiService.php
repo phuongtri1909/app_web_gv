@@ -20,23 +20,22 @@ class ZaloApiService
             ])->get('https://graph.zalo.me/v2.0/me', [
                 'fields' => 'id,name,picture',
             ]);
-
-            $customer = Customer::where('id', $response['id'])->first();
+            $customer = Customer::where('id', $response->json()['id'])->first();
 
             if (!$customer) {
                 $customer = new Customer();
-                $customer->id = $response['id'];
-                $customer->customerName = $response['name'];
-               
-                if (isset($response['picture']['data']['url'])) {
-                    $customer->imageUrl = $response['picture']['data']['url'];
+                $customer->id = $response->json()['id'];
+                $customer->customerName = $response->json()['name'];
+
+                if (isset($response->json()['picture']['data']['url'])) {
+                    $customer->imageUrl = $response->json()['picture']['data']['url'];
                 }
                 $customer->save();
             }else{
-                $customer->customerName = $response['name'];
-               
-                if (isset($response['picture']['data']['url'])) {
-                    $customer->imageUrl = $response['picture']['data']['url'];
+                $customer->customerName = $response->json()['name'];
+
+                if (isset($response->json()['picture']['data']['url'])) {
+                    $customer->imageUrl = $response->json()['picture']['data']['url'];
                 }
                 $customer->save();
             }
@@ -58,11 +57,11 @@ class ZaloApiService
             ])->get('https://graph.zalo.me/v2.0/me/info');
 
 
-            $customer = Customer::where('id', $response['id'])->first();
+            $customer = Customer::where('id', $response->json()['id'])->first();
 
             if ($customer) {
-                if (isset($response['data']['number'])) {
-                    $customer->phone = $get_phone['data']['number'];
+                if (isset($response->json()['data']['number'])) {
+                    $customer->phone = $response->json()['data']['number'];
                 }
                 $customer->save();
             }
@@ -89,7 +88,7 @@ class ZaloApiService
             $state = $state;
 
             $authUrl = "https://oauth.zaloapp.com/v4/permission?app_id={$appId}&redirect_uri={$redirectUri}&code_challenge={$codeChallenge}&state={$state}";
-           
+
             return redirect($authUrl);
         } catch (\Exception $e) {
             Log::error("redirect to zalo login: " . $e->getMessage());
@@ -108,16 +107,16 @@ class ZaloApiService
                 'code_verifier' => $codeVerifier,
                 'grant_type' => 'authorization_code',
             ]);
-            
+
             if (isset($response['error']) && $response['error'] == -14019) {
-                
+
                 return $this->redirectToZaloLogin();
             }elseif(isset($response['error']) && $response['error'] !== 0){
                 return $this->redirectToZaloLogin();
             }
 
             // Save access token and refresh token
-         
+
             Session::put('access_token', $response['access_token']);
             Session::put('refresh_token', $response['refresh_token']);
             Session::put('refresh_token_expires_in', $response['refresh_token_expires_in']);
