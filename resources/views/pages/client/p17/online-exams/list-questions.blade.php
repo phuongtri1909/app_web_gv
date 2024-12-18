@@ -123,9 +123,9 @@
                 <button type="button" onclick="history.back()" class="back-btn">
                     <i class="fa-solid fa-arrow-left back-icon"></i> Back
                 </button>
-                @if(Session::has('user_full_name'))
+                {{-- @if(Session::has('user_full_name'))
                     <p class="user-greeting">Chào, {{ Session::get('user_full_name') }}!</p>
-                @endif
+                @endif --}}
             </div>
             <div class="contest-list">
                 @foreach ($quizzes as $quiz)

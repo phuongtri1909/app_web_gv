@@ -81,7 +81,7 @@
                                 <div class="form-group">
                                     <label for="banner">Ảnh bìa</label>
                                     <input type="file" class="form-control @error('banner') is-invalid @enderror"
-                                        id="banner" name="banner" accept="image/*" required>
+                                        id="banner" name="banner" accept="image/*">
                                     @error('banner')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

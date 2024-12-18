@@ -60,7 +60,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($blogs as $key => $post)
+                                @forelse ($blogs as $key => $post)
                                     <tr>
                                         <td class="ps-4">
                                             <p class="text-xs font-weight-bold mb-0">{{ $key + 1 }}</p>
@@ -107,10 +107,14 @@
                                             </div>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty 
+                                  
+                                @endforelse
                             </tbody>
                         </table>
-                        <x-pagination :paginator="$blogs" />
+                        @if($blogs->hasPages())
+                            <x-pagination :paginator="$blogs" />
+                        @endif
                     </div>
                 </div>
             </div>

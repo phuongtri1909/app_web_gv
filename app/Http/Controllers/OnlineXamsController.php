@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Competition;
+use App\Models\Customer;
 use App\Models\Quiz;
 use App\Models\UsersOnlineExam;
 use App\Models\UsersOnlineExamAnswer;
@@ -121,6 +122,8 @@ class OnlineXamsController extends Controller
         //     return redirect()->route('p17.online.xams.client.index')->with('error', 'Bạn phải đăng ký tham gia cuộc thi.');
         // }
 
+        // $customer_id = $request->get('customer_id');
+        // dd($customer_id);
         $competitions = Competition::with('quizzes')
         ->where('status', 'active')
         ->where('type', 'competition')
@@ -131,23 +134,18 @@ class OnlineXamsController extends Controller
 
     public function listQuizOnline($competitionId)
     {
-        // if (!Session::has('user_id')) {
-        //     return redirect()->route('p17.online.xams.client.index')->with('error', 'Bạn phải đăng ký tham gia cuộc thi.');
-        // }
-
         $competition = Competition::findOrFail($competitionId);
         $quizzes = Quiz::where('competition_id', $competitionId)->where('status', 'active')->get();
 
         if ($quizzes->isEmpty()) {
             if($competition->type == 'survey-p'){
                 return redirect()->route('p17.list.surveys.client')
-                ->with('error', 'Cuộc thi hiện không có bộ câu hỏi nào để tham gia.');
+                ->with('error', 'Khảo sát hiện không có bộ câu hỏi nào để tham gia.');
             }else{
                 return redirect()->route('p17.list.competitions.exams.client')
                 ->with('error', 'Cuộc thi hiện không có bộ câu hỏi nào để tham gia.');
             }
         }
-
         $competition->number_of_quizzes = $quizzes->count();
 
         return view('pages.client.p17.online-exams.list-quizs', compact('competition', 'quizzes'));
@@ -157,15 +155,12 @@ class OnlineXamsController extends Controller
 
 
 
-    public function listQuestionsOnline($competitionId)
+    public function listQuestionsOnline(Request $request, $competitionId)
     {
-        // if (!Session::has('user_id')) {
-        //     return redirect()->route('p17.online.xams.client.index')
-        //         ->with('error', 'Bạn phải đăng ký tham gia cuộc thi.');
-        // }
 
-        $userId = Session::get('user_id');
-        $usersOnlineExam = UsersOnlineExam::where('id', $userId)->first();
+
+        $customer_id = $request->get('customer_id');
+        $usersOnlineExam = Customer::where('id', $customer_id)->first();
         $competition = Competition::findOrFail($competitionId);
         $quizzes = $competition->quizzes()->where('status', 'active')->get();
 
@@ -173,30 +168,43 @@ class OnlineXamsController extends Controller
     }
 
 
-    public function startOnlineExams($quizId)
+    public function startOnlineExams(Request $request, $quizId)
     {
-        // if (!Session::has('user_id')) {
-        //     return redirect()->route('p17.online.xams.client.index')->with('error', 'Bạn phải đăng ký tham gia cuộc thi.');
-        // }
+
         $quiz = Quiz::with('questions')->findOrFail($quizId);
         $competition = $quiz->competition;
         $timeLimit = $competition->time_limit;
         $startTime = now();
         Session::put('start_time', $startTime);
         if ($quiz->questions->isEmpty()) {
-            return redirect()->route('p17.list.competitions.exams.client')
-                ->with('error', 'Bài thi này chưa có câu hỏi, không vào thi được!.');
+            if($competition->type == 'survey-p'){
+                return redirect()->route('p17.list.surveys.client')
+                ->with('error', 'Khảo sát này chưa có câu hỏi, không vào thi được!');
+            }else{
+                return redirect()->route('p17.list.competitions.exams.client')
+                ->with('error', 'Bài thi này chưa có câu hỏi, không vào thi được!');
+            }
         }
         $questions = $quiz->questions()->paginate(5);
 
         foreach ($questions as $question) {
             $question->options = json_decode($question->answer, true);
         }
-        $userId = Session::get('user_id');
-        $usersOnlineExam = UsersOnlineExam::where('id', $userId)->first();
+        $customer_id = $request->get('customer_id');
+        $usersOnlineExam = Customer::where('id', $customer_id)->first();
         if ($usersOnlineExam->hasUserTakenQuiz($quizId)) {
-            return redirect()->route('p17.list.competitions.exams.client')
-                ->with('error', 'Thi rồi mà sao lại vô nữa !!!.');
+            if($competition->type == 'survey-p'){
+                return redirect()->route('p17.list.surveys.client')
+                    ->with('error', 'Bạn đã khảo sát!.');
+            }else{
+                 return redirect()->route('p17.list.competitions.exams.client')
+                    ->with('error', 'Bạn đã thi !!');
+            }
+        }
+
+        $type = $competition->type;
+        if (!$type || !in_array($type, ['survey', 'competition'])) {
+            return redirect()->back()->with('error', 'Không xác định được loại bài thi.');
         }
         if (request()->ajax()) {
             return response()->json([
@@ -240,9 +248,9 @@ class OnlineXamsController extends Controller
             $start_time_vn = Carbon::parse($validated['start_time'])->setTimezone('Asia/Ho_Chi_Minh')->format('Y-m-d H:i:s');
             $submission_time_vn = Carbon::parse($validated['submission_time'])->setTimezone('Asia/Ho_Chi_Minh')->format('Y-m-d H:i:s');
 
-
+            $customer_id = $request->get('customer_id');
             UsersOnlineExamAnswer::create([
-                'users_online_exam_id' => Session::get('user_id'),
+                'customer_id' =>   $customer_id,
                 'question_id' => $question->id,
                 'status' => $selectedAnswer,
                 'start_time' => $start_time_vn,
@@ -263,14 +271,19 @@ class OnlineXamsController extends Controller
     public function listQuizResult(Request $request, $quizId)
     {
         $quiz = Quiz::findOrFail($quizId);
+        $customer_id = $request->get('customer_id');
         $correctAnswersCount = $request->input('correctAnswersCount');
         $incorrectAnswersCount = $request->input('incorrectAnswersCount');
         $totalQuestions = $request->input('totalQuestions');
         $notAnsweredCount = $request->input('notAnsweredCount');
 
-        $userAnswers = UsersOnlineExamAnswer::where('users_online_exam_id', Session::get('user_id'))
+        $userAnswers = UsersOnlineExamAnswer::where('customer_id',$customer_id)
             ->whereIn('question_id', $quiz->questions->pluck('id'))
             ->get();
+        $type = $quiz->competition->type;
+        if (!$type || !in_array($type, ['survey', 'competition'])) {
+            return redirect()->back()->with('error', 'Không xác định được loại bài thi.');
+        }
 
         return view('pages.client.p17.online-exams.result-user-online-exam', compact(
             'quiz',
@@ -278,22 +291,13 @@ class OnlineXamsController extends Controller
             'incorrectAnswersCount',
             'totalQuestions',
             'userAnswers',
-            'notAnsweredCount'
+            'notAnsweredCount',
+            'type'
         ));
-    }
-
-    public function forgetSession(Request $request)
-    {
-        $request->session()->forget('user_full_name');
-        $request->session()->forget('user_id');
-        return response()->json(['message' => 'Session deleted successfully']);
     }
 
     public function listSurveys(Request $request)
     {
-        // if (!Session::has('user_id')) {
-        //     return redirect()->route('p17.online.xams.client.index')->with('error', 'Bạn phải đăng ký tham gia cuộc thi.');
-        // }
 
         $competitions = Competition::where('status', 'active')->where('type', 'survey-p')->get()->map(function ($competition) {
             $now = Carbon::now();

@@ -41,8 +41,8 @@
                         <input type="text" id="business_name" class="form-control" value="{{ $businessName ?? 'Không tìm thấy doanh nghiệp' }}" disabled>
                     </div>
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="business_license" class="form-label">Hình giấy phép kinh doanh (Không bắt buộc)</label>
-                        <input type="file" name="business_license" id="business_license" class="form-control">
+                        <label for="business_license_f" class="form-label">Hình giấy phép kinh doanh (Không bắt buộc)</label>
+                        <input type="file" name="business_license_f" id="business_license_f" class="form-control">
                         <div id="business_license_preview_container" class="mt-3"></div>
                     </div>
                 </div>
@@ -153,14 +153,14 @@
                     @enderror
                 </div>
 
-                {{-- <div class="d-flex flex-column align-items-center">
+                <div class="d-flex flex-column align-items-center">
                     <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
                     @if ($errors->has('recaptcha'))
                         <div class="text-danger" role="alert">{{ $errors->first('recaptcha') }}</div>
                     @endif
-                </div> --}}
+                </div>
 
-                <div class="text-center">
+                <div class="text-center my-2">
                     <button type="submit" class="btn bg-app-gv rounded-pill text-white">Đăng ký</button>
                 </div>
             </form>
@@ -238,7 +238,7 @@
             validateImageInput(event);
             previewFiles(this, 'product_image_preview_container', false, 5);
         }); 
-        document.getElementById('business_license').addEventListener('change', function(event) {
+        document.getElementById('business_license_f').addEventListener('change', function(event) {
             validateImageInput(event);
             previewFiles(this, 'business_license_preview_container');
         });

@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Road;
 use App\Models\BusinessHousehold;
+use App\Models\CategoryMarket;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
@@ -33,11 +34,9 @@ class BusinessHouseholdImport implements ToModel,WithStartRow
         }
 
         $road = Road::where('slug', $row[6])->first();
-
-        if (!$road) {
-            return null;
-        }
-
+        $category = CategoryMarket::where('slug', $row[12])->first();
+        $road = $road ?? null;
+        $category = $category ?? null;
         Log::info('Row: ' . $this->currentRow . ', Column 6 Value: ' . $row[6] . 'name: ' . $row[3]);
         //dd($road);
         return new BusinessHousehold([
@@ -52,6 +51,7 @@ class BusinessHouseholdImport implements ToModel,WithStartRow
             'phone' => $row[9],
             'cccd' => $row[10],
             'address' => $row[11],
+            'category_market_id' => $category ? $category->id : null,
             'status' => 'active',
         ]);
     }
