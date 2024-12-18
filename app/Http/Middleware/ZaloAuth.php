@@ -65,7 +65,7 @@ class ZaloAuth
                 }
                 return $this->zaloApiService->redirectToZaloLogin();
             } catch (\Exception $e) {
-                dd($e->getMessage());
+                // dd($e->getMessage());
                 return abort(401);
             }
         }
