@@ -28,7 +28,11 @@ class ZaloAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $accessToken = $request->header('access-token');
+        if ($request->expectsJson() || $request->is('api/*')) {
+            $accessToken = $request->header('access-token');
+        } else {
+            $accessToken = Session::get('access_token');
+        }
 
         if (!isset($accessToken) || !$accessToken) {
             return $this->unauthorizedResponse($next,$request);
