@@ -104,23 +104,23 @@
             const $quizForm = $('#quizForm');
             const timeLimit = {{ $timeLimit }} * 60; // Giới hạn thời gian (giây)
             let remainingTime;
+            let timerInterval;
 
+            let isQuizFinished = localStorage.getItem(isQuizFinishedKey);
+            if (isQuizFinished) {
+                console.log('Quiz is finished, redirecting...');
+                window.location.href = '{{ route($type === 'competition' ? 'p17.list.competitions.exams.client' : 'p17.list.surveys.client') }}';
+                localStorage.removeItem(isQuizFinishedKey);
+                return;
+            }
             // Khôi phục thời gian bắt đầu
-            let startTime = JSON.parse(localStorage.getItem(startTimeKey));
+             let startTime = JSON.parse(localStorage.getItem(startTimeKey));
             if (!startTime) {
                 startTime = new Date();
                 localStorage.setItem(startTimeKey, JSON.stringify(startTime));
             } else {
                 startTime = new Date(startTime);
             }
-            remainingTime = timeLimit - Math.floor((new Date() - startTime) / 1000);
-
-            const isQuizFinished = localStorage.getItem(isQuizFinishedKey);
-            if (isQuizFinished) {
-                disableQuiz();
-                return;
-            }
-
             loadQuestions();
 
             function loadQuestions() {
@@ -134,6 +134,7 @@
                         if (Array.isArray(questions)) {
                             renderQuestions(questions, isQuizFinished);
                             restoreSavedAnswers();
+                            startTimer();
                         } else {
                             console.error('Expected an array for questions, but got:', questions);
                             toastr.error('Lỗi dữ liệu câu hỏi!');
@@ -197,8 +198,13 @@
                 });
             }
 
-            // Cập nhật đồng hồ đếm ngược
-            let timerInterval;
+            function startTimer() {
+                remainingTime = timeLimit - Math.floor((new Date() - startTime) / 1000);
+                if (!isQuizFinished) {
+                    timerInterval = setInterval(updateTimer, 1000);
+                    updateTimer();
+                }
+            }
 
             function updateTimer() {
                 if (remainingTime <= 0) {
@@ -216,10 +222,6 @@
                 }
             }
 
-            if (!isQuizFinished) {
-                timerInterval = setInterval(updateTimer, 1000);
-                updateTimer();
-            }
 
             // Xử lý nộp bài
             $quizForm.on('submit', function(e) {
@@ -306,8 +308,8 @@
                 if (document.hidden) {
                     tabSwitchCount++;
                     toastr.warning(`Cảnh báo: Chuyển tab ${tabSwitchCount} lần.`);
-                    if (tabSwitchCount >= 3) {
-                        swal('Bạn đã chuyển tab quá 3 lần, bài thi sẽ tự động nộp.', {
+                    if (tabSwitchCount >= 5) {
+                        swal('Bạn đã chuyển tab quá 5 lần, bài thi sẽ tự động nộp.', {
                             icon: 'warning'
                         });
                         submitQuiz(true);
@@ -322,6 +324,11 @@
                     submitQuiz(true);
                     (e || window.event).returnValue = '';
                     return '';
+                }
+            });
+            $(window).on('pageshow', function(event) {
+                if (event.originalEvent.persisted) {
+                    window.location.reload();
                 }
             });
         });

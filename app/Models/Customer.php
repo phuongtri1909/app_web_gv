@@ -20,12 +20,8 @@ class Customer extends Model
         return $this->hasMany(Customer::class, 'customer_id');
     }
 
-    public function hasUserTakenQuiz($quizId)
+    public function usersOnlineExamAnswers()
     {
-        return DB::table('users_online_exam_answer')
-            ->join('questions', 'users_online_exam_answer.question_id', '=', 'questions.id')
-            ->where('questions.quiz_id', $quizId)
-            ->where('users_online_exam_answer.customer_id', $this->id)
-            ->exists();
+        return $this->hasMany(UsersOnlineExamAnswer::class, 'customer_id');
     }
 }
