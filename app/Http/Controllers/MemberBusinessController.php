@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Imports\BusinessRegistrationsImport;
+use App\Models\Unit;
 use App\Models\User;
+use App\Models\Email;
 use Illuminate\Http\Request;
 use App\Models\BusinessField;
 use App\Models\BusinessMember;
 use App\Mail\BusinessRegistered;
-use App\Models\Email;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\BusinessRegistrationsImport;
 use Maatwebsite\Excel\Validators\ValidationException;
 
 class MemberBusinessController extends Controller
@@ -116,6 +117,8 @@ class MemberBusinessController extends Controller
 
             $businessMember->save();
 
+            $unit_id = Unit::where('unit_code','QGV')->first()->id;
+
             $user = User::updateOrCreate(
                 // Điều kiện kiểm tra user tồn tại
                 ['username' => $businessMember->business_code],
@@ -125,7 +128,8 @@ class MemberBusinessController extends Controller
                     'full_name' => $businessMember->business_name,
                     'email' => $businessMember->email,
                     'role' => 'business',
-                    'business_member_id' => $businessMember->id
+                    'business_member_id' => $businessMember->id,
+                    'unit_id' => $unit_id,
                 ]
             );
 
