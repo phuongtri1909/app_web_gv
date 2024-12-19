@@ -62,13 +62,13 @@
             margin-bottom: 10px;
             color: #333;
         }
-        a {
+        #blog-detail a {
             word-wrap: break-word;
             word-break: break-word;
             overflow-wrap: break-word;
             display: inline-block;
             max-width: 100%;
-            white-space: normal; 
+            white-space: normal;
         }
 
 
