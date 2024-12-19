@@ -62,6 +62,16 @@
             margin-bottom: 10px;
             color: #333;
         }
+        a {
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            display: inline-block;
+            max-width: 100%;
+            white-space: normal; 
+        }
+
+
 
         .post-tags ul {
             list-style-type: none;
