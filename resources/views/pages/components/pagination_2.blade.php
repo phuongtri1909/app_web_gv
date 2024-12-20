@@ -90,7 +90,7 @@
                 </li>
             @else
                 <li class="page-item">
-                    <a class="page-link" href="{{ $paginator->previousPageUrl() }}" rel="prev">
+                    <a class="page-link" href="{{ $paginator->previousPageUrl() }}&{{ http_build_query(request()->except('page')) }}" rel="prev">
                         <i class="fas fa-chevron-left"></i>
                     </a>
                 </li>
@@ -104,7 +104,7 @@
 
             @if($start > 1)
                 <li class="page-item">
-                    <a class="page-link" href="{{ $paginator->url(1) }}">1</a>
+                    <a class="page-link" href="{{ $paginator->url(1) }}&{{ http_build_query(request()->except('page')) }}">1</a>
                 </li>
                 @if($start > 2)
                     <li class="page-item disabled">
@@ -115,7 +115,7 @@
 
             @for ($i = $start; $i <= $end; $i++)
                 <li class="page-item {{ ($paginator->currentPage() == $i) ? ' active' : '' }}">
-                    <a class="page-link" href="{{ $paginator->url($i) }}">{{ $i }}</a>
+                    <a class="page-link" href="{{ $paginator->url($i) }}&{{ http_build_query(request()->except('page')) }}">{{ $i }}</a>
                 </li>
             @endfor
 
@@ -126,14 +126,14 @@
                     </li>
                 @endif
                 <li class="page-item">
-                    <a class="page-link" href="{{ $paginator->url($paginator->lastPage()) }}">{{ $paginator->lastPage() }}</a>
+                    <a class="page-link" href="{{ $paginator->url($paginator->lastPage()) }}&{{ http_build_query(request()->except('page')) }}">{{ $paginator->lastPage() }}</a>
                 </li>
             @endif
 
             {{-- Next Page Link --}}
             @if ($paginator->hasMorePages())
                 <li class="page-item">
-                    <a class="page-link" href="{{ $paginator->nextPageUrl() }}" rel="next">
+                    <a class="page-link" href="{{ $paginator->nextPageUrl() }}&{{ http_build_query(request()->except('page')) }}" rel="next">
                         <i class="fas fa-chevron-right"></i>
                     </a>
                 </li>

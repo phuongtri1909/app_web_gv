@@ -14,7 +14,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label for="license_number">Số giấy phép</label>
-                                    <input value="{{ old('license_number') }}" type="text" class="form-control @error('license_number') is-invalid @enderror" id="license_number" name="license_number" required>
+                                    <input value="{{ old('license_number') }}" type="text" class="form-control @error('license_number') is-invalid @enderror" id="license_number" name="license_number" >
                                     @error('license_number')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -24,7 +24,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label for="date_issued">Ngày cấp</label>
-                                    <input value="{{ old('date_issued') }}" type="date" class="form-control @error('date_issued') is-invalid @enderror" id="date_issued" name="date_issued" required>
+                                    <input value="{{ old('date_issued') }}" type="date" class="form-control @error('date_issued') is-invalid @enderror" id="date_issued" name="date_issued" >
                                     @error('date_issued')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -34,7 +34,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label for="business_owner_full_name">Tên chủ hộ kinh doanh</label>
-                                    <input value="{{ old('business_owner_full_name') }}" type="text" class="form-control @error('business_owner_full_name') is-invalid @enderror" id="business_owner_full_name" name="business_owner_full_name" required>
+                                    <input value="{{ old('business_owner_full_name') }}" type="text" class="form-control @error('business_owner_full_name') is-invalid @enderror" id="business_owner_full_name" name="business_owner_full_name" >
                                     @error('business_owner_full_name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -44,7 +44,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label for="business_dob">Ngày sinh chủ hộ</label>
-                                    <input value="{{ old('business_dob') }}" type="date" class="form-control @error('business_dob') is-invalid @enderror" id="business_dob" name="business_dob" required>
+                                    <input value="{{ old('business_dob') }}" type="date" class="form-control @error('business_dob') is-invalid @enderror" id="business_dob" name="business_dob" >
                                     @error('business_dob')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -54,7 +54,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label for="house_number">Số nhà</label>
-                                    <input value="{{ old('house_number') }}" type="text" class="form-control @error('house_number') is-invalid @enderror" id="house_number" name="house_number" required>
+                                    <input value="{{ old('house_number') }}" type="text" class="form-control @error('house_number') is-invalid @enderror" id="house_number" name="house_number" >
                                     @error('house_number')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -64,7 +64,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label for="road_id">Đường</label>
-                                    <select name="road_id" id="road_id" class="form-control @error('road_id') is-invalid @enderror" required>
+                                    <select name="road_id" id="road_id" class="form-control @error('road_id') is-invalid @enderror" >
                                         <option value="">Chọn đường</option>
                                         @foreach($roads as $road)
                                             <option value="{{ $road->id }}" {{ old('road_id') == $road->id ? 'selected' : '' }}>{{ $road->name }}</option>
@@ -82,12 +82,20 @@
                                     <select name="category_market_id" id="category_market_id" class="form-control">
                                         <option value="">Chọn loại chợ</option>
                                         @foreach($categoryMarkets as $category)
-                                            <option value="{{ $category->id }}" {{ old('category_market_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                            <option value="{{ $category->id }}" data-slug="{{ $category->slug }}" {{ old('category_market_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
-
+                            <div class="col-12 col-md-6" id="stalls-field" style="display: none;">
+                                <div class="form-group">
+                                    <label for="stalls" class="text-danger">Số sạp</label>
+                                    <input value="{{ old('stalls') }}" type="text" class="form-control @error('stalls') is-invalid @enderror" id="stalls" name="stalls">
+                                    @error('stalls')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label for="signboard">Biển hiệu</label>
@@ -100,7 +108,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label for="business_field">Lĩnh vực</label>
-                                    <input value="{{ old('business_field') }}" type="text" class="form-control @error('business_field') is-invalid @enderror" id="business_field" name="business_field" required>
+                                    <input value="{{ old('business_field') }}" type="text" class="form-control @error('business_field') is-invalid @enderror" id="business_field" name="business_field" >
                                     @error('business_field')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -119,7 +127,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label for="cccd">Số CCCD</label>
-                                    <input value="{{ old('cccd') }}" type="text" class="form-control @error('cccd') is-invalid @enderror" id="cccd" name="cccd" required>
+                                    <input value="{{ old('cccd') }}" type="text" class="form-control @error('cccd') is-invalid @enderror" id="cccd" name="cccd" >
                                     @error('cccd')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -129,7 +137,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label for="address">Địa chỉ</label>
-                                    <input value="{{ old('address') }}" type="text" class="form-control @error('address') is-invalid @enderror" id="address" name="address" required>
+                                    <input value="{{ old('address') }}" type="text" class="form-control @error('address') is-invalid @enderror" id="address" name="address" >
                                     @error('address')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -139,7 +147,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label for="status">Trạng thái</label>
-                                    <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required>
+                                    <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" >
                                         <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Active</option>
                                         <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                                     </select>
@@ -160,3 +168,23 @@
         </div>
     </div>
 @endsection
+
+@push('scripts-admin')
+    <script>
+        $(document).ready(function() {
+            const categoryMarketSelect = $('#category_market_id');
+            const stallsField = $('#stalls-field');
+
+            categoryMarketSelect.on('change', function() {
+                const selectedOption = $(this).find('option:selected');
+                if (selectedOption.data('slug') === 'cho-an-nhon') {
+                    stallsField.show();
+                } else {
+                    stallsField.hide();
+                }
+            });
+            categoryMarketSelect.trigger('change');
+        });
+    </script>
+@endpush
+

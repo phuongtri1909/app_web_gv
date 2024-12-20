@@ -29,13 +29,18 @@
             <div class="card-header pb-0">
                 <div class="d-flex flex-row justify-content-between">
                     <div>
-                        <h5 class="mb-0">Danh sach điểm đến</h5>
+                        <h5 class="mb-0">Danh sách điểm đến</h5>
+                    </div>
+                    <div>
+                        @if ($unit_code == 'P17')
+                            <a href="{{ route('show.form.location') }}" class="btn btn-primary btn-sm mb-0">Thêm địa điểm</a>
+                        @endif
                     </div>
                 </div>
                 <div class="mt-2">
                     <form method="GET" class="d-md-flex">
                         @if (request('search'))
-                            <input type="hidden" name="search" value="{{ request('search') }}">  
+                            <input type="hidden" name="search" value="{{ request('search') }}">
                         @endif
                         <select name="search-category" class="form-control-sm me-2">
                             <option value="">Tất cả danh mục</option>
@@ -100,14 +105,14 @@
                                         </td>
 
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $item->description ?? '-' }}</p>
+                                            <p class="text-xs font-weight-bold mb-0">{!! Str::limit($item->description , 600) ?? '-' !!}</p>
                                         </td>
-                                       
+
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">{{ $item->businessMember->business_name ?? '-' }}</p>
                                             <p class="text-xs font-weight-bold mb-0">{{ $item->businessMember->business_code ?? '-' }}</p>
                                         </td>
-                
+
                                         <td>
                                             <span id="status-badge-{{ $item->id }}"
                                                 class="badge badge-sm bg-{{ $item->status == 'approved' ? 'success' : ($item->status == 'rejected' ? 'danger' : 'warning') }}"  data-status="{{ $item->status }}">
@@ -170,5 +175,5 @@
 @push('scripts-admin')
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  
+
 @endpush

@@ -22,7 +22,8 @@ class BusinessHousehold extends Model
         'cccd',
         'address',
         'status',
-        'category_market_id'
+        'category_market_id',
+        'stalls',
     ];
 
     public function road()

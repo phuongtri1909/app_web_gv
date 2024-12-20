@@ -100,26 +100,47 @@
           </form> --}}
             <div class="table-responsive">
                 <table class="table table-striped table-bordered  table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th>#</th>
-                            <th>
-                                <p class="w-max-content">Số giấy phép</p>
-                            </th>
-                            <th>
-                                <p class="w-max-content">Họ tên chủ hộ kinh doanh</p>
-                            </th>
-                            <th>
-                                <p class="w-max-content">Bảng hiệu</p>
-                            </th>
-                            <th>
-                                <p class="w-max-content">Địa Chỉ</p>
-                            </th>
-                            <th>
-                                <p class="w-max-content">Chi Tiết</p>
-                            </th>
-                        </tr>
-                    </thead>
+                    @php
+                        $slug = request()->segment(4);
+                    @endphp
+
+                    @if($slug == 'cho-an-nhon')
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>
+                                    <p class="w-max-content">Họ tên chủ hộ kinh doanh</p>
+                                </th>
+                                <th>
+                                    <p class="w-max-content">Lĩnh vực</p>
+                                </th>
+                                <th>
+                                    <p class="w-max-content">Số rạp</p>
+                                </th>
+                            </tr>
+                        </thead>
+                    @else
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>
+                                    <p class="w-max-content">Số giấy phép</p>
+                                </th>
+                                <th>
+                                    <p class="w-max-content">Họ tên chủ hộ kinh doanh</p>
+                                </th>
+                                <th>
+                                    <p class="w-max-content">Bảng hiệu</p>
+                                </th>
+                                <th>
+                                    <p class="w-max-content">Địa Chỉ</p>
+                                </th>
+                                <th>
+                                    <p class="w-max-content">Chi Tiết</p>
+                                </th>
+                            </tr>
+                        </thead>
+                    @endif
                     <tbody id="business-household-data">
                         @include('pages.client.p17.business-household-list')
                     </tbody>
