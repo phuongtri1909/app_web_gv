@@ -36,13 +36,14 @@ class LocationController extends Controller
         }
 
         $unit_id = auth()->user()->unit_id;
-       
+
+        $unit_code = auth()->user()->unit->unit_code;
 
         $locations = $locations->where('unit_id',$unit_id)->orderBy('created_at','desc')->paginate(15);
 
         $business_fields = BusinessField::all();
         $business_members = BusinessMember::all();
-        return view('admin.pages.client.form-locations.index', compact('locations', 'business_fields', 'business_members'));
+        return view('admin.pages.client.form-locations.index', compact('locations', 'business_fields', 'business_members','unit_code'));
     }
 
     public function show($id)
@@ -75,7 +76,7 @@ class LocationController extends Controller
     }
 
 
-    
+
     public function clientIndex17()
     {
         if (request()->routeIs('locations')) {
@@ -84,15 +85,15 @@ class LocationController extends Controller
         elseif(request()->routeIs('locations-17')){
             $unit_id = Unit::where('unit_code','P17')->first()->id;
         }
-        
-        $locations = Locations::where('status', 'approved')->where('unit_id',$unit_id)->with('businessField')->with('locationProducts')->paginate(15);
-        
+
+        $locations = Locations::where('status', 'approved')->where('unit_id',$unit_id)->with('businessField')->with('locationProducts')->with('district')->paginate(15);
+        // dd($locations);
         $locations->each(function ($location) {
             if ($location->businessMember) {
                 $location->businessMember->business = $location->businessMember->business ?? null;
             }
         });
-        
+
         $business_fields = BusinessField::all();
         return view('pages.client.p17.locations', compact('locations', 'business_fields'));
     }
@@ -105,15 +106,15 @@ class LocationController extends Controller
         elseif(request()->routeIs('locations-17')){
             $unit_id = Unit::where('unit_code','P17')->first()->id;
         }
-        
+
         $locations = Locations::where('status', 'approved')->where('unit_id',$unit_id)->with('businessField')->with('locationProducts')->paginate(15);
-        
+
         $locations->each(function ($location) {
             if ($location->businessMember) {
                 $location->businessMember->business = $location->businessMember->business ?? null;
             }
         });
-        
+
         $business_fields = BusinessField::all();
         return view('pages.client.locations', compact('locations', 'business_fields'));
     }
@@ -125,7 +126,7 @@ class LocationController extends Controller
         if ($routeName === 'locations') {
             $unit_id = Unit::where('unit_code', 'QGV')->first()->id;
         } elseif ($routeName === 'locations-17') {
-            $unit_id = Unit::where('unit_code', 'P17')->first()->id;   
+            $unit_id = Unit::where('unit_code', 'P17')->first()->id;
         }
 
         if ($unit_id) {
@@ -146,7 +147,7 @@ class LocationController extends Controller
         if ($routeName === 'locations') {
             $unit_id = Unit::where('unit_code', 'QGV')->first()->id;
         } elseif ($routeName === 'locations-17') {
-            $unit_id = Unit::where('unit_code', 'P17')->first()->id;   
+            $unit_id = Unit::where('unit_code', 'P17')->first()->id;
         }
 
 
@@ -187,9 +188,9 @@ class LocationController extends Controller
 
     public function storeFormPromotional(Request $request)
     {
-        // Check business code 
+        // Check business code
         $business_member_id = $this->getBusinessMemberId($request);
-        
+
         DB::beginTransaction();
         $data = [];
         try {
@@ -258,13 +259,13 @@ class LocationController extends Controller
 
 
                 $this->handleFileUpload1($request, 'product_image', $data, '_product_', 'product_image');
-                
+
                 if (is_string($data['product_image']) && is_array(json_decode($data['product_image'], true))) {
                     $uploadedImages = json_decode($data['product_image'], true);
                 } else {
                     $uploadedImages = is_array($data['product_image']) ? $data['product_image'] : [$data['product_image']];
                 }
-            
+
                 // Tạo đối tượng LocationProduct cho mỗi hình ảnh
                 foreach ($uploadedImages as $filePath) {
                     $locationProduct = new LocationProduct();
@@ -277,7 +278,7 @@ class LocationController extends Controller
             }
 
             DB::commit();
-            
+
             return redirect()->route('locations')->with('success', 'Đăng ký địa điểm thành công!');
         } catch (\Exception $e) {
             DB::rollBack();

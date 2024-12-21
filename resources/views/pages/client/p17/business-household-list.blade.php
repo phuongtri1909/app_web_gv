@@ -1,23 +1,38 @@
+@php
+    $slug = request()->segment(4);
+@endphp
 @foreach ($businessHouseholds as $index => $item)
     <tr>
         <td>{{ ($businessHouseholds->currentPage() - 1) * $businessHouseholds->perPage() + $loop->iteration }}</td>
-        <td>
-            <p class="w-max-content">{{ $item->license_number }}</p>
-        </td>
-        <td>
-            <p class="w-max-content">{{ $item->business_owner_full_name }}</p>
-        </td>
-        <td>
-            <p class="w-max-content">{{ $item->signboard }}</p>
-        </td>
-        <td>
-            <p class="w-max-content">{{ $item->address }}</p>
-        </td>
-        <td class="text-center">
-            <button class="btn bg-app-gv rounded-pill text-white btn-sm w-max-content view-detail" data-id="{{ $item->id }}">
-                <i class="fa-regular fa-eye"></i>
-            </button>
-        </td>
+        @if ($slug == 'cho-an-nhon')
+            <td>
+                <p class="w-max-content">{{ $item->business_owner_full_name }}</p>
+            </td>
+            <td>
+                <p class="w-max-content">{{ $item->business_field }}</p>
+            </td>
+            <td>
+                <p class="w-max-content">{{ $item->stalls }}</p>
+            </td>
+        @else
+            <td>
+                <p class="w-max-content">{{ $item->license_number }}</p>
+            </td>
+            <td>
+                <p class="w-max-content">{{ $item->business_owner_full_name }}</p>
+            </td>
+            <td>
+                <p class="w-max-content">{{ $item->signboard }}</p>
+            </td>
+            <td>
+                <p class="w-max-content">{{ $item->address }}</p>
+            </td>
+            <td class="text-center">
+                <button class="btn bg-app-gv rounded-pill text-white btn-sm w-max-content view-detail" data-id="{{ $item->id }}">
+                    <i class="fa-regular fa-eye"></i>
+                </button>
+            </td>
+        @endif
     </tr>
 @endforeach
 
@@ -51,7 +66,7 @@
                     },
                     error: function(err) {
                         console.log(err);
-                        
+
                     }
                 });
             });

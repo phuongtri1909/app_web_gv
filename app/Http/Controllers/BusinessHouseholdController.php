@@ -35,9 +35,29 @@ class BusinessHouseholdController extends Controller
         ]);
 
         $file = $request->file('file');
-        Excel::import(new BusinessHouseholdImport, $request->file('file'));
+        try {
+            Excel::import(new BusinessHouseholdImport, $file);
+            // Log::info('Import successful', [
+            //     'file' => $file->getClientOriginalName(),
+            //     'size' => $file->getSize(),
+            //     'mime_type' => $file->getMimeType(),
+            // ]);
 
-        return redirect()->back()->with('success', 'Imported successfully');
+            // $rows = Excel::toArray(new BusinessHouseholdImport, $file);
+            // foreach ($rows[0] as $row) {
+            //     Log::info('Row data', $row);
+            // }
+
+            return redirect()->back()->with('success', 'Import thành công');
+        } catch (\Exception $e) {
+            // Log::error('Import failed', [
+            //     'error' => $e->getMessage(),
+            //     'file' => $file->getClientOriginalName(),
+            //     'size' => $file->getSize(),
+            //     'mime_type' => $file->getMimeType(),
+            // ]);
+            return redirect()->back()->with('error', 'Import thất bại: ' . $e->getMessage());
+        }
     }
 
     public function clientShow($id){
@@ -53,13 +73,35 @@ class BusinessHouseholdController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $businessHouseholds = BusinessHousehold::with(['road', 'categoryMarket'])
-            ->orderBy('created_at', 'desc') 
-            ->paginate(15); 
+        $query = BusinessHousehold::with(['road', 'categoryMarket']);
 
-        return view('admin.pages.p17.business_household.index', compact('businessHouseholds'));
+        $query->when($request->input('search-category'), function ($q, $searchCategory) {
+            return $q->where('category_market_id', $searchCategory);
+        });
+
+        $query->when($request->input('search-road'), function ($q, $searchRoad) {
+            return $q->where('road_id', $searchRoad);
+        });
+
+        $query->when($request->input('search'), function ($q, $search) {
+            return $q->where(function($q) use ($search) {
+                $q->where('business_owner_full_name', 'LIKE', "%{$search}%")
+                  ->orWhere('cccd', 'LIKE', "%{$search}%")
+                  ->orWhere('phone', 'LIKE', "%{$search}%");
+            });
+        });
+
+        $query->when($request->input('search-status'), function ($q, $searchStatus) {
+            return $q->where('status', $searchStatus);
+        });
+
+        $businessHouseholds = $query->orderBy('created_at', 'desc')->paginate(15);
+        $roads = Road::all();
+        $categoryMarkets = CategoryMarket::all();
+
+        return view('admin.pages.p17.business_household.index', compact('businessHouseholds', 'roads', 'categoryMarkets'));
     }
 
     /**
@@ -67,10 +109,10 @@ class BusinessHouseholdController extends Controller
      */
     public function create()
     {
-        
+
         $roads = Road::all();
         $categoryMarkets = CategoryMarket::all();
-        
+
         return view('admin.pages.p17.business_household.create', compact('roads', 'categoryMarkets'));
     }
 
@@ -81,19 +123,20 @@ class BusinessHouseholdController extends Controller
     {
         // dd($request->all());
         $validated = $request->validate([
-            'license_number' => 'required|string|max:255',
-            'date_issued' => 'required|date',
-            'business_owner_full_name' => 'required|string|max:255',
-            'business_dob' => 'required|date', 
-            'house_number' => 'required|string|max:255',
-            'road_id' => 'required|exists:roads,id',
+            'license_number' => 'nullable|string|max:255',
+            'date_issued' => 'nullable|date',
+            'business_owner_full_name' => 'nullable|string|max:255',
+            'business_dob' => 'nullable|date',
+            'house_number' => 'nullable|string|max:255',
+            'road_id' => 'nullable|exists:roads,id',
             'signboard' => 'nullable|string|max:255',
-            'business_field' => 'required|string',
+            'business_field' => 'nullable|string',
             'phone' => 'nullable|string|max:255',
-            'cccd' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
+            'cccd' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
             'status' => 'required|in:active,inactive',
             'category_market_id' => 'nullable|exists:category_market,id',
+            'stalls' => 'nullable|string|max:255',
         ], [
             // Custom error messages
             'license_number.required' => 'Số giấy phép là bắt buộc.',
@@ -126,10 +169,12 @@ class BusinessHouseholdController extends Controller
             'status.required' => 'Trạng thái là bắt buộc.',
             'status.in' => 'Trạng thái phải là "hoạt động" hoặc "không hoạt động".',
             'category_market_id.exists' => 'ID loại chợ đã chọn không hợp lệ.',
+            'stalls.string' => 'Quầy hàng phải là một chuỗi ký tự.',
+            'stalls.max' => 'Quầy hàng không được vượt quá 255 ký tự.',
         ]);
 
         try {
-        
+
             $businessHousehold = new BusinessHousehold();
             $businessHousehold->license_number = $validated['license_number'];
             $businessHousehold->date_issued = $validated['date_issued'];
@@ -144,6 +189,7 @@ class BusinessHouseholdController extends Controller
             $businessHousehold->address = $validated['address'];
             $businessHousehold->status = $validated['status'];
             $businessHousehold->category_market_id = $validated['category_market_id'];
+            $businessHousehold->stalls = $validated['stalls'];
             $businessHousehold->save();
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -174,7 +220,8 @@ class BusinessHouseholdController extends Controller
             'cccd' => $business->cccd,
             'address' => $business->address,
             'status' => $business->status,
-            'category_market_name' => $business->categoryMarket->name ?? null
+            'category_market_name' => $business->categoryMarket->name ?? null,
+            'stalls' => $business->stalls,
         ]);
     }
 
@@ -194,21 +241,22 @@ class BusinessHouseholdController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+
         $validated = $request->validate([
-            'license_number' => 'required|string|max:255',
-            'date_issued' => 'required|date',
-            'business_owner_full_name' => 'required|string|max:255',
-            'business_dob' => 'required|date', 
-            'house_number' => 'required|string|max:255',
-            'road_id' => 'required|exists:roads,id',
+            'license_number' => 'nullable|string|max:255',
+            'date_issued' => 'nullable|date',
+            'business_owner_full_name' => 'nullable|string|max:255',
+            'business_dob' => 'nullable|date',
+            'house_number' => 'nullable|string|max:255',
+            'road_id' => 'nullable|exists:roads,id',
             'signboard' => 'nullable|string|max:255',
-            'business_field' => 'required|string',
+            'business_field' => 'nullable|string',
             'phone' => 'nullable|string|max:255',
-            'cccd' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'status' => 'required|in:active,inactive',
+            'cccd' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'status' => 'nullable|in:active,inactive',
             'category_market_id' => 'nullable|exists:category_market,id',
+            'stalls' => 'nullable|string|max:255',
         ], [
             'license_number.required' => 'Số giấy phép là bắt buộc.',
             'license_number.string' => 'Số giấy phép phải là một chuỗi ký tự.',
@@ -240,6 +288,8 @@ class BusinessHouseholdController extends Controller
             'status.required' => 'Trạng thái là bắt buộc.',
             'status.in' => 'Trạng thái phải là "hoạt động" hoặc "không hoạt động".',
             'category_market_id.exists' => 'ID loại chợ đã chọn không hợp lệ.',
+            'stalls.string' => 'Quầy hàng phải là một chuỗi ký tự.',
+            'stalls.max' => 'Quầy hàng không được vượt quá 255 ký tự.',
         ]);
 
         try {
@@ -257,6 +307,7 @@ class BusinessHouseholdController extends Controller
             $businessHousehold->address = $validated['address'];
             $businessHousehold->status = $validated['status'];
             $businessHousehold->category_market_id = $validated['category_market_id'];
+            $businessHousehold->stalls = $validated['stalls'];
             $businessHousehold->save();
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -275,7 +326,7 @@ class BusinessHouseholdController extends Controller
         try {
             $businessHousehold = BusinessHousehold::findOrFail($id);
             $businessHousehold->delete();
-            
+
             return redirect()->route('business-households.index')->with('success', 'Xóa thành công!');
         } catch (\Exception $e) {
             Log::error('Error deleting business household: ' . $e->getMessage());

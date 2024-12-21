@@ -89,31 +89,60 @@
                         <div>
                             <h5 class="mb-0">Danh sách Hộ Kinh Doanh</h5>
                         </div>
+                        <div class="mt-2">
+                            <div class="import-container d-flex">
+                                <form id="importForm" action="{{ route('p17.households.import')}}" method="POST"
+                                    enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="d-flex">
+                                        <div class="file-upload">
+                                            <input type="file" name="file" id="fileInput" accept=".csv,.xls,.xlsx"
+                                                required>
+                                            <label for="fileInput">Chọn file Excel</label>
+                                        </div>
+                                        <div class="button-submit">
+                                            <button type="submit" class="btn btn-primary btn-sm mb-0">Tải lên</button>
+                                        </div>
+                                    </div>
+                                    <span id="fileName" class="file-name-icon" style="display: none;">
+                                        <i class="fa fa-file" aria-hidden="true"></i>
+                                        <span id="fileNameText"></span>
+                                    </span>
+                                </form>
+                            </div>
+                        </div>
                         <div>
                             <a href="{{ route('business-households.create') }}" class="btn bg-gradient-primary">Thêm mới</a>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3">
-                        <div class="import-container d-flex">
-                            <form id="importForm" action="{{ route('p17.households.import')}}" method="POST"
-                                enctype="multipart/form-data">
-                                @csrf
-                                <div class="d-flex">
-                                    <div class="file-upload">
-                                        <input type="file" name="file" id="fileInput" accept=".csv,.xls,.xlsx"
-                                            required>
-                                        <label for="fileInput">Chọn file Excel</label>
-                                    </div>
-                                    <div class="button-submit">
-                                        <button type="submit" class="btn btn-primary btn-sm mb-0">Tải lên</button>
-                                    </div>
-                                </div>
-                                <span id="fileName" class="file-name-icon" style="display: none;">
-                                    <i class="fa fa-file" aria-hidden="true"></i>
-                                    <span id="fileNameText"></span>
-                                </span>
-                            </form>
-                        </div>
+                    <div class="mt-2">
+                        <form method="GET" class="d-md-flex">
+                            @if (request('search'))
+                                <input type="hidden" name="search" value="{{ request('search') }}">
+                            @endif
+                            <select name="search-category" class="form-control-sm me-2">
+                                <option value="">Danh mục</option>
+                                @foreach ($categoryMarkets as $item)
+                                    <option value="{{ $item->id }}" {{ request('search-category') == $item->id ? 'selected' : '' }}>
+                                        {{ $item->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <select name="search-road" class="form-control-sm me-2">
+                                <option value="">Tất cả đường</option>
+                                @foreach ($roads as $road)
+                                    <option value="{{ $road->id }}" {{ request('search-road') == $road->id ? 'selected' : '' }}>
+                                        {{ $road->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <select name="search-status" class="form-control-sm me-2">
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="active" {{ request('search-status') == 'active' ? 'selected' : '' }}>Active</option>
+                                <option value="inactive" {{ request('search-status') == 'inactive' ? 'selected' : '' }}>In active</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm mb-0 mt-2 mt-md-0">Tìm kiếm</button>
+                        </form>
                     </div>
                     <div id="progress-container" style="display: none;">
                         <h5>Đang xử lý...</h5>
@@ -143,7 +172,7 @@
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $business->business_owner_full_name ?? '-' }}</td>
                                         <td>{{ $business->signboard ?? '-' }}</td>
-                                        <td>{{ $business->date_issued ?? '-' }}</td>
+                                        <td>{{ $business->date_issued == '1970-01-01' ? '-' : ($business->date_issued ?? '-') }}</td>
                                         <td>{{ $business->phone ?? '-' }}</td>
                                         <td>{{ $business->address ?? '-' }}</td>
                                         <td>
@@ -196,7 +225,7 @@
                                 @endforelse
                             </tbody>
                         </table>
-                        <x-pagination :paginator="$businessHouseholds" />
+                        <x-pagination :paginator="$businessHouseholds" :appends="request()->except('page')" />
                     </div>
                 </div>
             </div>
@@ -266,6 +295,10 @@
                                         <p id="modal-business-field" class="text-sm mb-2"></p>
                                     </div>
                                     <div class="col-6">
+                                        <label class="text-uppercase text-xs font-weight-bolder opacity-7">Số sạp</label>
+                                        <p id="modal-stalls" class="text-sm mb-2"></p>
+                                    </div>
+                                    <div class="col-6">
                                         <label class="text-uppercase text-xs font-weight-bolder opacity-7">Loại
                                             hình</label>
                                         <p id="modal-category-market" class="text-sm mb-2"></p>
@@ -295,7 +328,7 @@
                         $('#modal-business-owner').text(response.business_owner_full_name ||
                             '-');
                         $('#modal-license-number').text(response.license_number || '-');
-                        $('#modal-date-issued').text(response.date_issued || '-');
+                        $('#modal-date-issued').text(response.date_issued === '1970-01-01' ? '-' : (response.date_issued || '-'));
                         $('#modal-business-dob').text(response.business_dob || '-');
                         $('#modal-address').text(response.address || '-');
                         $('#modal-road-name').text(response.road_name || '-');
@@ -305,6 +338,7 @@
                         $('#modal-cccd').text(response.cccd || '-');
                         $('#modal-house-number').text(response.house_number || '-');
                         $('#modal-signboard').text(response.signboard || '-');
+                        $('#modal-stalls').text(response.stalls || '-');
                         const statusBadgeClass = response.status === 'active' ? 'bg-success' :
                             'bg-danger';
                         const statusText = response.status === 'active' ? 'Hoạt động' :

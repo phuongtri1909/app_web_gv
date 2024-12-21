@@ -442,7 +442,7 @@
                             </a>
                             <div class="collapse mt-1" id="news" style="margin-left: 30px">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-        
+
                                     <li>
                                         <a class="nav-link {{ Route::currentRouteNamed('category-market.*') ? 'active' : '' }}"
                                             href="{{ route('category-market.index') }}">
@@ -453,7 +453,7 @@
                                             <span class="nav-link-text ms-1">Kết nối tiểu thương</span>
                                         </a>
                                     </li>
-        
+
                                     <li>
                                         <a class="nav-link {{ Route::currentRouteNamed('business-households.*') ? 'active' : '' }}"
                                             href="{{ route('business-households.index') }}">
@@ -516,7 +516,6 @@
                                 </ul>
                             </div>
                         </li>
-
                         {{-- Câu hỏi thường gặp --}}
                         <li class="nav-item">
                             <a class="nav-link {{ Route::currentRouteNamed('top-questions.*') ? 'active' : '' }}"
@@ -526,6 +525,16 @@
                                     <i class="fa-solid fa-question-circle text-dark icon-sidebar"></i>
                                 </div>
                                 <span class="nav-link-text ms-1">Câu hỏi thường gặp</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteNamed('ward-detail.*') ? 'active' : '' }}"
+                                href="{{ route('ward-detail.index') }}">
+                                <div
+                                    class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-info-circle text-dark icon-sidebar"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">Chi tiết P17</span>
                             </a>
                         </li>
                     @break

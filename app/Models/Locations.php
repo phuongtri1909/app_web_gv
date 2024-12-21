@@ -19,9 +19,10 @@ class Locations extends Model
         'description',
         'link_video',
         'status',
+        'districts_govap_id',
 
     ];
-    
+
     public function businessField()
     {
         return $this->belongsTo(BusinessField::class, 'business_field_id');
@@ -36,5 +37,8 @@ class Locations extends Model
     {
         return $this->hasMany(LocationProduct::class, 'location_id');
     }
-
+    public function district()
+    {
+        return $this->belongsTo(DistrictsGovap::class, 'districts_govap_id');
+    }
 }

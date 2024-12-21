@@ -83,6 +83,7 @@ use App\Http\Controllers\BusinessStartPromotionInvestmentController;
 use App\Http\Controllers\CaptchaController;
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\WardDetailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -354,6 +355,23 @@ Route::middleware(['language'])->group(function () {
 
                     Route::resource('top-questions', TopQuestionController::class)->except('show','edit','update');
                     Route::post('top-questions/{id}/answer', [TopQuestionController::class, 'answer'])->name('top-questions.answer');
+
+                    Route::resource('ward-detail', WardDetailController::class);
+                    Route::get('/ward-detail/{id}/districts', [WardDetailController::class, 'districts'])->name('ward-detail.districts');
+                    Route::get('/ward-detail/{id}/districts/create', [WardDetailController::class, 'createDistrict'])->name('ward-detail.districts.create');
+                    Route::post('/ward-detail/{id}/districts', [WardDetailController::class, 'storeDistrict'])->name('ward-detail.districts.store');
+                    Route::get('/ward-detail/{id}/districts/{districtId}/edit', [WardDetailController::class, 'editDistrict'])->name('ward-detail.districts.edit');
+                    Route::put('/ward-detail/{id}/districts/{districtId}', [WardDetailController::class, 'updateDistrict'])->name('ward-detail.districts.update');
+                    Route::delete('/ward-detail/{id}/districts/{districtId}', [WardDetailController::class, 'destroyDistrict'])->name('ward-detail.district.delete');
+
+                    Route::get('districts/{districtId}/blocks', [WardDetailController::class, 'blocks'])->name('blocks');
+                    Route::get('districts/{districtId}/blocks/create', [WardDetailController::class, 'createBlock'])->name('blocks.create');
+                    Route::post('districts/{districtId}/blocks', [WardDetailController::class, 'storeBlock'])->name('blocks.store');
+                    Route::get('districts/{districtId}/blocks/{blockId}/edit', [WardDetailController::class, 'editBlock'])->name('blocks.edit');
+                    Route::put('districts/{districtId}/blocks/{blockId}', [WardDetailController::class, 'updateBlock'])->name('blocks.update');
+
+                    Route::get('/form-location-introduction', [WardDetailController::class, 'showFormLocations'])->name('show.form.location');
+                    Route::post('/form-location-introduction', [WardDetailController::class, 'storeFormLocations'])->name('form.location.store');
                 });
             });
         });

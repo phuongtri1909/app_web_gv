@@ -343,7 +343,7 @@
 
 @section('content')
     <section id="quiz-container">
-        <h1>Bài thi: {{ $quiz->title }}</h1>
+        <h1>{{ $quiz->title }}</h1>
         <div id="countdown-timer"></div>
         <div class="container">
             <form id="quizForm" method="POST" action="{{ route('p17.submit.quiz.client', ['quizId' => $quiz->id]) }}">

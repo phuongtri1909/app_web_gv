@@ -322,12 +322,25 @@
 
                 <div class="info-location-container mt-3">
                     <div class="info-location-content">
+                       ${isLocation.district ? `
+                            <div class="info-district mt-3">
+                                <strong>Khu phố:</strong>
+                                <div class="mt-2">
+                                    <p><strong>Tên khu phố:</strong> ${isLocation.district.name}</p>
+                                    <p><strong>Diện tích:</strong> ${isLocation.district.area} ha</p>
+                                    <p><strong>Tổng số hộ:</strong> ${isLocation.district.total_households}</p>
+                                    <p><strong>Nhân khẩu:</strong> ${isLocation.district.population}</p>
+                                    <p><strong>Bí thư:</strong> ${isLocation.district.secretary_name}</p>
+                                    <p><strong>Trưởng khu phố:</strong> ${isLocation.district.head_name}</p>
+                                </div>
+                            </div>
+                        ` : ''}
                         <strong>Thông tin mô tả:</strong>
                         <div class="mt-3 overflow-auto">
                             <div class="d-flex">
-                                <div>${isLocation.description}</div> 
+                                <div>${isLocation.description}</div>
                              </div>
-                             ${isLocation.location_products && isLocation.location_products.length > 0 ? `             
+                             ${isLocation.location_products && isLocation.location_products.length > 0 ? `
                                 <div class="row mt-3">
                                     ${isLocation.location_products.map(product => `
                                         <div class="col-6">
@@ -345,7 +358,7 @@
                                             `}
                                         </div>
                                     `).join('')}
-                                </div>                      
+                                </div>
                                 ` : ''}
 
                                 ${isLocation.link_video ? `
@@ -465,18 +478,18 @@
         }
 
         function displaySearchResults(results) {
-            
+
             const searchResultsContainer = $('.scrollable-list').empty();
 
             results.forEach(result => {
-                const businessImage = result.business_member && result.business_member.business ? 
-                    `${domain}/${result.business_member.business.avt_businesses}` : 
+                const businessImage = result.business_member && result.business_member.business ?
+                    `${domain}/${result.business_member.business.avt_businesses}` :
                     `${domain}/images/business/business_default.webp`;
 
-                const iconUrl = result.business_field.icon ? 
-                    `/${result.business_field.icon}` : 
+                const iconUrl = result.business_field.icon ?
+                    `/${result.business_field.icon}` :
                     `/images/icon/icon_location.png`;
-            
+
                 const resultHtml = `
                     <div class="col-12 col-sm-6 col-lg-12">
                         <div class="border rounded-4 p-3 h-100 info-location-container"
