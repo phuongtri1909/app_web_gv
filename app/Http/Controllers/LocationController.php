@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DistrictsGovap;
 use App\Models\Unit;
 use App\Models\Business;
 use App\Models\Locations;
@@ -94,8 +95,8 @@ class LocationController extends Controller
             }
         });
 
-        $business_fields = BusinessField::all();
-        return view('pages.client.p17.locations', compact('locations', 'business_fields'));
+        $districts = DistrictsGovap::all();
+        return view('pages.client.p17.locations', compact('locations', 'districts'));
     }
 
     public function clientIndex()
@@ -142,6 +143,7 @@ class LocationController extends Controller
     {
         $query = $request->input('query');
         $businessField = $request->input('business_field');
+        $district = $request->input('district_name');
         $routeName = $request->input('route_name');
 
         if ($routeName === 'locations') {
@@ -151,18 +153,25 @@ class LocationController extends Controller
         }
 
 
-        $locations = Locations::where('status', 'approved')->with('businessField')->with('locationProducts');
+        $locations = Locations::where('status', 'approved')->with('businessField')->with('locationProducts')->with('district');
 
         if ($query) {
             $locations->where('name', 'like', '%' . $query . '%')
-                ->orWhere('address_address', 'like', '%' . $query . '%');
+            ->orWhere('address_address', 'like', '%' . $query . '%')
+            ->orWhereHas('district', function ($q) use ($query) {
+                $q->where('name', 'like', '%' . $query . '%');
+            });
         }
 
         if ($businessField) {
             $locations->where('business_field_id', $businessField);
         }
 
-        $locations->with('businessField');
+        if ($district) {
+            $locations->where('districts_govap_id', $district);
+        }
+
+        $locations->with('businessField')->with('district');
 
         if ($unit_id) {
             $results = $locations->where('unit_id',$unit_id)->get();
