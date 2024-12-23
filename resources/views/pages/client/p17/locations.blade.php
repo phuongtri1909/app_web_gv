@@ -5,9 +5,9 @@
     @section('description', 'Chỉ dẫn điểm đến')
     @section('keyword', 'Chỉ dẫn điểm đến')
 @elseif(Route::currentRouteName() == 'locations-17')
-    @section('title', 'Giới Thiệu Phường 17')
-    @section('description', 'Giới Thiệu Phường 17')
-    @section('keyword', 'Giới Thiệu Phường 17')
+    @section('title', 'BĐH Khu phố')
+    @section('description', 'BĐH Khu phố')
+    @section('keyword', 'BĐH Khu phố')
 @endif
 
 @push('styles')
@@ -96,7 +96,7 @@
                         @if (Route::currentRouteName() == 'locations')
                             Danh sách địa điểm
                         @elseif(Route::currentRouteName() == 'locations-17')
-                            Giới Thiệu Phường 17
+                            BĐH Khu Phố
                         @endif
                     </h4>
                     <p class="text-center">Hiển thị {{ $locations->count() }} trên tổng số {{ $locations->total() }}
@@ -110,10 +110,10 @@
                     <div class=" w-100 mb-3">
                         <div class="row">
                             <div class="col-12 ">
-                                <select class="form-select w-100" name="business_field" id="business-field">
+                                <select class="form-select w-100" name="district" id="district">
                                     <option value="" selected>Tất cả</option>
-                                    @foreach ($business_fields as $businessField)
-                                        <option value="{{ $businessField->id }}">{{ $businessField->name }}</option>
+                                    @foreach ($districts as $district)
+                                        <option value="{{ $district->id }}">{{ $district->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -139,7 +139,11 @@
                                                     src="{{ isset($location->businessMember->business) ? asset($location->businessMember->business->avt_businesses) : asset('images/business/business_default.webp') }}"
                                                     alt="{{ $location->name }}" loading="lazy">
                                                 <div class="d-flex flex-column">
-                                                    <h5>{{ $location->name }}</h5>
+                                                    @if ($location->district)
+                                                        <h5>{{ $location->district->name }}</h5>
+                                                    @else
+                                                        <h5>{{ $location->name }}</h5>
+                                                    @endif
                                                     <div class="d-flex align-items-center">
 
                                                         <img class="icon-business-field"
@@ -298,7 +302,7 @@
                                 <div class="d-flex align-items-center my-2">
                                     <img class="img-location rounded-circle me-3" src="${businessImage}" alt="${businessImage}" loading="lazy">
                                     <div class="d-flex flex-column">
-                                        <h5>${isLocation.name}</h5>
+                                        <h5>${isLocation.district ? isLocation.district.name : isLocation.name}</h5>
                                         <div class="d-flex align-items-center">
                                             <img class="icon-business-field" src="${domain}/${isLocation.business_field.icon ?? '/images/icon/icon_location.png'}" alt="${isLocation.business_field.name}" loading="lazy">
                                             <span>${isLocation.business_field.name}</span>
@@ -410,6 +414,8 @@
                         placeId: results[0].place_id
                     }, (place, status) => {
                         if (status === google.maps.places.PlacesServiceStatus.OK) {
+                            console.log(place);
+
                             const content = `
                                     <div>
                                         <strong>${place.name}</strong><br>
@@ -450,7 +456,7 @@
         $('#place-name').on('input', debounce(searchPlace, 500));
         $('#place-name').on('focus', searchPlace);
         $('#place-name').on('blur', () => $('#search-results').empty());
-        $('#business-field').on('change', searchPlace);
+        $('#district').on('change', searchPlace);
 
         function debounce(func, wait) {
             let timeout;
@@ -462,12 +468,12 @@
 
         function searchPlace() {
             const placeName = $('#place-name').val();
-            const businessField = $('#business-field').val();
+            const district = $('#district').val();
 
 
             $.getJSON(`/client/search-locations`, {
                 query: placeName,
-                business_field: businessField,
+                district_name: district,
                 route_name: currentRouteName
             }, function(results) {
                 displaySearchResults(results);
@@ -501,7 +507,7 @@
                                         <img class="img-location rounded-circle me-3"
                                             src="${businessImage}" alt="${result.name}" loading="lazy">
                                         <div class="d-flex flex-column">
-                                            <h5>${result.name}</h5>
+                                            <h5>${result.district ? result.district.name : result.name}</h5>
                                             <div class="d-flex align-items-center">
                                                 <img class="icon-business-field" src="${iconUrl}" alt="${result.business_field.name}" loading="lazy">
                                                 <span>${result.business_field.name}</span>

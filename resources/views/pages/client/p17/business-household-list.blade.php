@@ -53,23 +53,21 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
-            $('.view-detail').on('click', function() {
-                var id = $(this).data('id');
-                $.ajax({
-                    url: '/client/p17/business-household/' + id,
-                    type: 'GET',
-                    success: function(data) {
-                        // Hiển thị dữ liệu chi tiết, ví dụ bằng modal
-                        $('#detailModal .modal-body').html(data);
-                        $('#detailModal').modal('show');
-                    },
-                    error: function(err) {
-                        console.log(err);
+       $(document).on('click', '.view-detail', function() {
+            var id = $(this).data('id');
+            $.ajax({
+                url: '/client/p17/business-household/' + id,
+                type: 'GET',
+                success: function(data) {
+                    // Hiển thị dữ liệu chi tiết, ví dụ bằng modal
+                    $('#detailModal .modal-body').html(data);
+                    $('#detailModal').modal('show');
+                },
+                error: function(err) {
+                    console.log(err);
 
-                    }
-                });
+                }
             });
-        });
+    });
     </script>
 @endpush

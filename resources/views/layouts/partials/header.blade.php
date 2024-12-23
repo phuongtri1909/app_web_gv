@@ -48,7 +48,7 @@
 <body>
     @include('pages.components.toast')
     <header class="header">
-        @if (!preg_match('/^locations-\d+$/', Route::currentRouteName()))
+        @if (!preg_match('/^locations-\d+$/', Route::currentRouteName()) && request('category') !== 'thong-tin-phuong-17' && request('slug') !== 'gioi-thieu-ve-phuong-17')
             <img src="{{ asset('images/logo-hoi-doanh-nghiep.png') }}" alt="Flowbite Logo" style="width: 45px; height: 45px;" />
         @endif
     </header>
