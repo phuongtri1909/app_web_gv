@@ -16,7 +16,7 @@
                                 <input type="hidden" name="search" value="{{ request('search') }}">  
                             @endif
                             
-                            <select name="search-member-id" class="form-control-sm me-2 w-100 w-md-auto">
+                            <select name="search-member-id" class="form-select form-select-sm me-2 w-100 w-md-auto">
                                 <option value="">Tất cả doanh nghiệp</option>
                                 @foreach ($business_members as $item)
                                     <option value="{{ $item->id }}" {{ request('search-member-id') == $item->id ? 'selected' : '' }}>
@@ -24,7 +24,20 @@
                                     </option>
                                 @endforeach
                             </select>
-                            <button type="submit" class="btn btn-primary btn-sm mb-0 mt-2 mt-md-0">Tìm kiếm</button>
+
+                            <select name="search-status" class="form-select form-select-sm me-2 mt-2 mt-md-0">
+                                <option value="">{{ __('Tất cả') }}</option>
+                                <option value="approved"
+                                    {{ request('search-status') == 'approved' ? 'selected' : '' }}>
+                                    {{ __('Đã duyệt') }}</option>
+                                <option value="pending"
+                                    {{ request('search-status') == 'pending' ? 'selected' : '' }}>
+                                    {{ __('Đang chờ') }}</option>
+                                <option value="rejected"
+                                    {{ request('search-status') == 'rejected' ? 'selected' : '' }}>
+                                    {{ __('Đã từ chối') }}</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm mb-0 mt-2 mt-md-0 py-0">Tìm kiếm</button>
                         </form>
                     </div>
                 </div>

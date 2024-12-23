@@ -65,6 +65,10 @@ class BusinessRecruitmentController extends Controller
     {
         $search = $request->input('search');
         $search_member_id = $request->input('search-member-id');
+        $search_status = $request->input('search-status');
+
+
+
         $businessRecruitments = BusinessRecruitment::with('businessMember')
             ->when($search, function ($query, $search) {
                 return $query->where('recruitment_title', 'like', '%' . $search . '%')
@@ -73,6 +77,10 @@ class BusinessRecruitmentController extends Controller
 
             ->when($search_member_id, function ($query, $search_member_id) {
                 return $query->where('business_member_id', $search_member_id);
+            })
+
+            ->when($search_status, function ($query, $search_status) {
+                return $query->where('status', $search_status);
             })
 
             ->orderBy('created_at', 'desc')

@@ -1,7 +1,6 @@
 @extends('admin.layouts.app')
 
 @push('styles-admin')
-
 @endpush
 
 @section('content-auth')
@@ -13,10 +12,49 @@
                         <div>
                             <h5 class="mb-0">{{ __('Danh sách đăng ký nhu cầu vay vốn') }}</h5>
                         </div>
+                        <div>
+                            <form method="GET" class="d-flex">
+                                @if (request('search'))
+                                    <input type="hidden" name="search" value="{{ request('search') }}">
+                                @endif
+                                <select name="search-status" class="form-select form-select-sm me-2">
+                                    <option value="">{{ __('Tất cả') }}</option>
+                                    <option value="sent"
+                                        {{ request('search-status') == 'sent' ? 'selected' : '' }}>
+                                        {{ __('Đã gửi') }}</option>
+                                    <option value="not_sent"
+                                        {{ request('search-status') == 'pending' ? 'selected' : '' }}>
+                                        {{ __('Chưa gửi') }}</option>
+                                </select>
+                                <button type="submit"
+                                    class="btn btn-primary btn-sm mb-0 py-0">{{ __('Tìm kiếm') }}</button>
+                            </form>
+                        </div>
                     </div>
+                    
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
                     @include('admin.pages.notification.success-error')
+
+                    <div class="mx-4 mt-2 mt-md-0">
+                        <form id="reportForm" method="GET" class="form-inline">
+
+                            <div class="d-flex">
+                                <div class="me-2">
+                                    <label for="date_range" class="sr-only">Khoảng thời gian</label>
+                                    <input type="text" name="date_range" id="date_range"
+                                        class="form-control form-control-sm" placeholder="Từ ngày - Đến ngày"
+                                        value="{{ request('date_range') }}">
+                                </div>
+
+                                <div>
+                                    <button type="button" class="btn btn-primary btn-sm mb-0 px-1"
+                                        onclick="submitForm('{{ route('reports.business.capital.needs') }}')">Báo cáo</button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
 
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
@@ -96,7 +134,7 @@
                                                 {{ $capitalNeed->feedback }}
                                             </p>
                                         </td>
-                                        <td class="text-center">                                  
+                                        <td class="text-center">
                                             @include('admin.pages.components.delete-form', [
                                                 'id' => $capitalNeed->id,
                                                 'route' => route('capital-needs.destroy', $capitalNeed->id),
@@ -106,16 +144,16 @@
                                                 data-id="{{ $capitalNeed->id }}" title="{{ __('Xem chi tiết') }}">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
-                                            <a href="javascript:void(0)" 
-                                                class="{{ $capitalNeed->email_status === 'sent' ? 'btn-light' : ' send-email' }}" 
-                                                data-id="{{ $capitalNeed->id }}" 
-                                                title="{{ $capitalNeed->email_status === 'sent' ? 'Đã gửi email' : 'Gửi email' }}" 
-                                                data-bs-toggle="tooltip" 
-                                                data-bs-placement="top">
-                                                    <i class="{{ $capitalNeed->email_status === 'sent' ? 'fas fa-check-circle text-success' : 'fas fa-paper-plane text-gray' }}"></i>
+                                            <a href="javascript:void(0)"
+                                                class="{{ $capitalNeed->email_status === 'sent' ? 'btn-light' : ' send-email' }}"
+                                                data-id="{{ $capitalNeed->id }}"
+                                                title="{{ $capitalNeed->email_status === 'sent' ? 'Đã gửi email' : 'Gửi email' }}"
+                                                data-bs-toggle="tooltip" data-bs-placement="top">
+                                                <i
+                                                    class="{{ $capitalNeed->email_status === 'sent' ? 'fas fa-check-circle text-success' : 'fas fa-paper-plane text-gray' }}"></i>
                                             </a>
 
-                                         
+
                                         </td>
                                     </tr>
                                 @endforeach
@@ -199,16 +237,14 @@
 
                                                 <div class="info-group">
                                                     <label class="text-uppercase text-xs font-weight-bolder">
-                                                        <i
-                                                            class="fas fa-university me-2"></i>Đề xuất kết nối ngân hàng
+                                                        <i class="fas fa-university me-2"></i>Đề xuất kết nối ngân hàng
                                                     </label>
                                                     <p id="modal-bank-connection" class="text-sm mb-2"></p>
                                                 </div>
 
                                                 <div class="info-group">
                                                     <label class="text-uppercase text-xs font-weight-bolder">
-                                                        <i
-                                                            class="fas fa-handshake me-2"></i>Đề xuất chính sách hỗ trợ
+                                                        <i class="fas fa-handshake me-2"></i>Đề xuất chính sách hỗ trợ
                                                     </label>
                                                     <p id="modal-support-policy" class="text-sm mb-2"></p>
                                                 </div>
@@ -231,12 +267,14 @@
                 </div>
             </div>
             <!-- Form Gửi Email -->
-            <div class="modal fade" id="sendEmailModal" tabindex="-1" aria-labelledby="sendEmailModalLabel" aria-hidden="true">
+            <div class="modal fade" id="sendEmailModal" tabindex="-1" aria-labelledby="sendEmailModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="sendEmailModalLabel">Gửi Email</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
                         <form id="sendEmailForm" action="{{ route('capital-needs.send-email') }}" method="POST">
                             @csrf
@@ -275,7 +313,7 @@
 @endsection
 @push('scripts-admin')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
     <script>
         $(document).ready(function() {
@@ -307,7 +345,8 @@
                         $('#modal-bank-connection').text(response.bank_connection || '-');
                         $('#modal-feedback').text(response.feedback || '-');
                         $('#modal-created-at').text(formattedDate);
-                        $('#modal-avatar').attr('src', response.avt_businesses ? '/' + response.avt_businesses : '');
+                        $('#modal-avatar').attr('src', response.avt_businesses ? '/' + response
+                            .avt_businesses : '');
                         $('#model-loan-cycle').text(response.loan_cycle || '-');
                         $('#modal-support-policy').text(response.support_policy || '-');
 
@@ -321,10 +360,10 @@
         });
     </script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('[data-bs-toggle="tooltip"]').tooltip();
 
-            $('.send-email').on('click', function () {
+            $('.send-email').on('click', function() {
                 var capitalNeedId = $(this).data('id');
                 $('#capitalNeedId').val(capitalNeedId);
 
@@ -332,7 +371,7 @@
                 modal.show();
             });
 
-            $('#sendEmailForm').on('submit', function (e) {
+            $('#sendEmailForm').on('submit', function(e) {
                 e.preventDefault();
 
                 var submitButton = $(this).find('button[type=submit]');
@@ -346,11 +385,12 @@
                     url: actionUrl,
                     type: 'POST',
                     data: formData,
-                    success: function (response) {
+                    success: function(response) {
                         if (response.success) {
                             showToast(response.message, 'success');
-                            var row = $('.send-email[data-id="' + $('#capitalNeedId').val() + '"]').closest('tr');
-                            
+                            var row = $('.send-email[data-id="' + $('#capitalNeedId').val() +
+                                '"]').closest('tr');
+
                             row.find('.badge')
                                 .removeClass('bg-warning')
                                 .addClass('bg-success')
@@ -360,9 +400,9 @@
                             sendButton.removeClass('send-email')
                                 .addClass('btn-light disabled')
                                 .attr('title', 'Đã gửi email')
-                                .tooltip('dispose') 
-                                .tooltip(); 
-                            sendButton.html('<i class="fas fa-check-circle text-success"></i>');    
+                                .tooltip('dispose')
+                                .tooltip();
+                            sendButton.html('<i class="fas fa-check-circle text-success"></i>');
                             var modal = bootstrap.Modal.getInstance($('#sendEmailModal'));
                             modal.hide();
                             form.trigger('reset');
@@ -371,12 +411,39 @@
                         }
                         submitButton.attr('disabled', false).text('Gửi');
                     },
-                    error: function (error) {
+                    error: function(error) {
                         showToast('Đã xảy ra lỗi khi gửi email: ' + error.statusText, 'error');
                         submitButton.attr('disabled', false).text('Gửi');
                     }
                 });
             });
         });
+    </script>
+
+    <script type="text/javascript">
+        $(function() {
+            $('input[name="date_range"]').daterangepicker({
+                autoUpdateInput: false,
+                locale: {
+                    format: 'YYYY-MM-DD',
+                    cancelLabel: 'Clear'
+                }
+            });
+
+            $('input[name="date_range"]').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format(
+                    'YYYY-MM-DD'));
+            });
+
+            $('input[name="date_range"]').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val('');
+            });
+        });
+
+        function submitForm(action) {
+            var form = document.getElementById('reportForm');
+            form.action = action;
+            form.submit();
+        }
     </script>
 @endpush

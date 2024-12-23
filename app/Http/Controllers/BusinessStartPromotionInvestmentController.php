@@ -99,10 +99,14 @@ class BusinessStartPromotionInvestmentController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $search_status = $request->input('search-status');
         
         $promotions = BusinessStartPromotionInvestment::when($search, function ($query, $search) {
             $query->where('name', 'like', '%' . $search . '%')
                   ->orWhere('phone', 'like', '%' . $search . '%');
+        })
+        ->when($search_status, function ($query, $search_status) {
+            $query->where('status', $search_status);
         })
         ->paginate(15);
         return view('admin.pages.client.form-start-promotion-invertment.index', compact('promotions'));

@@ -40,19 +40,25 @@ class BusinessController extends Controller
     public function adminIndex(Request $request)
     {
         $search = $request->input('search');
+        $search_status = $request->input('search-status');
 
-        $businesses = Business::whereNot('status', 'other')
-            ->when($search, function ($query, $search) {
-                return $query->where(function ($q) use ($search) {
-                    $q->where('description', 'like', "%{$search}%")
-                        ->orWhereHas('businessMember', function ($q) use ($search) {
-                            $q->where('business_name', 'like', "%{$search}%")
-                                ->orWhere('business_code', 'like', "%{$search}%");
-                        });
-                });
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        $query = Business::whereNot('status', 'other');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('description', 'like', "%{$search}%")
+                    ->orWhereHas('businessMember', function ($q) use ($search) {
+                        $q->where('business_name', 'like', "%{$search}%")
+                            ->orWhere('business_code', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        if ($search_status) {
+            $query->where('status', $search_status);
+        }
+
+        $businesses = $query->orderBy('created_at', 'desc')->paginate(10);
 
         return view('admin.pages.client.form-business.index', compact('businesses'));
     }

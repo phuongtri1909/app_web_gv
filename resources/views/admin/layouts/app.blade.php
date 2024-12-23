@@ -14,6 +14,7 @@
     <link id="pagestyle" href="{{ asset('css/dashboard.css') }}" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     @stack('styles-admin')
     <title>{{ __('dashboard') }}</title>
 </head>
@@ -67,6 +68,8 @@
         <script src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }}"></script>
         <script type="text/javascript" src="{{ asset('ckeditor/ckeditor.js')}}"></script>
         <script src="{{ asset('ckeditor/config.js')}}"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <script>
             $(document).ready(function() {
                 $('.language-switch').on('click', function(e) {

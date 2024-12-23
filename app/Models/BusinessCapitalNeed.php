@@ -19,7 +19,7 @@ class BusinessCapitalNeed extends Model
         'bank_connection',
         'support_policy',
         'feedback',
-        'status',
+        'email_status',
     ];
     
     public function businessMember()

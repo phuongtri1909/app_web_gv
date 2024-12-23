@@ -11,4 +11,8 @@ class BusinessField extends Model
 
     protected $fillable = ['name', 'slug','icon','unit_id'];
 
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }
 }

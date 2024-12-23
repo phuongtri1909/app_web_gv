@@ -311,6 +311,10 @@ Route::middleware(['language'])->group(function () {
                     Route::resource('emails', EmailController::class);
 
                     Route::resource('email_templates', EmailTemplatesController::class);
+
+                    Route::get('reports-business-member', [MemberBusinessController::class, 'reportBusinessMember'])->name('reports.business.member');
+                
+                    Route::get('reports-business-capital-needs', [BusinessCapitalNeedController::class, 'reportBusinessCapitalNeeds'])->name('reports.business.capital.needs');
                 });
 
                 Route::middleware(['role.admin.p17'])->group(function () {

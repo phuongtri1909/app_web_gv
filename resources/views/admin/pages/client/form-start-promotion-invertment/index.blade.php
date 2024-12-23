@@ -38,6 +38,27 @@
                         <i class="fa-solid fa-plus"></i> {{ __('Thêm mới') }}
                     </a> --}}
                     </div>
+                    <div class="mt-2">
+                        <form method="GET" class="d-md-flex">
+                            @if (request('search'))
+                                <input type="hidden" name="search" value="{{ request('search') }}">  
+                            @endif
+                            
+                            <select name="search-status" class="form-select form-select-sm me-2 mt-2 mt-md-0 w-auto">
+                                <option value="">{{ __('Tất cả') }}</option>
+                                <option value="approved"
+                                    {{ request('search-status') == 'approved' ? 'selected' : '' }}>
+                                    {{ __('Đã duyệt') }}</option>
+                                <option value="pending"
+                                    {{ request('search-status') == 'pending' ? 'selected' : '' }}>
+                                    {{ __('Đang chờ') }}</option>
+                                <option value="rejected"
+                                    {{ request('search-status') == 'rejected' ? 'selected' : '' }}>
+                                    {{ __('Đã từ chối') }}</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm mb-0 mt-2 mt-md-0 py-0">Tìm kiếm</button>
+                        </form>
+                    </div>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
                     @include('admin.pages.notification.success-error')

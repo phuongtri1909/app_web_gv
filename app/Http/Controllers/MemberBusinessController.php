@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Unit;
 use App\Models\User;
 use App\Models\Email;
@@ -15,11 +16,39 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\BusinessMemberExport;
 use App\Imports\BusinessRegistrationsImport;
 use Maatwebsite\Excel\Validators\ValidationException;
 
 class MemberBusinessController extends Controller
 {
+
+    public function reportBusinessMember(Request $request){
+        $query = BusinessMember::query();
+
+        if ($request->filled('date_range')) {
+            $dateRange = $request->input('date_range');
+            $dates = explode(' - ', $dateRange);
+
+            if (count($dates) === 2) {
+                [$startDate, $endDate] = $dates;
+                if (Carbon::hasFormat($startDate, 'Y-m-d') && Carbon::hasFormat($endDate, 'Y-m-d')) {
+                    $query->whereDate('created_at', '>=', Carbon::parse($startDate))
+                        ->whereDate('created_at', '<=', Carbon::parse($endDate));
+                }
+            }
+        }
+
+        $BusinessMembers = $query->orderBy('created_at', 'desc')->get();
+
+        if ($BusinessMembers->isEmpty()) {
+            return redirect()->back()->with('error', 'Không có bản ghi nào để xuất.');
+        }
+
+        $currentDate = Carbon::now()->format('Y-m-d');
+        $fileName = 'report_business_member' . $currentDate . '.xlsx';
+        return Excel::download(new BusinessMemberExport($BusinessMembers), $fileName);
+    }
 
     public function index(Request $request)
     {

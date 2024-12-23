@@ -19,6 +19,7 @@ class LocationController extends Controller
         $search = $request->input('search');
         $searchBusinessField = $request->input('search-category');
         $searchBusinessMember = $request->input('search-member-id');
+        $search_status = $request->input('search-status');
 
         $locations = Locations::with('businessField')->with('locationProducts');
 
@@ -33,6 +34,10 @@ class LocationController extends Controller
 
         if ($searchBusinessMember) {
             $locations->where('business_member_id', $searchBusinessMember);
+        }
+
+        if ($search_status) {
+            $locations->where('status', $search_status);
         }
 
         $unit_id = auth()->user()->unit_id;
