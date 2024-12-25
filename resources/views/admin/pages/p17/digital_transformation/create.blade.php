@@ -71,8 +71,8 @@
                 reader.onload = function(e) {
                     const img = document.createElement('img');
                     img.src = e.target.result;
-                    img.style.width = '150px';
-                    img.style.height = '150px';
+                    img.style.width = '380px';
+                    img.style.height = '40px';
                     img.classList.add('img-fluid');
                     previewContainer.appendChild(img);
                 };
