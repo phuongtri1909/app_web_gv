@@ -41,7 +41,7 @@
                                     @enderror
                                     <div id="image-preview" class="mt-2">
                                         @if ($digitalTransformation->image)
-                                            <img src="{{ asset($digitalTransformation->image) }}" alt="Current Image" style="width: 380px; height: 40px;" class="img-fluid">
+                                            <img src="{{ asset($digitalTransformation->image) }}" alt="Current Image" style="width: 380px; height: 160px;" class="img-fluid">
                                         @endif
                                     </div>
                                 </div>
@@ -69,7 +69,7 @@
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     img.style.width = '380px';
-                    img.style.height = '40px';
+                    img.style.height = '160px';
                     img.classList.add('img-fluid');
                     previewContainer.appendChild(img);
                 };

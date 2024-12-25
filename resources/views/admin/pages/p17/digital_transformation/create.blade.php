@@ -72,7 +72,7 @@
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     img.style.width = '380px';
-                    img.style.height = '40px';
+                    img.style.height = '160px';
                     img.classList.add('img-fluid');
                     previewContainer.appendChild(img);
                 };
