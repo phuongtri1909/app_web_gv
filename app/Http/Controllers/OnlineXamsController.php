@@ -188,7 +188,9 @@ class OnlineXamsController extends Controller
             }
         }
         $questions = $quiz->questions()->paginate(5);
-
+        if ($questions->isEmpty()) {
+            return response()->json(['questions' => [], 'success' => 'Tất cả các câu hỏi đã được load.'], 200);
+        }
         foreach ($questions as $question) {
             $question->options = json_decode($question->answer, true);
         }
@@ -235,6 +237,8 @@ class OnlineXamsController extends Controller
 
 
         $quiz = Quiz::with('questions')->findOrFail($quizId);
+        $competition = $quiz->competition;
+        $type = $competition->type;
 
         $correctAnswersCount = 0;
         $incorrectAnswersCount = 0;
@@ -244,7 +248,7 @@ class OnlineXamsController extends Controller
             if (!$selectedAnswer) {
                 $selectedAnswer = 'not_answered';
                 $notAnsweredCount++;
-            } else if ($selectedAnswer === $question->answer_true) {
+            } else if ($type !== 'survey-p' && $selectedAnswer === $question->answer_true) {
                 $correctAnswersCount++;
             } else if ($selectedAnswer !== 'not_answered') {
                 $incorrectAnswersCount++;

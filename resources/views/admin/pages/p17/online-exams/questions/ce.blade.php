@@ -102,12 +102,14 @@
                                         $originalKey = base64_decode($key);
                                     @endphp
                                     <div class="input-group mb-2 answer-row" data-key="{{ $key }}">
-                                        <div class="input-group-append">
-                                            <input type="radio" name="answer_true" value="{{ $key }}"
-                                                class="form-check-input @error('answer_true') is-invalid @enderror"
-                                                id="answer_true_{{ $key }}"
-                                                {{ old('answer_true', isset($question) ? $question->answer_true : '') === $key ? 'checked' : '' }}>
-                                        </div>
+                                        @if ($type !== 'survey-p')
+                                            <div class="input-group-append">
+                                                <input type="radio" name="answer_true" value="{{ $key }}"
+                                                    class="form-check-input @error('answer_true') is-invalid @enderror"
+                                                    id="answer_true_{{ $key }}"
+                                                    {{ old('answer_true', isset($question) ? $question->answer_true : '') === $key ? 'checked' : '' }}>
+                                            </div>
+                                        @endif
                                         <input type="text" name="answers[{{ $key }}]"
                                             class="form-control @error('answers.' . $key) is-invalid @enderror"
                                             value="{{ old('answers.' . $key, $value) }}" placeholder="Nhập đáp án" required>
@@ -136,6 +138,7 @@
 @push('scripts-admin')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const type = '{{ $type }}';
             const answersContainer = document.getElementById('answers-container');
             const addAnswerButton = document.getElementById('add-answer');
             const answerTrueRadio = document.getElementById('answer-true');
@@ -156,11 +159,11 @@
 
 
                     textInput.name = `answers[${key}]`;
-                    radio.value = key;
-
-
-                    if (radio.checked) {
-                        answerTrueRadio.value = key;
+                    if (radio) {
+                        radio.value = key;
+                        if (radio.checked) {
+                            answerTrueRadio.value = key;
+                        }
                     }
                 });
             }
@@ -173,9 +176,10 @@
                 newRow.dataset.key = key;
 
                 newRow.innerHTML = `
+                    ${type !== 'survey-p' ? `
                     <div class="input-group-append">
                         <input type="radio" name="answer_true" value="${key}" class="form-check-input">
-                    </div>
+                    </div>` : ''}
                     <input type="text" class="form-control" name="answers[${key}]" placeholder="Nhập đáp án" required>
                     <button type="button" class="remove-answer"><i class="fas fa-times"></i></button>
                 `;

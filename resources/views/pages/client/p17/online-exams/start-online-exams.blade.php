@@ -102,11 +102,21 @@
             let savedAnswers = JSON.parse(localStorage.getItem(localStorageKey)) || {};
             let formSubmitted = false;
             const $quizForm = $('#quizForm');
-            const timeLimit = {{ $timeLimit }} * 60; // Giới hạn thời gian (giây)
+            const $questionsContainer = $('#questions-container');
+            const $countdownTimer = $('#countdown-timer');
+            const $submitButton = $('#submit-btn');
+            const timeLimit = {{ $timeLimit }} * 60;
             let remainingTime;
             let timerInterval;
+            let currentPage = 1;
+            const questionsPerPage = 5;
+            const isQuizFinished = localStorage.getItem(isQuizFinishedKey);
+            let allQuestionsLoaded = false;
+            const loadedQuestionsIds = new Set();
+            let isLoadingQuestions = false;
 
-            let isQuizFinished = localStorage.getItem(isQuizFinishedKey);
+            $submitButton.hide();
+
             if (isQuizFinished) {
                 console.log('Quiz is finished, redirecting...');
                 window.location.href = '{{ route($type === 'competition' ? 'p17.list.competitions.exams.client' : 'p17.list.surveys.client') }}';
@@ -124,24 +134,38 @@
             loadQuestions();
 
             function loadQuestions() {
+                if (allQuestionsLoaded || isLoadingQuestions) return;
+                isLoadingQuestions = true;
+
                 $.ajax({
                     url: '{{ route('p17.start.online.exams.client', ['quizId' => $quiz->id]) }}',
                     method: 'GET',
+                    data: {
+                        page: currentPage,
+                        per_page: questionsPerPage
+                    },
                     dataType: 'json',
                     success: function(response) {
                         const questions = response.questions.data || response.questions;
-                        console.log(questions);
-                        if (Array.isArray(questions)) {
+                        const newQuestions = questions.filter(q => !loadedQuestionsIds.has(q.id));
+                        if (Array.isArray(questions) && questions.length > 0) {
+                            newQuestions.forEach(q => loadedQuestionsIds.add(q.id));
                             renderQuestions(questions, isQuizFinished);
                             restoreSavedAnswers();
-                            startTimer();
+                            if (currentPage === 1) {
+                                startTimer();
+                            }
+                            currentPage++;
                         } else {
-                            console.error('Expected an array for questions, but got:', questions);
-                            toastr.error('Lỗi dữ liệu câu hỏi!');
+                            allQuestionsLoaded = true;
+                            console.log('All questions loaded.');
+                            $submitButton.show(); // Show the submit button when all questions are loaded
                         }
+                        isLoadingQuestions = false;
                     },
                     error: function() {
                         toastr.error('Lỗi tải câu hỏi!');
+                        isLoadingQuestions = false;
                     }
                 });
             }
@@ -156,7 +180,7 @@
                         </div>
                     `;
                 });
-                $('#questions-container').html(questionsHtml);
+                $questionsContainer.append(questionsHtml);
             }
 
             function generateOptions(options, questionId, quizSubmitted) {
@@ -178,8 +202,7 @@
                 return optionsHtml;
             }
 
-            // Xử lý chọn đáp án
-            $('#questions-container').on('change', 'input[type="radio"]', function() {
+            $questionsContainer.on('change', 'input[type="radio"]', function() {
                 const questionId = $(this).attr('name').split('_')[1];
                 savedAnswers[questionId] = $(this).val();
                 localStorage.setItem(localStorageKey, JSON.stringify(savedAnswers));
@@ -209,14 +232,15 @@
             function updateTimer() {
                 if (remainingTime <= 0) {
                     clearInterval(timerInterval);
-                    $('#countdown-timer').text('Hết giờ!');
+                    $countdownTimer.text('Hết giờ!');
                     toastr.error('Hết thời gian làm bài! Bài thi sẽ được tự động nộp.');
                     submitQuiz(true);
                 } else {
-                    const minutes = Math.floor(remainingTime / 60);
+                    const hours = Math.floor(remainingTime / 3600);
+                    const minutes = Math.floor((remainingTime % 3600) / 60);
                     const seconds = remainingTime % 60;
-                    $('#countdown-timer').text(
-                        `Thời gian còn lại: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+                    $countdownTimer.text(
+                        `Thời gian còn lại: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
                     );
                     remainingTime--;
                 }
@@ -253,9 +277,10 @@
                 const start = dayjs(startTime).tz('Asia/Ho_Chi_Minh');
                 const submission = dayjs();
                 const timeDiff = submission.diff(start, 'seconds');
-                const minutes = Math.floor(timeDiff / 60);
+                const hours = Math.floor(timeDiff / 3600);
+                const minutes = Math.floor((timeDiff % 3600) / 60);
                 const seconds = timeDiff % 60;
-                const totalTime = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+                const totalTime = `${hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
 
 
                 const formData = new FormData($quizForm[0]);
@@ -331,6 +356,13 @@
                     window.location.reload();
                 }
             });
+
+            $(window).on('scroll', function() {
+                if ($(window).scrollTop() + $(window).height() >= $(document).height() - 300 && !allQuestionsLoaded) {
+                    loadQuestions();
+                }
+            });
+
         });
     </script>
 
@@ -340,7 +372,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 @endpush
-
 @section('content')
     <section id="quiz-container">
         <h1>{{ $quiz->title }}</h1>

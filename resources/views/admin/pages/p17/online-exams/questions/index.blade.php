@@ -64,9 +64,7 @@
                             <h5 class="mb-0">{{ $type == 'survey-p' ? 'Danh sách câu hỏi khảo sát' : 'Danh sách câu hỏi'}}-{{ $quiz->title }}</h5>
                         </div>
                         <div>
-                            <a href="{{ route('questions.create', ['type' => $type,'quizId' => $quiz->id]) }}" class="btn btn-primary">Thêm
-                                câu
-                                hỏi</a>
+                            <a href="{{ route('questions.create', ['type' => $type,'quizId' => $quiz->id]) }}" class="btn btn-primary">Thêm câu hỏi</a>
                         </div>
                     </div>
                 </div>
@@ -79,7 +77,9 @@
                                         <th>STT</th>
                                         <th>Tên câu hỏi</th>
                                         <th>Đáp án</th>
-                                        <th>Đáp án đúng</th>
+                                        @if ($type !== 'survey-p')
+                                            <th>Đáp án đúng</th>
+                                        @endif
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -107,17 +107,16 @@
                                                     <p>Không có đáp án</p>
                                                 @endif
                                             </td>
-
-                                            <td>
-                                                @php
-                                                    $correctAnswer = isset($answers[$question->answer_true]) ? $answers[$question->answer_true] : 'Chưa có đáp án đúng';
-                                                @endphp
-                                                {{ $correctAnswer }}
-                                            </td>
+                                            @if ($type !== 'survey-p')
+                                                <td>
+                                                    @php
+                                                        $correctAnswer = isset($answers[$question->answer_true]) ? $answers[$question->answer_true] : 'Chưa có đáp án đúng';
+                                                    @endphp
+                                                    {{ $correctAnswer }}
+                                                </td>
+                                            @endif
                                             <td class="text-center">
-                                                <a href="{{ route('questions.edit',['type' => $type, 'id' => $question->id]) }}"><i
-                                                        class="fa-regular fa-pen-to-square"></i></a>
-
+                                                <a href="{{ route('questions.edit',['type' => $type, 'id' => $question->id]) }}"><i class="fa-regular fa-pen-to-square"></i></a>
                                                 @include('admin.pages.components.delete-form', [
                                                     'id' => $question->id, 'type' => $type,
                                                     'route' => route('questions.destroy',['type' => $type, 'id' => $question->id]),
