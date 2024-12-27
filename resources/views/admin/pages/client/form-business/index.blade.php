@@ -45,6 +45,27 @@
                     <div>
                         <h5 class="mb-0">Kết nối giao thương</h5>
                     </div>
+                    <div>
+                        <form method="GET" class="d-flex">
+                            @if (request('search'))
+                                <input type="hidden" name="search" value="{{ request('search') }}">
+                            @endif
+                            <select name="search-status" class="form-select form-select-sm me-2">
+                                <option value="">{{ __('Tất cả') }}</option>
+                                <option value="approved"
+                                    {{ request('search-status') == 'approved' ? 'selected' : '' }}>
+                                    {{ __('Đã duyệt') }}</option>
+                                <option value="pending"
+                                    {{ request('search-status') == 'pending' ? 'selected' : '' }}>
+                                    {{ __('Đang chờ') }}</option>
+                                <option value="rejected"
+                                    {{ request('search-status') == 'rejected' ? 'selected' : '' }}>
+                                    {{ __('Đã từ chối') }}</option>
+                            </select>
+                            <button type="submit"
+                                class="btn btn-primary btn-sm mb-0 py-0">{{ __('Tìm kiếm') }}</button>
+                        </form>
+                    </div>
                 </div>
             </div>
             <div class="card-body px-0 pt-0 pb-2">

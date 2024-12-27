@@ -77,7 +77,7 @@ class DigitalTransformationController extends Controller
                 }
 
                 $image = Image::make($image->getRealPath());
-                $image->resize(370, 160)->encode('webp', 75);
+                $image->encode('webp', 75);
                 $image->save($uploadPath . '/' . $fileName);
 
                 $image_path = 'uploads/images/digital/' . $folderName . '/' . $fileName;

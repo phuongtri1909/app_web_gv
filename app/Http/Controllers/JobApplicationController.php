@@ -89,12 +89,19 @@ class JobApplicationController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+
+        $search_status = $request->input('search-status');
+
         $jobApplications = JobApplication::when($search, function ($query, $search) {
             return $query->where(function ($q) use ($search) {
                 $q->where('full_name', 'like', "%{$search}%")
                 ->orWhere('phone', 'like', "%{$search}%");
+                
             });
         })
+            ->when($search_status, function ($query, $search_status) {
+                return $query->where('status', $search_status);
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(15);
         return view('admin.pages.client.form-job-applications.index', compact('jobApplications'));

@@ -80,6 +80,8 @@ class LegalAdviceController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $search_status = $request->input('search-status');
+
         $legalAdvices = LegalAdvice::when($search, function ($query, $search) {
             return $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
@@ -88,6 +90,10 @@ class LegalAdviceController extends Controller
                 ->orWhere('company_name', 'like', "%{$search}%");
             });
         })
+        ->when($search_status, function ($query, $search_status) {
+            return $query->where('status', $search_status);
+        })
+
         ->paginate(10);
 
         return view('admin.pages.client.form-legal-advice.index', compact('legalAdvices'));

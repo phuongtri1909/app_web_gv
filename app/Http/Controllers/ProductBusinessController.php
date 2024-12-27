@@ -187,6 +187,7 @@ class ProductBusinessController extends Controller
         $search = $request->input('search');
         $category_product = $request->input('search-category');
         $business_member_id = $request->input('search-member-id');
+        $search_status = $request->input('search-status');
 
         $products = ProductBusiness::query();
 
@@ -205,6 +206,10 @@ class ProductBusinessController extends Controller
 
         if ($business_member_id) {
             $products = $products->where('business_member_id', $business_member_id);
+        }
+
+        if ($search_status) {
+            $products = $products->where('status', $search_status);
         }
 
         $category_products = CategoryProductBusiness::all();

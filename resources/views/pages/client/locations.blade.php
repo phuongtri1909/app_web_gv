@@ -324,7 +324,7 @@
                     <div class="info-location-content">
                         <strong>Thông tin mô tả:</strong>
                         <div class="mt-3 overflow-auto">
-                            <div class="d-flex">
+                            <div class="">
                                 <div>${isLocation.description}</div> 
                              </div>
                              ${isLocation.location_products && isLocation.location_products.length > 0 ? `             

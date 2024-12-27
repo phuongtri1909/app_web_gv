@@ -49,14 +49,16 @@
                         </li>
 
                         {{-- đăng ký app --}}
-                        <li class="nav-item">
+                        <li class="nav-item position-relative">
                             <a class="nav-link {{ Route::currentRouteNamed('members.index') ? 'active' : '' }}"
                                 href="{{ route('members.index') }}">
                                 <div
                                     class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                                     <i class="fa-solid fa-users text-dark icon-sidebar"></i>
                                 </div>
-                                <span class="nav-link-text ms-1">Đăng ký app</span>
+                                <span class="nav-link-text ms-1">Đăng ký app 
+                                    <span class="badge bg-danger text-white position-absolute end-0 translate-middle">{{ $businessMemberStatusPending }}</span>
+                                </span>
                             </a>
                         </li>
 
@@ -73,43 +75,49 @@
                         </li>
 
                         {{-- kết nối giao thương --}}
-                        <li class="nav-item">
+                        <li class="nav-item position-relative">
                             <a class="nav-link {{ Route::currentRouteNamed('admin.business') ? 'active' : '' }}"
                                 href="{{ route('admin.business') }}">
                                 <div
                                     class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                                     <i class="fa-solid fa-globe text-dark icon-sidebar"></i>
                                 </div>
-                                <span class="nav-link-text ms-1">KN Giao thương</span>
+                                <span class="nav-link-text ms-1">KN Giao thương
+                                    <span class="badge bg-danger text-white position-absolute end-0 translate-middle">{{ $businessStatus }}</span>
+                                </span>
                             </a>
                         </li>
 
                         {{-- kết nối cung cầu --}}
-                        <li class="nav-item">
+                        <li class="nav-item position-relative">
                             <a class="nav-link {{ Route::currentRouteNamed('business.products.*') ? 'active' : '' }}"
                                 href="{{ route('business.products.index') }}">
                                 <div
                                     class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                                     <i class="fa-solid fa-truck-fast text-dark icon-sidebar"></i>
                                 </div>
-                                <span class="nav-link-text ms-1">KN Cung cầu</span>
+                                <span class="nav-link-text ms-1">KN Cung cầu
+                                    <span class="badge bg-danger text-white position-absolute end-0 translate-middle">{{ $businessProductStatus }}</span>
+                                </span>
                             </a>
                         </li>
 
                         {{-- nhu cầu vốn --}}
-                        <li class="nav-item">
+                        <li class="nav-item position-relative">
                             <a class="nav-link {{ Route::currentRouteNamed('capital-needs.*') ? 'active' : '' }}"
                                 href="{{ route('capital-needs.index') }}">
                                 <div
                                     class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                                     <i class="fa-solid fa-sack-dollar text-dark icon-sidebar"></i>
                                 </div>
-                                <span class="nav-link-text ms-1">{{ __('Nhu cầu vốn') }}</span>
+                                <span class="nav-link-text ms-1">{{ __('Nhu cầu vốn') }}
+                                    <span class="badge bg-danger text-white position-absolute end-0 translate-middle">{{ $capitalNeedsStatus }}</span>
+                                </span>
                             </a>
                         </li>
 
                         {{-- kết nối việc làm --}}
-                        <li class="nav-item dropdown">
+                        <li class="nav-item dropdown position-relative">
                             <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('recruitment.*', 'job-applications.*') ? 'active' : '' }}"
                                 href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"
                                 data-bs-target="#job-connect" aria-expanded="false">
@@ -117,28 +125,34 @@
                                     class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                                     <i class="fa-solid fa-people-arrows text-dark icon-sidebar"></i>
                                 </div>
-                                <span class="nav-link-text ms-1">Kết nối việc làm</span>
+                                <span class="nav-link-text ms-1">Kết nối việc làm
+                                    <span class="badge bg-danger text-white position-absolute end-0 translate-middle">{{ $businessRecruitmentStatus + $jobApplicationsStatus }}</span>
+                                </span>
                             </a>
                             <div class="collapse mt-1" id="job-connect" style="margin-left: 30px">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                    <li>
+                                    <li class="position-relative">
                                         <a class="nav-link {{ Route::currentRouteNamed('recruitment.*') ? 'active' : '' }}"
                                             href="{{ route('recruitment.index') }}">
                                             <div
                                                 class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                                                 <i class="fa-solid fa-city text-dark icon-sidebar"></i>
                                             </div>
-                                            <span class="nav-link-text ms-1">{{ __('Tuyển dụng') }}</span>
+                                            <span class="nav-link-text ms-1">{{ __('Tuyển dụng') }}
+                                                <span class="badge bg-danger text-white position-absolute end-0 translate-middle">{{ $businessRecruitmentStatus }}</span>
+                                            </span>
                                         </a>
                                     </li>
-                                    <li>
+                                    <li class="position-relative">
                                         <a class="nav-link {{ Route::currentRouteNamed('job-applications.*') ? 'active' : '' }}"
                                             href="{{ route('job-applications.index') }}">
                                             <div
                                                 class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                                                 <i class="fa-solid fa-handshake text-dark icon-sidebar"></i>
                                             </div>
-                                            <span class="nav-link-text ms-1">{{ __('Tìm việc làm') }}</span>
+                                            <span class="nav-link-text ms-1">{{ __('Tìm việc làm') }}
+                                                <span class="badge bg-danger text-white position-absolute end-0 translate-middle">{{ $jobApplicationsStatus }}</span>
+                                            </span>
                                         </a>
                                     </li>
 
@@ -207,26 +221,30 @@
                         </li>
 
                         {{-- tư vấn pháp luật --}}
-                        <li class="nav-item">
+                        <li class="nav-item position-relative">
                             <a class="nav-link {{ Route::currentRouteNamed('form-legal-advice.*') ? 'active' : '' }}"
                                 href="{{ route('form-legal-advice.index') }}">
                                 <div
                                     class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                                     <i class="fa-solid fa-gavel text-dark icon-sidebar"></i>
                                 </div>
-                                <span class="nav-link-text ms-1">{{ __('Tư vấn PL') }}</span>
+                                <span class="nav-link-text ms-1">{{ __('Tư vấn PL') }}
+                                    <span class="badge bg-danger text-white position-absolute end-0 translate-middle">{{ $legalAdviceStatus }}</span>
+                                </span>
                             </a>
                         </li>
 
                         {{-- khởi nghiệp xúc tiến --}}
-                        <li class="nav-item">
+                        <li class="nav-item position-relative">
                             <a class="nav-link {{ Route::currentRouteNamed('start-promotion-investment.index') ? 'active' : '' }}"
                                 href="{{ route('start-promotion-investment.index') }}">
                                 <div
                                     class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                                     <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
                                 </div>
-                                <span class="nav-link-text ms-1">{{ __('KN-XTTM-KGDT') }}</span>
+                                <span class="nav-link-text ms-1">{{ __('KN-XTTM-KGDT') }}
+                                    <span class="badge bg-danger text-white position-absolute end-0 translate-middle">{{ $startPromotionInvestmentStatus }}</span>
+                                </span>
                             </a>
                         </li>
 
@@ -305,7 +323,7 @@
                         </li>
 
                         {{-- Hội chợ --}}
-                        <li class="nav-item dropdown">
+                        <li class="nav-item dropdown position-relative">
                             <a class="nav-link dropdown-toggle {{ Route::currentRouteNamed('fair-registrations.*', 'business-fair-registrations.indexJoin') ? 'active' : '' }}"
                                 href="#" id="navbarDropdown" role="button" data-bs-toggle="collapse"
                                 data-bs-target="#hoicho" aria-expanded="false">
@@ -313,18 +331,23 @@
                                     class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                                     <i class="fa-solid fa-store text-dark icon-sidebar"></i>
                                 </div>
-                                <span class="nav-link-text ms-1">{{ __('Hội chợ') }}</span>
+                                <span class="nav-link-text ms-1">{{ __('Hội chợ') }}
+
+                                    <span class="badge bg-danger text-white position-absolute end-0 translate-middle">{{ $fairRegistrationsStatus }}</span>
+                                </span>
                             </a>
                             <div class="collapse mt-1" id="hoicho" style="margin-left: 30px">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                    <li>
+                                    <li class="position-relative"> 
                                         <a class="nav-link {{ Route::currentRouteNamed('business-fair-registrations.indexJoin') ? 'active' : '' }}"
                                             href="{{ route('business-fair-registrations.indexJoin') }}">
                                             <div
                                                 class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                                                 <i class="fa-solid fa-newspaper text-dark icon-sidebar"></i>
                                             </div>
-                                            <span class="nav-link-text ms-1">{{ __('Danh sách tham gia') }}</span>
+                                            <span class="nav-link-text ms-1">{{ __('Danh sách tham gia') }}
+                                                <span class="badge bg-danger text-white position-absolute end-0 translate-middle">{{ $fairRegistrationsStatus }}</span>
+                                            </span>
                                         </a>
                                     </li>
 
@@ -543,7 +566,7 @@
                 @endswitch
 
                 {{-- địa điểm hoặc BĐH khu phố --}}
-                <li class="nav-item">
+                <li class="nav-item position-relative">
                     <a class="nav-link {{ Route::currentRouteNamed('locations.*') ? 'active' : '' }}"
                         href="{{ route('locations.index') }}">
                         <div
@@ -551,7 +574,9 @@
                             <i class="fa-solid fa-location-dot text-dark icon-sidebar"></i>
                         </div>
                         @if (auth()->user()->unit->unit_code == 'QGV')
-                            <span class="nav-link-text ms-1">Địa điểm</span>
+                            <span class="nav-link-text ms-1">Địa điểm
+                                <span class="badge bg-danger text-white position-absolute end-0 translate-middle">{{ $locationStatus }}</span>
+                            </span>
                         @else
                             <span class="nav-link-text ms-1">BĐH khu phố</span>
                         @endif

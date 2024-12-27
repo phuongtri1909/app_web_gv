@@ -2,36 +2,89 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\BusinessCapitalNeedMail;
-use App\Models\BankServicesInterest;
+use Carbon\Carbon;
+use App\Models\Email;
 use App\Models\Business;
-use App\Models\BusinessCapitalNeed;
+use Illuminate\Http\Request;
+use App\Models\EmailTemplate;
+use App\Mail\BusinessRegistered;
 use App\Models\CategoryBusiness;
 use App\Models\FinancialSupport;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Validation\ValidationException;
-use App\Mail\BusinessRegistered;
-use App\Models\Email;
-use App\Models\EmailTemplate;
-use Illuminate\Support\Facades\Mail;
+use App\Models\BusinessCapitalNeed;
 use Illuminate\Support\Facades\Log;
+use App\Models\BankServicesInterest;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\BusinessMemberExport;
+use App\Exports\CapitalNeedExport;
+use App\Mail\BusinessCapitalNeedMail;
+use App\Models\BusinessField;
+use Illuminate\Validation\ValidationException;
 
 class BusinessCapitalNeedController extends Controller
 {
+
+    public function reportBusinessCapitalNeeds(Request $request){
+        $query = BusinessCapitalNeed::query();
+
+        if ($request->filled('date_range')) {
+            $dateRange = $request->input('date_range');
+            $dates = explode(' - ', $dateRange);
+
+            if (count($dates) === 2) {
+                [$startDate, $endDate] = $dates;
+                if (Carbon::hasFormat($startDate, 'Y-m-d') && Carbon::hasFormat($endDate, 'Y-m-d')) {
+                    $query->whereDate('created_at', '>=', Carbon::parse($startDate))
+                        ->whereDate('created_at', '<=', Carbon::parse($endDate));
+                }
+            }
+        }
+
+        $CapitalNeeds = $query->orderBy('created_at', 'desc')->get();
+
+        if ($CapitalNeeds->isEmpty()) {
+            return redirect()->back()->with('error', 'Không có bản ghi nào để xuất.');
+        }
+
+        foreach ($CapitalNeeds as $key => $value) {
+            $business_fields_id = json_decode($value->businessMember->business_field_id, true);
+          
+            if ($business_fields_id) {
+                $value->business_fields = BusinessField::whereIn('id', $business_fields_id)->pluck('name')->toArray();
+               
+            }
+
+        }
+
+        $currentDate = Carbon::now()->format('Y-m-d');
+        $fileName = 'report_nhu_cau_von_' . $currentDate . '.xlsx';
+        return Excel::download(new CapitalNeedExport($CapitalNeeds), $fileName);
+    }
+
     //
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $capitalNeeds = BusinessCapitalNeed::with(['businessMember'])->when($search, function ($query, $search) {
-            return $query->whereHas('business', function ($query) use ($search) {
+
+        $search_status = $request->input('search-status');
+
+        $query = BusinessCapitalNeed::query();
+
+        if ($search) {
+            $query->whereHas('businessMember', function ($query) use ($search) {
                 $query->where('business_name', 'like', "%{$search}%")
                     ->orWhere('business_code', 'like', "%{$search}%");
             });
-        })
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        }
+
+        if ($search_status) {
+            $query->where('email_status', $search_status);
+        }
+
+        $capitalNeeds = $query->orderBy('created_at', 'desc')->paginate(15);
+
         $emails = Email::where('type', '!=', 'ncb')->get();
         $emailTemplates = EmailTemplate::where('name',  '!=', 'ncb')->get();
         return view('admin.pages.client.form-capital-needs.index', compact('capitalNeeds', 'emails', 'emailTemplates'));
