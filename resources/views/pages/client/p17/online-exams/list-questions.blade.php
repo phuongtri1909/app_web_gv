@@ -139,9 +139,9 @@
                         </div>
                         <div class="text-center mt-2">
                             @if ($quizzesStatus[$quiz->id])
-                                <p class="btn btn-primary btn-sm" disabled>Đã làm bài</p>
+                                <p class="btn btn-primary btn-sm" disabled>{{ $competition->type == 'survey-p' ? 'Đã khảo sát' : 'Đã thi' }}</p>
                             @else
-                                <a href="{{ route('p17.start.online.exams.client', ['quizId' => $quiz->id]) }}" class="btn btn-primary btn-sm">Bắt đầu thi</a>
+                                <a href="{{ route('p17.start.online.exams.client', ['quizId' => $quiz->id]) }}" class="btn btn-primary btn-sm">{{ $competition->type == 'survey-p' ? 'Bắt đầu khảo sát' : 'Bắt đầu thi' }}</a>
                             @endif
                         </div>
                     </div>

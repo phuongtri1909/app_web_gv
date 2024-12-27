@@ -1,7 +1,7 @@
 @extends('pages.client.p17.layouts.app')
-@section('title', 'Danh sách cuộc thi')
-@section('description', 'Danh sách cuộc thi')
-@section('keyword', 'Danh sách cuộc thi')
+@section('title', $competition->type == 'survey-p' ? 'Danh sách khảo sát' : 'Danh sách cuộc thi')
+@section('description', $competition->type == 'survey-p' ? 'Danh sách khảo sát' : 'Danh sách cuộc thi')
+@section('keyword', $competition->type == 'survey-p' ? 'Danh sách khảo sát' : 'Danh sách cuộc thi')
 
 @push('styles')
     <style>
@@ -162,7 +162,7 @@
                             <p><strong>Thời gian làm bài: </strong>{{ $competition->time_limit }} phút</p>
                         </div>
                         <div class="text-end">
-                            <a href="{{ route('p17.list.questions.client', ['competitionId' => $competition->id]) }}" class="btn">Vào thi</a>
+                            <a href="{{ route('p17.list.questions.client', ['competitionId' => $competition->id]) }}" class="btn">{{ $competition->type == 'survey-p' ? 'Vào khảo sát' : 'Vào thi' }}</a>
                         </div>
                     </div>
             </div>

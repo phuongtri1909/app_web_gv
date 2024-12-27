@@ -27,17 +27,22 @@ class QuestionController extends Controller
         return view('admin.pages.p17.online-exams.questions.ce', compact('quiz','type'));
     }
 
+
     public function store($type = 'competition', Request $request, $quizId)
     {
         Log::info('Data from request: ', $request->all());
         try {
-
-            $validated = $request->validate([
+            $rules = [
                 'question_name' => 'required|string|max:255',
                 'answers' => 'required|array|min:2|max:10',
                 'answers.*' => 'required|string|max:255',
-                'answer_true' => 'required|string|in:' . implode(',', array_keys($request->answers)),
-            ], [
+            ];
+
+            if ($type !== 'survey-p') {
+                $rules['answer_true'] = 'required|string|in:' . implode(',', array_keys($request->answers));
+            }
+
+            $validated = $request->validate($rules, [
                 'question_name.required' => 'Câu hỏi không được để trống.',
                 'question_name.string' => 'Câu hỏi phải là một chuỗi ký tự.',
                 'question_name.max' => 'Câu hỏi không được dài quá 255 ký tự.',
@@ -50,29 +55,26 @@ class QuestionController extends Controller
                 'answers.*.required' => 'Đáp án không được để trống.',
                 'answers.*.string' => 'Mỗi đáp án phải là một chuỗi ký tự.',
                 'answers.*.max' => 'Đáp án không được dài quá 255 ký tự.',
-
-                'answer_true.required' => 'Bạn phải chọn một đáp án đúng.',
-                'answer_true.string' => 'Đáp án đúng phải là một chuỗi ký tự.',
             ]);
-
 
             $answers = [];
             foreach ($validated['answers'] as $key => $value) {
                 $answers[$key] = $value;
             }
 
-
-            $answerTrueKey = $validated['answer_true'];
-            if (!array_key_exists($answerTrueKey, $answers)) {
-                throw new \Exception('Đáp án đúng không hợp lệ.');
-            }
-
-
             $question = new Question();
             $question->quiz_id = $quizId;
             $question->question_name = $validated['question_name'];
             $question->answer = json_encode($answers);
-            $question->answer_true = $answerTrueKey;
+
+            if ($type !== 'survey-p') {
+                $answerTrueKey = $validated['answer_true'];
+                if (!array_key_exists($answerTrueKey, $answers)) {
+                    throw new \Exception('Đáp án đúng không hợp lệ.');
+                }
+                $question->answer_true = $answerTrueKey;
+            }
+
             $question->save();
 
             return redirect()->route('questions.index', ['type' => $type, 'quizId' => $quizId])->with('success', 'Thêm câu hỏi thành công!');
@@ -92,57 +94,60 @@ class QuestionController extends Controller
         return view('admin.pages.p17.online-exams.questions.ce', compact('question', 'quiz','type'));
     }
 
+   
     public function update($type = 'competition', Request $request, $id)
     {
         try {
-        $validated = $request->validate([
-            'question_name' => 'required|string|max:255',
-            'answers' => 'required|array',
-            'answer_true' => 'required|string|in:' . implode(',', array_keys($request->answers)),
-        ] ,[
-            'question_name.required' => 'Câu hỏi không được để trống.',
-            'question_name.string' => 'Câu hỏi phải là một chuỗi ký tự.',
-            'question_name.max' => 'Câu hỏi không được dài quá 255 ký tự.',
+            $rules = [
+                'question_name' => 'required|string|max:255',
+                'answers' => 'required|array|min:2|max:10',
+                'answers.*' => 'required|string|max:255',
+            ];
 
-            'answers.required' => 'Bạn phải nhập ít nhất 2 đáp án.',
-            'answers.array' => 'Đáp án phải là một mảng.',
-            'answers.min' => 'Bạn phải nhập ít nhất 2 đáp án.',
-            'answers.max' => 'Bạn chỉ có thể nhập tối đa 10 đáp án.',
+            if ($type !== 'survey-p') {
+                $rules['answer_true'] = 'required|string|in:' . implode(',', array_keys($request->answers));
+            }
 
-            'answers.*.required' => 'Đáp án không được để trống.',
-            'answers.*.string' => 'Mỗi đáp án phải là một chuỗi ký tự.',
-            'answers.*.max' => 'Đáp án không được dài quá 255 ký tự.',
+            $validated = $request->validate($rules, [
+                'question_name.required' => 'Câu hỏi không được để trống.',
+                'question_name.string' => 'Câu hỏi phải là một chuỗi ký tự.',
+                'question_name.max' => 'Câu hỏi không được dài quá 255 ký tự.',
 
-            'answer_true.required' => 'Bạn phải chọn một đáp án đúng.',
-            'answer_true.string' => 'Đáp án đúng phải là một chuỗi ký tự.',
-        ]);
+                'answers.required' => 'Bạn phải nhập ít nhất 2 đáp án.',
+                'answers.array' => 'Đáp án phải là một mảng.',
+                'answers.min' => 'Bạn phải nhập ít nhất 2 đáp án.',
+                'answers.max' => 'Bạn chỉ có thể nhập tối đa 10 đáp án.',
 
-        $answers = [];
-        foreach ($validated['answers'] as $key => $value) {
-            $answers[$key] = $value;
+                'answers.*.required' => 'Đáp án không được để trống.',
+                'answers.*.string' => 'Mỗi đáp án phải là một chuỗi ký tự.',
+                'answers.*.max' => 'Đáp án không được dài quá 255 ký tự.',
+            ]);
+
+            $answers = [];
+            foreach ($validated['answers'] as $key => $value) {
+                $answers[$key] = $value;
+            }
+
+            $question = Question::findOrFail($id);
+            $question->question_name = $validated['question_name'];
+            $question->answer = json_encode($answers);
+
+            if ($type !== 'survey-p') {
+                $answerTrueKey = $validated['answer_true'];
+                if (!array_key_exists($answerTrueKey, $answers)) {
+                    throw new \Exception('Đáp án đúng không hợp lệ.');
+                }
+                $question->answer_true = $answerTrueKey;
+            }
+
+            $question->save();
+
+            return redirect()->route('questions.index', ['type' => $type, 'quizId' => $question->quiz_id])->with('success', 'Cập nhật câu hỏi thành công!');
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi cập nhật câu hỏi: ' . $e->getMessage());
+
+            return back()->with('error', 'Đã xảy ra lỗi khi cập nhật câu hỏi. Vui lòng thử lại sau.')->withInput();
         }
-
-
-        $answerTrueKey = $validated['answer_true'];
-        if (!array_key_exists($answerTrueKey, $answers)) {
-            throw new \Exception('Đáp án đúng không hợp lệ.');
-        }
-
-
-        $question = Question::findOrFail($id);
-
-
-        $question->question_name = $validated['question_name'];
-        $question->answer = json_encode($answers);
-        $question->answer_true = $answerTrueKey;
-        $question->save();
-
-        return redirect()->route('questions.index',['type' => $type, 'quizId' => $question->quiz_id])->with('success', 'Cập nhật câu hỏi thành công!');
-    } catch (\Exception $e) {
-        Log::error('Lỗi khi cập nhật câu hỏi: ' . $e->getMessage());
-
-        return back()->with('error', 'Đã xảy ra lỗi khi cập nhật câu hỏi. Vui lòng thử lại sau.')->withInput();
-    }
     }
 
 
